@@ -1,20 +1,20 @@
 import { afterAll } from 'vitest'
 import { randomBytes } from 'node:crypto'
-import { readdirSync } from 'node:fs'
 import fs from 'node:fs/promises'
 import { tmpdir } from 'node:os'
-import path, { join } from 'node:path'
+import { join } from 'node:path'
+import { pathToFileURL } from 'node:url'
 
-import { getPrismaClient, objectEnumValues } from '@prisma/client/runtime/library'
-import { createDatabase, getConfig, getDMMF, parseEnvValue } from '@prisma/internals'
 import supertest from 'supertest'
+import type { SqlDriverAdapterFactory } from '@prisma/client/runtime/client'
 
 import { config } from '@keystone-6/core'
 import {
   createExpressServer,
   createSystem,
   generateArtifacts,
-  withMigrate,
+  generatePrismaClient,
+  pushPrismaSchema,
 } from '@keystone-6/core/___internal-do-not-use-will-break-in-patch/artifacts'
 import type {
   BaseKeystoneTypeInfo,
@@ -22,66 +22,16 @@ import type {
   KeystoneConfigPre,
 } from '@keystone-6/core/types'
 
-import { dbProvider } from './utils'
-
-// prisma checks
-{
-  const prismaEnginesDir = path.dirname(require.resolve('@prisma/engines/package.json'))
-  const prismaEnginesDirEntries = readdirSync(prismaEnginesDir)
-  const queryEngineFilename = prismaEnginesDirEntries.find(dir => dir.startsWith('libquery_engine'))
-  if (!queryEngineFilename) throw new Error('Could not find query engine')
-  process.env.PRISMA_QUERY_ENGINE_LIBRARY = path.join(prismaEnginesDir, queryEngineFilename)
-}
-
-async function getTestPrismaModuleInner(prismaSchemaPath: string, schema: string) {
-  const config = await getConfig({ datamodel: schema, ignoreEnvVarErrors: true })
-  const { datamodel } = await getDMMF({ datamodel: schema, previewFeatures: [] })
-  const models = Object.values(datamodel.models).reduce<
-    Record<string, (typeof datamodel.models)[number]>
-  >((a, x) => ((a[x.name] = x), a), {})
-  const enums = Object.values(datamodel.enums).reduce<
-    Record<string, (typeof datamodel.enums)[number]>
-  >((a, x) => ((a[x.name] = x), a), {})
-  const types = Object.values(datamodel.types).reduce<
-    Record<string, (typeof datamodel.types)[number]>
-  >((a, x) => ((a[x.name] = x), a), {})
-
-  return {
-    PrismaClient: getPrismaClient({
-      inlineDatasources: {}, // uh
-      inlineSchemaHash: '', // uh
-      relativeEnvPaths: {}, // uh
-      relativePath: '', // uh
-
-      activeProvider: config.datasources[0].activeProvider,
-      clientVersion: '0.0.0',
-      datasourceNames: config.datasources.map(d => d.name),
-      dirname: path.dirname(prismaSchemaPath),
-      engineVersion: '0000000000000000000000000000000000000000',
-      generator: config.generators.find(g => parseEnvValue(g.provider) === 'prisma-client-js'),
-      inlineSchema: schema,
-      runtimeDataModel: { models, enums, types },
-    }),
-    Prisma: {
-      DbNull: objectEnumValues.instances.DbNull,
-      JsonNull: objectEnumValues.instances.JsonNull,
-    },
-  }
-}
-
-const prismaModuleCache = new Map<string, unknown>()
-async function getTestPrismaModule(prismaSchemaPath: string, schema: string) {
-  if (prismaModuleCache.has(schema)) return prismaModuleCache.get(schema)!
-  return prismaModuleCache
-    .set(schema, await getTestPrismaModuleInner(prismaSchemaPath, schema))
-    .get(schema)!
-}
+import { dbProvider, prismaClientOptions } from './utils'
+import { createRequire } from 'node:module'
 
 type FloatingConfig<TypeInfo extends BaseKeystoneTypeInfo> = Omit<
   KeystoneConfigPre<TypeInfo>,
   'db'
 > & {
-  db?: Omit<KeystoneConfigPre<TypeInfo>['db'], 'provider' | 'url'>
+  db?: Omit<KeystoneConfigPre<TypeInfo>['db'], 'provider' | 'prismaClientOptions'> & {
+    prismaClientOptions?: (url: string) => unknown
+  }
 }
 
 export async function setupTestEnv<TypeInfo extends BaseKeystoneTypeInfo>(
@@ -99,12 +49,26 @@ export async function setupTestEnv<TypeInfo extends BaseKeystoneTypeInfo>(
     await fs.rm(cwd, { recursive: true })
     await fs.mkdir(cwd)
   }
+  await fs.mkdir(join(cwd, 'node_modules/@prisma'), { recursive: true })
+  const require = createRequire(import.meta.url)
+  await fs.symlink(
+    join(require.resolve('prisma/package.json'), '..'),
+    join(cwd, 'node_modules/prisma'),
+    'dir'
+  )
+  await fs.symlink(
+    join(require.resolve('@prisma/client/package.json'), '..'),
+    join(cwd, 'node_modules/@prisma/client'),
+    'dir'
+  )
 
   let dbUrl = process.env.DATABASE_URL
   if (!dbUrl) throw new TypeError('Missing DATABASE_URL')
 
   if (dbUrl.startsWith('file:')) {
-    dbUrl = `file:${join(cwd, 'test.db')}` // unique database files
+    const dbPath = join(cwd, 'test.db')
+    await fs.writeFile(dbPath, '')
+    dbUrl = `file:${dbPath}` // unique database files
   }
 
   if (dbUrl.startsWith('postgres:')) {
@@ -119,16 +83,23 @@ export async function setupTestEnv<TypeInfo extends BaseKeystoneTypeInfo>(
     dbUrl = parsed.toString()
   }
 
+  const schemaPath = join(cwd, 'test-schema.prisma')
+  await fs.writeFile(
+    join(cwd, 'prisma.config.ts'),
+    `import { defineConfig } from 'prisma/config'\nexport default defineConfig({ schema: 'test-schema.prisma', datasource: { url: ${JSON.stringify(dbUrl)} } })\n`
+  )
+  const { prismaClientOptions: createPrismaClientOptions, ...dbConfig } = config_.db ?? {}
   const system = createSystem(
     wrap(
       config({
         ...config_,
         db: {
           provider: dbProvider,
-          url: dbUrl,
           prismaClientPath: '.prisma',
           prismaSchemaPath: 'test-schema.prisma',
-          ...config_.db,
+          ...dbConfig,
+          prismaClientOptions: () =>
+            createPrismaClientOptions?.(dbUrl) ?? prismaClientOptions(dbUrl),
         },
         types: {
           path: 'test-types.ts',
@@ -147,17 +118,13 @@ export async function setupTestEnv<TypeInfo extends BaseKeystoneTypeInfo>(
   )
 
   const artifacts = await generateArtifacts(cwd, system)
-  const paths = system.getPaths(cwd)
-
-  await createDatabase(system.config.db.url, cwd)
-  await withMigrate(paths.schema.prisma, system, async m => {
-    await m.reset()
-    await m.schema(artifacts.prisma, false)
-  })
-
-  const { context, connect, disconnect } = system.getKeystone(
-    await getTestPrismaModule(paths.schema.prisma, artifacts.prisma)
+  await generatePrismaClient(cwd, system, 'capture')
+  await pushPrismaSchema(cwd, schemaPath, 'capture')
+  const prismaModule = await import(
+    `${pathToFileURL(join(cwd, '.prisma/client.ts')).href}?${random}`
   )
+  const { context, connect, disconnect } = system.getKeystone(prismaModule)
+  const createDatabaseAdapter = () => prismaClientOptions(dbUrl).adapter as SqlDriverAdapterFactory
 
   if (dbProvider === 'sqlite') {
     await connect()
@@ -187,6 +154,7 @@ export async function setupTestEnv<TypeInfo extends BaseKeystoneTypeInfo>(
 
     return {
       artifacts,
+      createDatabaseAdapter,
       connect,
       context,
       config: system.config,
@@ -204,6 +172,7 @@ export async function setupTestEnv<TypeInfo extends BaseKeystoneTypeInfo>(
 
   return {
     artifacts,
+    createDatabaseAdapter,
     connect,
     context,
     config: system.config,
@@ -218,26 +187,128 @@ export async function setupTestEnv<TypeInfo extends BaseKeystoneTypeInfo>(
   } as const
 }
 
-export function setupTestRunner<TypeInfo extends BaseKeystoneTypeInfo>({
-  config: config_,
-  serve = false,
-  identifier,
-  wrap,
-}: {
+type TestRunnerArgs<TypeInfo extends BaseKeystoneTypeInfo> = {
   config: FloatingConfig<TypeInfo>
   serve?: boolean
   identifier?: string
   wrap?: (config: KeystoneConfig) => KeystoneConfig
-}) {
-  return (testFn: (args: Awaited<ReturnType<typeof setupTestEnv>>) => Promise<void>) =>
-    async () => {
-      const result = await setupTestEnv(config_, serve, identifier, wrap)
+}
 
-      await result.connect()
+function quoteIdentifier(identifier: string, quote: '`' | '"') {
+  return quote + identifier.replaceAll(quote, quote + quote) + quote
+}
+
+type SqlDriverAdapter = Awaited<ReturnType<SqlDriverAdapterFactory['connect']>>
+type SqlQueryable = Pick<SqlDriverAdapter, 'executeRaw' | 'queryRaw'>
+
+const adapterQuery = (sql: string) => ({ sql, args: [], argTypes: [] })
+
+async function adapterRows(adapter: SqlQueryable, sql: string) {
+  const result = await adapter.queryRaw(adapterQuery(sql))
+  return result.rows.map(row =>
+    Object.fromEntries(result.columnNames.map((column, index) => [column, row[index]]))
+  ) as Record<string, unknown>[]
+}
+
+async function clearDatabase(createAdapter: () => SqlDriverAdapterFactory) {
+  const adapter = await createAdapter().connect()
+  try {
+    if (adapter.provider === 'sqlite') {
+      await adapter.executeScript('PRAGMA foreign_keys = OFF')
       try {
-        return await testFn(result)
+        const tables = await adapterRows(
+          adapter,
+          "SELECT name FROM sqlite_master WHERE type = 'table' AND name NOT LIKE 'sqlite_%'"
+        )
+        for (const { name } of tables) {
+          await adapter.executeScript(`DELETE FROM ${quoteIdentifier(String(name), '"')}`)
+        }
+        const sequences = await adapterRows(
+          adapter,
+          "SELECT name FROM sqlite_master WHERE type = 'table' AND name = 'sqlite_sequence'"
+        )
+        if (sequences.length) await adapter.executeScript('DELETE FROM sqlite_sequence')
       } finally {
-        await result.disconnect()
+        await adapter.executeScript('PRAGMA foreign_keys = ON')
+      }
+      return
+    }
+
+    if (adapter.provider === 'postgres') {
+      const schemaName = adapter.getConnectionInfo?.().schemaName
+      if (!schemaName) throw new Error('PostgreSQL test adapter did not provide a schema name')
+      const schema = schemaName.replaceAll("'", "''")
+      const tables = await adapterRows(
+        adapter,
+        `SELECT tablename AS name FROM pg_tables WHERE schemaname = '${schema}' AND tablename <> '_prisma_migrations'`
+      )
+      if (tables.length) {
+        await adapter.executeScript(
+          `TRUNCATE TABLE ${tables
+            .map(
+              ({ name }) =>
+                `${quoteIdentifier(schemaName, '"')}.${quoteIdentifier(String(name), '"')}`
+            )
+            .join(', ')} RESTART IDENTITY CASCADE`
+        )
+      }
+      return
+    }
+
+    const transaction = await adapter.startTransaction()
+    let autoIncrementTables: string[]
+    try {
+      await transaction.executeRaw(adapterQuery('SET FOREIGN_KEY_CHECKS = 0'))
+      const tables = await adapterRows(
+        transaction,
+        "SELECT TABLE_NAME AS name FROM information_schema.TABLES WHERE TABLE_SCHEMA = DATABASE() AND TABLE_TYPE = 'BASE TABLE' AND TABLE_NAME <> '_prisma_migrations'"
+      )
+      autoIncrementTables = (
+        await adapterRows(
+          transaction,
+          "SELECT TABLE_NAME AS name FROM information_schema.TABLES WHERE TABLE_SCHEMA = DATABASE() AND TABLE_TYPE = 'BASE TABLE' AND AUTO_INCREMENT IS NOT NULL"
+        )
+      ).map(({ name }) => String(name))
+      for (const { name } of tables) {
+        await transaction.executeRaw(
+          adapterQuery(`DELETE FROM ${quoteIdentifier(String(name), '`')}`)
+        )
+      }
+      await transaction.executeRaw(adapterQuery('SET FOREIGN_KEY_CHECKS = 1'))
+    } catch (error) {
+      await transaction
+        .executeRaw(adapterQuery('SET FOREIGN_KEY_CHECKS = 1'))
+        .catch(() => undefined)
+      await transaction.rollback()
+      throw error
+    }
+    await transaction.commit()
+    for (const name of autoIncrementTables) {
+      await adapter.executeRaw(
+        adapterQuery(`ALTER TABLE ${quoteIdentifier(name, '`')} AUTO_INCREMENT = 1`)
+      )
+    }
+  } finally {
+    await adapter.dispose()
+  }
+}
+
+export function setupTestRunner<TypeInfo extends BaseKeystoneTypeInfo>(
+  args: TestRunnerArgs<TypeInfo>
+) {
+  let result: ReturnType<typeof setupTestEnv<TypeInfo>> | undefined
+  const getResult = () =>
+    (result ??= setupTestEnv(args.config, args.serve, args.identifier, args.wrap))
+
+  return (testFn: (args: Awaited<ReturnType<typeof setupTestEnv<TypeInfo>>>) => Promise<void>) =>
+    async () => {
+      const value = await getResult()
+      await value.connect()
+      try {
+        await clearDatabase(value.createDatabaseAdapter)
+        return await testFn(value)
+      } finally {
+        await value.disconnect()
       }
     }
 }

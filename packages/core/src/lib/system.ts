@@ -12,29 +12,30 @@ export function getBuiltKeystoneConfigurationPath(cwd: string) {
   return path.join(cwd, '.keystone/config.js')
 }
 
+export function getBuiltPrismaModulePath(cwd: string) {
+  return path.join(cwd, '.keystone/prisma.js')
+}
+
 function posixify(s: string) {
   return s.split(path.sep).join('/')
 }
 
+function relativeModulePath(from: string, to: string) {
+  const relative = posixify(path.relative(from, to))
+  return relative.startsWith('.') ? relative : `./${relative}`
+}
+
 function getSystemPaths(cwd: string, config: KeystoneConfig) {
-  const prismaClientPath =
-    config.db.prismaClientPath === '@prisma/client'
-      ? null
-      : config.db.prismaClientPath
-        ? path.join(cwd, config.db.prismaClientPath)
-        : null
+  const prismaClientOutput = path.resolve(cwd, config.db.prismaClientPath)
+  const prismaClientPath = path.join(prismaClientOutput, 'client')
 
   const builtTypesPath = config.types?.path
     ? path.join(cwd, config.types.path) // TODO: enforce initConfig before getSystemPaths
     : path.join(cwd, 'generated/keystone/types.ts')
 
-  const builtPrismaPath = config.db?.prismaSchemaPath
-    ? path.join(cwd, config.db.prismaSchemaPath) // TODO: enforce initConfig before getSystemPaths
-    : path.join(cwd, 'schema.prisma')
+  const builtPrismaPath = path.resolve(cwd, config.db.prismaSchemaPath)
 
-  const relativePrismaPath = prismaClientPath
-    ? `./${posixify(path.relative(path.dirname(builtTypesPath), prismaClientPath))}`
-    : '@prisma/client'
+  const relativePrismaPath = relativeModulePath(path.dirname(builtTypesPath), prismaClientPath)
 
   const builtGraphqlPath = config.graphql?.schemaPath
     ? path.join(cwd, config.graphql.schemaPath) // TODO: enforce initConfig before getSystemPaths
@@ -43,7 +44,9 @@ function getSystemPaths(cwd: string, config: KeystoneConfig) {
   return {
     config: getBuiltKeystoneConfigurationPath(cwd),
     admin: path.join(cwd, '.keystone/admin'),
-    prisma: prismaClientPath ?? '@prisma/client',
+    prisma: prismaClientPath,
+    prismaClientOutput,
+    prismaGeneratorOutput: relativeModulePath(path.dirname(builtPrismaPath), prismaClientOutput),
     types: {
       relativePrismaPath,
     },
@@ -123,23 +126,6 @@ function injectNewDefaults(prismaClient: unknown, lists: Record<string, Initiali
   return prismaClient
 }
 
-function formatUrl(provider: KeystoneConfig['db']['provider'], url: string) {
-  if (url.startsWith('file:')) {
-    const parsed = new URL(url)
-    if (provider === 'sqlite' && !parsed.searchParams.get('connection_limit')) {
-      // https://github.com/prisma/prisma/issues/9562
-      // https://github.com/prisma/prisma/issues/10403
-      // https://github.com/prisma/prisma/issues/11789
-      parsed.searchParams.set('connection_limit', '1')
-
-      const [uri] = url.split('?')
-      return `${uri}?${parsed.search}`
-    }
-  }
-
-  return url
-}
-
 export function createSystem(config: KeystoneConfig) {
   const lists = initialiseLists(config)
   const adminMeta = createAdminMeta(config, lists)
@@ -157,13 +143,12 @@ export function createSystem(config: KeystoneConfig) {
     lists,
     getPaths: (cwd: string) => getSystemPaths(cwd, config),
 
-    getKeystone: (PM: any) => {
-      const prePrismaClient = new PM.PrismaClient({
-        datasourceUrl: formatUrl(config.db.provider, config.db.url),
-        log: config.db.enableLogging,
-      })
-
-      const prismaClient = config.db.extendPrismaClient(injectNewDefaults(prePrismaClient, lists))
+    getKeystone: (PM: any, existingPrismaClient?: any) => {
+      const prismaClient =
+        existingPrismaClient ??
+        config.db.extendPrismaClient(
+          injectNewDefaults(new PM.PrismaClient(config.db.prismaClientOptions()), lists)
+        )
       const context = createContext({
         config,
         lists,

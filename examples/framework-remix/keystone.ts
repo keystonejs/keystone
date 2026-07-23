@@ -1,3 +1,4 @@
+import { PrismaBetterSqlite3 } from '@prisma/adapter-better-sqlite3'
 import { list, config } from '@keystone-6/core'
 import { allowAll } from '@keystone-6/core/access'
 import { text } from '@keystone-6/core/fields'
@@ -9,10 +10,9 @@ export default config<TypeInfo>({
     //   for more information on what database might be appropriate for you
     //   see https://keystonejs.com/docs/guides/choosing-a-database#title
     provider: 'sqlite',
-    url: `file:${process.cwd()}/keystone.db`,
-
-    // WARNING: this is only needed for our monorepo examples, dont do this
-    prismaClientPath: 'node_modules/myprisma',
+    prismaClientOptions: () => ({
+      adapter: new PrismaBetterSqlite3({ url: `file:${process.cwd()}/keystone.db` }),
+    }),
   },
   server: {
     port: 4000,

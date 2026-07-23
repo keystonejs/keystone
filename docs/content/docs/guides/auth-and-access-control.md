@@ -1,5 +1,5 @@
 ---
-title: "Authentication and Access Control"
+title: 'Authentication and Access Control'
 description: "Learn how to use Keystone's built-in Authentication and Access Control systems."
 ---
 
@@ -35,7 +35,7 @@ const Person = list({
     password: password(),
     isAdmin: checkbox(),
   },
-});
+})
 ```
 
 {% hint kind="tip" %}
@@ -47,13 +47,13 @@ Read more about creating lists in the [schema](../config/lists) and [fields](../
 With our users list in place, we can start configuring our authentication:
 
 ```ts
-import { createAuth } from '@keystone-6/auth';
+import { createAuth } from '@keystone-6/auth'
 
 const { withAuth } = createAuth({
   listKey: 'Person',
   identityField: 'email',
   secretField: 'password',
-});
+})
 ```
 
 The `createAuth` function returns another function called `withAuth` that will automatically extend Keystone's config to set up everything we need. Behind the scenes, the `auth` package is just using lower-level Keystone APIs to do everything, which means if you want to do something differently, you can fork our implementation of `auth` and build your own (this is true for session management as well)
@@ -69,7 +69,7 @@ Finally we need to tell Keystone how to track sessions. The simplest method is t
 ```ts
 const session = statelessSessions({
   secret: '-- EXAMPLE COOKIE SECRET; CHANGE ME --',
-});
+})
 ```
 
 You can use your own session strategy if for example, if you want to use use OAuth sessions.
@@ -83,25 +83,30 @@ Read more about [Session Stores in the Session API Docs](../config/session#sessi
 Your Keystone config should now look like this:
 
 ```ts
-import { config, list } from '@keystone-6/core';
-import { checkbox, password, text } from '@keystone-6/core/fields';
-import { statelessSessions } from '@keystone-6/core/session';
-import { createAuth } from '@keystone-6/auth';
+import { config, list } from '@keystone-6/core'
+import { checkbox, password, text } from '@keystone-6/core/fields'
+import { statelessSessions } from '@keystone-6/core/session'
+import { createAuth } from '@keystone-6/auth'
+import { PrismaBetterSqlite3 } from '@prisma/adapter-better-sqlite3'
 
 const db = {
   provider: 'sqlite',
-  url: process.env.DATABASE_URL || 'file:./keystone-example.db',
-};
+  prismaClientOptions: () => ({
+    adapter: new PrismaBetterSqlite3({
+      url: process.env.DATABASE_URL || 'file:./keystone-example.db',
+    }),
+  }),
+}
 
 const { withAuth } = createAuth({
   listKey: 'Person',
   identityField: 'email',
   secretField: 'password',
-});
+})
 
 const session = statelessSessions({
   secret: '-- EXAMPLE COOKIE SECRET; CHANGE ME --',
-});
+})
 
 const lists = {
   Person: list({
@@ -113,7 +118,7 @@ const lists = {
       isAdmin: checkbox(),
     },
   }),
-};
+}
 
 export default withAuth(
   config({
@@ -121,7 +126,7 @@ export default withAuth(
     lists,
     session,
   })
-);
+)
 ```
 
 ## Loading Session Data
@@ -144,7 +149,7 @@ You configure it like this:
 const { withAuth } = createAuth({
   // ...
   sessionData: 'isAdmin',
-});
+})
 ```
 
 Think of this like the field selection in a GraphQL query. You can load any fields you need to have at hand when writing Access Control methods, including virtual fields and relationships.
@@ -188,7 +193,7 @@ const Post = list({
     author: relationship({ ref: 'Person' }),
     // more content fields would go here
   },
-});
+})
 ```
 
 And the Session Data we set up above would look like this:
@@ -196,8 +201,8 @@ And the Session Data we set up above would look like this:
 ```ts
 type Session = {
   data: {
-    id: string;
-    isAdmin: boolean;
+    id: string
+    isAdmin: boolean
   }
 }
 ```
@@ -205,7 +210,7 @@ type Session = {
 We can now set up **operation** access control to restrict the **create**, **update** and **delete** operations to authenticated users with the `isAdmin` checkbox set:
 
 ```ts
-const isAdmin = ({ session }: { session?: Session }) => Boolean(session?.data.isAdmin);
+const isAdmin = ({ session }: { session?: Session }) => Boolean(session?.data.isAdmin)
 
 const Post = list({
   access: {
@@ -219,15 +224,15 @@ const Post = list({
   fields: {
     // see above
   },
-});
+})
 ```
 
 We can also use **filter** access control to make sure that unauthenticated users can only see published posts:
 
 ```ts
-function filterPosts ({ session }: { session?: Session }) {
+function filterPosts({ session }: { session?: Session }) {
   // if the user is an Admin, they can access all the records
-  if (session?.data.isAdmin) return true;
+  if (session?.data.isAdmin) return true
   // otherwise, filter for published posts
   return { isPublished: { equals: true } }
 }
@@ -239,12 +244,12 @@ const Post = list({
     },
     filter: {
       query: filterPosts,
-    }
+    },
   },
   fields: {
     // see above
   },
-});
+})
 ```
 
 When there's no session, or the user is not an Admin, the `filterPosts` function returns a filter object. This is the same format as the `where` arguments you can provide to the `posts` query through the GraphQL API:
@@ -278,7 +283,7 @@ const Tag = list({
     label: text(),
     posts: relationship({ ref: 'Post', many: true }),
   },
-});
+})
 ```
 
 You can query all the posts linked to each tag, but the filters we've defined above on `Post` will still be applied.
@@ -334,26 +339,26 @@ Note: this is different to **field** access control, where the `read` access con
 Keystone provides three different levels of access control for lists, as well as field-level access control. Here are the available functions for lists:
 
 ```ts
-type Filter = Record<string, any>; // the GraphQL Filters for the List
+type Filter = Record<string, any> // the GraphQL Filters for the List
 
 type Access = {
   operation: {
-    query: ({ session, context, listKey, operation }) => boolean;
-    create: ({ session, context, listKey, operation }) => boolean;
-    update: ({ session, context, listKey, operation }) => boolean;
-    delete: ({ session, context, listKey, operation }) => boolean;
-  };
+    query: ({ session, context, listKey, operation }) => boolean
+    create: ({ session, context, listKey, operation }) => boolean
+    update: ({ session, context, listKey, operation }) => boolean
+    delete: ({ session, context, listKey, operation }) => boolean
+  }
   filter: {
-    query: ({ session, context, listKey, operation }) => Filter | boolean;
-    update: ({ session, context, listKey, operation }) => Filter | boolean;
-    delete: ({ session, context, listKey, operation }) => Filter | boolean;
-  };
+    query: ({ session, context, listKey, operation }) => Filter | boolean
+    update: ({ session, context, listKey, operation }) => Filter | boolean
+    delete: ({ session, context, listKey, operation }) => Filter | boolean
+  }
   item: {
-    create: ({ session, context, listKey, operation, inputData }) => boolean;
-    update: ({ session, context, listKey, operation, inputData, item }) => boolean;
-    delete: ({ session, context, listKey, operation, item }) => boolean;
-  };
-};
+    create: ({ session, context, listKey, operation, inputData }) => boolean
+    update: ({ session, context, listKey, operation, inputData, item }) => boolean
+    delete: ({ session, context, listKey, operation, item }) => boolean
+  }
+}
 ```
 
 {% hint kind="tip" %}
@@ -412,16 +417,16 @@ const extendGraphqlSchema = graphQLSchemaExtension({
   resolvers: {
     Query: {
       recentPosts: (root, args, context) => {
-        var oneWeekAgo = new Date();
-        oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+        var oneWeekAgo = new Date()
+        oneWeekAgo.setDate(oneWeekAgo.getDate() - 7)
         return context.db.Post.findMany({
           where: { publishDate: { gt: oneWeekAgo.toUTCString() } },
           orderBy: { publishDate: 'desc' },
-        });
+        })
       },
     },
   },
-});
+})
 ```
 
 The query will respect the access control rules for the `Post` list, and unauthenticated users will only see published posts.
@@ -435,19 +440,19 @@ When you need it, you can call `context.sudo()` to create a new context with ele
 For example, we probably want to block all public access to querying users in our system:
 
 ```ts
-const isAdmin = ({ session }: { session?: Session }) => Boolean(session?.data.isAdmin);
+const isAdmin = ({ session }: { session?: Session }) => Boolean(session?.data.isAdmin)
 
 const Person = list({
   access: {
     query: isAdmin,
     create: isAdmin,
     update: isAdmin,
-    delete: isAdmin
+    delete: isAdmin,
   },
   fields: {
     // see above
   },
-}),
+})
 ```
 
 But if we have a signup form in our app, we may want to be able to check whether an email address is in use so we can do client-side validation, without giving away any other information.
@@ -463,17 +468,17 @@ const extendGraphqlSchema = graphQLSchemaExtension({
   resolvers: {
     Query: {
       isEmailInUse: async (root, { email }, context) => {
-        const sudoContext = context.sudo();
+        const sudoContext = context.sudo()
         const emailCount = await sudoContext.db.User.count({
           where: {
             email: { equals: email, mode: 'insensitive' },
           },
-        });
-        return !!emailCount;
+        })
+        return !!emailCount
       },
     },
   },
-});
+})
 ```
 
 ## Field Access Control
@@ -513,34 +518,32 @@ The implementation of these rules would look like this:
 
 ```ts
 type PersonData = {
-  id: string;
-  name: string;
-  email: string;
-  isAdmin: boolean;
-};
+  id: string
+  name: string
+  email: string
+  isAdmin: boolean
+}
 
 // Validate there is a user with a valid session
-const isUser = ({ session }: { session?: Session }) =>
-  !!session?.data.id;
+const isUser = ({ session }: { session?: Session }) => !!session?.data.id
 
 // Validate the current user is an Admin
-const isAdmin = ({ session }: { session?: Session }) =>
-  Boolean(session?.data.isAdmin);
+const isAdmin = ({ session }: { session?: Session }) => Boolean(session?.data.isAdmin)
 
 // Validate the current user is updating themselves
-const isPerson = ({ session, item }: { session?: Session, item: PersonData }) =>
-  session?.data.id === item.id;
+const isPerson = ({ session, item }: { session?: Session; item: PersonData }) =>
+  session?.data.id === item.id
 
 // Validate the current user is an Admin, or updating themselves
-const isAdminOrPerson = ({ session, item }: { session?: Session, item: PersonData }) =>
-  isAdmin({ session }) || isPerson({ session, item });
+const isAdminOrPerson = ({ session, item }: { session?: Session; item: PersonData }) =>
+  isAdmin({ session }) || isPerson({ session, item })
 
 const Person = list({
   access: {
     operation: {
       query: isAdmin,
       create: isAdmin,
-      update: isAdmin,      
+      update: isAdmin,
       delete: isAdmin,
     },
     item: {
@@ -549,20 +552,27 @@ const Person = list({
   },
   fields: {
     name: text(),
-    email: text({ isIndexed: 'unique', access: {
-      read: isAdminOrPerson,
-    }}),
-    password: password({ access: {
-      // Note: password fields never reveal their value, only whether a value exists
-      read: isAdminOrPerson,
-      update: isPerson,
-    }}),
-    isAdmin: checkbox({ access: {
-      read: isUser,
-      update: isAdmin,
-    }}),
+    email: text({
+      isIndexed: 'unique',
+      access: {
+        read: isAdminOrPerson,
+      },
+    }),
+    password: password({
+      access: {
+        // Note: password fields never reveal their value, only whether a value exists
+        read: isAdminOrPerson,
+        update: isPerson,
+      },
+    }),
+    isAdmin: checkbox({
+      access: {
+        read: isUser,
+        update: isAdmin,
+      },
+    }),
   },
-});
+})
 ```
 
 ## Related resources

@@ -14,9 +14,6 @@
     "@keystone-6/core": "workspace:^",
     "@keystone-6/fields-document": "workspace:^",
     "@prisma/client": "catalog:",
-    "@prisma/engines": "catalog:",
-    "@prisma/internals": "catalog:",
-    "@prisma/migrate": "catalog:",
     "@types/node": "catalog:",
     "@types/react": "catalog:",
     "execa": "^5.1.1",
@@ -28,6 +25,10 @@
     "typescript": "catalog:"
   },
   "dependencies": {
-    "express": "catalog:"
+    "@prisma/adapter-better-sqlite3": "catalog:",
+    "@prisma/adapter-pg": "catalog:",
+    "express": "catalog:",
+    "better-sqlite3": "catalog:",
+    "pg": "catalog:"
   }
 }

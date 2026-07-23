@@ -11,9 +11,13 @@
     "@keystone-6/auth": "^8.0.0",
     "@keystone-6/core": "^6.0.0",
     "@keystone-6/fields-document": "^9.0.0",
+    "@prisma/adapter-better-sqlite3": "catalog:",
+    "@prisma/client": "catalog:",
     "next": "catalog:",
     "react": "catalog:",
     "react-dom": "catalog:",
-    "typescript": "catalog:"
+    "prisma": "catalog:",
+    "typescript": "catalog:",
+    "better-sqlite3": "catalog:"
   }
 }

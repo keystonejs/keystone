@@ -15,6 +15,7 @@
     "@graphql-tools/schema": "^9.0.0",
     "@keystar/ui": "catalog:",
     "@keystone-6/core": "workspace:^",
+    "@prisma/adapter-better-sqlite3": "catalog:",
     "@prisma/client": "catalog:",
     "graphql": "catalog:",
     "graphql-subscriptions": "^2.0.0",
@@ -22,7 +23,8 @@
     "next": "catalog:",
     "react": "catalog:",
     "react-dom": "catalog:",
-    "ws": "^8.8.0"
+    "ws": "^8.8.0",
+    "better-sqlite3": "catalog:"
   },
   "devDependencies": {
     "@types/ws": "^8.5.3",

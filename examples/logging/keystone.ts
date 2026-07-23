@@ -1,3 +1,4 @@
+import { PrismaBetterSqlite3 } from '@prisma/adapter-better-sqlite3'
 import { config } from '@keystone-6/core'
 import { createHash } from 'node:crypto'
 import pino_ from 'pino-http'
@@ -18,10 +19,11 @@ const pino = pino_({
 export default config<TypeInfo>({
   db: {
     provider: 'sqlite',
-    url: process.env.DATABASE_URL || 'file:./keystone-example.db',
-
-    // WARNING: this is only needed for our monorepo examples, dont do this
-    prismaClientPath: 'node_modules/myprisma',
+    prismaClientOptions: () => ({
+      adapter: new PrismaBetterSqlite3({
+        url: process.env.DATABASE_URL || 'file:./keystone-example.db',
+      }),
+    }),
   },
   server: {
     extendExpressApp(app) {

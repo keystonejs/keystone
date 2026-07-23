@@ -15,7 +15,9 @@
     "@prisma/client": "catalog:",
     "next": "catalog:",
     "react": "catalog:",
-    "react-dom": "catalog:"
+    "react-dom": "catalog:",
+    "@prisma/adapter-better-sqlite3": "catalog:",
+    "better-sqlite3": "catalog:"
   },
   "devDependencies": {
     "prisma": "catalog:",

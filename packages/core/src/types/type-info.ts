@@ -35,6 +35,7 @@ export type KeystoneContextFromListTypeInfo<ListTypeInfo extends BaseListTypeInf
 export type BaseKeystoneTypeInfo<Session = any> = {
   lists: Record<string, BaseListTypeInfo<Session>>
   prisma: any
+  prismaClientOptions?: any
   session: Session
   dbProvider: DatabaseProvider
 }

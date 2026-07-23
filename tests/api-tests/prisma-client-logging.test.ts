@@ -1,14 +1,19 @@
-import { expect, test } from 'vitest'
+import { test, expect } from 'vitest'
 import { list } from '@keystone-6/core'
 import { allowAll } from '@keystone-6/core/access'
 import { text } from '@keystone-6/core/fields'
 import { setupTestRunner } from '@keystone-6/api-tests/test-runner'
-import { monitorLogs, waitFor } from './utils'
+import { monitorLogs, prismaClientOptions, waitFor } from './utils'
 
 const runner = (enableLogging: boolean) =>
   setupTestRunner({
     config: {
-      db: { enableLogging },
+      db: {
+        prismaClientOptions: url => ({
+          ...prismaClientOptions(url),
+          log: enableLogging ? ['query'] : [],
+        }),
+      },
       lists: {
         User: list({
           access: allowAll,
@@ -21,7 +26,7 @@ const runner = (enableLogging: boolean) =>
   })
 
 test(
-  'enableLogging: true enables logging',
+  'Prisma client query logging can be enabled',
   runner(true)(async ({ context }) => {
     const monitor = monitorLogs()
     try {
@@ -38,7 +43,7 @@ test(
 )
 
 test(
-  'enableLogging: false does not enable logging',
+  'Prisma client query logging can be disabled',
   runner(false)(async ({ context }) => {
     const monitor = monitorLogs()
     try {

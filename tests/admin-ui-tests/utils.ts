@@ -2,6 +2,7 @@ import { afterAll, describe, expect, test, vi } from 'vitest'
 import { type ChildProcessWithoutNullStreams, spawn } from 'node:child_process'
 import { stat } from 'node:fs/promises'
 import path from 'node:path'
+import { DatabaseSync } from 'node:sqlite'
 
 import dotenv from 'dotenv'
 import type { ExecaChildProcess } from 'execa'
@@ -44,17 +45,32 @@ export function generateDataArray(map: (key: number) => any, range: number) {
 
 export async function deleteAllData(projectDir: string) {
   const resolvedProjectDir = path.resolve(projectRoot, projectDir)
+  const database = new DatabaseSync(path.join(resolvedProjectDir, 'test.db'), { timeout: 10_000 })
 
-  const { PrismaClient } = require(path.join(resolvedProjectDir, 'node_modules/.testprisma/client'))
-  const prisma = new PrismaClient()
+  try {
+    const tables = database
+      .prepare(
+        `SELECT name FROM sqlite_master
+         WHERE type = 'table'
+           AND name NOT LIKE 'sqlite_%'
+           AND name != '_prisma_migrations'`
+      )
+      .all() as { name: string }[]
 
-  await prisma.$transaction(
-    Object.values(prisma)
-      .filter((x: any) => x?.deleteMany)
-      .map((x: any) => x?.deleteMany?.({}))
-  )
-
-  await prisma.$disconnect()
+    database.exec('PRAGMA foreign_keys = OFF; BEGIN')
+    try {
+      for (const { name } of tables) {
+        const tableName = `"${name.replaceAll('"', '""')}"`
+        database.prepare(`DELETE FROM ${tableName}`).run()
+      }
+      database.exec('COMMIT')
+    } catch (error) {
+      database.exec('ROLLBACK')
+      throw error
+    }
+  } finally {
+    database.close()
+  }
 }
 
 export function adminUITests(
