@@ -71,11 +71,13 @@ export default config<TypeInfo>({
   lists: {
     Post: list({
       fields: { /* ... */ },
+      graphql: {
+        omit: false,
+      },
     }),
     AuditLog: list({
       fields: { /* ... */ },
       graphql: {
-        omit: false,
         maxTake: Infinity,
       },
     }),
