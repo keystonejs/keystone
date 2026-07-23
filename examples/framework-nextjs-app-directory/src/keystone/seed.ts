@@ -1,4 +1,4 @@
-import type { Context } from '.keystone/types'
+import type { Context } from '../../generated/keystone/types'
 
 export async function seedDemoData(context: Context) {
   if ((await context.db.User.count()) > 0) return

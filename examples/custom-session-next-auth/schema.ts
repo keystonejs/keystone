@@ -2,7 +2,7 @@ import { denyAll, allOperations } from '@keystone-6/core/access'
 import { list } from '@keystone-6/core'
 import { text, relationship } from '@keystone-6/core/fields'
 import type { Session } from './session'
-import type { Lists } from '.keystone/types'
+import type { Lists } from './generated/keystone/types'
 
 // WARNING: this example is for demonstration purposes only
 //   as with each of our examples, it has not been vetted

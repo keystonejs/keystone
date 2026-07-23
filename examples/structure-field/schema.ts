@@ -3,7 +3,7 @@ import { text } from '@keystone-6/core/fields'
 import { structure } from '@keystone-6/fields-document'
 import { allowAll } from '@keystone-6/core/access'
 
-import type { Lists } from '.keystone/types'
+import type { Lists } from './generated/keystone/types'
 import { schema } from './featured-posts'
 
 export const lists = {

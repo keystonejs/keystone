@@ -1,7 +1,7 @@
 import { gWithContext, list } from '@keystone-6/core'
 import { allowAll, denyAll } from '@keystone-6/core/access'
 import { password, text, timestamp } from '@keystone-6/core/fields'
-import type { Lists, Context } from '.keystone/types'
+import type { Lists, Context } from './generated/keystone/types'
 
 import { randomBytes } from 'node:crypto'
 

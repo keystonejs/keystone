@@ -1,4 +1,4 @@
-import type { Context, Lists } from '.keystone/types'
+import type { Context, Lists } from './generated/keystone/types'
 import { action, gWithContext, list } from '@keystone-6/core'
 import { allowAll, denyAll, unfiltered } from '@keystone-6/core/access'
 import { checkbox, relationship, text, timestamp, virtual } from '@keystone-6/core/fields'

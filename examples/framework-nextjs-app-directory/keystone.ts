@@ -1,7 +1,7 @@
 import { config } from '@keystone-6/core'
 import { lists } from './src/keystone/schema'
 import { seedDemoData } from './src/keystone/seed'
-import type { Context } from '.keystone/types'
+import type { Context } from './generated/keystone/types'
 
 export default config({
   db: {

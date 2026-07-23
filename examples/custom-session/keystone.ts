@@ -1,6 +1,6 @@
 import { config } from '@keystone-6/core'
 import { lists, type Session } from './schema'
-import type { Context, TypeInfo } from '.keystone/types'
+import type { Context, TypeInfo } from './generated/keystone/types'
 
 const sillySessionStrategy = {
   async get({ context }: { context: Context }): Promise<Session | undefined> {

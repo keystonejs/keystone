@@ -5,7 +5,7 @@ import { select, relationship, text, timestamp } from '@keystone-6/core/fields'
 import { allowAll } from '@keystone-6/core/access'
 import { pubSub } from './websocket'
 
-import type { Lists } from '.keystone/types'
+import type { Lists } from './generated/keystone/types'
 
 export const lists = {
   Post: list({

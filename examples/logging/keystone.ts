@@ -2,7 +2,7 @@ import { config } from '@keystone-6/core'
 import { createHash } from 'node:crypto'
 import pino_ from 'pino-http'
 
-import type { TypeInfo } from '.keystone/types'
+import type { TypeInfo } from './generated/keystone/types'
 import { lists } from './schema'
 
 function sha256(q: string) {

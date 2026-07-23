@@ -1,7 +1,7 @@
 import { list, group, gWithContext } from '@keystone-6/core'
 import { allowAll } from '@keystone-6/core/access'
 import { text, relationship, virtual, select } from '@keystone-6/core/fields'
-import type { Lists, Context } from '.keystone/types'
+import type { Lists, Context } from './generated/keystone/types'
 
 const hiddenIfWrongKind = (kind: 'post' | 'link') =>
   ({

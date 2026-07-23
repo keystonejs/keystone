@@ -2,7 +2,7 @@ import { config } from '@keystone-6/core'
 import { lists } from './schema'
 
 import { type Session, nextAuthSessionStrategy } from './session'
-import type { TypeInfo } from '.keystone/types'
+import type { TypeInfo } from './generated/keystone/types'
 
 // WARNING: this example is for demonstration purposes only
 //   as with each of our examples, it has not been vetted

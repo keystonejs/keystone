@@ -1,7 +1,7 @@
 import { createHash } from 'node:crypto'
 import { config } from '@keystone-6/core'
 
-import type { TypeInfo } from '.keystone/types'
+import type { TypeInfo } from './generated/keystone/types'
 import { lists } from './schema'
 import { init as initOtel, tracer } from './otel'
 

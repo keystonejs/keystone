@@ -3,7 +3,7 @@ import { allowAll } from '@keystone-6/core/access'
 import { text } from '@keystone-6/core/fields'
 import { cloudinaryImage } from '@keystone-6/cloudinary'
 
-import type { Lists } from '.keystone/types'
+import type { Lists } from './generated/keystone/types'
 
 export const lists = {
   Post: list({

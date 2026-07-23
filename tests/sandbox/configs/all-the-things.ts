@@ -23,7 +23,7 @@ import { schema as structureSchema } from '../structure'
 import { schema as structureNestedSchema } from '../structure-nested'
 import { schema as structureRelationshipsSchema } from '../structure-relationships'
 import { trackingFields } from '../utils'
-//  import { type Lists } from '.keystone/types' // TODO
+//  import { type Lists } from '../generated/keystone/types' // TODO
 
 const description =
   'Some thing to describe to test the length of the text for width, blah blah blah blah blah blah blah blah blah'

@@ -3,7 +3,7 @@ import { allowAll } from '@keystone-6/core/access'
 import { relationship, text } from '@keystone-6/core/fields'
 import { document, type Node } from '@keystone-6/fields-document'
 
-import type { Lists } from '.keystone/types'
+import type { Lists } from './generated/keystone/types'
 
 function mapNodes(
   nodes: Node[],

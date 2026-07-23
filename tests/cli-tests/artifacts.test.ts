@@ -57,7 +57,7 @@ describe('postinstall', () => {
     expect(recording()).toMatchInlineSnapshot(`"? GraphQL and Prisma schemas are up to date"`)
   })
 
-  test('writes the correct node_modules files', async () => {
+  test('writes the correct generated files', async () => {
     const cwd = await testdir({
       ...symlinkKeystoneDeps,
       ...schemas,
@@ -67,7 +67,7 @@ describe('postinstall', () => {
     const recording = recordConsole()
     await cliMock(cwd, 'postinstall')
 
-    expect(await getFiles(cwd, ['node_modules/.keystone/**/*'])).toMatchSnapshot()
+    expect(await getFiles(cwd, ['generated/keystone/**/*'])).toMatchSnapshot()
     expect(recording()).toMatchInlineSnapshot(`"? GraphQL and Prisma schemas are up to date"`)
   })
 })

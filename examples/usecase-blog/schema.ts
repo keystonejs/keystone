@@ -10,8 +10,8 @@ import { document } from '@keystone-6/fields-document'
 // if you want to make your own fields, see https://keystonejs.com/docs/guides/custom-fields
 
 // when using Typescript, you can refine your types to a stricter subset by importing
-// the generated types from '.keystone/types'
-import type { Lists } from '.keystone/types'
+// the generated types from './generated/keystone/types'
+import type { Lists } from './generated/keystone/types'
 
 export const lists = {
   Author: list({

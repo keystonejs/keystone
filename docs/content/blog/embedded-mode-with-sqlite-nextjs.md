@@ -91,11 +91,12 @@ npm install @keystone-6/core
 
 ### Update .gitignore
 
-Add the `.keystone` directory to your `.gitignore` file. The contents of `.keystone` are generated at build time. You'll never have to change them.
+Add the `.keystone` and `generated` directories to your `.gitignore` file. Their contents are generated at build time. You'll never have to change them.
 
 ```bash
 # In your .gitignore
 .keystone
+generated
 ```
 
 ### Create your Keystone config
@@ -108,7 +109,7 @@ To create and edit blog records in Keystone's Admin UI, add a `keystone.ts` [con
 import { config, list } from '@keystone-6/core';
 import { text } from '@keystone-6/core/fields';
 import { allowAll } from '@keystone-6/core/access';
-import type { Lists } from '.keystone/types';
+import type { Lists } from './generated/keystone/types';
 
 const Post: Lists.Post = list({
   fields: {
@@ -191,7 +192,7 @@ import { InferGetStaticPropsType } from 'next';
 import Link from 'next/link';
 
 // Import the generated Lists API and types from Keystone
-import type { Lists } from '.keystone/types';
+import type { Lists } from '../generated/keystone/types';
 
 type Post = {
   id: string;
@@ -239,7 +240,7 @@ import { GetStaticPathsResult, GetStaticPropsContext, InferGetStaticPropsType } 
 import Link from 'next/link';
 
 import { query } from '.keystone/api';
-import type { Lists } from '.keystone/types';
+import type { Lists } from '../../generated/keystone/types';
 
 type Post = {
   id: string;

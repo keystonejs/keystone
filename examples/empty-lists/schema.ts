@@ -1,7 +1,7 @@
 import { list } from '@keystone-6/core'
 import { allowAll, denyAll } from '@keystone-6/core/access'
 import { relationship, text, timestamp } from '@keystone-6/core/fields'
-import type { Lists } from '.keystone/types'
+import type { Lists } from './generated/keystone/types'
 
 export const lists = {
   Post: list({
