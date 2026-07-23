@@ -601,7 +601,7 @@ function getListsWithInitialisedFields(
     })
 
     let take: any = g.arg({ type: g.Int })
-    if (listConfig.graphql?.maxTake !== undefined) {
+    if (listConfig.graphql?.maxTake !== undefined && listConfig.graphql.maxTake !== Infinity) {
       take = g.arg({
         type: g.nonNull(g.Int),
         // WARNING: used by queries/resolvers.ts to enforce the limit

@@ -13,10 +13,39 @@ import type {
   KeystoneConfigPre,
   KeystoneContext,
   ListConfig,
+  ListGraphQLConfig,
   MaybeItemFunctionWithFilter,
   MaybeSessionFunction,
   MaybeSessionFunctionWithFilter,
 } from './types'
+
+type ListGraphQLOmit = NonNullable<ListGraphQLConfig<BaseListTypeInfo>['omit']>
+
+function normalizeListOmit(omit: ListGraphQLOmit): Exclude<ListGraphQLOmit, boolean> {
+  if (typeof omit !== 'boolean') return omit
+  return {
+    query: omit,
+    create: omit,
+    update: omit,
+    delete: omit,
+  }
+}
+
+function resolveListOmit(
+  listOmit: ListGraphQLOmit | undefined,
+  defaultOmit: ListGraphQLOmit | undefined
+): ListGraphQLOmit | undefined {
+  if (listOmit === undefined) return defaultOmit
+  if (typeof listOmit === 'boolean' || defaultOmit === undefined) return listOmit
+
+  const normalizedDefault = normalizeListOmit(defaultOmit)
+  return {
+    query: listOmit.query ?? normalizedDefault.query,
+    create: listOmit.create ?? normalizedDefault.create,
+    update: listOmit.update ?? normalizedDefault.update,
+    delete: listOmit.delete ?? normalizedDefault.delete,
+  }
+}
 
 function listsWithDefaults(config: KeystoneConfigPre, defaultIdField: IdFieldConfig) {
   // some error checking
@@ -66,6 +95,8 @@ function listsWithDefaults(config: KeystoneConfigPre, defaultIdField: IdFieldCon
             },
             graphql: {
               ...list.graphql,
+              omit: resolveListOmit(list.graphql?.omit, config.listDefaults?.graphql?.omit),
+              maxTake: list.graphql?.maxTake ?? config.listDefaults?.graphql?.maxTake,
             },
             ui: {
               ...list.ui,
@@ -143,6 +174,11 @@ export function config<TypeInfo extends BaseKeystoneTypeInfo>(
       extendGraphqlSchema: config.graphql?.extendGraphqlSchema ?? (s => s),
     },
     lists: listsWithDefaults(config, defaultIdField),
+    listDefaults: {
+      graphql: {
+        ...config.listDefaults?.graphql,
+      },
+    },
     server: {
       ...config.server,
       maxFileSize: config.server?.maxFileSize ?? 200 * 1024 * 1024, // 200 MiB

@@ -16,6 +16,7 @@ import type { FieldHooks, ListHooks } from './hooks'
 import type {
   IdFieldConfig,
   ListConfig,
+  ListGraphQLConfig,
   MaybeItemFunctionWithFilter,
   MaybeSessionFunction,
 } from './lists'
@@ -29,6 +30,10 @@ type PrismaLogLevel = 'info' | 'query' | 'warn' | 'error'
 type PrismaLogDefinition = {
   level: PrismaLogLevel
   emit: 'stdout' | 'event'
+}
+
+export type ListDefaults = {
+  graphql?: Pick<ListGraphQLConfig<any>, 'omit' | 'maxTake'>
 }
 
 export type KeystoneConfigPre<TypeInfo extends BaseKeystoneTypeInfo = BaseKeystoneTypeInfo> = {
@@ -119,6 +124,7 @@ export type KeystoneConfigPre<TypeInfo extends BaseKeystoneTypeInfo = BaseKeysto
   }
 
   lists: Record<string, ListConfig<any>>
+  listDefaults?: ListDefaults
   server?: {
     /** Configuration options for the cors middleware. Set to `true` to use Keystone's defaults */
     cors?: boolean | CorsOptions
@@ -186,6 +192,9 @@ export type KeystoneConfig<TypeInfo extends BaseKeystoneTypeInfo = BaseKeystoneT
     [listKey: string]: {
       listKey: string
     } & Required<KeystoneConfigPre<TypeInfo>['lists'][string]>
+  }
+  listDefaults: {
+    graphql: NonNullable<ListDefaults['graphql']>
   }
   server: Omit<Required<NonNullable<KeystoneConfigPre<TypeInfo>['server']>>, 'cors' | 'port'> & {
     cors: CorsOptions | null

@@ -16,6 +16,7 @@ The `config` function accepts an object representing all the configurable parts 
 ```typescript
 export default config({
   lists: { /* ... */ },
+  listDefaults: { /* ... */ },
   db: { /* ... */ },
   ui: { /* ... */ },
   server: { /* ... */ },
@@ -53,6 +54,39 @@ export default config<TypeInfo>({
   /* ... */
 });
 ```
+
+## listDefaults
+
+The `listDefaults` config option provides defaults for every list. It supports
+`graphql.omit` and `graphql.maxTake`:
+
+```typescript
+export default config<TypeInfo>({
+  listDefaults: {
+    graphql: {
+      omit: { delete: true },
+      maxTake: 100,
+    },
+  },
+  lists: {
+    Post: list({
+      fields: { /* ... */ },
+    }),
+    AuditLog: list({
+      fields: { /* ... */ },
+      graphql: {
+        omit: false,
+        maxTake: Infinity,
+      },
+    }),
+  },
+  /* ... */
+});
+```
+
+Per-list configuration takes precedence. Boolean `omit` values replace the default
+entirely, while object values inherit operations that are not specified. An undefined
+`maxTake` inherits the default; set it to `Infinity` to make a list unlimited.
 
 ## db
 
