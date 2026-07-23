@@ -44,9 +44,10 @@ function gitCommitsFor(path) {
     .map(x => x.replace(/[^A-Za-z0-9]/g, '').slice(0, 40))
 }
 
-function gitCommitDescription(commit) {
-  const { stdout } = spawnSync('git', ['log', '--oneline', commit])
-  return stdout.toString('utf-8').split('\n', 1).pop().slice(10)
+function gitCommitInfo(commit) {
+  const { stdout } = spawnSync('git', ['log', '-1', '--format=%ae%n%s', commit])
+  const [email, description] = stdout.toString('utf-8').split('\n')
+  return { email, description }
 }
 
 async function fetchData(tag) {
@@ -56,7 +57,6 @@ async function fetchData(tag) {
   const revs = gitCommitsSince(tag)
   console.error(`${revs.length} commits since ${tag}`)
   if (revs.length === 0) throw new Error('No commits')
-  if (revs.length > 200) throw new Error('Too many commits')
 
   // tag changesets with their commits
   for (const changeset of changesets) {
@@ -66,7 +66,8 @@ async function fetchData(tag) {
       `changeset ${changeset.id} has ${commits.length} commits, the first commit is ${commit}`
     )
 
-    if (!revs.includes(commit)) throw new Error(`Unexpected commit ${changeset.commit}`)
+    if (!revs.includes(commit))
+      throw new Error(`Unexpected commit ${changeset.commit} for changeset ${changeset.id}`)
     changeset.commit = commit
   }
 
@@ -75,10 +76,22 @@ async function fetchData(tag) {
     readFileSync('.changeset/contributors.json').toString('utf-8')
   )
 
+  const commitInfo = revs.map(commit => ({ commit, ...gitCommitInfo(commit) }))
+  const usersByEmail = new Map()
+
+  for (const { commit, email } of commitInfo) {
+    if (usersByEmail.has(email)) continue
+
+    usersByEmail.set(
+      email,
+      getInfo({ repo: 'keystonejs/keystone', commit }).then(info => info.user)
+    )
+  }
+
   const githubCommits = {}
-  for (const commit of revs) {
-    let { user, pull } = await getInfo({ repo: 'keystonejs/keystone', commit })
-    pull = gitCommitDescription(commit).match(/#([0-9]+)/)?.[1] ?? pull
+  for (const { commit, email, description } of commitInfo) {
+    const user = await usersByEmail.get(email)
+    const pull = description.match(/\(#([0-9]+)\)\s*$/)?.[1] ?? null
 
     console.error(`commit ${commit}, user ${user}, pull #${pull}`)
     const first = !previousContributors.includes(user)
