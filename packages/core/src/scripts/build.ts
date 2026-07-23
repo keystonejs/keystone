@@ -52,7 +52,7 @@ export async function build(
   // to avoid loading it in the common case where the UI is not being built
   // eslint-disable-next-line @typescript-eslint/consistent-type-imports
   const nextBuild = createRequire(path.join(cwd, 'package.json'))('next/dist/build')
-    .default as typeof import('next/dist/build').default
+    .default as typeof import('next/dist/build/index.js').default
   await nextBuild(
     paths.admin,
     undefined,
