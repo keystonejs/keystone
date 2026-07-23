@@ -1,7 +1,7 @@
-import { g } from '../../..'
-import type { InitialisedList } from '../initialise-lists'
-import { withSpan } from '../../otel'
-import * as queries from './resolvers'
+import { g } from '../../../index.ts'
+import type { InitialisedList } from '../initialise-lists.ts'
+import { withSpan } from '../../otel.ts'
+import * as queries from './resolvers.ts'
 
 export function getQueriesForList(list: InitialisedList) {
   const { query } = list.graphql.isEnabled

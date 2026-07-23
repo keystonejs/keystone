@@ -6,9 +6,9 @@ import { styleText } from 'node:util'
 
 import ci from 'ci-info'
 import Conf from 'conf'
-import type { Device, Project, TelemetryVersion1, TelemetryVersion2 } from '../types/telemetry'
-import type { DatabaseProvider } from '../types'
-import type { InitialisedList } from './core/initialise-lists'
+import type { Device, Project, TelemetryVersion1, TelemetryVersion2 } from '../types/telemetry.ts'
+import type { DatabaseProvider } from '../types/index.ts'
+import type { InitialisedList } from './core/initialise-lists.ts'
 
 const defaultTelemetryEndpoint = 'https://telemetry.keystonejs.com/3/'
 

@@ -1,16 +1,16 @@
 import type { CacheHint } from '@apollo/cache-control-types'
-import type { KeystoneContext } from '..'
-import type { FieldTypeFunc } from '../next-fields'
-import type { BaseListTypeInfo } from '../type-info'
-import type { FieldAccessControl } from './access-control'
-import type { FieldHooks } from './hooks'
+import type { KeystoneContext } from '../index.ts'
+import type { FieldTypeFunc } from '../next-fields.ts'
+import type { BaseListTypeInfo } from '../type-info.ts'
+import type { FieldAccessControl } from './access-control.ts'
+import type { FieldHooks } from './hooks.ts'
 import type {
   MaybeBooleanSessionFunctionWithFilter,
   MaybeItemFieldFunction,
   MaybeItemFieldFunctionWithFilter,
   MaybeSessionFunction,
   MaybeSessionFunctionWithFilter,
-} from './lists'
+} from './lists.ts'
 
 export type BaseFields<ListTypeInfo extends BaseListTypeInfo> = {
   [key: string]: FieldTypeFunc<ListTypeInfo>

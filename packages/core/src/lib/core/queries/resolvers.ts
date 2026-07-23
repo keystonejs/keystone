@@ -1,20 +1,25 @@
 import { maybeCacheControlFromInfo } from '@apollo/cache-control-types'
 import type { GraphQLResolveInfo } from 'graphql/index.js'
-import type { BaseItem, FindManyArgsValue, KeystoneContext, OrderDirection } from '../../../types'
-import type { PrismaFilter, UniquePrismaFilter } from '../../../types/prisma'
+import type {
+  BaseItem,
+  FindManyArgsValue,
+  KeystoneContext,
+  OrderDirection,
+} from '../../../types/index.ts'
+import type { PrismaFilter, UniquePrismaFilter } from '../../../types/prisma.ts'
 
-import { getAccessFilters, getOperationQueryAccess } from '../access-control'
+import { getAccessFilters, getOperationQueryAccess } from '../access-control.ts'
 import {
   type UniqueInputFilter,
   type InputFilter,
   resolveUniqueWhereInput,
   resolveWhereInput,
-} from '../where-inputs'
+} from '../where-inputs.ts'
 
-import { limitsExceededError, userInputError } from '../graphql-errors'
-import type { InitialisedList } from '../initialise-lists'
-import { getDBFieldKeyForFieldOnMultiField } from '../utils'
-import { checkFilterOrderAccess } from '../access-control'
+import { limitsExceededError, userInputError } from '../graphql-errors.ts'
+import type { InitialisedList } from '../initialise-lists.ts'
+import { getDBFieldKeyForFieldOnMultiField } from '../utils.ts'
+import { checkFilterOrderAccess } from '../access-control.ts'
 
 // we want to put the value we get back from the field's unique where resolver into an equals
 // rather than directly passing the value as the filter (even though Prisma supports that), we use equals

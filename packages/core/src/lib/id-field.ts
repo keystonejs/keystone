@@ -1,5 +1,5 @@
-import type { GArg, GInputObjectType, InferValueFromArg } from '../graphql-ts'
-import type { ScalarDBField } from '../types'
+import type { GArg, GInputObjectType, InferValueFromArg } from '../graphql-ts.ts'
+import type { ScalarDBField } from '../types/index.ts'
 import {
   type BaseListTypeInfo,
   type DatabaseProvider,
@@ -7,10 +7,10 @@ import {
   type IdFieldConfig,
   fieldType,
   orderDirectionEnum,
-} from '../types'
-import { allowAll } from '../access'
-import { g } from '../types/schema'
-import { userInputError } from './core/graphql-errors'
+} from '../types/index.ts'
+import { allowAll } from '../access.ts'
+import { g } from '../types/schema/index.ts'
+import { userInputError } from './core/graphql-errors.ts'
 
 type IDType = string | number | null
 

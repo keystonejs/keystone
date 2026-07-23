@@ -3,7 +3,7 @@ import { text, relationship, integer } from '@keystone-6/core/fields'
 import { list } from '@keystone-6/core'
 import { allowAll } from '@keystone-6/core/access'
 
-import { setupTestSuite } from '../test-runner'
+import { setupTestSuite } from '../test-runner.ts'
 
 describe('cursor pagination', () => {
   let posts: { id: string }[]

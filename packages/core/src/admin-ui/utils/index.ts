@@ -1,7 +1,7 @@
-export * from './Fields'
-export * from './filters'
-export * from './utils'
-export * from './useCreateItem'
+export * from './Fields.tsx'
+export * from './filters.ts'
+export * from './utils.tsx'
+export * from './useCreateItem.ts'
 
 export type DeepNullable<T> =
   | null

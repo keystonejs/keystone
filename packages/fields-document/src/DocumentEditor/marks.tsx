@@ -1,8 +1,8 @@
 import { type Point, Editor, Element, Node, Path, Range, Text, Transforms } from 'slate'
-import type { DocumentFeatures } from '../views-shared'
-import type { ComponentBlock } from './component-blocks/api-shared'
-import { getAncestorComponentChildFieldDocumentFeatures } from './toolbar-state-shared'
-import { type Mark, EditorAfterButIgnoringingPointsWithNoContent } from './utils'
+import type { DocumentFeatures } from '../views-shared.ts'
+import type { ComponentBlock } from './component-blocks/api-shared.ts'
+import { getAncestorComponentChildFieldDocumentFeatures } from './toolbar-state-shared.ts'
+import { type Mark, EditorAfterButIgnoringingPointsWithNoContent } from './utils.ts'
 
 export const allMarkdownShortcuts = {
   bold: ['**', '__'],

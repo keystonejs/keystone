@@ -30,7 +30,7 @@ import {
   type VariableDefinitionNode,
 } from 'graphql/index.js'
 
-import type { KeystoneContext } from '../../types'
+import type { KeystoneContext } from '../../types/index.ts'
 
 function getNamedOrListTypeNodeForType(
   type:

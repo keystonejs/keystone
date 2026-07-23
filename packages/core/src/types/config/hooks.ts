@@ -1,5 +1,5 @@
-import type { BaseFieldTypeInfo, KeystoneContextFromListTypeInfo, MaybePromise } from '..'
-import type { BaseListTypeInfo } from '../type-info'
+import type { BaseFieldTypeInfo, KeystoneContextFromListTypeInfo, MaybePromise } from '../index.ts'
+import type { BaseListTypeInfo } from '../type-info.ts'
 
 type CommonArgs<ListTypeInfo extends BaseListTypeInfo> = {
   context: KeystoneContextFromListTypeInfo<ListTypeInfo>

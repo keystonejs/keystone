@@ -13,7 +13,7 @@ import type {
   FieldController,
   FieldControllerConfig,
   FieldProps,
-} from '../../../../types'
+} from '../../../../types/index.ts'
 
 export function Field(props: FieldProps<typeof controller>) {
   if (props.field.displayMode === 'checkboxes') return <CheckboxesModeField {...props} />

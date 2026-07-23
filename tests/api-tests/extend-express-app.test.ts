@@ -4,7 +4,7 @@ import { allowAll } from '@keystone-6/core/access'
 import { text } from '@keystone-6/core/fields'
 
 import supertest from 'supertest'
-import { setupTestRunner } from './test-runner'
+import { setupTestRunner } from './test-runner.ts'
 
 const runner = setupTestRunner({
   serve: true,

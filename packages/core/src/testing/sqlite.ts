@@ -3,7 +3,7 @@ import path from 'node:path'
 
 import Database, { type Options } from 'better-sqlite3'
 
-import { applyMigrations } from './migrations'
+import { applyMigrations } from './migrations.ts'
 
 export async function resetDatabase(
   { filename, ...options }: Options & { filename: string },

@@ -7,7 +7,7 @@ import { allowAll } from '@keystone-6/core/access'
 import { text } from '@keystone-6/core/fields'
 import type { KeystoneContext } from '@keystone-6/core/types'
 
-import { dbProvider, expectSingleResolverError, expectValidationError } from '../utils'
+import { dbProvider, expectSingleResolverError, expectValidationError } from '../utils.ts'
 
 const testModules = globby.sync(`tests/api-tests/fields/types/fixtures/**/test-fixtures.{js,ts}`, {
   absolute: true,

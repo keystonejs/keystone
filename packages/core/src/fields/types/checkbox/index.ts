@@ -1,16 +1,16 @@
-import { userInputError } from '../../../lib/core/graphql-errors'
-import type { SimpleFieldTypeInfo } from '../../../types'
+import { userInputError } from '../../../lib/core/graphql-errors.ts'
+import type { SimpleFieldTypeInfo } from '../../../types/index.ts'
 import {
   type BaseListTypeInfo,
   type CommonFieldConfig,
   type FieldTypeFunc,
   fieldType,
   orderDirectionEnum,
-} from '../../../types'
-import { g } from '../../..'
-import { assertReadIsNonNullAllowed } from '../../non-null-graphql'
-import { filters } from '../../filters'
-import type { controller } from './views'
+} from '../../../types/index.ts'
+import { g } from '../../../index.ts'
+import { assertReadIsNonNullAllowed } from '../../non-null-graphql.ts'
+import { filters } from '../../filters/index.ts'
+import type { controller } from './views/index.tsx'
 
 export type CheckboxFieldConfig<ListTypeInfo extends BaseListTypeInfo> = CommonFieldConfig<
   ListTypeInfo,

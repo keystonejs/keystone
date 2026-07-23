@@ -1,5 +1,5 @@
 import type { Text } from 'slate'
-import type { Mark } from '../utils'
+import type { Mark } from '../utils.ts'
 
 // a v important note
 // marks in the markdown ast/html are represented quite differently to how they are in slate

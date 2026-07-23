@@ -9,7 +9,7 @@ import { ApolloServerPluginLandingPageDisabled } from '@apollo/server/plugin/dis
 import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin/landingPage/default'
 // @ts-expect-error
 import graphqlUploadExpress from 'graphql-upload/graphqlUploadExpress.js'
-import type { KeystoneContext, KeystoneConfig } from '../types'
+import type { KeystoneContext, KeystoneConfig } from '../types/index.ts'
 
 /*
 NOTE: This creates the main Keystone express server, including the

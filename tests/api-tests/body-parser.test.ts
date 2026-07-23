@@ -7,7 +7,7 @@ import type express from 'express'
 import type { Options as BodyParserOptions } from 'body-parser'
 import supertest from 'supertest'
 
-import { setupTestRunner } from './test-runner'
+import { setupTestRunner } from './test-runner.ts'
 
 function makeQuery(size = 0) {
   const query = JSON.stringify({

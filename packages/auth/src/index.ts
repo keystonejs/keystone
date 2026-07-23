@@ -6,11 +6,11 @@ import type {
   BaseKeystoneTypeInfo,
   KeystoneConfig,
 } from '@keystone-6/core/types'
-import type { AuthConfig, AuthGqlNames } from './types'
+import type { AuthConfig, AuthGqlNames } from './types.ts'
 
-import { getSchemaExtension } from './schema'
-import configTemplate from './templates/config'
-import signinTemplate from './templates/signin'
+import { getSchemaExtension } from './schema.ts'
+import configTemplate from './templates/config.ts'
+import signinTemplate from './templates/signin.ts'
 
 export type AuthSession = {
   itemId: string | number // TODO: use ListTypeInfo

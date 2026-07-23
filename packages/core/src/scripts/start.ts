@@ -1,10 +1,10 @@
 import next from 'next'
 
-import { createSystem } from '../lib/system'
-import { createExpressServer } from '../lib/express'
-import { createAdminUIMiddlewareWithNextApp } from '../lib/middleware'
-import type { Flags } from './cli'
-import { importBuiltKeystoneConfiguration, importBuiltPrismaModule } from './utils'
+import { createSystem } from '../lib/system.ts'
+import { createExpressServer } from '../lib/express.ts'
+import { createAdminUIMiddlewareWithNextApp } from '../lib/middleware.ts'
+import type { Flags } from './cli.ts'
+import { importBuiltKeystoneConfiguration, importBuiltPrismaModule } from './utils.ts'
 
 export async function start(
   cwd: string,

@@ -7,16 +7,16 @@ import {
   type JSONValue,
   fieldType,
 } from '@keystone-6/core/types'
-import type { ComponentSchema } from './DocumentEditor/component-blocks/api'
-import { assertValidComponentSchema } from './DocumentEditor/component-blocks/field-assertions'
-import { getInitialPropsValue } from './DocumentEditor/component-blocks/initial-values'
-import { addRelationshipDataToComponentProps, fetchRelationshipData } from './relationship-data'
+import type { ComponentSchema } from './DocumentEditor/component-blocks/api.tsx'
+import { assertValidComponentSchema } from './DocumentEditor/component-blocks/field-assertions.ts'
+import { getInitialPropsValue } from './DocumentEditor/component-blocks/initial-values.ts'
+import { addRelationshipDataToComponentProps, fetchRelationshipData } from './relationship-data.ts'
 import {
   getGraphQLInputType,
   getValueForCreate,
   getValueForUpdate,
-} from './structure-graphql-input'
-import { getOutputGraphQLField } from './structure-graphql-output'
+} from './structure-graphql-input.ts'
+import { getOutputGraphQLField } from './structure-graphql-output.ts'
 
 export type StructureFieldConfig<ListTypeInfo extends BaseListTypeInfo> = CommonFieldConfig<
   ListTypeInfo,

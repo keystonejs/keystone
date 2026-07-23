@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
-import { useKeystone } from '../../../../admin-ui/context'
+import { useKeystone } from '../../../../admin-ui/context.tsx'
 
-import type { ListMeta } from '../../../../types'
+import type { ListMeta } from '../../../../types/index.ts'
 
 function isInt(x: string) {
   return Number.isInteger(Number(x))

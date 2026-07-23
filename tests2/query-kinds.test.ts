@@ -4,7 +4,7 @@ import { describe, test } from 'node:test'
 import { list } from '@keystone-6/core'
 import { allowAll, denyAll } from '@keystone-6/core/access'
 import { relationship, text } from '@keystone-6/core/fields'
-import { dbProvider, setupTestSuite } from './utils'
+import { dbProvider, setupTestSuite } from './utils.ts'
 
 const config = {
   lists: {

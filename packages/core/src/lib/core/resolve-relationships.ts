@@ -4,7 +4,7 @@ import type {
   NoDBField,
   RelationDBField,
   ScalarishDBField,
-} from '../../types'
+} from '../../types/index.ts'
 
 type BaseResolvedRelationDBField = {
   kind: 'relation'

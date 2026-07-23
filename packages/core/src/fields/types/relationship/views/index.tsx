@@ -8,26 +8,26 @@ import { Item, TagGroup } from '@keystar/ui/tag'
 import { TextField } from '@keystar/ui/text-field'
 import { Numeral, Text } from '@keystar/ui/typography'
 
-import { BuildItemDialog } from '../../../../admin-ui/components'
-import { useList } from '../../../../admin-ui/context'
+import { BuildItemDialog } from '../../../../admin-ui/components/index.ts'
+import { useList } from '../../../../admin-ui/context.tsx'
 import type {
   CellComponent,
   FieldControllerConfig,
   FieldProps,
   ListSortDescriptor,
-} from '../../../../types'
+} from '../../../../types/index.ts'
 
 import { ActionButton } from '@keystar/ui/button'
 import { Icon } from '@keystar/ui/icon'
 import { arrowUpRightIcon } from '@keystar/ui/icon/icons/arrowUpRightIcon'
-import { ComboboxMany } from './ComboboxMany'
-import { ComboboxSingle } from './ComboboxSingle'
+import { ComboboxMany } from './ComboboxMany.tsx'
+import { ComboboxSingle } from './ComboboxSingle.tsx'
 import {
   buildQueryForRelationshipFieldWithForeignField,
   ContextualActions,
-} from './ContextualActions'
-import { RelationshipTable } from './RelationshipTable'
-import type { RelationshipController, RelationshipValue } from './types'
+} from './ContextualActions.tsx'
+import { RelationshipTable } from './RelationshipTable.tsx'
+import type { RelationshipController, RelationshipValue } from './types.ts'
 
 export { ComboboxMany, ComboboxSingle }
 

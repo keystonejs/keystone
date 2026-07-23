@@ -1,8 +1,8 @@
 import { g } from '@keystone-6/core'
 import type { KeystoneContext } from '@keystone-6/core/types'
 import type { FieldData } from '@keystone-6/core/types'
-import type { ComponentSchema } from './DocumentEditor/component-blocks/api-shared'
-import { assertNever } from './DocumentEditor/component-blocks/utils'
+import type { ComponentSchema } from './DocumentEditor/component-blocks/api-shared.ts'
+import { assertNever } from './DocumentEditor/component-blocks/utils.ts'
 import type { GArg, GField, GInputType, GOutputType } from '@keystone-6/core/graphql-ts'
 
 function wrapGraphQLFieldInResolver<InputSource, OutputSource>(

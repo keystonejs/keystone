@@ -10,12 +10,12 @@ import {
   fieldType,
 } from '@keystone-6/core/types'
 import { GraphQLError } from 'graphql/index.js'
-import type { ComponentBlock } from './DocumentEditor/component-blocks/api-shared'
-import { assertValidComponentSchema } from './DocumentEditor/component-blocks/field-assertions'
-import type { Relationships } from './DocumentEditor/relationship-shared'
-import { addRelationshipData } from './relationship-data'
-import { validateAndNormalizeDocument } from './validation'
-import type { DocumentFeatures, controller } from './views-shared'
+import type { ComponentBlock } from './DocumentEditor/component-blocks/api-shared.ts'
+import { assertValidComponentSchema } from './DocumentEditor/component-blocks/field-assertions.ts'
+import type { Relationships } from './DocumentEditor/relationship-shared.ts'
+import { addRelationshipData } from './relationship-data.ts'
+import { validateAndNormalizeDocument } from './validation.ts'
+import type { DocumentFeatures, controller } from './views-shared.ts'
 
 type RelationshipsConfig = Record<
   string,
@@ -277,5 +277,5 @@ function normaliseDocumentFeatures(
   return documentFeatures
 }
 
-export { structure } from './structure'
-export type { Node } from './structure-validation'
+export { structure } from './structure.ts'
+export type { Node } from './structure-validation.ts'

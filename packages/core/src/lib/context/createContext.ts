@@ -1,9 +1,9 @@
 import type { IncomingMessage, ServerResponse } from 'http'
 import { type ExecutionResult, type GraphQLSchema, graphql, print } from 'graphql/index.js'
-import type { KeystoneContext, KeystoneGraphQLAPI, KeystoneConfig } from '../../types'
+import type { KeystoneContext, KeystoneGraphQLAPI, KeystoneConfig } from '../../types/index.ts'
 
-import type { InitialisedList } from '../core/initialise-lists'
-import { getDbFactory, getQueryFactory } from './api'
+import type { InitialisedList } from '../core/initialise-lists.ts'
+import { getDbFactory, getQueryFactory } from './api.ts'
 
 export function createContext({
   config,

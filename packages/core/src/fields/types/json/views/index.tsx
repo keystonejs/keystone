@@ -8,7 +8,7 @@ import type {
   FieldControllerConfig,
   FieldProps,
   JSONValue,
-} from '../../../../types'
+} from '../../../../types/index.ts'
 
 export const Field = (props: FieldProps<typeof controller>) => {
   const { autoFocus, field, forceValidation, onChange, value } = props

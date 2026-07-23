@@ -4,7 +4,7 @@ import { list } from '@keystone-6/core'
 import type { BaseFields } from '@keystone-6/core/types'
 import { allowAll } from '@keystone-6/core/access'
 
-import { setupTestRunner } from './test-runner'
+import { setupTestRunner } from './test-runner.ts'
 
 function setupList(fields: BaseFields<any>) {
   return setupTestRunner({

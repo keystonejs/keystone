@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import isDeepEqual from 'fast-deep-equal'
 
-import type { ListMeta, ListSortDescriptor } from '../../../../types'
+import type { ListMeta, ListSortDescriptor } from '../../../../types/index.ts'
 import {
   type TypedDocumentNode,
   ApolloClient,
@@ -9,9 +9,9 @@ import {
   InMemoryCache,
   useApolloClient,
   useQuery,
-} from '../../../../admin-ui/apollo'
-import { useSearchFilter } from './useFilter'
-import type { RelationshipValue } from './types'
+} from '../../../../admin-ui/apollo.ts'
+import { useSearchFilter } from './useFilter.tsx'
+import type { RelationshipValue } from './types.ts'
 
 function useDebouncedValue<T>(value: T, limitMs: number) {
   const [debouncedValue, setDebouncedValue] = useState(() => value)

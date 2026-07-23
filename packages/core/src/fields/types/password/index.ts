@@ -1,18 +1,18 @@
 import bcryptjs from 'bcryptjs'
 // @ts-expect-error
 import dumbPasswords from 'dumb-passwords'
-import { userInputError } from '../../../lib/core/graphql-errors'
+import { userInputError } from '../../../lib/core/graphql-errors.ts'
 import {
   type BaseListTypeInfo,
   type CommonFieldConfig,
   type FieldTypeFunc,
   fieldType,
-} from '../../../types'
-import { g } from '../../..'
-import { makeValidateHook, defaultIsRequired } from '../../non-null-graphql'
+} from '../../../types/index.ts'
+import { g } from '../../../index.ts'
+import { makeValidateHook, defaultIsRequired } from '../../non-null-graphql.ts'
 import { isObjectType, type GraphQLSchema } from 'graphql/index.js'
 import type { InferValueFromInputType } from '@graphql-ts/schema'
-import type { controller } from './views'
+import type { controller } from './views/index.tsx'
 
 type FieldTypeInfo = {
   item: string | null

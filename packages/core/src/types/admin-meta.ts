@@ -1,9 +1,13 @@
 import type { allIcons as KeystarIcons } from '@keystar/ui/icon/all'
 import type { ReactElement } from 'react'
 
-import type { ConditionalFilter, ConditionalFilterCase, ListSortDescriptor } from './config'
-import type { BaseListTypeInfo } from './type-info'
-import type { GraphQLNames, JSONValue } from './utils'
+import type {
+  ConditionalFilter,
+  ConditionalFilterCase,
+  ListSortDescriptor,
+} from './config/index.ts'
+import type { BaseListTypeInfo } from './type-info.ts'
+import type { GraphQLNames, JSONValue } from './utils.ts'
 
 export type NavigationProps = {
   lists: ListMeta[]

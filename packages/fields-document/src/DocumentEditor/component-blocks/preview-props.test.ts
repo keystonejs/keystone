@@ -1,8 +1,8 @@
 import { expect, test } from 'vitest'
-import { assert } from '../utils'
-import { fields } from './api'
-import { getInitialPropsValue } from './initial-values'
-import { createGetPreviewProps } from './preview-props'
+import { assert } from '../utils.ts'
+import { fields } from './api.tsx'
+import { getInitialPropsValue } from './initial-values.ts'
+import { createGetPreviewProps } from './preview-props.ts'
 
 test('onChange on a conditional field updates props.value', () => {
   const field = fields.conditional(fields.checkbox({ label: '' }), {

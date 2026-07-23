@@ -5,8 +5,8 @@ import {
   fields,
   type FormField,
   type ObjectField,
-} from './api'
-import { assertValidComponentSchema } from './field-assertions'
+} from './api.tsx'
+import { assertValidComponentSchema } from './field-assertions.ts'
 
 type EasilyCircularObject = ObjectField<{
   x: EasilyCircularObject

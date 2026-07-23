@@ -1,8 +1,8 @@
 import { expect, test } from 'vitest'
 import { password } from '@keystone-6/core/fields'
-import { filterTests } from './utils'
+import { filterTests } from './utils.ts'
 import { list } from '@keystone-6/core'
-import { setupTestRunner } from '../../test-runner'
+import { setupTestRunner } from '../../test-runner.ts'
 import { allowAll } from '@keystone-6/core/access'
 
 // note that while password fields can be non-nullable

@@ -1,8 +1,12 @@
-import type { CellComponent, FieldController, FieldControllerConfig } from '../../../../types'
+import type {
+  CellComponent,
+  FieldController,
+  FieldControllerConfig,
+} from '../../../../types/index.ts'
 
-import { validateFile } from './Field'
+import { validateFile } from './Field.tsx'
 
-export { Field } from './Field'
+export { Field } from './Field.tsx'
 
 export const Cell: CellComponent<typeof controller> = ({ value }) => {
   if (!value) return null

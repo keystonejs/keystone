@@ -10,9 +10,9 @@ import { Picker } from '@keystar/ui/picker'
 import { Content } from '@keystar/ui/slots'
 import { Heading, Text } from '@keystar/ui/typography'
 
-import type { Filter } from '.'
-import { useList } from '../../../../admin-ui/context'
-import type { FieldMeta, JSONValue } from '../../../../types'
+import type { Filter } from './index.tsx'
+import { useList } from '../../../../admin-ui/context.tsx'
+import type { FieldMeta, JSONValue } from '../../../../types/index.ts'
 
 type State =
   | { kind: 'selecting-field' }
