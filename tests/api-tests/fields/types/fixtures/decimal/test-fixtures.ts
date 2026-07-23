@@ -1,3 +1,4 @@
+import { expect, test } from 'vitest'
 import { decimal } from '@keystone-6/core/fields'
 import type { KeystoneContext } from '@keystone-6/core/types'
 

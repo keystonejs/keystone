@@ -1,3 +1,4 @@
+import { afterAll, expect, vi } from 'vitest'
 import { spawn } from 'node:child_process'
 import path from 'node:path'
 import { format } from 'node:util'

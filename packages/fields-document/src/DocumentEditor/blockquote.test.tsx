@@ -1,6 +1,7 @@
 /** @jest-environment jsdom */
 /** @jsxRuntime classic */
 /** @jsx jsx */
+import { expect, test } from 'vitest'
 import { jsx, makeEditor } from './tests/utils'
 
 test('inserting a blockquote with a shortcut works', () => {

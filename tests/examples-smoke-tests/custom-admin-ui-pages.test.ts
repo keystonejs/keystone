@@ -1,3 +1,4 @@
+import { afterAll, beforeAll, test } from 'vitest'
 import retry from 'async-retry'
 import type { Browser, Page } from 'playwright'
 

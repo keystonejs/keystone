@@ -1,3 +1,4 @@
+import { expect, test } from 'vitest'
 import { config, list } from '@keystone-6/core'
 import { allowAll } from '@keystone-6/core/access'
 import { getContext } from '@keystone-6/core/context'

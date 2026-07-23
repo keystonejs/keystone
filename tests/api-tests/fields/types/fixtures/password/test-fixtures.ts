@@ -1,3 +1,4 @@
+import { expect, test } from 'vitest'
 import { password } from '@keystone-6/core/fields'
 
 export const name = 'Password'

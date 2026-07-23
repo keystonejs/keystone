@@ -1,3 +1,4 @@
+import { describe, expect, test } from 'vitest'
 import type { ExecutionResult } from 'graphql'
 
 import { setupTestRunner } from '@keystone-6/api-tests/test-runner'

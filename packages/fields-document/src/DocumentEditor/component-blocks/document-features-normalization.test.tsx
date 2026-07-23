@@ -1,6 +1,7 @@
 /** @jest-environment jsdom */
 /** @jsxRuntime classic */
 /** @jsx jsx */
+import { expect, test } from 'vitest'
 import type { Node } from 'slate'
 import { component, fields } from '../../component-blocks'
 import { makeEditor, jsx } from '../tests/utils'

@@ -1,5 +1,6 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
+import { expect, test } from 'vitest'
 import { component, type ComponentBlock, fields } from './DocumentEditor/component-blocks/api'
 import type { Relationships } from './DocumentEditor/relationship'
 import { defaultDocumentFeatures, makeEditor, jsx } from './DocumentEditor/tests/utils'

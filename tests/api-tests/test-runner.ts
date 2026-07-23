@@ -1,3 +1,4 @@
+import { afterAll } from 'vitest'
 import { randomBytes } from 'node:crypto'
 import { readdirSync } from 'node:fs'
 import fs from 'node:fs/promises'

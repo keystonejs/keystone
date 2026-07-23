@@ -1,3 +1,4 @@
+import { afterAll, beforeAll } from 'vitest'
 import type { Browser, Page } from 'playwright'
 import { exampleProjectTests, initialUserTest, loadIndex } from './utils'
 

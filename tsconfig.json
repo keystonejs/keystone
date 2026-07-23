@@ -14,7 +14,7 @@
     "skipLibCheck": true,
     "strict": true,
     "target": "esnext",
-    "types": ["node", "vitest/globals"]
+    "types": ["node"]
   },
   "include": ["**/*"],
   "exclude": ["docs/", "**/node_modules/**/*", "packages/create/starter"]

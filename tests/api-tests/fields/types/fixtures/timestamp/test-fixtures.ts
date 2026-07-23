@@ -1,3 +1,4 @@
+import { expect, test } from 'vitest'
 import { timestamp } from '@keystone-6/core/fields'
 import type { DatabaseProvider, KeystoneContext } from '@keystone-6/core/types'
 

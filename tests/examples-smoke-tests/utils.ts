@@ -1,3 +1,4 @@
+import { afterAll, describe, test, vi } from 'vitest'
 import path from 'path'
 import { promisify } from 'util'
 import execa, { type ExecaChildProcess } from 'execa'
