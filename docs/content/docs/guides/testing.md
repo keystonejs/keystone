@@ -32,7 +32,8 @@ import { afterAll, beforeEach, expect, test } from 'vitest'
 import * as PrismaModule from './generated/prisma/client'
 import baseConfig from './keystone'
 
-const dbUrl = `file:./test-${process.env.VITEST_WORKER_ID}.db`
+const dbPath = `./test-${process.env.VITEST_WORKER_ID}.db`
+const dbUrl = `file:${dbPath}`
 const config = {
   ...baseConfig,
   db: {
@@ -43,7 +44,7 @@ const config = {
 
 beforeEach(async () => {
   const migrationsDirectory = path.join(__dirname, 'migrations')
-  await resetDatabase({ url: dbUrl }, migrationsDirectory)
+  await resetDatabase({ filename: dbPath }, migrationsDirectory)
 })
 
 const context = getContext(config, PrismaModule)
