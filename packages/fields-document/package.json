@@ -3,61 +3,31 @@
   "description": "KeystoneJS Document Field Type",
   "version": "10.0.0",
   "license": "MIT",
-  "main": "dist/keystone-6-fields-document.cjs.js",
-  "module": "dist/keystone-6-fields-document.esm.js",
   "type": "module",
   "exports": {
     ".": {
-      "types": "./dist/keystone-6-fields-document.cjs.js",
-      "node": {
-        "module": "./dist/keystone-6-fields-document.node.esm.js",
-        "default": "./dist/keystone-6-fields-document.node.cjs.js"
-      },
-      "react-server": {
-        "module": "./dist/keystone-6-fields-document.node.esm.js",
-        "default": "./dist/keystone-6-fields-document.node.cjs.js"
-      },
-      "module": "./dist/keystone-6-fields-document.esm.js",
-      "default": "./dist/keystone-6-fields-document.cjs.js"
+      "types": "./dist/keystone-6-fields-document.js",
+      "node": "./dist/keystone-6-fields-document.node.js",
+      "react-server": "./dist/keystone-6-fields-document.node.js",
+      "default": "./dist/keystone-6-fields-document.js"
     },
     "./views": {
-      "types": "./views/dist/keystone-6-fields-document-views.cjs.js",
-      "node": {
-        "module": "./views/dist/keystone-6-fields-document-views.node.esm.js",
-        "default": "./views/dist/keystone-6-fields-document-views.node.cjs.js"
-      },
-      "react-server": {
-        "module": "./views/dist/keystone-6-fields-document-views.node.esm.js",
-        "default": "./views/dist/keystone-6-fields-document-views.node.cjs.js"
-      },
-      "module": "./views/dist/keystone-6-fields-document-views.esm.js",
-      "default": "./views/dist/keystone-6-fields-document-views.cjs.js"
+      "types": "./dist/keystone-6-fields-document-views.js",
+      "node": "./dist/keystone-6-fields-document-views.node.js",
+      "react-server": "./dist/keystone-6-fields-document-views.node.js",
+      "default": "./dist/keystone-6-fields-document-views.js"
     },
     "./structure-views": {
-      "types": "./structure-views/dist/keystone-6-fields-document-structure-views.cjs.js",
-      "node": {
-        "module": "./structure-views/dist/keystone-6-fields-document-structure-views.node.esm.js",
-        "default": "./structure-views/dist/keystone-6-fields-document-structure-views.node.cjs.js"
-      },
-      "react-server": {
-        "module": "./structure-views/dist/keystone-6-fields-document-structure-views.node.esm.js",
-        "default": "./structure-views/dist/keystone-6-fields-document-structure-views.node.cjs.js"
-      },
-      "module": "./structure-views/dist/keystone-6-fields-document-structure-views.esm.js",
-      "default": "./structure-views/dist/keystone-6-fields-document-structure-views.cjs.js"
+      "types": "./dist/keystone-6-fields-document-structure-views.js",
+      "node": "./dist/keystone-6-fields-document-structure-views.node.js",
+      "react-server": "./dist/keystone-6-fields-document-structure-views.node.js",
+      "default": "./dist/keystone-6-fields-document-structure-views.js"
     },
     "./component-blocks": {
-      "types": "./component-blocks/dist/keystone-6-fields-document-component-blocks.cjs.js",
-      "node": {
-        "module": "./component-blocks/dist/keystone-6-fields-document-component-blocks.node.esm.js",
-        "default": "./component-blocks/dist/keystone-6-fields-document-component-blocks.node.cjs.js"
-      },
-      "react-server": {
-        "module": "./component-blocks/dist/keystone-6-fields-document-component-blocks.node.esm.js",
-        "default": "./component-blocks/dist/keystone-6-fields-document-component-blocks.node.cjs.js"
-      },
-      "module": "./component-blocks/dist/keystone-6-fields-document-component-blocks.esm.js",
-      "default": "./component-blocks/dist/keystone-6-fields-document-component-blocks.cjs.js"
+      "types": "./dist/keystone-6-fields-document-component-blocks.js",
+      "node": "./dist/keystone-6-fields-document-component-blocks.node.js",
+      "react-server": "./dist/keystone-6-fields-document-component-blocks.node.js",
+      "default": "./dist/keystone-6-fields-document-component-blocks.js"
     },
     "./package.json": "./package.json"
   },

@@ -1,4 +1,0 @@
-{
-  "main": "dist/keystone-6-core-fields-types-bigInt-views.cjs.js",
-  "module": "dist/keystone-6-core-fields-types-bigInt-views.esm.js"
-}
