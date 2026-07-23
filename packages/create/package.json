@@ -3,16 +3,10 @@
   "version": "10.0.3",
   "license": "MIT",
   "type": "module",
-  "main": "dist/create-keystone-app.cjs.js",
-  "module": "dist/create-keystone-app.esm.js",
   "repository": "https://github.com/keystonejs/keystone/tree/main/packages/create",
   "bin": "./cli.js",
   "exports": {
-    ".": {
-      "types": "./dist/create-keystone-app.cjs.js",
-      "module": "./dist/create-keystone-app.esm.js",
-      "default": "./dist/create-keystone-app.cjs.js"
-    },
+    ".": "./dist/create-keystone-app.js",
     "./package.json": "./package.json"
   },
   "preconstruct": {
