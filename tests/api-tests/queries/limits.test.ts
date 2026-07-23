@@ -9,15 +9,17 @@ import { depthLimit, definitionLimit, fieldLimit } from './validation'
 const runner = setupTestRunner({
   serve: true,
   config: {
+    listDefaults: {
+      graphql: {
+        maxTake: 3,
+      },
+    },
     lists: {
       Post: list({
         access: allowAll,
         fields: {
           title: text(),
           author: relationship({ ref: 'User.posts', many: true }),
-        },
-        graphql: {
-          maxTake: 3,
         },
       }),
       User: list({
@@ -26,6 +28,9 @@ const runner = setupTestRunner({
           name: text(),
           favNumber: integer(),
           posts: relationship({ ref: 'Post.author', many: true }),
+        },
+        graphql: {
+          maxTake: Infinity,
         },
       }),
     },
@@ -80,6 +85,23 @@ describe('graphql.maxTake', () => {
       })
 
       expect(errors).toMatchSnapshot()
+    })
+  )
+
+  test(
+    'Infinity disables an inherited default',
+    runner(async ({ gql }) => {
+      const body = await gql({
+        query: `
+        query {
+          users(take: 5) {
+            id
+          }
+        }
+      `,
+      })
+
+      expect(body.errors).toBeUndefined()
     })
   )
 
