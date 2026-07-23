@@ -1,3 +1,4 @@
+import { expect, test } from 'vitest'
 import type { KeystoneContext } from '@keystone-6/core/types'
 
 export const name = 'ID'

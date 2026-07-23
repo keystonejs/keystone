@@ -1,3 +1,4 @@
+import { describe, expect, test } from 'vitest'
 import { list } from '@keystone-6/core'
 import { text, timestamp, password } from '@keystone-6/core/fields'
 import { statelessSessions } from '@keystone-6/core/session'

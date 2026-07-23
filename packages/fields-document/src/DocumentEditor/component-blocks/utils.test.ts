@@ -1,3 +1,4 @@
+import { expect, test } from 'vitest'
 import { fields } from './api'
 import { getAncestorSchemas, getSchemaAtPropPath } from './utils'
 

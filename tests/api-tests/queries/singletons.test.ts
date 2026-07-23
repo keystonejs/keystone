@@ -1,3 +1,4 @@
+import { describe, expect, test } from 'vitest'
 import { text } from '@keystone-6/core/fields'
 import { list } from '@keystone-6/core'
 import type { KeystoneContext } from '@keystone-6/core/types'

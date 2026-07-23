@@ -1,6 +1,7 @@
 /** @jest-environment jsdom */
 /** @jsxRuntime classic */
 /** @jsx jsx */
+import { expect, test } from 'vitest'
 import { component, fields } from '../../component-blocks'
 import { jsx, makeEditor } from '../tests/utils'
 

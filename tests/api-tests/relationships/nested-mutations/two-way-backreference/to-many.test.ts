@@ -1,3 +1,4 @@
+import { expect, describe, test } from 'vitest'
 import { gen, sampleOne } from 'testcheck'
 import { text, relationship } from '@keystone-6/core/fields'
 import { list } from '@keystone-6/core'

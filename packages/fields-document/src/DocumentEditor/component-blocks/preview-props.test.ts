@@ -1,3 +1,4 @@
+import { expect, test } from 'vitest'
 import { assert } from '../utils'
 import { fields } from './api'
 import { getInitialPropsValue } from './initial-values'

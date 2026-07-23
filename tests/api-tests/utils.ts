@@ -1,3 +1,4 @@
+import { expect } from 'vitest'
 import { config } from '@keystone-6/core'
 import type {
   BaseKeystoneTypeInfo,

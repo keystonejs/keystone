@@ -1,5 +1,6 @@
 /** @jest-environment jsdom */
 
+import { expect, test } from 'vitest'
 import { htmlToEditor } from './test-utils'
 
 test('whitespace between blocks is removed', () => {

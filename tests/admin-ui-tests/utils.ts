@@ -1,3 +1,4 @@
+import { afterAll, describe, expect, test, vi } from 'vitest'
 import { type ChildProcessWithoutNullStreams, spawn } from 'node:child_process'
 import { stat } from 'node:fs/promises'
 import path from 'node:path'

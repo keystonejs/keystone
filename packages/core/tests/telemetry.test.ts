@@ -1,3 +1,4 @@
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest'
 import * as https from 'node:https'
 import { createRequire } from 'node:module'
 import path from 'path'

@@ -1,6 +1,7 @@
 const { assertInputObjectType, assertObjectType, parse, printType } =
   require('graphql') as typeof import('graphql')
 
+import { describe, expect, test } from 'vitest'
 import { config, list } from '@keystone-6/core'
 import type { KeystoneConfigPre } from '@keystone-6/core/types'
 import { createSystem } from '@keystone-6/core/___internal-do-not-use-will-break-in-patch/artifacts'

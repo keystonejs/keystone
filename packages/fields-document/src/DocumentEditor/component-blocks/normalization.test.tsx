@@ -1,6 +1,7 @@
 /** @jest-environment jsdom */
 /** @jsxRuntime classic */
 /** @jsx jsx */
+import { expect, test } from 'vitest'
 import { Transforms } from 'slate'
 import { insertComponentBlock } from '.'
 import { component, fields } from '../../component-blocks'

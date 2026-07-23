@@ -1,3 +1,4 @@
+import { expect } from 'vitest'
 import { type MutableRefObject, type ReactElement, createElement, useState } from 'react'
 import { type Node, type Path, Editor, Range, Text } from 'slate'
 import { ReactEditor, Slate, withReact } from 'slate-react'

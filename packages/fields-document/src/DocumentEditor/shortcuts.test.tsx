@@ -1,6 +1,7 @@
 /** @jest-environment jsdom */
 /** @jsxRuntime classic */
 /** @jsx jsx */
+import { describe, expect, test } from 'vitest'
 import { shortcuts } from './shortcuts'
 import { jsx, makeEditor } from './tests/utils'
 

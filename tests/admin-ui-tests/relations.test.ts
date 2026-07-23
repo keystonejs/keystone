@@ -1,3 +1,4 @@
+import { afterAll, beforeAll, test } from 'vitest'
 import type { Browser, Page } from 'playwright'
 import { expect } from 'playwright/test'
 import { adminUITests, callGraphQL } from './utils'

@@ -1,3 +1,4 @@
+import { describe, expect, test } from 'vitest'
 import { integer, relationship, text, virtual } from '@keystone-6/core/fields'
 import { type BaseFields, list, g } from '@keystone-6/core'
 import { setupTestEnv, setupTestRunner } from '@keystone-6/api-tests/test-runner'

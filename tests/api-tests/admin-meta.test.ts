@@ -1,3 +1,4 @@
+import { expect, test } from 'vitest'
 import { group, list } from '@keystone-6/core'
 import { allowAll } from '@keystone-6/core/access'
 import { integer, text } from '@keystone-6/core/fields'

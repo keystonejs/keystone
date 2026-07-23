@@ -1,6 +1,7 @@
 /** @jest-environment jsdom */
 /** @jsxRuntime classic */
 /** @jsx jsx */
+import { expect, test } from 'vitest'
 import React, { Fragment } from 'react'
 import { jsx, makeEditor } from '../tests/utils'
 import { component, fields } from '../../component-blocks'

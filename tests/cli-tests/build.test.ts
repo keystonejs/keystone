@@ -1,3 +1,4 @@
+import { expect, test, vi } from 'vitest'
 import { readFile } from 'node:fs/promises'
 import execa from 'execa'
 
