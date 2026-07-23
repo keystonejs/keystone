@@ -3,24 +3,10 @@
   "version": "9.0.0",
   "license": "MIT",
   "type": "module",
-  "main": "dist/keystone-6-auth.cjs.js",
-  "module": "dist/keystone-6-auth.esm.js",
   "exports": {
-    ".": {
-      "types": "./dist/keystone-6-auth.cjs.js",
-      "module": "./dist/keystone-6-auth.esm.js",
-      "default": "./dist/keystone-6-auth.cjs.js"
-    },
-    "./pages/SigninPage": {
-      "types": "./pages/SigninPage/dist/keystone-6-auth-pages-SigninPage.cjs.js",
-      "module": "./pages/SigninPage/dist/keystone-6-auth-pages-SigninPage.esm.js",
-      "default": "./pages/SigninPage/dist/keystone-6-auth-pages-SigninPage.cjs.js"
-    },
-    "./components/Navigation": {
-      "types": "./components/Navigation/dist/keystone-6-auth-components-Navigation.cjs.js",
-      "module": "./components/Navigation/dist/keystone-6-auth-components-Navigation.esm.js",
-      "default": "./components/Navigation/dist/keystone-6-auth-components-Navigation.cjs.js"
-    },
+    ".": "./dist/keystone-6-auth.js",
+    "./pages/SigninPage": "./dist/keystone-6-auth-pages-SigninPage.js",
+    "./components/Navigation": "./dist/keystone-6-auth-components-Navigation.js",
     "./package.json": "./package.json"
   },
   "dependencies": {

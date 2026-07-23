@@ -1,4 +1,0 @@
-{
-  "main": "dist/keystone-6-core-admin-ui-apollo.cjs.js",
-  "module": "dist/keystone-6-core-admin-ui-apollo.esm.js"
-}
