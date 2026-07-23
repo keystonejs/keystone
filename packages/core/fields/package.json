@@ -1,4 +1,0 @@
-{
-  "main": "dist/keystone-6-core-fields.cjs.js",
-  "module": "dist/keystone-6-core-fields.esm.js"
-}
