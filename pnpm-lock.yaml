@@ -7,8 +7,8 @@ settings:
 catalogs:
   default:
     '@keystar/ui':
-      specifier: 0.8.0
-      version: 0.8.0
+      specifier: 0.8.1
+      version: 0.8.1
     '@prisma/adapter-better-sqlite3':
       specifier: ^7.9.0
       version: 7.9.0
@@ -166,13 +166,13 @@ importers:
         version: 0.4.0
       '@keystar/ui':
         specifier: 'catalog:'
-        version: 0.8.0(next@16.2.10(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react-aria@3.50.0(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react-dom@19.2.5(react@19.2.5))(react-stately@3.48.0(react@19.2.5))(react@19.2.5)
+        version: 0.8.1(next@16.2.10(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react-aria@3.50.0(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react-dom@19.2.5(react@19.2.5))(react-stately@3.48.0(react@19.2.5))(react@19.2.5)
       '@keystatic/core':
-        specifier: 0.6.0
-        version: 0.6.0(@keystar/ui@0.8.0(next@16.2.10(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react-aria@3.50.0(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react-dom@19.2.5(react@19.2.5))(react-stately@3.48.0(react@19.2.5))(react@19.2.5))(react-aria@3.50.0(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react-dom@19.2.5(react@19.2.5))(react-stately@3.48.0(react@19.2.5))(react@19.2.5)
+        specifier: 0.6.1
+        version: 0.6.1(@keystar/ui@0.8.1(next@16.2.10(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react-aria@3.50.0(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react-dom@19.2.5(react@19.2.5))(react-stately@3.48.0(react@19.2.5))(react@19.2.5))(react-aria@3.50.0(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react-dom@19.2.5(react@19.2.5))(react-stately@3.48.0(react@19.2.5))(react@19.2.5)
       '@keystatic/next':
         specifier: ^5.0.4
-        version: 5.0.4(@keystatic/core@0.6.0(@keystar/ui@0.8.0(next@16.2.10(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react-aria@3.50.0(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react-dom@19.2.5(react@19.2.5))(react-stately@3.48.0(react@19.2.5))(react@19.2.5))(react-aria@3.50.0(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react-dom@19.2.5(react@19.2.5))(react-stately@3.48.0(react@19.2.5))(react@19.2.5))(next@16.2.10(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
+        version: 5.0.4(@keystatic/core@0.6.1(@keystar/ui@0.8.1(next@16.2.10(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react-aria@3.50.0(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react-dom@19.2.5(react@19.2.5))(react-stately@3.48.0(react@19.2.5))(react@19.2.5))(react-aria@3.50.0(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react-dom@19.2.5(react@19.2.5))(react-stately@3.48.0(react@19.2.5))(react@19.2.5))(next@16.2.10(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
       '@keystone-6/fields-document':
         specifier: workspace:^
         version: link:../packages/fields-document
@@ -525,7 +525,7 @@ importers:
     dependencies:
       '@keystar/ui':
         specifier: 'catalog:'
-        version: 0.8.0(next@16.2.10(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react-aria@3.50.0(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react-dom@19.2.5(react@19.2.5))(react-stately@3.48.0(react@19.2.5))(react@19.2.5)
+        version: 0.8.1(next@16.2.10(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react-aria@3.50.0(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react-dom@19.2.5(react@19.2.5))(react-stately@3.48.0(react@19.2.5))(react@19.2.5)
       '@keystone-6/auth':
         specifier: workspace:^
         version: link:../../packages/auth
@@ -568,7 +568,7 @@ importers:
     dependencies:
       '@keystar/ui':
         specifier: 'catalog:'
-        version: 0.8.0(next@16.2.10(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react-aria@3.50.0(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react-dom@19.2.5(react@19.2.5))(react-stately@3.48.0(react@19.2.5))(react@19.2.5)
+        version: 0.8.1(next@16.2.10(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react-aria@3.50.0(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react-dom@19.2.5(react@19.2.5))(react-stately@3.48.0(react@19.2.5))(react@19.2.5)
       '@keystone-6/core':
         specifier: workspace:^
         version: link:../../packages/core
@@ -602,7 +602,7 @@ importers:
     dependencies:
       '@keystar/ui':
         specifier: 'catalog:'
-        version: 0.8.0(next@16.2.10(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react-aria@3.50.0(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react-dom@19.2.5(react@19.2.5))(react-stately@3.48.0(react@19.2.5))(react@19.2.5)
+        version: 0.8.1(next@16.2.10(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react-aria@3.50.0(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react-dom@19.2.5(react@19.2.5))(react-stately@3.48.0(react@19.2.5))(react@19.2.5)
       '@keystone-6/core':
         specifier: workspace:^
         version: link:../../packages/core
@@ -636,7 +636,7 @@ importers:
     dependencies:
       '@keystar/ui':
         specifier: 'catalog:'
-        version: 0.8.0(next@16.2.10(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react-aria@3.50.0(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react-dom@19.2.5(react@19.2.5))(react-stately@3.48.0(react@19.2.5))(react@19.2.5)
+        version: 0.8.1(next@16.2.10(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react-aria@3.50.0(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react-dom@19.2.5(react@19.2.5))(react-stately@3.48.0(react@19.2.5))(react@19.2.5)
       '@keystone-6/core':
         specifier: workspace:^
         version: link:../../packages/core
@@ -701,7 +701,7 @@ importers:
     dependencies:
       '@keystar/ui':
         specifier: 'catalog:'
-        version: 0.8.0(next@16.2.10(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react-aria@3.50.0(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react-dom@19.2.5(react@19.2.5))(react-stately@3.48.0(react@19.2.5))(react@19.2.5)
+        version: 0.8.1(next@16.2.10(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react-aria@3.50.0(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react-dom@19.2.5(react@19.2.5))(react-stately@3.48.0(react@19.2.5))(react@19.2.5)
       '@keystone-6/core':
         specifier: workspace:^
         version: link:../../packages/core
@@ -1107,7 +1107,7 @@ importers:
     dependencies:
       '@keystar/ui':
         specifier: 'catalog:'
-        version: 0.8.0(next@16.2.10(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react-aria@3.50.0(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react-dom@19.2.5(react@19.2.5))(react-stately@3.48.0(react@19.2.5))(react@19.2.5)
+        version: 0.8.1(next@16.2.10(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react-aria@3.50.0(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react-dom@19.2.5(react@19.2.5))(react-stately@3.48.0(react@19.2.5))(react@19.2.5)
       '@keystone-6/auth':
         specifier: workspace:^
         version: link:../../../packages/auth
@@ -1215,7 +1215,7 @@ importers:
     dependencies:
       '@keystar/ui':
         specifier: 'catalog:'
-        version: 0.8.0(next@16.2.10(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react-aria@3.50.0(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react-dom@19.2.5(react@19.2.5))(react-stately@3.48.0(react@19.2.5))(react@19.2.5)
+        version: 0.8.1(next@16.2.10(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react-aria@3.50.0(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react-dom@19.2.5(react@19.2.5))(react-stately@3.48.0(react@19.2.5))(react@19.2.5)
       '@keystone-6/core':
         specifier: workspace:^
         version: link:../../packages/core
@@ -1465,7 +1465,7 @@ importers:
         version: 9.0.19(graphql@16.14.2)
       '@keystar/ui':
         specifier: 'catalog:'
-        version: 0.8.0(next@16.2.10(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react-aria@3.50.0(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react-dom@19.2.5(react@19.2.5))(react-stately@3.48.0(react@19.2.5))(react@19.2.5)
+        version: 0.8.1(next@16.2.10(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react-aria@3.50.0(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react-dom@19.2.5(react@19.2.5))(react-stately@3.48.0(react@19.2.5))(react@19.2.5)
       '@keystone-6/core':
         specifier: workspace:^
         version: link:../../packages/core
@@ -2663,7 +2663,7 @@ importers:
     dependencies:
       '@keystar/ui':
         specifier: 'catalog:'
-        version: 0.8.0(next@16.2.10(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react-aria@3.50.0(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react-dom@19.2.5(react@19.2.5))(react-stately@3.48.0(react@19.2.5))(react@19.2.5)
+        version: 0.8.1(next@16.2.10(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react-aria@3.50.0(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react-dom@19.2.5(react@19.2.5))(react-stately@3.48.0(react@19.2.5))(react@19.2.5)
       '@keystone-6/core':
         specifier: workspace:^
         version: link:../../packages/core
@@ -2700,7 +2700,7 @@ importers:
         version: 7.29.2
       '@keystar/ui':
         specifier: 'catalog:'
-        version: 0.8.0(next@16.2.10(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react-aria@3.50.0(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react-dom@19.2.5(react@19.2.5))(react-stately@3.48.0(react@19.2.5))(react@19.2.5)
+        version: 0.8.1(next@16.2.10(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react-aria@3.50.0(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react-dom@19.2.5(react@19.2.5))(react-stately@3.48.0(react@19.2.5))(react@19.2.5)
       graphql:
         specifier: 'catalog:'
         version: 16.14.2
@@ -2725,7 +2725,7 @@ importers:
         version: 7.29.2
       '@keystar/ui':
         specifier: 'catalog:'
-        version: 0.8.0(next@16.2.10(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react-aria@3.50.0(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react-dom@19.2.5(react@19.2.5))(react-stately@3.48.0(react@19.2.5))(react@19.2.5)
+        version: 0.8.1(next@16.2.10(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react-aria@3.50.0(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react-dom@19.2.5(react@19.2.5))(react-stately@3.48.0(react@19.2.5))(react@19.2.5)
       cloudinary:
         specifier: ^2.0.0
         version: 2.10.0
@@ -2789,7 +2789,7 @@ importers:
         version: 3.12.2
       '@keystar/ui':
         specifier: 'catalog:'
-        version: 0.8.0(next@16.2.10(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react-aria@3.50.0(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react-dom@19.2.5(react@19.2.5))(react-stately@3.48.0(react@19.2.5))(react@19.2.5)
+        version: 0.8.1(next@16.2.10(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react-aria@3.50.0(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react-dom@19.2.5(react@19.2.5))(react-stately@3.48.0(react@19.2.5))(react@19.2.5)
       '@nodelib/fs.walk':
         specifier: ^3.0.0
         version: 3.0.1
@@ -2952,7 +2952,7 @@ importers:
         version: 0.4.0
       '@keystar/ui':
         specifier: 'catalog:'
-        version: 0.8.0(next@16.2.10(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react-aria@3.50.0(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react-dom@19.2.5(react@19.2.5))(react-stately@3.48.0(react@19.2.5))(react@19.2.5)
+        version: 0.8.1(next@16.2.10(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react-aria@3.50.0(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react-dom@19.2.5(react@19.2.5))(react-stately@3.48.0(react@19.2.5))(react@19.2.5)
       '@keystone-6/document-renderer':
         specifier: workspace:^
         version: link:../document-renderer
@@ -3297,7 +3297,7 @@ importers:
     dependencies:
       '@keystar/ui':
         specifier: 'catalog:'
-        version: 0.8.0(next@16.2.10(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react-aria@3.50.0(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react-dom@19.2.5(react@19.2.5))(react-stately@3.48.0(react@19.2.5))(react@19.2.5)
+        version: 0.8.1(next@16.2.10(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react-aria@3.50.0(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react-dom@19.2.5(react@19.2.5))(react-stately@3.48.0(react@19.2.5))(react@19.2.5)
       '@keystone-6/auth':
         specifier: workspace:^
         version: link:../../packages/auth
@@ -6015,8 +6015,8 @@ packages:
   '@juggle/resize-observer@3.4.0':
     resolution: {integrity: sha512-dfLbk+PwWvFzSxwk3n5ySL0hfBog779o8h68wK/7/APo/7cgyWp5jcXockbxdk5kFRkbeXWm4Fbi9FrdN381sA==}
 
-  '@keystar/ui@0.8.0':
-    resolution: {integrity: sha512-LkF98QS5SrQ1hvbFknfwba3uEfjPmN8NXdbA1Odra0NTMs7ZzdeREUHtxK2LIpNJPxZLC1hnrQxcguCjrQVQwg==}
+  '@keystar/ui@0.8.1':
+    resolution: {integrity: sha512-ZQdvi4WOiU0HIUahhX19QYwYkwbmDk96q4mHoyG4mvpRYE1BkX4ktMFPak1YoLn3AAUZBJq208I1nWzbyjDsVw==}
     peerDependencies:
       next: '>=14'
       react: ^18.2.0 || ^19.0.0
@@ -6026,26 +6026,15 @@ packages:
     peerDependenciesMeta:
       next:
         optional: true
-      react-aria:
-        optional: true
-      react-stately:
-        optional: true
 
-  '@keystatic/core@0.6.0':
-    resolution: {integrity: sha512-poJLwfV0RNXImZu9IpdZQNHMHgSiSd1pyIhK3ex+fussh95Nxl0oJmrWzHqLgmiU74GUH2KV5a/1Ox4tyaJQTw==}
+  '@keystatic/core@0.6.1':
+    resolution: {integrity: sha512-OsVsgIivBDHLLpR0u5i0RNiVp9sUieymoGjBJlTago3lqVTpCPjVGj32e2SzASFfyWFHk0UcHBHnPg6pofuLvw==}
     peerDependencies:
       '@keystar/ui': '*'
       react: ^18.2.0 || ^19.0.0
       react-aria: 3.50.0
       react-dom: ^18.2.0 || ^19.0.0
       react-stately: 3.48.0
-    peerDependenciesMeta:
-      '@keystar/ui':
-        optional: true
-      react-aria:
-        optional: true
-      react-stately:
-        optional: true
 
   '@keystatic/next@5.0.4':
     resolution: {integrity: sha512-48R0ZvjYZAyWyXQh/gTtV29Xs1f0BnB3/NBdTDHgcuWPNT5em9A5KMYsSNHDLhkKdbhlPAIV1T2/6JSzKsyBIA==}
@@ -8269,10 +8258,6 @@ packages:
     resolution: {integrity: sha512-ywqV+5MmyL4E7ybXgKys4DugZbX0FC6LnwrhjuykIjnK9k8OQacQ7axGKnjDXWNhns0xot3bZI5h55H8yo9cJg==}
     engines: {node: '>=6'}
 
-  cli-spinners@3.4.0:
-    resolution: {integrity: sha512-bXfOC4QcT1tKXGorxL3wbJm6XJPDqEnij2gQ2m7ESQuE+/z9YFIWnl/5RpTiKWbMq3EVKR4fRLJGn6DVfu0mpw==}
-    engines: {node: '>=18.20'}
-
   cli-truncate@2.1.0:
     resolution: {integrity: sha512-n8fOixwDD6b/ObinzTrp1ZKFzbgvKZvuz/TvejnLn1aQfC6r52XEx85FmuC+3HI+JM7coBRXUvNqEU2PHVrHpg==}
     engines: {node: '>=8'}
@@ -10211,10 +10196,6 @@ packages:
     resolution: {integrity: sha512-i24m8rpwhmPIS4zscNzK6MSEhk0DUWa/8iYQWxhffV8jkI4Phvs3F+quL5xvS0gdQR0FyTCMMH33Y78dDTzzIw==}
     engines: {node: '>=18'}
 
-  log-symbols@7.0.1:
-    resolution: {integrity: sha512-ja1E3yCr9i/0hmBVaM0bfwDjnGy8I/s6PP4DFp+yP+a+mrHO4Rm7DtmnqROTUkHIkqffC84YY7AeqX6oFk0WFg==}
-    engines: {node: '>=18'}
-
   log-update@4.0.0:
     resolution: {integrity: sha512-9fkkDevMefjg0mmzWFBW8YkFP91OrizzkW3diF7CpG+S2EYdy4+TVfGwz1zeF8x7hCx1ovSPTOE9Ngib74qqUg==}
     engines: {node: '>=10'}
@@ -11045,10 +11026,6 @@ packages:
   ora@8.2.0:
     resolution: {integrity: sha512-weP+BZ8MVNnlCm8c0Qdc1WSWq4Qn7I+9CJGm7Qali6g44e/PUzbjNqJX5NJ9ljlNMosfJvg1fKEGILklK9cwnw==}
     engines: {node: '>=18'}
-
-  ora@9.4.0:
-    resolution: {integrity: sha512-84cglkRILFxdtA8hAvLNdMrtBpPNBTrQ9/ulg0FA7xLMnD6mifv+enAIeRmvtv+WgdCE+LPGOfQmtJRrVaIVhQ==}
-    engines: {node: '>=20'}
 
   orderedmap@2.1.1:
     resolution: {integrity: sha512-TvAWxi0nDe1j/rtMcWcIj94+Ffe6n7zhow33h40SKxmsmozs6dz/e+EajymfoFcHd7sxNn8yHM8839uixMOV6g==}
@@ -12306,10 +12283,6 @@ packages:
     resolution: {integrity: sha512-UhDfHmA92YAlNnCfhmq0VeNL5bDbiZGg7sZ2IvPsXubGkiNa9EC+tUTsjBRsYUAz87btI6/1wf4XoVvQ3uRnmQ==}
     engines: {node: '>=18'}
 
-  stdin-discarder@0.3.2:
-    resolution: {integrity: sha512-eCPu1qRxPVkl5605OTWF8Wz40b4Mf45NY5LQmVPQ599knfs5QhASUm9GbJ5BDMDOXgrnh0wyEdvzmL//YMlw0A==}
-    engines: {node: '>=18'}
-
   stream-browserify@3.0.0:
     resolution: {integrity: sha512-H73RAHsVBapbim0tU2JwwOiXUj+fikfiaoYAKHF3VJfA0pe2BCzkhAHBlLG6REzE+2WNZcxOXjK7lkso+9euLA==}
 
@@ -12336,10 +12309,6 @@ packages:
   string-width@7.2.0:
     resolution: {integrity: sha512-tsaTIkKW9b4N+AEj+SVA+WhJzV7/zMhcSu78mLKWSk7cXMOSHsBKFWUs0fWwq8QyK3MgJBQRX6Gbi4kYbdvGkQ==}
     engines: {node: '>=18'}
-
-  string-width@8.2.0:
-    resolution: {integrity: sha512-6hJPQ8N0V0P3SNmP6h2J99RLuzrWz2gvT7VnK5tKvrNqJoyS9W4/Fb8mo31UiPvy00z7DQXkP2hnKBVav76thw==}
-    engines: {node: '>=20'}
 
   string.prototype.codepointat@0.2.1:
     resolution: {integrity: sha512-2cBVCj6I4IOvEnjgO/hWqXjqBGsY+zwPmHl12Srk9IXSZ56Jwwmy+66XO5Iut/oQVR7t5ihYdLB0GMa4alEUcg==}
@@ -13256,10 +13225,6 @@ packages:
   yocto-queue@1.2.2:
     resolution: {integrity: sha512-4LCcse/U2MHZ63HAJVE+v71o7yOdIe4cZ70Wpf8D/IyjDKYQLV5GD46B+hSTjJsvV5PztjvHoU580EftxjDZFQ==}
     engines: {node: '>=12.20'}
-
-  yoctocolors@2.1.2:
-    resolution: {integrity: sha512-CzhO+pFNo8ajLM2d2IW/R93ipy99LWjtwblvC1RsoSUMZgyLbYFr221TnSNT7GjGdYui6P459mw9JH/g/zW2ug==}
-    engines: {node: '>=18'}
 
   yoga-layout@3.2.1:
     resolution: {integrity: sha512-0LPOt3AxKqMdFBZA3HBAt/t/8vIKq7VaQYbuA8WxCgung+p9TVyKRYdpvCb80HcdTN2NkbIKbhNwKUfm3tQywQ==}
@@ -16304,7 +16269,7 @@ snapshots:
 
   '@juggle/resize-observer@3.4.0': {}
 
-  '@keystar/ui@0.8.0(next@16.2.10(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react-aria@3.50.0(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react-dom@19.2.5(react@19.2.5))(react-stately@3.48.0(react@19.2.5))(react@19.2.5)':
+  '@keystar/ui@0.8.1(next@16.2.10(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react-aria@3.50.0(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react-dom@19.2.5(react@19.2.5))(react-stately@3.48.0(react@19.2.5))(react@19.2.5)':
     dependencies:
       '@babel/runtime': 7.29.2
       '@emotion/css': 11.13.5
@@ -16317,15 +16282,15 @@ snapshots:
       emery: 1.4.4
       facepaint: 1.2.1
       react: 19.2.5
+      react-aria: 3.50.0(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
       react-dom: 19.2.5(react@19.2.5)
+      react-stately: 3.48.0(react@19.2.5)
     optionalDependencies:
       next: 16.2.10(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
-      react-aria: 3.50.0(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
-      react-stately: 3.48.0(react@19.2.5)
     transitivePeerDependencies:
       - supports-color
 
-  '@keystatic/core@0.6.0(@keystar/ui@0.8.0(next@16.2.10(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react-aria@3.50.0(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react-dom@19.2.5(react@19.2.5))(react-stately@3.48.0(react@19.2.5))(react@19.2.5))(react-aria@3.50.0(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react-dom@19.2.5(react@19.2.5))(react-stately@3.48.0(react@19.2.5))(react@19.2.5)':
+  '@keystatic/core@0.6.1(@keystar/ui@0.8.1(next@16.2.10(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react-aria@3.50.0(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react-dom@19.2.5(react@19.2.5))(react-stately@3.48.0(react@19.2.5))(react@19.2.5))(react-aria@3.50.0(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react-dom@19.2.5(react@19.2.5))(react-stately@3.48.0(react@19.2.5))(react@19.2.5)':
     dependencies:
       '@babel/runtime': 7.29.2
       '@braintree/sanitize-url': 6.0.4
@@ -16334,6 +16299,7 @@ snapshots:
       '@internationalized/date': 3.12.2
       '@internationalized/number': 3.6.7
       '@internationalized/string': 3.2.9
+      '@keystar/ui': 0.8.1(next@16.2.10(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react-aria@3.50.0(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react-dom@19.2.5(react@19.2.5))(react-stately@3.48.0(react@19.2.5))(react@19.2.5)
       '@markdoc/markdoc': 0.4.0(@types/react@19.2.14)(react@19.2.5)
       '@react-types/shared': 3.36.0(react@19.2.5)
       '@sindresorhus/slugify': 1.1.2
@@ -16377,7 +16343,9 @@ snapshots:
       prosemirror-transform: 1.12.0
       prosemirror-view: 1.41.8
       react: 19.2.5
+      react-aria: 3.50.0(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
       react-dom: 19.2.5(react@19.2.5)
+      react-stately: 3.48.0(react@19.2.5)
       scroll-into-view-if-needed: 3.1.0
       slate: 0.91.4
       slate-history: 0.86.0(slate@0.91.4)
@@ -16388,17 +16356,13 @@ snapshots:
       y-prosemirror: 1.3.7(prosemirror-model@1.25.4)(prosemirror-state@1.4.4)(prosemirror-view@1.41.8)(y-protocols@1.0.7(yjs@13.6.30))(yjs@13.6.30)
       y-protocols: 1.0.7(yjs@13.6.30)
       yjs: 13.6.30
-    optionalDependencies:
-      '@keystar/ui': 0.8.0(next@16.2.10(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react-aria@3.50.0(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react-dom@19.2.5(react@19.2.5))(react-stately@3.48.0(react@19.2.5))(react@19.2.5)
-      react-aria: 3.50.0(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
-      react-stately: 3.48.0(react@19.2.5)
     transitivePeerDependencies:
       - supports-color
 
-  '@keystatic/next@5.0.4(@keystatic/core@0.6.0(@keystar/ui@0.8.0(next@16.2.10(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react-aria@3.50.0(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react-dom@19.2.5(react@19.2.5))(react-stately@3.48.0(react@19.2.5))(react@19.2.5))(react-aria@3.50.0(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react-dom@19.2.5(react@19.2.5))(react-stately@3.48.0(react@19.2.5))(react@19.2.5))(next@16.2.10(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react-dom@19.2.5(react@19.2.5))(react@19.2.5)':
+  '@keystatic/next@5.0.4(@keystatic/core@0.6.1(@keystar/ui@0.8.1(next@16.2.10(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react-aria@3.50.0(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react-dom@19.2.5(react@19.2.5))(react-stately@3.48.0(react@19.2.5))(react@19.2.5))(react-aria@3.50.0(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react-dom@19.2.5(react@19.2.5))(react-stately@3.48.0(react@19.2.5))(react@19.2.5))(next@16.2.10(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react-dom@19.2.5(react@19.2.5))(react@19.2.5)':
     dependencies:
       '@babel/runtime': 7.29.2
-      '@keystatic/core': 0.6.0(@keystar/ui@0.8.0(next@16.2.10(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react-aria@3.50.0(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react-dom@19.2.5(react@19.2.5))(react-stately@3.48.0(react@19.2.5))(react@19.2.5))(react-aria@3.50.0(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react-dom@19.2.5(react@19.2.5))(react-stately@3.48.0(react@19.2.5))(react@19.2.5)
+      '@keystatic/core': 0.6.1(@keystar/ui@0.8.1(next@16.2.10(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react-aria@3.50.0(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react-dom@19.2.5(react@19.2.5))(react-stately@3.48.0(react@19.2.5))(react@19.2.5))(react-aria@3.50.0(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react-dom@19.2.5(react@19.2.5))(react-stately@3.48.0(react@19.2.5))(react@19.2.5)
       '@types/react': 19.2.14
       chokidar: 3.6.0
       next: 16.2.10(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
@@ -19076,8 +19040,6 @@ snapshots:
 
   cli-spinners@2.9.2: {}
 
-  cli-spinners@3.4.0: {}
-
   cli-truncate@2.1.0:
     dependencies:
       slice-ansi: 3.0.0
@@ -21253,11 +21215,6 @@ snapshots:
       chalk: 5.6.2
       is-unicode-supported: 1.3.0
 
-  log-symbols@7.0.1:
-    dependencies:
-      is-unicode-supported: 2.1.0
-      yoctocolors: 2.1.2
-
   log-update@4.0.0:
     dependencies:
       ansi-escapes: 4.3.2
@@ -22530,17 +22487,6 @@ snapshots:
       stdin-discarder: 0.2.2
       string-width: 7.2.0
       strip-ansi: 7.2.0
-
-  ora@9.4.0:
-    dependencies:
-      chalk: 5.6.2
-      cli-cursor: 5.0.0
-      cli-spinners: 3.4.0
-      is-interactive: 2.0.0
-      is-unicode-supported: 2.1.0
-      log-symbols: 7.0.1
-      stdin-discarder: 0.3.2
-      string-width: 8.2.0
 
   orderedmap@2.1.1: {}
 
@@ -24097,8 +24043,6 @@ snapshots:
 
   stdin-discarder@0.2.2: {}
 
-  stdin-discarder@0.3.2: {}
-
   stream-browserify@3.0.0:
     dependencies:
       inherits: 2.0.4
@@ -24123,11 +24067,6 @@ snapshots:
   string-width@7.2.0:
     dependencies:
       emoji-regex: 10.6.0
-      get-east-asian-width: 1.5.0
-      strip-ansi: 7.2.0
-
-  string-width@8.2.0:
-    dependencies:
       get-east-asian-width: 1.5.0
       strip-ansi: 7.2.0
 
@@ -24993,8 +24932,6 @@ snapshots:
   yocto-queue@0.1.0: {}
 
   yocto-queue@1.2.2: {}
-
-  yoctocolors@2.1.2: {}
 
   yoga-layout@3.2.1: {}
 

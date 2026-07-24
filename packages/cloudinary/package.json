@@ -28,11 +28,6 @@
     "react-dom": "^19.0.0",
     "@keystar/ui": "catalog:"
   },
-  "peerDependenciesMeta": {
-    "@keystar/ui": {
-      "optional": true
-    }
-  },
   "devDependencies": {
     "@keystone-6/core": "workspace:^",
     "@types/express": "catalog:",

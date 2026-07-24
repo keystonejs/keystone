@@ -293,15 +293,6 @@
     "react-stately": "catalog:"
   },
   "peerDependenciesMeta": {
-    "@keystar/ui": {
-      "optional": true
-    },
-    "react-aria": {
-      "optional": true
-    },
-    "react-stately": {
-      "optional": true
-    },
     "better-sqlite3": {
       "optional": true
     },
