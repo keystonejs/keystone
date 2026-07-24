@@ -17,6 +17,7 @@ To see how to access fields in the GraphQL API please see the [GraphQL API](../g
 import { config, list } from '@keystone-6/core'
 import {
   // Scalar types
+  bytes,
   checkbox,
   integer,
   bigInt,
