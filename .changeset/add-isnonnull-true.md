@@ -2,4 +2,4 @@
 "@keystone-6/core": major
 ---
 
-Add support for `[field].graphql.isNonNull: true`
+Adds support for `[field].graphql.isNonNull: true`

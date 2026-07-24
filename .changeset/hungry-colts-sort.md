@@ -2,4 +2,4 @@
 '@keystone-6/core': major
 ---
 
-Update `@apollo/server` to v5
+Updates `@apollo/server` to v5

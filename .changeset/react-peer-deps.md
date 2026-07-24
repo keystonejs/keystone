@@ -5,4 +5,4 @@
 '@keystone-6/auth': major
 ---
 
-`react` and `react-dom` are also now peer dependencies.
+Moves `react` and `react-dom` to peer dependencies.
