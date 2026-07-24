@@ -26,7 +26,7 @@ const context = {
 
   // Session API
   session,
-  sessionStrategy
+  sessionStrategy,
 
   // GraphQL helpers
   graphql: {
@@ -41,22 +41,19 @@ const context = {
   withRequest,
   withSession,
 
+  // Transactions
+  transaction,
+
   // Raw Prisma access
   prisma,
-
-  // Images API
-  images: {
-    getUrl,
-    getDataFromRef,
-    getDataFromStream,
-  },
 }
 ```
 
 ### HTTP request object
 
 `req`: The [IncomingMessage](https://nodejs.org/api/http.html#class-httpincomingmessage) object from the HTTP request.
-`res`: The [ServerResonse](https://nodejs.org/api/http.html#class-httpserverresponse) object for HTTP request.
+`res`: The [ServerResponse](https://nodejs.org/api/http.html#class-httpserverresponse) object for the HTTP request.
+
 ### Query API
 
 `query`: The [Query API](./query), which can be used to perform CRUD operations against your GraphQL API and return a queried value.
@@ -111,33 +108,12 @@ The following functions will create a new `Context` object with this behaviour m
 The `Context` object exposes the underlying database driver directly via `context.prisma`, which is a [Prisma Client](https://www.prisma.io/docs/reference/api-reference/prisma-client-reference) object.
 
 {% hint kind="tip" %}
-**\*Warning** Unlike other data access functions (`context.db`, `context.query` or `context.graphql`), `context.prisma` always bypasses the GraphQL schema and your access control. It is the equivalent of using `.sudo()` always.
+**Warning:** Unlike other data access functions (`context.db`, `context.query` or `context.graphql`), `context.prisma` always bypasses the GraphQL schema and your access control. It is the equivalent of using `.sudo()` always.
+{% /hint %}
 
-### Images API
+### Transactions
 
-If [support for image fields](../config/config#storage-images-and-files) is enabled in the system, then an `images` API will be made available on the `context` object.
-This API takes advantage of the following types:
-
-```
-type ImageMode = 'local';
-
-type ImageExtension = 'jpg' | 'png' | 'webp' | 'gif';
-
-type ImageData = {
-  mode: ImageMode;
-  id: string;
-  extension: ImageExtension;
-  filesize: number;
-  width: number;
-  height: number;
-};
-```
-
-`image.getUrl(mode, id, extension)`: Given a `mode`, `id`, and `extension` from an `ImageData` object, returns the `src` value representing the location from which the image can be accessed over HTTP.
-
-`async images.getDataFromRef(ref)`: Given a `ref` string, taken from the `id` field of an existing image, returns an `ImageData` object.
-
-`async images.getDataFromStream(stream)`: Given a readable data stream, returns an `ImageData` object. The `mode` will be taken from `config.images.mode`, and `id` will be a `uuid` value. The other values will be inferred from the data stream itself. The contents of the stream will be written to the filesystem at `config.images.local.storagePath`.
+`transaction(fn, options)`: Runs `fn` inside a Prisma transaction and passes it a new `Context` object backed by the transaction client. The optional `options` argument is forwarded to Prisma's `$transaction` call.
 
 ## Related resources
 

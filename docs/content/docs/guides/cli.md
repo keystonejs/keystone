@@ -30,7 +30,7 @@ Options
   --no-prisma (build, dev)
     don't build or validate the prisma schema
 
-  --no-server (dev)
+  --no-server (dev, start)
     don't start the express server
 
   --no-ui (build, dev, start)
@@ -88,7 +88,7 @@ This is the command you use to start Keystone for local development. It will:
 
 ### About database migrations
 
-When using `keystone dev` the default behaviour is for Keystone to update your database to match your schema using Prisma Migrate. This behaviour is great for the rapid iteration of a schema, but can be modified in the following ways:
+When using `keystone dev` the default behaviour is for Keystone to update your database to match your schema using Prisma `db push`. This behaviour is great for the rapid iteration of a schema, but can be modified in the following ways:
 
 - Running `keystone dev --no-db-push` - This will skip the dev migration step and not perform any checks on your database to ensure it matches your schema. This can be useful if you have an existing database or want to handle all migrations yourself. Be aware that this may lead to GraphQL runtime errors if a table or table column is unavailable.
 
@@ -230,7 +230,7 @@ Run `prisma migrate deploy` as a separate step before starting Keystone. `keysto
 
 #### Notes
 
-- These examples use `yarn` as the package manager, you can use others like `npm` or `pnpm` if you prefer.
+- These examples use `npm` as the package manager; you can use others like `yarn` or `pnpm` if you prefer.
 - The commands above are included in the `package.json` reference at the top of this page. We recommend using package scripts so your build and start commands are centralised in source control.
 - If you promote your build through separate environments in a pipeline (e.g testing → staging → production) you should run migrations during the **promote** step and **not** as part of the build script.
 - It is important you do **not run migrations against your production database from staging builds**. If you have staging or preview environments set up in production, make sure they are not pointed to your production database.

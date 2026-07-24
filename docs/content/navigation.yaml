@@ -157,6 +157,11 @@ navGroups:
           discriminant: page
           value: fields/bigint
         status: default
+      - label: Bytes
+        link:
+          discriminant: page
+          value: fields/bytes
+        status: default
       - label: Calendar Day
         link:
           discriminant: page

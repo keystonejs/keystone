@@ -21,7 +21,7 @@ export default defineConfig({
 })
 ```
 
-Keystone creates this file when it doesn't exist, but doesn't update or read an existing file. Keystone uses it's own `config.db.prismaSchemaPath` to define where the Prisma schema is written.
+Keystone creates this file when it doesn't exist, but doesn't update or read an existing file. Keystone uses its own `config.db.prismaSchemaPath` to define where the Prisma schema is written.
 
 When your provider requires a shadow database, configure it according to the [Prisma shadow database documentation](https://www.prisma.io/docs/orm/prisma-migrate/understanding-prisma-migrate/shadow-database).
 

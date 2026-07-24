@@ -64,7 +64,7 @@ export function myInt <ListTypeInfo extends BaseListTypeInfo>({
 ### DB Field
 
 `fieldType` is called with the _db field_ which defines what the field should store in the database.
-Here it's an integer (`scalar: 'Int'`) but there are other kinds which you can find in [the type definitions for `DBField`](https://github.com/keystonejs/keystone/blob/5f4ecfc4281f979456326bc1a982e9bf90327ad6/packages-next/types/src/next-fields.ts#L105-L155).
+Here it's an integer (`scalar: 'Int'`) but there are other kinds which you can find in [the type definitions for `DBField`](https://github.com/keystonejs/keystone/blob/main/packages/core/src/types/next-fields.ts).
 
 ### Inputs
 

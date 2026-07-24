@@ -13,7 +13,7 @@ To view the config for your new app, look at [./keystone.ts](./keystone.ts)
 
 This project starter is designed to give you a sense of the power Keystone can offer you, and show off some of its main features. It's also a pretty simple setup if you want to build out from it.
 
-We recommend you use this alongside our [getting started walkthrough](https://keystonejs.com/docs/walkthroughs/getting-started-with-create-keystone-app) which will walk you through what you get as part of this starter.
+We recommend you use this alongside our [getting started guide](https://keystonejs.com/docs/getting-started), which will walk you through what you get as part of this starter.
 
 If you want an overview of all the features Keystone offers, check out our [features](https://keystonejs.com/why-keystone#features) page.
 
