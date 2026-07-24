@@ -830,6 +830,34 @@ importers:
         specifier: 'catalog:'
         version: 6.0.3
 
+  examples/custom-session-api-key:
+    dependencies:
+      '@keystone-6/auth':
+        specifier: workspace:^
+        version: link:../../packages/auth
+      '@keystone-6/core':
+        specifier: workspace:^
+        version: link:../../packages/core
+      '@prisma/client':
+        specifier: 'catalog:'
+        version: 6.19.3(prisma@6.19.3(magicast@0.3.5)(typescript@6.0.3))(typescript@6.0.3)
+      next:
+        specifier: 'catalog:'
+        version: 16.2.10(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
+      react:
+        specifier: 'catalog:'
+        version: 19.2.5
+      react-dom:
+        specifier: 'catalog:'
+        version: 19.2.5(react@19.2.5)
+    devDependencies:
+      prisma:
+        specifier: 'catalog:'
+        version: 6.19.3(magicast@0.3.5)(typescript@6.0.3)
+      typescript:
+        specifier: 'catalog:'
+        version: 6.0.3
+
   examples/custom-session-invalidation:
     dependencies:
       '@keystone-6/auth':
