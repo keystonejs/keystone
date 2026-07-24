@@ -2,4 +2,4 @@
 "@keystone-6/document-renderer": minor
 ---
 
-Export `Element`, `Text` and `Node` types
+Adds exports for the `Element`, `Text` and `Node` types

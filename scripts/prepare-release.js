@@ -4,7 +4,16 @@ const { default: getReleasePlan } = require('@changesets/get-release-plan')
 const { getInfo } = require('@changesets/get-github-info')
 
 // TODO: move this to CI linting
-const verbs = new Set(['Adds', 'Changes', 'Fixes', 'Moves', 'Removes', 'Updates', 'Upgrade'])
+const verbs = new Set([
+  'Adds',
+  'Changes',
+  'Fixes',
+  'Moves',
+  'Removes',
+  'Updates',
+  'Upgrades',
+  'Replaces',
+])
 
 // TODO: derived?
 const publicPackages = [
@@ -160,7 +169,7 @@ ${packages.join('\n')}
 }
 
 function formatChange({ packages, summary, pull, user }) {
-  return `- \`[${packages.join(', ')}]\` ${summary} (#${pull}) @${user}`
+  return `- \`[${packages.join(', ')}]\` ${summary}${pull ? ` (#${pull})` : ''} @${user}`
 }
 
 function formatCVE({ id, href, upstream, description }) {

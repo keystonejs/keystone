@@ -3,4 +3,4 @@
 "@keystone-6/core": major
 ---
 
-Update `@apollo/client` to v4
+Updates `@apollo/client` to v4

@@ -2,4 +2,4 @@
 "@keystone-6/core": patch
 ---
 
-Use automatic JSX runtime in esbuild to align with Next build process
+Changes esbuild to use the automatic JSX runtime to align with the Next build process
