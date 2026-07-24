@@ -330,7 +330,11 @@ export async function dev(
         return expressServer(req, res, next)
       }
 
-      res.sendFile(devLoadingHTMLFilepath)
+      res.sendFile(devLoadingHTMLFilepath, {
+        // since in pnpm the static file will be in node_modules/.pnpm and this check
+        // checks if any path segment starts with a dot
+        dotfiles: 'allow',
+      })
     })
 
     const httpOptions: ListenOptions = {
