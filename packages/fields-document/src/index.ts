@@ -9,7 +9,7 @@ import {
   type ListSortDescriptor,
   fieldType,
 } from '@keystone-6/core/types'
-import { GraphQLError } from 'graphql'
+import { GraphQLError } from 'graphql/index.js'
 import type { ComponentBlock } from './DocumentEditor/component-blocks/api-shared'
 import { assertValidComponentSchema } from './DocumentEditor/component-blocks/field-assertions'
 import type { Relationships } from './DocumentEditor/relationship-shared'

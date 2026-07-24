@@ -1,7 +1,7 @@
 import fs from 'node:fs/promises'
 import path from 'node:path'
 
-import { printSchema } from 'graphql'
+import { printSchema } from 'graphql/index.js'
 import { printPrismaSchema } from './lib/core/prisma-schema-printer'
 import { withSpan } from './lib/otel'
 import type { System } from './lib/system'

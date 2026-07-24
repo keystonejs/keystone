@@ -6,7 +6,7 @@ import path from 'node:path'
 
 import esbuild, { type BuildResult } from 'esbuild'
 import express from 'express'
-import { printSchema } from 'graphql'
+import { printSchema } from 'graphql/index.js'
 import next from 'next'
 
 import { generateAdminUI } from '../admin-ui/system'

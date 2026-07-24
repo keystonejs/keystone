@@ -1,6 +1,6 @@
 import { type CacheHint, maybeCacheControlFromInfo } from '@apollo/cache-control-types'
 import DataLoader from 'dataloader'
-import type { GraphQLResolveInfo } from 'graphql'
+import type { GraphQLResolveInfo } from 'graphql/index.js'
 
 import { g } from '../../..'
 import type {

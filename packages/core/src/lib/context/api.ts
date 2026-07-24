@@ -1,4 +1,4 @@
-import type { GraphQLSchema } from 'graphql'
+import type { GraphQLSchema } from 'graphql/index.js'
 import type { KeystoneContext } from '../../types'
 import type { InitialisedList } from '../core/initialise-lists'
 import { makeContextDbFn, makeContextQueryFn } from './graphql'
