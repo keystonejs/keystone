@@ -1,10 +1,10 @@
 import { Element, Editor, Node, Range, Transforms, Text } from 'slate'
 
-import type { DocumentFeatures } from '../views'
-import { EditorAfterButIgnoringingPointsWithNoContent, isElementActive } from './utils'
-import { getAncestorComponentChildFieldDocumentFeatures } from './toolbar-state-shared'
-import type { ComponentBlock } from './component-blocks/api'
-import { isInlineContainer } from './editor-shared'
+import type { DocumentFeatures } from '../views.tsx'
+import { EditorAfterButIgnoringingPointsWithNoContent, isElementActive } from './utils.ts'
+import { getAncestorComponentChildFieldDocumentFeatures } from './toolbar-state-shared.ts'
+import type { ComponentBlock } from './component-blocks/api.tsx'
+import { isInlineContainer } from './editor-shared.ts'
 
 const isLinkActive = (editor: Editor) => {
   return isElementActive(editor, 'link')

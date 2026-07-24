@@ -1,7 +1,7 @@
 import { Button } from '@keystar/ui/button'
 import { Text } from '@keystar/ui/typography'
 
-import type { ListMeta } from '../../types'
+import type { ListMeta } from '../../types/index.ts'
 
 export function CreateButtonLink(props: { children?: string; list: ListMeta }) {
   const { list, children = `Create ${list.singular}` } = props

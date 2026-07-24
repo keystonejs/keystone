@@ -3,9 +3,9 @@
 /** @jsx jsx */
 import { expect, test } from 'vitest'
 import { Transforms } from 'slate'
-import { insertComponentBlock } from '.'
-import { component, fields } from '../../component-blocks'
-import { makeEditor, jsx } from '../tests/utils'
+import { insertComponentBlock } from './index.tsx'
+import { component, fields } from '../../component-blocks.tsx'
+import { makeEditor, jsx } from '../tests/utils.tsx'
 
 const componentBlocks = {
   basic: component({

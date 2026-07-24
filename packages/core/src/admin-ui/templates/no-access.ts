@@ -1,4 +1,4 @@
-import type { KeystoneConfig } from '../../types'
+import type { KeystoneConfig } from '../../types/index.ts'
 
 export const noAccessTemplate = (session: KeystoneConfig['session']) =>
   `import { getNoAccessPage } from '@keystone-6/core/___internal-do-not-use-will-break-in-patch/admin-ui/pages/NoAccessPage';

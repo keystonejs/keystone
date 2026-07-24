@@ -3,10 +3,10 @@ import fs from 'node:fs/promises'
 import Path from 'node:path'
 import { promisify } from 'node:util'
 
-import type { AdminMetaSource } from '../../lib/admin-meta'
-import type { AdminFileToWrite, KeystoneConfig } from '../../types'
-import { writeAdminFiles } from '../templates'
-import { withSpan } from '../../lib/otel'
+import type { AdminMetaSource } from '../../lib/admin-meta.ts'
+import type { AdminFileToWrite, KeystoneConfig } from '../../types/index.ts'
+import { writeAdminFiles } from '../templates/index.ts'
+import { withSpan } from '../../lib/otel.ts'
 
 const walk = promisify(_walk)
 

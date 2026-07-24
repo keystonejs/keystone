@@ -1,15 +1,15 @@
-import { g } from '../../..'
-import { humanize } from '../../../lib/utils'
-import type { JSONValue } from '../../../types'
+import { g } from '../../../index.ts'
+import { humanize } from '../../../lib/utils.ts'
+import type { JSONValue } from '../../../types/index.ts'
 import {
   type BaseListTypeInfo,
   type CommonFieldConfig,
   type FieldData,
   fieldType,
   type FieldTypeFunc,
-} from '../../../types'
-import { makeValidateHook } from '../../non-null-graphql'
-import type { controller } from './views'
+} from '../../../types/index.ts'
+import { makeValidateHook } from '../../non-null-graphql.ts'
+import type { controller } from './views/index.tsx'
 
 type FieldTypeInfo = {
   item: JSONValue | null

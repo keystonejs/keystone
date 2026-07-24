@@ -8,8 +8,8 @@ import {
   type FieldProps,
   type SimpleFieldTypeInfo,
   Decimal,
-} from '../../../../types'
-import { entriesTyped } from '../../../../lib/core/utils'
+} from '../../../../types/index.ts'
+import { entriesTyped } from '../../../../lib/core/utils.ts'
 
 const TYPE_OPERATOR_MAP = {
   equals: '=',

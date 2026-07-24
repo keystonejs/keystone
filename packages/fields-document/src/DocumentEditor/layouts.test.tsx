@@ -2,7 +2,7 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 import { expect, test } from 'vitest'
-import { jsx, makeEditor } from './tests/utils'
+import { jsx, makeEditor } from './tests/utils.tsx'
 
 test('layout with no layout are unwrapped', () => {
   const editor = makeEditor(

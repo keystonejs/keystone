@@ -9,8 +9,8 @@ import {
   GraphQLScalarType,
   introspectionTypes,
 } from 'graphql/index.js'
-import type { InitialisedList } from './core/initialise-lists'
-import type { DatabaseProvider } from '../types'
+import type { InitialisedList } from './core/initialise-lists.ts'
+import type { DatabaseProvider } from '../types/index.ts'
 
 const introspectionTypesSet = new Set(introspectionTypes)
 

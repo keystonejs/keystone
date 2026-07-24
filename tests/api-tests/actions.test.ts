@@ -3,8 +3,8 @@ import { action, g, list } from '@keystone-6/core'
 import { allowAll } from '@keystone-6/core/access'
 import { text } from '@keystone-6/core/fields'
 
-import { adminMetaQuery } from '../../packages/core/src/admin-ui/admin-meta-graphql'
-import { setupTestRunner } from './test-runner'
+import { adminMetaQuery } from '../../packages/core/src/admin-ui/admin-meta-graphql.ts'
+import { setupTestRunner } from './test-runner.ts'
 
 const runner = setupTestRunner({
   config: {

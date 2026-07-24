@@ -3,14 +3,14 @@ import { text, image } from '@keystone-6/core/fields'
 import { list } from '@keystone-6/core'
 import { setupTestRunner } from '@keystone-6/api-tests/test-runner'
 import { allowAll } from '@keystone-6/core/access'
-import { expectSingleResolverError } from '../utils'
+import { expectSingleResolverError } from '../utils.ts'
 import {
   collectStream,
   inMemoryStorageStrategy,
   noopStorageStrategy,
   prepareTestFile,
   readTestFile,
-} from './storage-utils'
+} from './storage-utils.ts'
 // @ts-expect-error
 import Upload from 'graphql-upload/Upload.js'
 import { Readable } from 'stream'

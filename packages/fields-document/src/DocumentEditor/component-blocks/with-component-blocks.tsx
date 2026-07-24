@@ -1,16 +1,16 @@
 import { type NodeEntry, Editor, Element, Transforms, Range, Path, Node, Text } from 'slate'
 
 import weakMemoize from '@emotion/weak-memoize'
-import type { ArrayField, ChildField, ComponentBlock, ComponentSchema } from './api-shared'
-import { assert, moveChildren } from '../utils'
-import type { DocumentFeatures } from '../../views-shared'
+import type { ArrayField, ChildField, ComponentBlock, ComponentSchema } from './api-shared.ts'
+import { assert, moveChildren } from '../utils.ts'
+import type { DocumentFeatures } from '../../views-shared.ts'
 import {
   areArraysEqual,
   normalizeElementBasedOnDocumentFeatures,
   normalizeInlineBasedOnLinksAndRelationships,
   normalizeTextBasedOnInlineMarksAndSoftBreaks,
-} from '../document-features-normalization'
-import type { Relationships } from '../relationship-shared'
+} from '../document-features-normalization.ts'
+import type { Relationships } from '../relationship-shared.ts'
 import {
   type DocumentFeaturesForChildField,
   type ReadonlyPropPath,
@@ -21,9 +21,13 @@ import {
   getValueAtPropPath,
   replaceValueAtPropPath,
   traverseProps,
-} from './utils'
-import { getInitialPropsValue } from './initial-values'
-import { getKeysForArrayValue, getNewArrayElementKey, setKeysForArrayValue } from './preview-props'
+} from './utils.ts'
+import { getInitialPropsValue } from './initial-values.ts'
+import {
+  getKeysForArrayValue,
+  getNewArrayElementKey,
+  setKeysForArrayValue,
+} from './preview-props.ts'
 
 function getAncestorComponentBlock(editor: Editor) {
   if (editor.selection) {

@@ -1,8 +1,8 @@
 import { useMemo } from 'react'
 import type { Element, Node } from 'slate'
 
-import { useToolbarState } from './toolbar-state'
-import { toggleList } from './lists-shared'
+import { useToolbarState } from './toolbar-state.tsx'
+import { toggleList } from './lists-shared.ts'
 import { Icon } from '@keystar/ui/icon'
 import { Kbd, Text } from '@keystar/ui/typography'
 import { listIcon } from '@keystar/ui/icon/icons/listIcon'

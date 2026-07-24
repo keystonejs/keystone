@@ -19,7 +19,7 @@ import type {
   FieldController,
   FieldControllerConfig,
   FieldProps,
-} from '../../../../types'
+} from '../../../../types/index.ts'
 
 function validate(
   value: Value,

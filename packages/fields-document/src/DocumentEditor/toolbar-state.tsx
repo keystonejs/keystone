@@ -1,12 +1,12 @@
 import React, { type ReactNode, useContext } from 'react'
 import { useSlate } from 'slate-react'
-import type { DocumentFeatures } from '../views'
-import { ComponentBlockContext } from './component-blocks'
-import type { ComponentBlock } from './component-blocks/api'
-import { LayoutOptionsProvider } from './layouts'
-import { DocumentFieldRelationshipsProvider, type Relationships } from './relationship'
+import type { DocumentFeatures } from '../views.tsx'
+import { ComponentBlockContext } from './component-blocks/index.tsx'
+import type { ComponentBlock } from './component-blocks/api.tsx'
+import { LayoutOptionsProvider } from './layouts.tsx'
+import { DocumentFieldRelationshipsProvider, type Relationships } from './relationship.tsx'
 
-import { type ToolbarState, createToolbarState } from './toolbar-state-shared'
+import { type ToolbarState, createToolbarState } from './toolbar-state-shared.ts'
 
 const ToolbarStateContext = React.createContext<null | ToolbarState>(null)
 

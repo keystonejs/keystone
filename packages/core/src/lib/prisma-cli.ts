@@ -3,7 +3,7 @@ import fs from 'node:fs/promises'
 import os from 'node:os'
 import path from 'node:path'
 
-import { ExitError } from '../scripts/utils'
+import { ExitError } from '../scripts/utils.ts'
 import { createRequire } from 'node:module'
 
 export type PrismaOutput = 'inherit' | 'capture'

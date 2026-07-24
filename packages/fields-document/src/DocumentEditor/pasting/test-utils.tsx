@@ -1,7 +1,7 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { makeEditor, jsx } from '../tests/utils'
-import { MyDataTransfer } from './data-transfer'
+import { makeEditor, jsx } from '../tests/utils.tsx'
+import { MyDataTransfer } from './data-transfer.ts'
 
 export function htmlToEditor(html: string) {
   const editor = makeEditor(

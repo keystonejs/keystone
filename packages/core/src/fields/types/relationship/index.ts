@@ -1,5 +1,5 @@
-import { g } from '../../..'
-import { type ListMetaSource, getAdminMetaForRelationshipField } from '../../../lib/admin-meta'
+import { g } from '../../../index.ts'
+import { type ListMetaSource, getAdminMetaForRelationshipField } from '../../../lib/admin-meta.ts'
 import {
   type BaseListTypeInfo,
   type CommonFieldConfig,
@@ -8,8 +8,8 @@ import {
   type ListSortDescriptor,
   type MaybeItemFieldFunctionWithFilter,
   fieldType,
-} from '../../../types'
-import type { controller } from './views'
+} from '../../../types/index.ts'
+import type { controller } from './views/index.tsx'
 
 type ListKeyFromRef<Ref extends string> = Ref extends `${infer ListKey}.${string}` ? ListKey : Ref
 

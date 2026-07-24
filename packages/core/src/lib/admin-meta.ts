@@ -15,10 +15,10 @@ import type {
   MaybeItemFieldFunctionWithFilter,
   MaybePromise,
   MaybeSessionFunction,
-} from '../types'
-import type { ActionMeta, FieldMeta, ListMeta } from '../types/admin-meta'
-import type { GraphQLNames, JSONValue } from '../types/utils'
-import type { InitialisedList } from './core/initialise-lists'
+} from '../types/index.ts'
+import type { ActionMeta, FieldMeta, ListMeta } from '../types/admin-meta.ts'
+import type { GraphQLNames, JSONValue } from '../types/utils.ts'
+import type { InitialisedList } from './core/initialise-lists.ts'
 
 type EmptyResolver<Return> = (args: {}, context: KeystoneContext) => MaybePromise<Return>
 

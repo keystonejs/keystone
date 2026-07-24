@@ -1,15 +1,15 @@
 import { useState } from 'react'
 import { TextArea, TextField } from '@keystar/ui/text-field'
 
-import type { TextFieldMeta } from '..'
-import { NullableFieldWrapper } from '../../../../admin-ui/components'
-import { entriesTyped } from '../../../../lib/core/utils'
+import type { TextFieldMeta } from '../index.ts'
+import { NullableFieldWrapper } from '../../../../admin-ui/components/index.ts'
+import { entriesTyped } from '../../../../lib/core/utils.ts'
 import type {
   FieldController,
   FieldControllerConfig,
   FieldProps,
   SimpleFieldTypeInfo,
-} from '../../../../types'
+} from '../../../../types/index.ts'
 
 export function Field(props: FieldProps<typeof controller>) {
   const { autoFocus, field, forceValidation, onChange, value, isRequired } = props

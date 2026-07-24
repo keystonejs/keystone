@@ -1,14 +1,14 @@
-import type { SimpleFieldTypeInfo } from '../../../types'
+import type { SimpleFieldTypeInfo } from '../../../types/index.ts'
 import {
   type BaseListTypeInfo,
   type CommonFieldConfig,
   type FieldTypeFunc,
   fieldType,
   orderDirectionEnum,
-} from '../../../types'
-import { g } from '../../..'
-import { makeValidateHook, defaultIsRequired } from '../../non-null-graphql'
-import { filters } from '../../filters'
+} from '../../../types/index.ts'
+import { g } from '../../../index.ts'
+import { makeValidateHook, defaultIsRequired } from '../../non-null-graphql.ts'
+import { filters } from '../../filters/index.ts'
 
 export type TextFieldConfig<ListTypeInfo extends BaseListTypeInfo> = CommonFieldConfig<
   ListTypeInfo,

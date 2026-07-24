@@ -1,16 +1,16 @@
-import { g } from '../../..'
-import { humanize } from '../../../lib/utils'
-import type { SimpleFieldTypeInfo } from '../../../types'
+import { g } from '../../../index.ts'
+import { humanize } from '../../../lib/utils.ts'
+import type { SimpleFieldTypeInfo } from '../../../types/index.ts'
 import {
   type BaseListTypeInfo,
   type CommonFieldConfig,
   type FieldTypeFunc,
   fieldType,
   orderDirectionEnum,
-} from '../../../types'
-import { filters } from '../../filters'
-import { defaultIsRequired, makeValidateHook } from '../../non-null-graphql'
-import type { controller } from './views'
+} from '../../../types/index.ts'
+import { filters } from '../../filters/index.ts'
+import { defaultIsRequired, makeValidateHook } from '../../non-null-graphql.ts'
+import type { controller } from './views/index.tsx'
 
 export type SelectFieldConfig<ListTypeInfo extends BaseListTypeInfo> = CommonFieldConfig<
   ListTypeInfo,

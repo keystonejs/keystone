@@ -1,7 +1,7 @@
 import { describe, test } from 'vitest'
 import { decimal } from '@keystone-6/core/fields'
-import { dbProvider } from '../../utils'
-import { orderableFilterTests, filterTests, uniqueEqualityFilterTest } from './utils'
+import { dbProvider } from '../../utils.ts'
+import { orderableFilterTests, filterTests, uniqueEqualityFilterTest } from './utils.ts'
 
 if (dbProvider === 'sqlite') {
   test('jest requires at least one test in a file and the decimal field does not support SQLite', () => {})

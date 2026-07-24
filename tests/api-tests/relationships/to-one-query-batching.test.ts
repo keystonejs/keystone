@@ -2,8 +2,8 @@ import { expect, test } from 'vitest'
 import { list } from '@keystone-6/core'
 import { allowAll } from '@keystone-6/core/access'
 import { relationship, text } from '@keystone-6/core/fields'
-import { setupTestRunner } from '../test-runner'
-import { dbProvider, monitorLogs, prismaClientOptions, waitFor } from '../utils'
+import { setupTestRunner } from '../test-runner.ts'
+import { dbProvider, monitorLogs, prismaClientOptions, waitFor } from '../utils.ts'
 
 const runner = setupTestRunner({
   identifier: 'toqb',

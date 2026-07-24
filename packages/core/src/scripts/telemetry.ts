@@ -5,7 +5,7 @@ import {
   informTelemetry,
   resetTelemetry,
   statusTelemetry,
-} from '../lib/telemetry'
+} from '../lib/telemetry.ts'
 
 export async function telemetry(_: string, command?: string) {
   const usageText = `

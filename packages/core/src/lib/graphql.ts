@@ -1,13 +1,13 @@
 import type { GField, GOutputType } from '@graphql-ts/schema'
 import { type GraphQLNamedType, GraphQLSchema } from 'graphql/index.js'
 
-import type { KeystoneConfig, KeystoneContext } from '../types'
-import { g } from '../types/schema'
-import type { AdminMetaSource } from './admin-meta'
-import { KeystoneMeta } from './admin-meta-graphql'
-import type { InitialisedList } from './core/initialise-lists'
-import { getMutationsForList } from './core/mutations'
-import { getQueriesForList } from './core/queries'
+import type { KeystoneConfig, KeystoneContext } from '../types/index.ts'
+import { g } from '../types/schema/index.ts'
+import type { AdminMetaSource } from './admin-meta.ts'
+import { KeystoneMeta } from './admin-meta-graphql.ts'
+import type { InitialisedList } from './core/initialise-lists.ts'
+import { getMutationsForList } from './core/mutations/index.ts'
+import { getQueriesForList } from './core/queries/index.ts'
 
 function getGraphQLSchema(
   lists: Record<string, InitialisedList>,

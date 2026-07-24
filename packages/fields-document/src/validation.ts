@@ -1,15 +1,18 @@
 import { Editor, Text } from 'slate'
-import type { ComponentBlock, ComponentSchema } from './DocumentEditor/component-blocks/api-shared'
-import { type ReadonlyPropPath, assertNever } from './DocumentEditor/component-blocks/utils'
-import { createDocumentEditor } from './DocumentEditor/editor-shared'
-import type { Relationships } from './DocumentEditor/relationship-shared'
+import type {
+  ComponentBlock,
+  ComponentSchema,
+} from './DocumentEditor/component-blocks/api-shared.ts'
+import { type ReadonlyPropPath, assertNever } from './DocumentEditor/component-blocks/utils.ts'
+import { createDocumentEditor } from './DocumentEditor/editor-shared.ts'
+import type { Relationships } from './DocumentEditor/relationship-shared.ts'
 import {
   type Node,
   type TextWithMarks,
   isRelationshipData,
   validateDocumentStructure,
-} from './structure-validation'
-import type { DocumentFeatures } from './views-shared'
+} from './structure-validation.ts'
+import type { DocumentFeatures } from './views-shared.ts'
 
 export class PropValidationError extends Error {
   path: ReadonlyPropPath

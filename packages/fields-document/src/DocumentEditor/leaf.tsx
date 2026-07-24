@@ -1,6 +1,6 @@
 import { type ReactNode, useState } from 'react'
 import type { RenderLeafProps } from 'slate-react'
-import { InsertMenu } from './insert-menu'
+import { InsertMenu } from './insert-menu.tsx'
 import { css } from '@keystar/ui/style'
 
 function Placeholder({ placeholder, children }: { placeholder: string; children: ReactNode }) {

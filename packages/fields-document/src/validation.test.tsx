@@ -1,10 +1,10 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 import { expect, test } from 'vitest'
-import { component, type ComponentBlock, fields } from './DocumentEditor/component-blocks/api'
-import type { Relationships } from './DocumentEditor/relationship'
-import { defaultDocumentFeatures, makeEditor, jsx } from './DocumentEditor/tests/utils'
-import { PropValidationError, validateAndNormalizeDocument } from './validation'
+import { component, type ComponentBlock, fields } from './DocumentEditor/component-blocks/api.tsx'
+import type { Relationships } from './DocumentEditor/relationship.tsx'
+import { defaultDocumentFeatures, makeEditor, jsx } from './DocumentEditor/tests/utils.tsx'
+import { PropValidationError, validateAndNormalizeDocument } from './validation.ts'
 
 // note this is just about ensuring things fail validation
 // we already test that the correct input succeeds on validation in all of the other tests

@@ -3,18 +3,18 @@ import { createRequire } from 'node:module'
 import path from 'node:path'
 
 import esbuild from 'esbuild'
-import { generateAdminUI } from '../admin-ui/system'
+import { generateAdminUI } from '../admin-ui/system/index.ts'
 import {
   generateArtifacts,
   generatePrismaClient,
   generateTypes,
   validateArtifacts,
-} from '../artifacts'
-import { createSystem } from '../lib/system'
-import { ensurePrismaConfig } from '../lib/prisma-config'
-import type { Flags } from './cli'
-import { getEsbuildConfig, getEsbuildPrismaConfig } from './esbuild'
-import { ExitError, importBuiltKeystoneConfiguration } from './utils'
+} from '../artifacts.ts'
+import { createSystem } from '../lib/system.ts'
+import { ensurePrismaConfig } from '../lib/prisma-config.ts'
+import type { Flags } from './cli.ts'
+import { getEsbuildConfig, getEsbuildPrismaConfig } from './esbuild.ts'
+import { ExitError, importBuiltKeystoneConfiguration } from './utils.ts'
 
 export async function build(
   cwd: string,

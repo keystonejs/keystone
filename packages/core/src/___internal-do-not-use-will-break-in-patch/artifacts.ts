@@ -4,7 +4,7 @@ export {
   generatePrisma,
   generatePrismaClient,
   pushPrismaSchema,
-} from '../artifacts'
-export { createExpressServer } from '../lib/express'
-export { createSystem } from '../lib/system'
-export { ExitError } from '../scripts/utils'
+} from '../artifacts.ts'
+export { createExpressServer } from '../lib/express.ts'
+export { createSystem } from '../lib/system.ts'
+export { ExitError } from '../scripts/utils.ts'
