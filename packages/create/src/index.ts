@@ -4,10 +4,8 @@ import { fileURLToPath } from 'node:url'
 import { styleText } from 'node:util'
 
 import enquirer from 'enquirer'
-import execa from 'execa'
 import getPackageJson from 'package-json'
 import meow from 'meow'
-import ora from 'ora'
 
 import thisPackage from '../package.json'
 
@@ -77,24 +75,14 @@ async function normalizeArgs() {
   )
 
   const [packageManager] = process.env.npm_config_user_agent?.split('/', 1) ?? ['npm']
-  const spinner = ora(
-    `Installing dependencies with ${packageManager}. This may take a few minutes.`
-  ).start()
-  try {
-    await execa(packageManager, ['install'], { cwd: nextCwd })
-    spinner.succeed(`Installed dependencies with ${packageManager}.`)
-  } catch (err) {
-    spinner.fail(`Failed to install with ${packageManager}.`)
-    throw err
-  }
-
   const relativeProjectDir = path.relative(process.cwd(), normalizedArgs.directory)
   process.stdout.write('\n')
   console.log(`🎉  Keystone created a starter project in: ${styleText('bold', relativeProjectDir)}
 
-  ${styleText('bold', 'To launch your app, run:')}
+  ${styleText('bold', 'To install dependencies and launch your app, run:')}
 
   - cd ${relativeProjectDir}
+  - ${packageManager} install
   - ${packageManager} run dev
 
   ${styleText('bold', 'Next steps:')}
