@@ -10,7 +10,7 @@ export const TextField = throwAlways as unknown as typeof ui.TextField,
   TextArea = throwAlways as unknown as typeof ui.TextArea,
   Checkbox = throwAlways as unknown as typeof ui.Checkbox,
   Text = throwAlways as unknown as typeof ui.Text,
-  makeIntegerFieldInput = () => throwAlways as unknown as typeof ui.makeIntegerFieldInput,
-  makeSelectFieldInput = () => throwAlways as unknown as typeof ui.makeSelectFieldInput,
-  makeUrlFieldInput = () => throwAlways as unknown as typeof ui.makeUrlFieldInput,
-  makeMultiselectFieldInput = () => throwAlways as unknown as typeof ui.makeMultiselectFieldInput
+  makeIntegerFieldInput = (() => throwAlways) as unknown as typeof ui.makeIntegerFieldInput,
+  makeSelectFieldInput = (() => throwAlways) as unknown as typeof ui.makeSelectFieldInput,
+  makeUrlFieldInput = (() => throwAlways) as unknown as typeof ui.makeUrlFieldInput,
+  makeMultiselectFieldInput = (() => throwAlways) as unknown as typeof ui.makeMultiselectFieldInput
