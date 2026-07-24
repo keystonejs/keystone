@@ -1,5 +1,15 @@
 # create-keystone-app
 
+## 0.0.0-rc-20260724034235
+
+### Major Changes
+
+- [#9942](https://github.com/keystonejs/keystone/pull/9942) [`74ef343`](https://github.com/keystonejs/keystone/commit/74ef3431af5d30ea94c1dfda5f1012ca25d9a4dc) Thanks [@emmatown](https://github.com/emmatown)! - Removes auto-install, use your preferred package manager to install dependencies instead
+
+- [#9253](https://github.com/keystonejs/keystone/pull/9253) [`b7d0f1b`](https://github.com/keystonejs/keystone/commit/b7d0f1bc01764df7f92ca07289cbba30ad1b467f) Thanks [@dcousens](https://github.com/dcousens)! - Updates the `keystone-app` configuration to the newest major version
+
+- [#9929](https://github.com/keystonejs/keystone/pull/9929) [`5771edd`](https://github.com/keystonejs/keystone/commit/5771edde02279efffecb782b566e6be7fc6a6de9) Thanks [@emmatown](https://github.com/emmatown)! - Changes package to exclusively Node ESM. This is intended to be used by `require(esm)` and should not affect consumers beyond requiring a modern Node version. `keystone build` outputs are still CommonJS.
+
 ## 10.0.3
 
 ### Patch Changes

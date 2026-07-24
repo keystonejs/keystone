@@ -1,6 +1,6 @@
 {
   "name": "@keystone-6/auth",
-  "version": "9.0.0",
+  "version": "0.0.0-rc-20260724034235",
   "license": "MIT",
   "type": "module",
   "exports": {
@@ -21,7 +21,7 @@
     "react-dom": "catalog:"
   },
   "peerDependencies": {
-    "@keystone-6/core": "^7.0.0",
+    "@keystone-6/core": "0.0.0-rc-20260724034235",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "@keystar/ui": "catalog:"
