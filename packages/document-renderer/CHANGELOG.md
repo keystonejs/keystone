@@ -1,5 +1,15 @@
 # @keystone-6/document-renderer
 
+## 0.0.0-rc-20260724060115
+
+### Major Changes
+
+- [#9929](https://github.com/keystonejs/keystone/pull/9929) [`e8d4c99`](https://github.com/keystonejs/keystone/commit/e8d4c99f8f23d63c9bf6d2f1efa1a846c18c8eda) Thanks [@emmatown](https://github.com/emmatown)! - Changes package to exclusively Node ESM. This is intended to be used by `require(esm)` and should not affect consumers beyond requiring a modern Node version. `keystone build` outputs are still CommonJS.
+
+### Minor Changes
+
+- [#9556](https://github.com/keystonejs/keystone/pull/9556) [`f0e6aaf`](https://github.com/keystonejs/keystone/commit/f0e6aaf4ff7f72b6eb4cbabb1452f49643f82fcf) Thanks [@emmatown](https://github.com/emmatown)! - Export `Element`, `Text` and `Node` types
+
 ## 1.2.0
 
 ### Minor Changes
