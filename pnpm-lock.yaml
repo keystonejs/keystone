@@ -1457,9 +1457,6 @@ importers:
       '@apollo/client':
         specifier: ^4.1.6
         version: 4.1.9(graphql-ws@5.16.2(graphql@16.14.2))(graphql@16.14.2)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(rxjs@7.8.2)
-      '@emotion/css':
-        specifier: ^11.7.1
-        version: 11.13.5
       '@graphql-tools/schema':
         specifier: ^9.0.0
         version: 9.0.19(graphql@16.14.2)
