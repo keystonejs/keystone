@@ -1,13 +1,13 @@
 import { Element, Editor, Range, Text } from 'slate'
-import type { DocumentFeatures } from '../views-shared'
-import type { ComponentBlock } from './component-blocks/api-shared'
+import type { DocumentFeatures } from '../views-shared.ts'
+import type { ComponentBlock } from './component-blocks/api-shared.ts'
 import {
   type DocumentFeaturesForChildField,
   getSchemaAtPropPath,
   getDocumentFeaturesForChildField,
-} from './component-blocks/utils'
-import { isListNode } from './lists-shared'
-import { allMarks, isElementActive, type Mark, nodeTypeMatcher } from './utils'
+} from './component-blocks/utils.ts'
+import { isListNode } from './lists-shared.ts'
+import { allMarks, isElementActive, type Mark, nodeTypeMatcher } from './utils.ts'
 
 type BasicToolbarItem = { isSelected: boolean; isDisabled: boolean }
 

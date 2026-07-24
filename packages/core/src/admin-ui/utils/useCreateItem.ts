@@ -2,17 +2,17 @@ import { type ComponentProps, useEffect, useMemo, useRef, useState } from 'react
 
 import { toastQueue } from '@keystar/ui/toast'
 
-import type { Fields } from '.'
+import type { Fields } from './index.ts'
 import {
   makeDefaultValueState,
   serializeValueToOperationItem,
   useHasChanges,
   useInvalidFields,
-} from '../../admin-ui/utils'
-import type { ListMeta } from '../../types'
-import { type ErrorLike, gql, type TypedDocumentNode, useMutation } from '../apollo'
-import { useRouter } from '../router'
-import { usePreventNavigation } from './usePreventNavigation'
+} from './index.ts'
+import type { ListMeta } from '../../types/index.ts'
+import { type ErrorLike, gql, type TypedDocumentNode, useMutation } from '../apollo.ts'
+import { useRouter } from '../router.tsx'
+import { usePreventNavigation } from './usePreventNavigation.tsx'
 
 type CreateItemHookResult = {
   state: 'editing' | 'loading' | 'created'

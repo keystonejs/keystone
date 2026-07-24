@@ -2,16 +2,16 @@ import fs from 'node:fs/promises'
 import path from 'node:path'
 
 import { printSchema } from 'graphql/index.js'
-import { printPrismaSchema } from './lib/core/prisma-schema-printer'
-import { withSpan } from './lib/otel'
-import type { System } from './lib/system'
+import { printPrismaSchema } from './lib/core/prisma-schema-printer.ts'
+import { withSpan } from './lib/otel.ts'
+import type { System } from './lib/system.ts'
 import {
   formatPrismaSchema,
   generatePrisma,
   pushPrismaSchema,
   type PrismaOutput,
-} from './lib/prisma-cli'
-import { printGeneratedTypes } from './lib/typescript-schema-printer'
+} from './lib/prisma-cli.ts'
+import { printGeneratedTypes } from './lib/typescript-schema-printer.ts'
 
 export function getFormattedGraphQLSchema(schema: string) {
   return (

@@ -1,6 +1,6 @@
 import { assertInputObjectType } from 'graphql/index.js'
 
-import { allowAll } from '../../access'
+import { allowAll } from '../../access.ts'
 import type {
   ActionAccessControlFunction,
   BaseItem,
@@ -21,11 +21,20 @@ import type {
   ListQueryAccessControl,
   QueryOperationKind,
   UpdateListItemAccessControl,
-} from '../../types'
-import { coerceAndValidateForGraphQLInput } from '../coerceAndValidateForGraphQLInput'
-import { accessDeniedError, accessReturnError, extensionError, formatKeys } from './graphql-errors'
-import type { InitialisedAction, InitialisedList } from './initialise-lists'
-import { type InputFilter, type UniqueInputFilter, resolveUniqueWhereInput } from './where-inputs'
+} from '../../types/index.ts'
+import { coerceAndValidateForGraphQLInput } from '../coerceAndValidateForGraphQLInput.ts'
+import {
+  accessDeniedError,
+  accessReturnError,
+  extensionError,
+  formatKeys,
+} from './graphql-errors.ts'
+import type { InitialisedAction, InitialisedList } from './initialise-lists.ts'
+import {
+  type InputFilter,
+  type UniqueInputFilter,
+  resolveUniqueWhereInput,
+} from './where-inputs.ts'
 
 export function cannotForItem(operation: string, list: InitialisedList) {
   if (operation === 'create')

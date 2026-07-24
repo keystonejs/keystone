@@ -12,7 +12,7 @@ import {
   TextField,
 } from '#fields-ui'
 
-import { isValidURL } from '../isValidURL'
+import { isValidURL } from '../isValidURL.ts'
 import type {
   ArrayField,
   BlockFormattingConfig,
@@ -25,10 +25,10 @@ import type {
   InlineMarksConfig,
   ObjectField,
   RelationshipField,
-} from './api-shared'
+} from './api-shared.ts'
 import type { ListSortDescriptor } from '@keystone-6/core/types'
 
-export * from './api-shared'
+export * from './api-shared.ts'
 
 type InputArgs<T> = {
   value: T

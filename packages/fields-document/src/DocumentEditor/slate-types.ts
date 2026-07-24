@@ -10,9 +10,9 @@
 import type { BaseEditor, BaseElement, BaseRange } from 'slate'
 import type { HistoryEditor } from 'slate-history'
 import type { ReactEditor } from 'slate-react'
-import type { RelationshipData } from './component-blocks/api'
-import type { ReadonlyPropPath } from './component-blocks/utils'
-import type { Mark } from './utils'
+import type { RelationshipData } from './component-blocks/api.tsx'
+import type { ReadonlyPropPath } from './component-blocks/utils.ts'
+import type { Mark } from './utils.ts'
 
 type Link = {
   type: 'link'

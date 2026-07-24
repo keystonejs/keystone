@@ -1,4 +1,4 @@
-import type * as ui from './fields-ui'
+import type * as ui from './fields-ui.tsx'
 
 function throwAlways(..._args: any[]): never {
   throw new Error(

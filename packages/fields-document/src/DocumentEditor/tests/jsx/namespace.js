@@ -1,1 +1,1 @@
-export { __jsx } from './impl'
+export { __jsx } from './impl.ts'

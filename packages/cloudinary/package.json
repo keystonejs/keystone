@@ -2,19 +2,10 @@
   "name": "@keystone-6/cloudinary",
   "version": "9.0.0",
   "license": "MIT",
-  "main": "dist/keystone-6-cloudinary.cjs.js",
-  "module": "dist/keystone-6-cloudinary.esm.js",
+  "type": "module",
   "exports": {
-    ".": {
-      "types": "./dist/keystone-6-cloudinary.cjs.js",
-      "module": "./dist/keystone-6-cloudinary.esm.js",
-      "default": "./dist/keystone-6-cloudinary.cjs.js"
-    },
-    "./views": {
-      "types": "./views/dist/keystone-6-cloudinary-views.cjs.js",
-      "module": "./views/dist/keystone-6-cloudinary-views.esm.js",
-      "default": "./views/dist/keystone-6-cloudinary-views.cjs.js"
-    },
+    ".": "./dist/keystone-6-cloudinary.js",
+    "./views": "./dist/keystone-6-cloudinary-views.js",
     "./package.json": "./package.json"
   },
   "dependencies": {

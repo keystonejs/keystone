@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import { describe, test } from 'node:test'
-import { dbProvider, setupTestSuite } from './utils'
+import { dbProvider, setupTestSuite } from './utils.ts'
 import {
   config,
   countUniqueItems,
@@ -10,7 +10,7 @@ import {
   makeItem,
   randomCount,
   randomString,
-} from './utils2'
+} from './utils2.ts'
 
 describe(`*.access.create tests (${dbProvider})`, () => {
   const suite = setupTestSuite({ config })()

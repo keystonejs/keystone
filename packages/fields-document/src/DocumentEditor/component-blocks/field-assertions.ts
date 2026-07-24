@@ -1,5 +1,5 @@
-import type { ComponentSchema } from './api-shared'
-import { assertNever } from './utils'
+import type { ComponentSchema } from './api-shared.ts'
+import { assertNever } from './utils.ts'
 
 export function assertValidComponentSchema(
   schema: ComponentSchema,

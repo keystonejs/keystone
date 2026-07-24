@@ -2,7 +2,7 @@ import { expect, test } from 'vitest'
 import { list } from '@keystone-6/core'
 import { allowAll } from '@keystone-6/core/access'
 import { relationship } from '@keystone-6/core/fields'
-import { dbProvider, getPrismaSchema } from '../utils'
+import { dbProvider, getPrismaSchema } from '../utils.ts'
 
 test('when not specifying foreignKey in a one to one relationship, the side is picked based on the list key + field key ordering', async () => {
   const prismaSchema = await getPrismaSchema({

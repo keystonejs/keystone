@@ -3,14 +3,9 @@
   "description": "KeystoneJS Document Renderer",
   "version": "1.2.0",
   "license": "MIT",
-  "main": "dist/keystone-6-document-renderer.cjs.js",
-  "module": "dist/keystone-6-document-renderer.esm.js",
+  "type": "module",
   "exports": {
-    ".": {
-      "types": "./dist/keystone-6-document-renderer.cjs.js",
-      "module": "./dist/keystone-6-document-renderer.esm.js",
-      "default": "./dist/keystone-6-document-renderer.cjs.js"
-    },
+    ".": "./dist/keystone-6-document-renderer.js",
     "./package.json": "./package.json"
   },
   "peerDependencies": {

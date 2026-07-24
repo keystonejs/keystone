@@ -2,8 +2,8 @@ import { expect, test } from 'vitest'
 import { list } from '@keystone-6/core'
 import { allowAll } from '@keystone-6/core/access'
 import { select, text } from '@keystone-6/core/fields'
-import { setupTestEnv } from './test-runner'
-import { dbProvider } from './utils'
+import { setupTestEnv } from './test-runner.ts'
+import { dbProvider } from './utils.ts'
 
 test('isIndexed: true and db.map on a text field generates a valid Prisma schema', async () => {
   const { artifacts, config } = await setupTestEnv({

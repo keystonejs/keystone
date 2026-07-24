@@ -2,11 +2,16 @@ import { Icon } from '@keystar/ui/icon'
 import { trashIcon } from '@keystar/ui/icon/icons/trashIcon'
 import type { ReactNode } from 'react'
 import type { RenderElementProps } from 'slate-react'
-import type { ComponentBlock, PreviewPropsForToolbar, ObjectField, ComponentSchema } from './api'
+import type {
+  ComponentBlock,
+  PreviewPropsForToolbar,
+  ObjectField,
+  ComponentSchema,
+} from './api.tsx'
 import { ActionButton } from '@keystar/ui/button'
 import { TooltipTrigger, Tooltip } from '@keystar/ui/tooltip'
-import { BlockPopoverTrigger, BlockPopover } from '../primitives/BlockPopover'
-import { blockElementSpacing } from '../utils-hooks'
+import { BlockPopoverTrigger, BlockPopover } from '../primitives/BlockPopover.tsx'
+import { blockElementSpacing } from '../utils-hooks.tsx'
 import type { Element } from 'slate'
 
 export function ChromelessComponentBlockElement(props: {

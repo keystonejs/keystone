@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 
-import { useRouter } from '../router'
+import { useRouter } from '../router.tsx'
 
 export function usePreventNavigation(shouldPreventNavigationRef: { current: boolean }) {
   const router = useRouter()

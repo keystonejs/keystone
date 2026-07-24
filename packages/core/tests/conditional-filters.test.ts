@@ -3,8 +3,8 @@ import {
   getConditionalFilterCaseFieldKeys,
   getConditionalFilterFieldKeys,
   testFilter,
-} from '../src/admin-ui/utils/filters'
-import type { ActionMeta, ConditionalFilterCase } from '../src/types'
+} from '../src/admin-ui/utils/filters.ts'
+import type { ActionMeta, ConditionalFilterCase } from '../src/types/index.ts'
 
 describe('conditional filters', () => {
   test('flat field predicates still use implicit AND and field-level not', () => {

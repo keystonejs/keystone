@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict'
 import { describe, test } from 'node:test'
 
-import { humanize } from '../packages/core/src/lib/utils'
+import { humanize } from '../packages/core/src/lib/utils.ts'
 
 describe('utils', () => {
   test('humanize()', () => {

@@ -3,7 +3,7 @@
 /** @jsx jsx */
 import { expect, test } from 'vitest'
 import { Editor } from 'slate'
-import { jsx, makeEditor } from './utils'
+import { jsx, makeEditor } from './utils.tsx'
 
 test('basic cursor snapshot', () => {
   const editor = makeEditor(

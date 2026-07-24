@@ -1,6 +1,6 @@
 import { createConnection, type Connection, type PoolConfig } from 'mariadb'
 
-import { applyMigrations } from './migrations'
+import { applyMigrations } from './migrations.ts'
 
 export type MysqlDatabaseConfig = PoolConfig | string
 

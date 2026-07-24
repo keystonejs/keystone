@@ -1,9 +1,9 @@
 import React, { useContext } from 'react'
 import { useMemo, type ReactElement } from 'react'
 import type { Element } from 'slate'
-import type { ComponentBlock } from './api-shared'
-import { createGetPreviewProps, getKeysForArrayValue } from './preview-props'
-import type { ReadonlyPropPath } from './utils'
+import type { ComponentBlock } from './api-shared.ts'
+import { createGetPreviewProps, getKeysForArrayValue } from './preview-props.ts'
+import type { ReadonlyPropPath } from './utils.ts'
 import { css } from '@keystar/ui/style'
 
 export const ChildrenByPathContext = React.createContext<Record<string, ReactElement>>({})

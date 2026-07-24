@@ -1,7 +1,7 @@
 import { describe } from 'vitest'
 import { calendarDay } from '@keystone-6/core/fields'
-import { dbProvider } from '../../utils'
-import { filterTests, orderableFilterTests, uniqueEqualityFilterTest } from './utils'
+import { dbProvider } from '../../utils.ts'
+import { filterTests, orderableFilterTests, uniqueEqualityFilterTest } from './utils.ts'
 
 for (const isNullable of [true, false]) {
   describe(`calendarDay with isNullable: ${isNullable}`, () => {

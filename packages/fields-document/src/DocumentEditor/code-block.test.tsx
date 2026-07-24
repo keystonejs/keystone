@@ -3,7 +3,7 @@
 /** @jsx jsx */
 import { expect, test } from 'vitest'
 import { Editor } from 'slate'
-import { jsx, makeEditor } from './tests/utils'
+import { jsx, makeEditor } from './tests/utils.tsx'
 
 test('inserting a code block with a shortcut works', () => {
   const editor = makeEditor(

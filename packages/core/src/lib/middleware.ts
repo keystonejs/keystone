@@ -1,16 +1,16 @@
 import path from 'node:path'
 
 import type express from 'express'
-import type next from 'next'
-import { pkgDir } from '../pkg-dir'
-import type { KeystoneConfig, KeystoneContext } from '../types'
+import { pkgDir } from '../pkg-dir.ts'
+import type { KeystoneConfig, KeystoneContext } from '../types/index.ts'
+import type { NextServer } from '../next.ts'
 
 const adminErrorHTMLFilepath = path.join(pkgDir, 'static', 'admin-error.html')
 
 export function createAdminUIMiddlewareWithNextApp(
   config: KeystoneConfig,
   commonContext: KeystoneContext,
-  nextApp: ReturnType<typeof next>
+  nextApp: NextServer
 ) {
   const handle = nextApp.getRequestHandler()
 

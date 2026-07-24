@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import { describe, test } from 'node:test'
-import { dbProvider, setupTestSuite } from './utils'
+import { dbProvider, setupTestSuite } from './utils.ts'
 import {
   config,
   expectEqualItem,
@@ -10,7 +10,7 @@ import {
   makeWhereUniqueFilter,
   seed,
   seedMany,
-} from './utils2'
+} from './utils2.ts'
 
 describe(`field.access.filterable tests (${dbProvider})`, () => {
   const suite = setupTestSuite({ config })()

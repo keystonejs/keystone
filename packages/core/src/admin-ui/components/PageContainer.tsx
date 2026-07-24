@@ -7,8 +7,8 @@ import { xIcon } from '@keystar/ui/icon/icons/xIcon'
 import { breakpointQueries, css, tokenSchema } from '@keystar/ui/style'
 import { HStack, VStack } from '@keystar/ui/layout'
 
-import { Logo } from './Logo'
-import { Navigation } from './Navigation'
+import { Logo } from './Logo.tsx'
+import { Navigation } from './Navigation.tsx'
 
 export function PageWrapper(props: HTMLAttributes<HTMLElement>) {
   return (

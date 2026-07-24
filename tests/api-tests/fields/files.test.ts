@@ -9,7 +9,7 @@ import {
   prepareTestFile,
   readTestFile,
   collectStream,
-} from './storage-utils'
+} from './storage-utils.ts'
 import { Readable } from 'node:stream'
 // @ts-expect-error
 import Upload from 'graphql-upload/Upload.js'

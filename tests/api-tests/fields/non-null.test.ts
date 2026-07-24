@@ -7,8 +7,8 @@ import { allowAll } from '@keystone-6/core/access'
 const { assertInputObjectType, assertObjectType, GraphQLNonNull } =
   require('graphql') as typeof import('graphql')
 
-import { setupTestEnv } from '../test-runner'
-import { dbProvider } from '../utils'
+import { setupTestEnv } from '../test-runner.ts'
+import { dbProvider } from '../utils.ts'
 
 type TextFieldConfig = Parameters<typeof text>[0]
 

@@ -1,9 +1,9 @@
 import meow from 'meow'
-import { build } from './build'
-import { dev } from './dev'
-import { start } from './start'
-import { telemetry } from './telemetry'
-import { ExitError } from './utils'
+import { build } from './build.ts'
+import { dev } from './dev.ts'
+import { start } from './start.ts'
+import { telemetry } from './telemetry.ts'
+import { ExitError } from './utils.ts'
 
 export type Flags = {
   dbPush: boolean
@@ -69,6 +69,7 @@ export async function cli(cwd: string, argv: string[]) {
     `,
     {
       argv,
+      importMeta: import.meta,
     }
   )
 

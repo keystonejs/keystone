@@ -4,7 +4,7 @@ import { list } from '@keystone-6/core'
 import { allOperations, allowAll } from '@keystone-6/core/access'
 import { relationship, text } from '@keystone-6/core/fields'
 import { gen, sampleOne } from 'testcheck'
-import { expectSingleRelationshipError } from '../../utils'
+import { expectSingleRelationshipError } from '../../utils.ts'
 
 const alphanumGenerator = gen.alphaNumString.notEmpty()
 

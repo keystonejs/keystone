@@ -4,10 +4,10 @@ import {
   type FieldTypeFunc,
   fieldType,
   orderDirectionEnum,
-} from '../../../types'
-import { g } from '../../..'
-import { makeValidateHook, defaultIsRequired } from '../../non-null-graphql'
-import { weakMemoize } from '../../../lib/core/utils'
+} from '../../../types/index.ts'
+import { g } from '../../../index.ts'
+import { makeValidateHook, defaultIsRequired } from '../../non-null-graphql.ts'
+import { weakMemoize } from '../../../lib/core/utils.ts'
 import { GraphQLError } from 'graphql/index.js'
 import type {
   GArg,

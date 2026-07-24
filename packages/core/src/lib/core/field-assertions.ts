@@ -1,7 +1,7 @@
 import { GNonNull } from '@graphql-ts/schema'
-import { g } from '../..'
-import { allowAll } from '../../access'
-import type { InitialisedField } from './initialise-lists'
+import { g } from '../../index.ts'
+import { allowAll } from '../../access.ts'
+import type { InitialisedField } from './initialise-lists.ts'
 
 export type ListForValidation = { listKey: string; fields: Record<string, InitialisedField> }
 

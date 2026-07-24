@@ -1,6 +1,6 @@
 import { describe } from 'vitest'
 import { timestamp } from '@keystone-6/core/fields'
-import { orderableFilterTests, filterTests, uniqueEqualityFilterTest } from './utils'
+import { orderableFilterTests, filterTests, uniqueEqualityFilterTest } from './utils.ts'
 
 for (const isNullable of [true, false]) {
   describe(`timestamp with isNullable: ${isNullable}`, () => {

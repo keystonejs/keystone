@@ -1,15 +1,15 @@
 import { useMemo } from 'react'
 import { ReactEditor, type RenderElementProps } from 'slate-react'
 
-import { useToolbarState } from './toolbar-state'
-import { insertBlockquote } from './blockquote-shared'
+import { useToolbarState } from './toolbar-state.tsx'
+import { insertBlockquote } from './blockquote-shared.ts'
 import { quoteIcon } from '@keystar/ui/icon/icons/quoteIcon'
 import { Icon } from '@keystar/ui/icon'
 import { TooltipTrigger, Tooltip } from '@keystar/ui/tooltip'
 import { Kbd, Text } from '@keystar/ui/typography'
 import { EditorToolbarButton } from '@keystar/ui/editor'
 
-export * from './blockquote-shared'
+export * from './blockquote-shared.ts'
 
 export const BlockquoteElement = ({ attributes, children }: RenderElementProps) => {
   return <blockquote {...attributes}>{children}</blockquote>

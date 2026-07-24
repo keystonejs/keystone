@@ -1,5 +1,5 @@
-import type { ActionMeta, FieldMeta, ListMeta } from '../../types'
-import { makeDefaultValueState, serializeValueToOperationItem } from './utils'
+import type { ActionMeta, FieldMeta, ListMeta } from '../../types/index.ts'
+import { makeDefaultValueState, serializeValueToOperationItem } from './utils.tsx'
 
 export function getActionFieldArgFields(action: ActionMeta) {
   return Object.fromEntries(

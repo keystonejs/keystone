@@ -1,8 +1,8 @@
-import type { KeystoneContext, GraphQLTypesForList } from '../../../types'
-import type { InitialisedList } from '../initialise-lists'
-import { userInputError } from '../graphql-errors'
-import type { NestedMutationState } from './'
-import { checkUniqueItemExists } from '../access-control'
+import type { KeystoneContext, GraphQLTypesForList } from '../../../types/index.ts'
+import type { InitialisedList } from '../initialise-lists.ts'
+import { userInputError } from '../graphql-errors.ts'
+import type { NestedMutationState } from './index.ts'
+import { checkUniqueItemExists } from '../access-control.ts'
 import type { InferValueFromArg, GArg, GNonNull } from '@graphql-ts/schema'
 
 type _CreateValueType = Exclude<

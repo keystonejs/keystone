@@ -2,8 +2,8 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 import { expect, test } from 'vitest'
-import { nestList, toggleList } from './lists-shared'
-import { jsx, makeEditor } from './tests/utils'
+import { nestList, toggleList } from './lists-shared.ts'
+import { jsx, makeEditor } from './tests/utils.tsx'
 
 test('ordered list shortcut', () => {
   const editor = makeEditor(

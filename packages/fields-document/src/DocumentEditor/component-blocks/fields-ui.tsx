@@ -11,7 +11,7 @@ import { TagGroup } from '@keystar/ui/tag'
 import { TextField } from '@keystar/ui/text-field'
 import { Text } from '@keystar/ui/typography'
 
-import type { FormField } from './api-shared'
+import type { FormField } from './api-shared.ts'
 
 export { Checkbox } from '@keystar/ui/checkbox'
 export { TextArea, TextField } from '@keystar/ui/text-field'

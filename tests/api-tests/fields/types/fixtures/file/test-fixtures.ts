@@ -1,5 +1,5 @@
 import { file } from '@keystone-6/core/fields'
-import { inMemoryStorageStrategy, prepareTestFile } from '../../../storage-utils'
+import { inMemoryStorageStrategy, prepareTestFile } from '../../../storage-utils.ts'
 
 export const name = 'File'
 export const typeFunction = file

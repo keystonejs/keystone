@@ -3,7 +3,7 @@ import { resolve, basename } from 'node:path'
 // @ts-expect-error
 import Upload from 'graphql-upload/Upload.js'
 import cloudinary from 'cloudinary'
-import { cloudinaryImage } from './index'
+import { cloudinaryImage } from './index.ts'
 
 cloudinary.v2.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME || 'cloudinary_cloud_name',

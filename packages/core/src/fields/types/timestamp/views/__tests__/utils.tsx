@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { constructTimestamp } from '../utils'
+import { constructTimestamp } from '../utils.ts'
 
 const STUBVALIDDATE = '2020-10-31'
 const STUBVALIDTIME = '10:00'

@@ -3,8 +3,8 @@
 /** @jsx jsx */
 import { expect, test } from 'vitest'
 import { Node } from 'slate'
-import { makeEditor, jsx } from '../tests/utils'
-import { MyDataTransfer } from './data-transfer'
+import { makeEditor, jsx } from '../tests/utils.tsx'
+import { MyDataTransfer } from './data-transfer.ts'
 
 const deserializeMarkdown = (markdown: string) => {
   const editor = makeEditor(

@@ -1,10 +1,10 @@
-import next from 'next'
+import { createNextServer } from '../next.ts'
 
-import { createSystem } from '../lib/system'
-import { createExpressServer } from '../lib/express'
-import { createAdminUIMiddlewareWithNextApp } from '../lib/middleware'
-import type { Flags } from './cli'
-import { importBuiltKeystoneConfiguration, importBuiltPrismaModule } from './utils'
+import { createSystem } from '../lib/system.ts'
+import { createExpressServer } from '../lib/express.ts'
+import { createAdminUIMiddlewareWithNextApp } from '../lib/middleware.ts'
+import type { Flags } from './cli.ts'
+import { importBuiltKeystoneConfiguration, importBuiltPrismaModule } from './utils.ts'
 
 export async function start(
   cwd: string,
@@ -33,7 +33,7 @@ export async function start(
   log(`✅ GraphQL API ready`)
   if (!system.config.ui?.isDisabled && ui) {
     log('✨ Preparing Admin UI')
-    const nextApp = next({ dev: false, dir: paths.admin })
+    const nextApp = createNextServer({ dev: false, dir: paths.admin })
     await nextApp.prepare()
     expressServer.use(createAdminUIMiddlewareWithNextApp(system.config, keystone.context, nextApp))
     log(`✅ Admin UI ready`)

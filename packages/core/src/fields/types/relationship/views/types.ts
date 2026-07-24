@@ -1,4 +1,4 @@
-import type { FieldController, ListSortDescriptor } from '../../../../types'
+import type { FieldController, ListSortDescriptor } from '../../../../types/index.ts'
 
 export type RelationshipValue = {
   id: string

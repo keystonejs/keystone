@@ -8,9 +8,9 @@ import type {
 } from '@keystone-6/core/types'
 import type { GraphQLResolveInfo } from 'graphql/index.js'
 
-import type { ComponentSchema } from './DocumentEditor/component-blocks/api'
-import { getInitialPropsValue } from './DocumentEditor/component-blocks/initial-values'
-import { type ReadonlyPropPath, assertNever } from './DocumentEditor/component-blocks/utils'
+import type { ComponentSchema } from './DocumentEditor/component-blocks/api.tsx'
+import { getInitialPropsValue } from './DocumentEditor/component-blocks/initial-values.ts'
+import { type ReadonlyPropPath, assertNever } from './DocumentEditor/component-blocks/utils.ts'
 
 export function getGraphQLInputType(
   name: string,

@@ -1,6 +1,6 @@
-import type { GraphQLNames, JSONValue } from '../types/utils'
-import type { ListMeta, FieldMeta, FieldGroupMeta } from '../types'
-import { gql } from './apollo'
+import type { GraphQLNames, JSONValue } from '../types/utils.ts'
+import type { ListMeta, FieldMeta, FieldGroupMeta } from '../types/index.ts'
+import { gql } from './apollo.ts'
 
 export const adminMetaQuery = gql`
   query KsFetchAdminMeta {

@@ -1,6 +1,6 @@
 import { describe } from 'vitest'
 import { bigInt } from '@keystone-6/core/fields'
-import { orderableFilterTests, filterTests, uniqueEqualityFilterTest } from './utils'
+import { orderableFilterTests, filterTests, uniqueEqualityFilterTest } from './utils.ts'
 
 for (const isNullable of [true, false]) {
   describe(`bigInt with isNullable: ${isNullable}`, () => {

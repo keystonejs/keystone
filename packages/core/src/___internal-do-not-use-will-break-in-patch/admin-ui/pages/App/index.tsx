@@ -1,7 +1,7 @@
 import type { AppProps } from 'next/app.js'
-import type { AdminConfig, FieldViews } from '../../../../types'
-import { ErrorBoundary } from '../../../../admin-ui/components'
-import { KeystoneProvider } from '../../../../admin-ui/context'
+import type { AdminConfig, FieldViews } from '../../../../types/index.ts'
+import { ErrorBoundary } from '../../../../admin-ui/components/index.ts'
+import { KeystoneProvider } from '../../../../admin-ui/context.tsx'
 
 type AppConfig = {
   adminConfig: AdminConfig

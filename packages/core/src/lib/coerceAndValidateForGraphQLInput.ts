@@ -7,7 +7,7 @@ import type {
 import { Kind } from 'graphql/index.js'
 import { getVariableValues } from 'graphql/execution/values.js'
 
-import { getTypeNodeForType } from './context/graphql'
+import { getTypeNodeForType } from './context/graphql.ts'
 
 const argName = 'where'
 

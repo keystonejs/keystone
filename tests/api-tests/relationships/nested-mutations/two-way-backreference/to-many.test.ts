@@ -4,7 +4,7 @@ import { text, relationship } from '@keystone-6/core/fields'
 import { list } from '@keystone-6/core'
 import { setupTestRunner } from '@keystone-6/api-tests/test-runner'
 import { allowAll } from '@keystone-6/core/access'
-import type { ContextFromRunner } from '../../../utils'
+import type { ContextFromRunner } from '../../../utils.ts'
 
 const alphanumGenerator = gen.alphaNumString.notEmpty()
 

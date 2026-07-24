@@ -4,8 +4,8 @@ import { useState } from 'react'
 import { createEditor, Editor } from 'slate'
 import { Editable, Slate, withReact } from 'slate-react'
 import { render } from '@testing-library/react'
-import { makeEditor } from '../tests/utils'
-import { MyDataTransfer } from './data-transfer'
+import { makeEditor } from '../tests/utils.tsx'
+import { MyDataTransfer } from './data-transfer.ts'
 
 function OtherEditor({ editor }: { editor: Editor }) {
   // note that the entire point here is to have a different document structure to Keystone's

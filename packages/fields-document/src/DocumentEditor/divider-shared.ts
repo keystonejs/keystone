@@ -1,5 +1,5 @@
 import { Editor } from 'slate'
-import { insertNodesButReplaceIfSelectionIsAtEmptyParagraphOrHeading } from './utils'
+import { insertNodesButReplaceIfSelectionIsAtEmptyParagraphOrHeading } from './utils.ts'
 
 export function insertDivider(editor: Editor) {
   insertNodesButReplaceIfSelectionIsAtEmptyParagraphOrHeading(editor, {

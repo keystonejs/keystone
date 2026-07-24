@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import { describe, test } from 'node:test'
-import { dbProvider, setupTestSuite } from './utils'
+import { dbProvider, setupTestSuite } from './utils.ts'
 import {
   config,
   expectEqualItem,
@@ -12,7 +12,7 @@ import {
   randomString,
   seed,
   seedMany,
-} from './utils2'
+} from './utils2.ts'
 
 const now = new Date()
 let randomState = now.getUTCFullYear() * 100 + now.getUTCMonth() + 1

@@ -2,11 +2,11 @@ import type { FieldController, FieldControllerConfig } from '@keystone-6/core/ty
 import { type Descendant, type Node, Editor, Text } from 'slate'
 
 import weakMemoize from '@emotion/weak-memoize'
-import { createDocumentEditor } from './DocumentEditor/editor-shared'
-import type { ComponentBlock } from './DocumentEditor/component-blocks/api-shared'
-import type { Relationships } from './DocumentEditor/relationship-shared'
-import { clientSideValidateProp } from './DocumentEditor/component-blocks/utils'
-import { isValidURL } from './DocumentEditor/isValidURL'
+import { createDocumentEditor } from './DocumentEditor/editor-shared.ts'
+import type { ComponentBlock } from './DocumentEditor/component-blocks/api-shared.ts'
+import type { Relationships } from './DocumentEditor/relationship-shared.ts'
+import { clientSideValidateProp } from './DocumentEditor/component-blocks/utils.ts'
+import { isValidURL } from './DocumentEditor/isValidURL.ts'
 
 export type DocumentFeatures = {
   formatting: {

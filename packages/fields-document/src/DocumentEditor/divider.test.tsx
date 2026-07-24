@@ -2,7 +2,7 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 import { expect, test } from 'vitest'
-import { jsx, makeEditor } from './tests/utils'
+import { jsx, makeEditor } from './tests/utils.tsx'
 
 test('inserting a divider with a shortcut works', () => {
   const editor = makeEditor(

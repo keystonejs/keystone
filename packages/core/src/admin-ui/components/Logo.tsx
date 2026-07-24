@@ -3,8 +3,8 @@ import type { SVGAttributes } from 'react'
 import { css, tokenSchema } from '@keystar/ui/style'
 import { Heading } from '@keystar/ui/typography'
 
-import { useKeystone } from '../context'
-import { Link } from '../router'
+import { useKeystone } from '../context.tsx'
+import { Link } from '../router.tsx'
 
 export function Logo() {
   const { adminConfig } = useKeystone()

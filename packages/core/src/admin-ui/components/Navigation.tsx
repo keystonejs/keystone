@@ -18,10 +18,10 @@ import {
 import { TooltipTrigger, Tooltip } from '@keystar/ui/tooltip'
 import { Text } from '@keystar/ui/typography'
 
-import type { ListMeta } from '../../types'
-import { useKeystone } from '../context'
-import { useRouter } from '../router'
-import { WelcomeDialog } from './WelcomeDialog'
+import type { ListMeta } from '../../types/index.ts'
+import { useKeystone } from '../context.tsx'
+import { useRouter } from '../router.tsx'
+import { WelcomeDialog } from './WelcomeDialog.tsx'
 
 type NavItemProps = {
   /**

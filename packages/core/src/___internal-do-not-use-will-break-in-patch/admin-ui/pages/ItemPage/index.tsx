@@ -1,4 +1,4 @@
-import { useRouter } from '../../../../admin-ui/router'
+import { useRouter } from '../../../../admin-ui/router.tsx'
 import {
   type FormEvent,
   Fragment,
@@ -20,12 +20,12 @@ import { SlotProvider } from '@keystar/ui/slots'
 import { toastQueue } from '@keystar/ui/toast'
 import { Heading, Text } from '@keystar/ui/typography'
 
-import { CombinedGraphQLErrors, gql, useMutation } from '../../../../admin-ui/apollo'
-import { CreateButtonLink } from '../../../../admin-ui/components/CreateButtonLink'
-import { ErrorDetailsDialog } from '../../../../admin-ui/components/Errors'
-import { GraphQLErrorNotice } from '../../../../admin-ui/components/GraphQLErrorNotice'
-import { PageContainer } from '../../../../admin-ui/components/PageContainer'
-import { useList, useListItem } from '../../../../admin-ui/context'
+import { CombinedGraphQLErrors, gql, useMutation } from '../../../../admin-ui/apollo.ts'
+import { CreateButtonLink } from '../../../../admin-ui/components/CreateButtonLink.tsx'
+import { ErrorDetailsDialog } from '../../../../admin-ui/components/Errors.tsx'
+import { GraphQLErrorNotice } from '../../../../admin-ui/components/GraphQLErrorNotice.tsx'
+import { PageContainer } from '../../../../admin-ui/components/PageContainer.tsx'
+import { useList, useListItem } from '../../../../admin-ui/context.tsx'
 import {
   deserializeItemToValue,
   Fields,
@@ -36,16 +36,16 @@ import {
   serializeValueToOperationItem,
   useHasChanges,
   useInvalidFields,
-} from '../../../../admin-ui/utils'
-import { pick } from '../../../../admin-ui/utils/pick'
+} from '../../../../admin-ui/utils/index.ts'
+import { pick } from '../../../../admin-ui/utils/pick.ts'
 import type {
   ActionMeta,
   BaseListTypeInfo,
   ConditionalFilter,
   ConditionalFilterCase,
   ListMeta,
-} from '../../../../types'
-import { BaseToolbar, ColumnLayout, ItemPageHeader, StickySidebar } from './common'
+} from '../../../../types/index.ts'
+import { BaseToolbar, ColumnLayout, ItemPageHeader, StickySidebar } from './common.tsx'
 
 type ItemPageProps = {
   listKey: string
