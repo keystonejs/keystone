@@ -119,17 +119,6 @@
     "react-aria": "catalog:",
     "react-stately": "catalog:"
   },
-  "peerDependenciesMeta": {
-    "@keystar/ui": {
-      "optional": true
-    },
-    "react-aria": {
-      "optional": true
-    },
-    "react-stately": {
-      "optional": true
-    }
-  },
   "imports": {
     "#fields-ui": {
       "node": "./src/DocumentEditor/component-blocks/fields-ui-empty.tsx",
