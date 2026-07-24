@@ -22,7 +22,7 @@ import type {
   KeystoneConfigPre,
 } from '@keystone-6/core/types'
 
-import { dbProvider, prismaClientOptions } from './utils'
+import { dbProvider, prismaClientOptions } from './utils.ts'
 import { createRequire } from 'node:module'
 
 type FloatingConfig<TypeInfo extends BaseKeystoneTypeInfo> = Omit<

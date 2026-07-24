@@ -5,10 +5,10 @@ import { Box } from '@keystar/ui/layout'
 import { Content } from '@keystar/ui/slots'
 import { Heading } from '@keystar/ui/typography'
 
-import { useList } from '../context'
+import { useList } from '../context.tsx'
 
-import { Fields } from '../utils/Fields'
-import { useBuildItem } from '../utils/useCreateItem'
+import { Fields } from '../utils/Fields.tsx'
+import { useBuildItem } from '../utils/useCreateItem.ts'
 
 export function BuildItemDialog({
   listKey,

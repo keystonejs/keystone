@@ -2,8 +2,8 @@ import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest'
 import * as https from 'node:https'
 import { createRequire } from 'node:module'
 import path from 'path'
-import type { InitialisedList } from '../src/lib/core/initialise-lists'
-import { runTelemetry, disableTelemetry } from '../src/lib/telemetry'
+import type { InitialisedList } from '../src/lib/core/initialise-lists.ts'
+import { runTelemetry, disableTelemetry } from '../src/lib/telemetry.ts'
 
 const mocks = vi.hoisted(() => ({
   confGet: vi.fn(),
@@ -296,7 +296,7 @@ describe('Telemetry tests', () => {
       vi.resetAllMocks()
       vi.resetModules()
       configureConfMock()
-      runTelemetryThrows = (await import('../src/lib/telemetry')).runTelemetry
+      runTelemetryThrows = (await import('../src/lib/telemetry.ts')).runTelemetry
     })
 
     test(`nothing actually throws`, async () => {
@@ -320,7 +320,7 @@ describe('Telemetry tests', () => {
       vi.doMock('ci-info', () => {
         return { default: { isCI: true }, isCI: true }
       })
-      runTelemetryCI = (await import('../src/lib/telemetry')).runTelemetry
+      runTelemetryCI = (await import('../src/lib/telemetry.ts')).runTelemetry
     })
 
     test(`when initialised, nothing is sent`, async () => {

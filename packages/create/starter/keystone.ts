@@ -9,11 +9,11 @@ import { PrismaBetterSqlite3 } from '@prisma/adapter-better-sqlite3'
 import { config } from '@keystone-6/core'
 
 // to keep this file tidy, we define our schema in a different file
-import { lists } from './schema'
+import { lists } from './schema.ts'
 
 // authentication is configured separately here too, but you might move this elsewhere
 // when you write your list-level access control functions, as they typically rely on session data
-import { withAuth, session } from './auth'
+import { withAuth, session } from './auth.ts'
 
 export default withAuth(
   config({

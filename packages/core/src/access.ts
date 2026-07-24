@@ -1,5 +1,5 @@
-import type { MaybePromise } from './types/utils'
-import type { BaseListTypeInfo } from './types'
+import type { MaybePromise } from './types/utils.ts'
+import type { BaseListTypeInfo } from './types/index.ts'
 
 export function allowAll() {
   return true

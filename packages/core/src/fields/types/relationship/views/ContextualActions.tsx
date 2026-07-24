@@ -7,9 +7,9 @@ import { Grid } from '@keystar/ui/layout'
 import { ActionMenu, Item } from '@keystar/ui/menu'
 import { Text } from '@keystar/ui/typography'
 
-import { useList } from '../../../../admin-ui/context'
-import type { FieldProps, ListMeta } from '../../../../types'
-import type { RelationshipController } from './types'
+import { useList } from '../../../../admin-ui/context.tsx'
+import type { FieldProps, ListMeta } from '../../../../types/index.ts'
+import type { RelationshipController } from './types.ts'
 import { ActionButton } from '@keystar/ui/button'
 import { Tooltip, TooltipTrigger } from '@keystar/ui/tooltip'
 

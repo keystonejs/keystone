@@ -1,4 +1,4 @@
-import type { AuthGqlNames } from '../types'
+import type { AuthGqlNames } from '../types.ts'
 
 export default function ({
   authGqlNames,

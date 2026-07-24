@@ -1,8 +1,8 @@
 import { assertInputObjectType, GraphQLString, GraphQLID, parse, validate } from 'graphql/index.js'
 
 import { g } from '@keystone-6/core'
-import type { AuthGqlNames, AuthTokenTypeConfig } from './types'
-import { getBaseAuthSchema } from './gql/getBaseAuthSchema'
+import type { AuthGqlNames, AuthTokenTypeConfig } from './types.ts'
+import { getBaseAuthSchema } from './gql/getBaseAuthSchema.ts'
 
 export const getSchemaExtension = ({
   authGqlNames,

@@ -6,10 +6,10 @@ import { Box, VStack } from '@keystar/ui/layout'
 import { Content } from '@keystar/ui/slots'
 import { Heading, Text } from '@keystar/ui/typography'
 
-import type { ActionMeta, FieldMeta } from '../../types'
-import { Fields } from '../utils/Fields'
-import { getActionFieldArgFields } from '../utils/actionData'
-import { makeDefaultValueState, useInvalidFields } from '../utils/utils'
+import type { ActionMeta, FieldMeta } from '../../types/index.ts'
+import { Fields } from '../utils/Fields.tsx'
+import { getActionFieldArgFields } from '../utils/actionData.ts'
+import { makeDefaultValueState, useInvalidFields } from '../utils/utils.tsx'
 
 export function ActionDialog({
   action,

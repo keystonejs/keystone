@@ -4,7 +4,7 @@ import type {
   ConditionalFilter,
   ConditionalFilterCase,
   FieldMeta,
-} from '../../types'
+} from '../../types/index.ts'
 
 type SerializedItem = Record<string, unknown>
 type FieldFilter = {

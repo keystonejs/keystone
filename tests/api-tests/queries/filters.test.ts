@@ -8,7 +8,7 @@ import {
   expectAccessReturnError,
   expectBadUserInput,
   expectGraphQLValidationError,
-} from '../utils'
+} from '../utils.ts'
 
 const runner = setupTestRunner({
   serve: true,

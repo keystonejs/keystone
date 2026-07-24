@@ -4,8 +4,8 @@
 import { expect, test } from 'vitest'
 import React from 'react'
 import { Transforms } from 'slate'
-import { jsx, makeEditor } from '../tests/utils'
-import { component, fields } from '../../component-blocks'
+import { jsx, makeEditor } from '../tests/utils.tsx'
+import { component, fields } from '../../component-blocks.tsx'
 
 const list = component({
   preview: props =>

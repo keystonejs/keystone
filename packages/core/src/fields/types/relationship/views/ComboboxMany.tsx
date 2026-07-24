@@ -1,9 +1,9 @@
 import { ComboboxMulti, Item } from '@keystar/ui/combobox'
 import { css } from '@keystar/ui/style'
 
-import type { ListMeta, ListSortDescriptor } from '../../../../types'
-import type { RelationshipValue } from './types'
-import { useApolloQuery } from './useApolloQuery'
+import type { ListMeta, ListSortDescriptor } from '../../../../types/index.ts'
+import type { RelationshipValue } from './types.ts'
+import { useApolloQuery } from './useApolloQuery.ts'
 import { useState } from 'react'
 
 export function ComboboxMany({

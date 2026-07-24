@@ -5,7 +5,7 @@ import type {
   FieldController,
   FieldControllerConfig,
   FieldProps,
-} from '../../../../types'
+} from '../../../../types/index.ts'
 
 function stringify(value: unknown) {
   if (typeof value === 'string') return value

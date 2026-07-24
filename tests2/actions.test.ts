@@ -4,8 +4,8 @@ import { after, describe, test } from 'node:test'
 import { action, g, list } from '@keystone-6/core'
 import { allowAll } from '@keystone-6/core/access'
 import { text } from '@keystone-6/core/fields'
-import { adminMetaQuery } from '../packages/core/src/admin-ui/admin-meta-graphql'
-import { dbProvider, setupTestEnv } from './utils'
+import { adminMetaQuery } from '../packages/core/src/admin-ui/admin-meta-graphql.ts'
+import { dbProvider, setupTestEnv } from './utils.ts'
 
 const config = {
   lists: {

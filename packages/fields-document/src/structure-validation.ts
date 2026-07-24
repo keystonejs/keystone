@@ -1,6 +1,6 @@
 import { z } from 'zod'
-import type { RelationshipData } from './DocumentEditor/component-blocks/api-shared'
-import { isValidURL } from './DocumentEditor/isValidURL'
+import type { RelationshipData } from './DocumentEditor/component-blocks/api-shared.ts'
+import { isValidURL } from './DocumentEditor/isValidURL.ts'
 
 // leaf types
 const zMarkValue = z.literal(true).optional()

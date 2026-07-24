@@ -2,8 +2,8 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 import { describe, expect, test } from 'vitest'
-import { allMarkdownShortcuts } from './marks'
-import { jsx, makeEditor } from './tests/utils'
+import { allMarkdownShortcuts } from './marks.tsx'
+import { jsx, makeEditor } from './tests/utils.tsx'
 
 describe.each(
   (Object.keys(allMarkdownShortcuts) as (keyof typeof allMarkdownShortcuts)[])

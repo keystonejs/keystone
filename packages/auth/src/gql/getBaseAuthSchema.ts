@@ -1,7 +1,7 @@
 import type { BaseItem, KeystoneContext } from '@keystone-6/core/types'
 import { g } from '@keystone-6/core'
 import { getPasswordFieldKDF } from '@keystone-6/core/fields/types/password'
-import type { AuthGqlNames } from '../types'
+import type { AuthGqlNames } from '../types.ts'
 import type { BaseSchemaMeta } from '@keystone-6/core/graphql-ts'
 
 const AUTHENTICATION_FAILURE = {

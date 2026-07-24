@@ -3,14 +3,14 @@ import { Icon } from '@keystar/ui/icon'
 import { checkIcon } from '@keystar/ui/icon/icons/checkIcon'
 import { Text, VisuallyHidden } from '@keystar/ui/typography'
 
-import { entriesTyped } from '../../../../lib/core/utils'
+import { entriesTyped } from '../../../../lib/core/utils.ts'
 import type {
   CellComponent,
   FieldController,
   FieldControllerConfig,
   FieldProps,
   SimpleFieldTypeInfo,
-} from '../../../../types'
+} from '../../../../types/index.ts'
 
 export function Field({ field, value, onChange, autoFocus }: FieldProps<typeof controller>) {
   return (

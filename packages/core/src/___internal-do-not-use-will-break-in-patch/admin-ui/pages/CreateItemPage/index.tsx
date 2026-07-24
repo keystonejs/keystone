@@ -1,14 +1,14 @@
-import { useRouter } from '../../../../admin-ui/router'
+import { useRouter } from '../../../../admin-ui/router.tsx'
 
 import { Button } from '@keystar/ui/button'
 import { VStack } from '@keystar/ui/layout'
 
-import { useList } from '../../../../admin-ui'
-import { GraphQLErrorNotice } from '../../../../admin-ui/components'
-import { PageContainer } from '../../../../admin-ui/components/PageContainer'
-import { Fields } from '../../../../admin-ui/utils'
-import { useCreateItem } from '../../../../admin-ui/utils/useCreateItem'
-import { BaseToolbar, ColumnLayout, ItemPageHeader } from '../ItemPage/common'
+import { useList } from '../../../../admin-ui/index.tsx'
+import { GraphQLErrorNotice } from '../../../../admin-ui/components/index.ts'
+import { PageContainer } from '../../../../admin-ui/components/PageContainer.tsx'
+import { Fields } from '../../../../admin-ui/utils/index.ts'
+import { useCreateItem } from '../../../../admin-ui/utils/useCreateItem.ts'
+import { BaseToolbar, ColumnLayout, ItemPageHeader } from '../ItemPage/common.tsx'
 
 export const getCreateItemPage = (props: Parameters<typeof CreateItemPage>[0]) => () => (
   <CreateItemPage {...props} />

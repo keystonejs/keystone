@@ -3,13 +3,13 @@ import { Transforms } from 'slate'
 
 import { Icon } from '@keystar/ui/icon'
 import { codeIcon } from '@keystar/ui/icon/icons/codeIcon'
-import { useToolbarState } from './toolbar-state'
+import { useToolbarState } from './toolbar-state.tsx'
 import { TooltipTrigger, Tooltip } from '@keystar/ui/tooltip'
 import { Kbd, Text } from '@keystar/ui/typography'
 import { ReactEditor } from 'slate-react'
 import { EditorToolbarButton } from '@keystar/ui/editor'
 
-export * from './code-block-shared'
+export * from './code-block-shared.ts'
 
 function CodeButton() {
   const {

@@ -4,8 +4,8 @@ import { relationship, text } from '@keystone-6/core/fields'
 import type { KeystoneContext } from '@keystone-6/core/types'
 import assert from 'node:assert/strict'
 import { describe, test } from 'node:test'
-import { dbProvider, setupTestSuite } from './utils'
-import { booleanVariations, makeName } from './utils2'
+import { dbProvider, setupTestSuite } from './utils.ts'
+import { booleanVariations, makeName } from './utils2.ts'
 
 function yn(x: boolean) {
   return x ? '1' : '0'

@@ -1,5 +1,5 @@
 import type { GraphQLResolveInfo } from 'graphql/index.js'
-import type { KeystoneContext } from './context'
+import type { KeystoneContext } from './context.ts'
 
 export type DatabaseProvider = 'sqlite' | 'postgresql' | 'mysql'
 

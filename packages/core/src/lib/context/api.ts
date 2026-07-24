@@ -1,7 +1,7 @@
 import type { GraphQLSchema } from 'graphql/index.js'
-import type { KeystoneContext } from '../../types'
-import type { InitialisedList } from '../core/initialise-lists'
-import { makeContextDbFn, makeContextQueryFn } from './graphql'
+import type { KeystoneContext } from '../../types/index.ts'
+import type { InitialisedList } from '../core/initialise-lists.ts'
+import { makeContextDbFn, makeContextQueryFn } from './graphql.ts'
 
 export function getQueryFactory(list: InitialisedList, schema: GraphQLSchema) {
   const queryType = schema.getQueryType()!

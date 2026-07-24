@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { controller } from '../index'
+import { controller } from '../index.tsx'
 
 const STUBCONFIG = {
   listKey: 'timestamp',

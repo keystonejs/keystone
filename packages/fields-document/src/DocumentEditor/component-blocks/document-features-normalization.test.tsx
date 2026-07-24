@@ -3,10 +3,10 @@
 /** @jsx jsx */
 import { expect, test } from 'vitest'
 import type { Node } from 'slate'
-import { component, fields } from '../../component-blocks'
-import { makeEditor, jsx } from '../tests/utils'
-import type { Children } from '../tests/jsx/namespace'
-import type { ChildField } from './api'
+import { component, fields } from '../../component-blocks.tsx'
+import { makeEditor, jsx } from '../tests/utils.tsx'
+import type { Children } from '../tests/jsx/namespace.js'
+import type { ChildField } from './api.tsx'
 
 const cases: Record<
   string,

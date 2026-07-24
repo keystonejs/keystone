@@ -1,6 +1,10 @@
-import type { ComponentSchema, ComponentBlock } from './api-shared'
-import { getKeysForArrayValue, getNewArrayElementKey, setKeysForArrayValue } from './preview-props'
-import { assertNever, findChildPropPaths } from './utils'
+import type { ComponentSchema, ComponentBlock } from './api-shared.ts'
+import {
+  getKeysForArrayValue,
+  getNewArrayElementKey,
+  setKeysForArrayValue,
+} from './preview-props.ts'
+import { assertNever, findChildPropPaths } from './utils.ts'
 
 export function getInitialValue(type: string, componentBlock: ComponentBlock) {
   const props = getInitialPropsValue({ kind: 'object', fields: componentBlock.schema })

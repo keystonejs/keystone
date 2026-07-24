@@ -5,9 +5,9 @@ import { Content } from '@keystar/ui/slots'
 import { TextField } from '@keystar/ui/text-field'
 import { Heading, Text } from '@keystar/ui/typography'
 
-import type { SimpleFieldTypeInfo } from '../../../../types'
-import type { FieldController, FieldControllerConfig, FieldProps } from '../../../../types'
-import { entriesTyped } from '../../../../lib/core/utils'
+import type { SimpleFieldTypeInfo } from '../../../../types/index.ts'
+import type { FieldController, FieldControllerConfig, FieldProps } from '../../../../types/index.ts'
+import { entriesTyped } from '../../../../lib/core/utils.ts'
 
 const TYPE_OPERATOR_MAP = {
   equals: '=',

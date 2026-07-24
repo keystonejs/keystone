@@ -1,4 +1,4 @@
-import { g as _graphql } from './g'
+import { g as _graphql } from './g.ts'
 
 /**
  * The `graphql` export has been renamed to `g`.

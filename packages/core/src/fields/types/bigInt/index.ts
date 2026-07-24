@@ -1,15 +1,15 @@
-import type { SimpleFieldTypeInfo } from '../../../types'
+import type { SimpleFieldTypeInfo } from '../../../types/index.ts'
 import {
   type BaseListTypeInfo,
   type CommonFieldConfig,
   type FieldTypeFunc,
   fieldType,
   orderDirectionEnum,
-} from '../../../types'
-import { g } from '../../..'
-import { filters } from '../../filters'
-import { resolveDbNullable, makeValidateHook, defaultIsRequired } from '../../non-null-graphql'
-import type { controller } from './views'
+} from '../../../types/index.ts'
+import { g } from '../../../index.ts'
+import { filters } from '../../filters/index.ts'
+import { resolveDbNullable, makeValidateHook, defaultIsRequired } from '../../non-null-graphql.ts'
+import type { controller } from './views/index.tsx'
 
 export type BigIntFieldConfig<ListTypeInfo extends BaseListTypeInfo> = CommonFieldConfig<
   ListTypeInfo,

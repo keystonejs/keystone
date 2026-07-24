@@ -2,7 +2,7 @@ import { type CacheHint, maybeCacheControlFromInfo } from '@apollo/cache-control
 import DataLoader from 'dataloader'
 import type { GraphQLResolveInfo } from 'graphql/index.js'
 
-import { g } from '../../..'
+import { g } from '../../../index.ts'
 import type {
   BaseItem,
   BaseListTypeInfo,
@@ -11,17 +11,17 @@ import type {
   FindManyArgsValue,
   KeystoneContext,
   NextFieldType,
-} from '../../../types'
+} from '../../../types/index.ts'
 import {
   getAccessFilters,
   getOperationFieldAccess,
   getOperationQueryAccess,
-} from '../access-control'
-import type { InitialisedList } from '../initialise-lists'
-import type { ResolvedDBField, ResolvedRelationDBField } from '../resolve-relationships'
-import { type IdType, getDBFieldKeyForFieldOnMultiField, weakMemoize } from '../utils'
-import * as queries from './resolvers'
-import { accessControlledFilter } from './resolvers'
+} from '../access-control.ts'
+import type { InitialisedList } from '../initialise-lists.ts'
+import type { ResolvedDBField, ResolvedRelationDBField } from '../resolve-relationships.ts'
+import { type IdType, getDBFieldKeyForFieldOnMultiField, weakMemoize } from '../utils.ts'
+import * as queries from './resolvers.ts'
+import { accessControlledFilter } from './resolvers.ts'
 
 function getRelationVal(
   dbField: ResolvedRelationDBField,

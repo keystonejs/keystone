@@ -1,11 +1,11 @@
 import { randomBytes } from 'node:crypto'
 import path from 'node:path'
 
-import type { BaseKeystoneTypeInfo, KeystoneConfig, KeystoneContext } from '../types'
-import { createAdminMeta } from './admin-meta'
-import { createContext } from './context/createContext'
-import { initialiseLists, type InitialisedList } from './core/initialise-lists'
-import { createGraphQLSchema } from './graphql'
+import type { BaseKeystoneTypeInfo, KeystoneConfig, KeystoneContext } from '../types/index.ts'
+import { createAdminMeta } from './admin-meta.ts'
+import { createContext } from './context/createContext.ts'
+import { initialiseLists, type InitialisedList } from './core/initialise-lists.ts'
+import { createGraphQLSchema } from './graphql.ts'
 
 // TODO: this cannot be changed for now, circular dependency with getSystemPaths, getEsbuildConfig
 export function getBuiltKeystoneConfigurationPath(cwd: string) {

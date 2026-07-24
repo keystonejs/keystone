@@ -1,7 +1,7 @@
-import type { CellComponent, FieldControllerConfig } from '../../../../types'
-import { SUPPORTED_IMAGE_EXTENSIONS } from '../utils'
+import type { CellComponent, FieldControllerConfig } from '../../../../types/index.ts'
+import { SUPPORTED_IMAGE_EXTENSIONS } from '../utils.ts'
 
-export { Field } from './Field'
+export { Field } from './Field.tsx'
 
 export const Cell: CellComponent<typeof controller> = ({ value }) => {
   if (!value) return null

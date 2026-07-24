@@ -12,7 +12,7 @@ import {
   expectBadUserInput,
   expectGraphQLValidationError,
   type ContextFromRunner,
-} from '../utils'
+} from '../utils.ts'
 
 const runner = setupTestRunner({
   serve: true,

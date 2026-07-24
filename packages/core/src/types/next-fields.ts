@@ -1,8 +1,8 @@
 import { Decimal } from 'decimal.js'
-import { g } from '../types/schema'
-import type { BaseListTypeInfo } from './type-info'
-import type { BaseFieldTypeInfo, CommonFieldConfig } from './config'
-import type { DatabaseProvider } from './core'
+import { g } from './schema/index.ts'
+import type { BaseListTypeInfo } from './type-info.ts'
+import type { BaseFieldTypeInfo, CommonFieldConfig } from './config/index.ts'
+import type { DatabaseProvider } from './core.ts'
 import type {
   GArg,
   GInputType,
@@ -17,8 +17,8 @@ import type {
   GObjectType,
   InferValueFromInputType,
 } from '@graphql-ts/schema'
-import type { JSONValue, KeystoneContext, MaybePromise } from '.'
-import type { filters } from '../fields/filters'
+import type { JSONValue, KeystoneContext, MaybePromise } from './index.ts'
+import type { filters } from '../fields/filters/index.ts'
 
 export { Decimal }
 

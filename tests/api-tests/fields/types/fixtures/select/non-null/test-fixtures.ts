@@ -1,5 +1,5 @@
 import { select } from '@keystone-6/core/fields'
-import { fieldConfig } from '../test-fixtures'
+import { fieldConfig } from '../test-fixtures.ts'
 
 export {
   exampleValue,
@@ -7,7 +7,7 @@ export {
   supportsUnique,
   fieldConfig,
   fieldName,
-} from '../test-fixtures'
+} from '../test-fixtures.ts'
 
 type MatrixValue = (typeof testMatrix)[number]
 

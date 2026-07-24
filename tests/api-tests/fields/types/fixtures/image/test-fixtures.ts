@@ -1,5 +1,5 @@
 import { image } from '@keystone-6/core/fields'
-import { inMemoryStorageStrategy, prepareTestFile } from '../../../storage-utils'
+import { inMemoryStorageStrategy, prepareTestFile } from '../../../storage-utils.ts'
 
 export const fieldConfig = () => ({ storage: inMemoryStorageStrategy().storage })
 

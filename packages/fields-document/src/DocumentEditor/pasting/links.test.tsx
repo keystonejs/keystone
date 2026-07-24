@@ -3,8 +3,8 @@
 /** @jsx jsx */
 import { expect, test } from 'vitest'
 import type { Editor } from 'slate'
-import { makeEditor, jsx } from '../tests/utils'
-import { MyDataTransfer } from './data-transfer'
+import { makeEditor, jsx } from '../tests/utils.tsx'
+import { MyDataTransfer } from './data-transfer.ts'
 
 function pasteText(editor: Editor, text: string) {
   const data = new MyDataTransfer()
