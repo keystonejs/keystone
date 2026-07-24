@@ -1,7 +1,7 @@
 {
   "name": "@keystone-6/fields-document",
   "description": "KeystoneJS Document Field Type",
-  "version": "10.0.0",
+  "version": "0.0.0-rc-20260724052901",
   "license": "MIT",
   "type": "module",
   "exports": {
@@ -83,7 +83,7 @@
     "slate-hyperscript": "^0.100.0"
   },
   "peerDependencies": {
-    "@keystone-6/core": "^7.0.0",
+    "@keystone-6/core": "0.0.0-rc-20260724052901",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "@keystar/ui": "catalog:",
