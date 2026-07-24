@@ -1,7 +1,7 @@
 /** @jest-environment jsdom */
 
 import { expect, test } from 'vitest'
-import { htmlToEditor } from './test-utils'
+import { htmlToEditor } from './test-utils.tsx'
 
 test('whitespace between blocks is removed', () => {
   expect(htmlToEditor('<p>blah</p>\n<span>   \n </span>    <p>other</p>')).toMatchInlineSnapshot(`

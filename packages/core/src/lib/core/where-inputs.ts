@@ -1,8 +1,8 @@
-import type { DBField, KeystoneContext } from '../../types'
-import type { PrismaFilter, UniquePrismaFilter } from '../../types/prisma'
-import { userInputError } from './graphql-errors'
-import type { InitialisedList } from './initialise-lists'
-import { getDBFieldKeyForFieldOnMultiField } from './utils'
+import type { DBField, KeystoneContext } from '../../types/index.ts'
+import type { PrismaFilter, UniquePrismaFilter } from '../../types/prisma.ts'
+import { userInputError } from './graphql-errors.ts'
+import type { InitialisedList } from './initialise-lists.ts'
+import { getDBFieldKeyForFieldOnMultiField } from './utils.ts'
 
 export type InputFilter = Record<string, any> & {
   _____?: 'input filter'

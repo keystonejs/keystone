@@ -1,8 +1,8 @@
 import { type Descendant, Element, Editor, Transforms, Range } from 'slate'
-import { isValidURL } from '../isValidURL'
-import { insertNodesButReplaceIfSelectionIsAtEmptyParagraphOrHeading } from '../utils'
-import { deserializeHTML } from './html'
-import { deserializeMarkdown } from './markdown'
+import { isValidURL } from '../isValidURL.ts'
+import { insertNodesButReplaceIfSelectionIsAtEmptyParagraphOrHeading } from '../utils.ts'
+import { deserializeHTML } from './html.ts'
+import { deserializeMarkdown } from './markdown.ts'
 
 const urlPattern = /https?:\/\//
 

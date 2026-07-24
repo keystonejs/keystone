@@ -1,4 +1,4 @@
-import { useRouter } from '../../../../admin-ui/router'
+import { useRouter } from '../../../../admin-ui/router.tsx'
 import type { HTMLAttributes, ReactNode } from 'react'
 import { Fragment, useMemo, useState } from 'react'
 import isDeepEqual from 'fast-deep-equal'
@@ -12,16 +12,16 @@ import { Grid, HStack } from '@keystar/ui/layout'
 import { breakpointQueries, css, tokenSchema } from '@keystar/ui/style'
 import { toastQueue } from '@keystar/ui/toast'
 import { Heading, Text } from '@keystar/ui/typography'
-import { gql, type TypedDocumentNode, useApolloClient } from '../../../../admin-ui/apollo'
-import { Container, CONTAINER_MAX } from '../../../../admin-ui/components/Container'
-import { ErrorDetailsDialog } from '../../../../admin-ui/components/Errors'
-import { ActionDialog } from '../../../../admin-ui/components/ActionDialog'
+import { gql, type TypedDocumentNode, useApolloClient } from '../../../../admin-ui/apollo.ts'
+import { Container, CONTAINER_MAX } from '../../../../admin-ui/components/Container.tsx'
+import { ErrorDetailsDialog } from '../../../../admin-ui/components/Errors.tsx'
+import { ActionDialog } from '../../../../admin-ui/components/ActionDialog.tsx'
 import {
   getActionArguments,
   getActionGraphQLArgs,
   getActionGraphQLVariables,
-} from '../../../../admin-ui/utils/actionData'
-import type { ActionMeta, ListMeta } from '../../../../types'
+} from '../../../../admin-ui/utils/actionData.ts'
+import type { ActionMeta, ListMeta } from '../../../../types/index.ts'
 
 export function ItemPageHeader({
   list,

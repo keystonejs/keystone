@@ -10,10 +10,10 @@ import {
   type GraphQLType,
 } from 'graphql/index.js'
 
-import { g } from '../..'
-import { expandVoidHooks } from '../../fields/resolve-hooks'
-import { humanize } from '../../lib/utils'
-import type { GroupInfo } from '../../schema'
+import { g } from '../../index.ts'
+import { expandVoidHooks } from '../../fields/resolve-hooks.ts'
+import { humanize } from '../utils.ts'
+import type { GroupInfo } from '../../schema.ts'
 import type {
   ActionArgumentSourceMeta,
   ActionMeta,
@@ -28,9 +28,9 @@ import type {
   ListGraphQLTypes,
   ListHooks,
   NextFieldType,
-} from '../../types'
-import { QueryMode } from '../../types'
-import type { FieldHooks, ResolvedFieldHooks, ResolvedListHooks } from '../../types/config/hooks'
+} from '../../types/index.ts'
+import { QueryMode } from '../../types/index.ts'
+import type { FieldHooks, ResolvedFieldHooks, ResolvedListHooks } from '../../types/config/hooks.ts'
 import type {
   BaseActions,
   MaybeBooleanItemFunctionWithFilter,
@@ -40,19 +40,19 @@ import type {
   MaybeItemFieldFunctionWithFilter,
   MaybeSessionFunction,
   MaybeSessionFunctionWithFilter,
-} from '../../types/config/lists'
-import { type GraphQLNames, __getNames } from '../../types/utils'
+} from '../../types/config/lists.ts'
+import { type GraphQLNames, __getNames } from '../../types/utils.ts'
 import {
   type ResolvedActionAccessControl,
   type ResolvedFieldAccessControl,
   type ResolvedListAccessControl,
   parseFieldAccessControl,
   parseListAccessControl,
-} from './access-control'
-import { assertFieldsValid } from './field-assertions'
-import { outputTypeField } from './queries/output-field'
-import { type ResolvedDBField, resolveRelationships } from './resolve-relationships'
-import { areArraysEqual } from './utils'
+} from './access-control.ts'
+import { assertFieldsValid } from './field-assertions.ts'
+import { outputTypeField } from './queries/output-field.ts'
+import { type ResolvedDBField, resolveRelationships } from './resolve-relationships.ts'
+import { areArraysEqual } from './utils.ts'
 
 export type InitialisedAction = {
   actionKey: string

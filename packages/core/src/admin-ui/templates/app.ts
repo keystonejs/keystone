@@ -1,8 +1,8 @@
 import Path from 'node:path'
 import fs from 'node:fs'
 
-import type { AdminMetaSource } from '../../lib/admin-meta'
-import type { KeystoneConfig } from '../../types'
+import type { AdminMetaSource } from '../../lib/admin-meta.ts'
+import type { KeystoneConfig } from '../../types/index.ts'
 
 function isFileOrSymlinkToFile(dirent: fs.Dirent) {
   if (dirent.isFile()) return true

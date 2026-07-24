@@ -1,8 +1,8 @@
-import type { DocumentFeatures } from '../../views-shared'
-import type { DocumentFeaturesForNormalization } from '../document-features-normalization'
-import { type Mark, assert } from '../utils'
-import type { ComponentSchema, ChildField } from './api-shared'
-import { getKeysForArrayValue, setKeysForArrayValue } from './preview-props'
+import type { DocumentFeatures } from '../../views-shared.ts'
+import type { DocumentFeaturesForNormalization } from '../document-features-normalization.ts'
+import { type Mark, assert } from '../utils.ts'
+import type { ComponentSchema, ChildField } from './api-shared.ts'
+import { getKeysForArrayValue, setKeysForArrayValue } from './preview-props.ts'
 
 type PathToChildFieldWithOption = { path: ReadonlyPropPath; options: ChildField['options'] }
 

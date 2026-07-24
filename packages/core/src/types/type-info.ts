@@ -1,6 +1,6 @@
-import type { BaseItem } from './next-fields'
-import type { KeystoneContext } from '../types'
-import type { DatabaseProvider } from './core'
+import type { BaseItem } from './next-fields.ts'
+import type { KeystoneContext } from './index.ts'
+import type { DatabaseProvider } from './core.ts'
 
 type GraphQLInput = Record<string, any>
 

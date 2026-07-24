@@ -7,11 +7,11 @@ import type {
 } from '@keystone-6/core/types'
 import { Field as KeystarField } from '@keystar/ui/field'
 
-import { getInitialPropsValue } from './DocumentEditor/component-blocks/initial-values'
-import type { ComponentSchema } from './DocumentEditor/component-blocks/api'
-import { assertNever, clientSideValidateProp } from './DocumentEditor/component-blocks/utils'
-import { FormValueContentFromPreviewProps } from './DocumentEditor/component-blocks/form-from-preview'
-import { createGetPreviewProps } from './DocumentEditor/component-blocks/preview-props'
+import { getInitialPropsValue } from './DocumentEditor/component-blocks/initial-values.ts'
+import type { ComponentSchema } from './DocumentEditor/component-blocks/api.tsx'
+import { assertNever, clientSideValidateProp } from './DocumentEditor/component-blocks/utils.ts'
+import { FormValueContentFromPreviewProps } from './DocumentEditor/component-blocks/form-from-preview.tsx'
+import { createGetPreviewProps } from './DocumentEditor/component-blocks/preview-props.ts'
 
 export function Field({
   field,

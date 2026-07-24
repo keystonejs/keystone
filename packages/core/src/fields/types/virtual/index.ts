@@ -7,11 +7,11 @@ import {
   type KeystoneContext,
   type ListGraphQLTypes,
   fieldType,
-} from '../../../types'
-import { g } from '../../..'
+} from '../../../types/index.ts'
+import { g } from '../../../index.ts'
 import type { GArg, GField, GInputType, GObjectType, GOutputType } from '@graphql-ts/schema'
 import { GNonNull } from '@graphql-ts/schema'
-import type { controller } from './views'
+import type { controller } from './views/index.tsx'
 
 type VirtualFieldGraphQLField<Item extends BaseItem, Context extends KeystoneContext> = GField<
   Item,

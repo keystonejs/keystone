@@ -5,8 +5,8 @@ import { list } from '@keystone-6/core'
 import { component, fields } from '@keystone-6/fields-document/component-blocks'
 import { allowAll } from '@keystone-6/core/access'
 
-import { setupTestEnv, setupTestRunner } from '../../test-runner'
-import { type ContextFromRunner, expectInternalServerError } from '../../utils'
+import { setupTestEnv, setupTestRunner } from '../../test-runner.ts'
+import { type ContextFromRunner, expectInternalServerError } from '../../utils.ts'
 
 const runner = setupTestRunner({
   serve: true,

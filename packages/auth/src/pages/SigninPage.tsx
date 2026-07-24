@@ -11,7 +11,7 @@ import { Heading, Text } from '@keystar/ui/typography'
 import { gql, type TypedDocumentNode, useMutation } from '@keystone-6/core/admin-ui/apollo'
 import { GraphQLErrorNotice, Logo } from '@keystone-6/core/admin-ui/components'
 import { useRouter } from '@keystone-6/core/admin-ui/router'
-import type { AuthGqlNames } from '../types'
+import type { AuthGqlNames } from '../types.ts'
 
 export default (props: Parameters<typeof SigninPage>[0]) => () => <SigninPage {...props} />
 

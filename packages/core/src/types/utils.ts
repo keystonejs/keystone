@@ -1,7 +1,7 @@
 import pluralize from 'pluralize'
-import type { BaseKeystoneTypeInfo, KeystoneConfig, KeystoneContext } from '../types'
+import type { BaseKeystoneTypeInfo, KeystoneConfig, KeystoneContext } from './index.ts'
 import type { Readable } from 'node:stream'
-import { humanize } from '../lib/utils'
+import { humanize } from '../lib/utils.ts'
 
 export type JSONValue =
   | string

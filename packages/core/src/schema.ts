@@ -1,6 +1,6 @@
 import type { ListenOptions } from 'node:net'
 
-import { idFieldType } from './lib/id-field'
+import { idFieldType } from './lib/id-field.ts'
 import type {
   Action,
   ActionArgsConfig,
@@ -17,7 +17,7 @@ import type {
   MaybeItemFunctionWithFilter,
   MaybeSessionFunction,
   MaybeSessionFunctionWithFilter,
-} from './types'
+} from './types/index.ts'
 
 type ListGraphQLOmit = NonNullable<ListGraphQLConfig<BaseListTypeInfo>['omit']>
 

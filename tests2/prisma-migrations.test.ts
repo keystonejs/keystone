@@ -8,10 +8,10 @@ import Database from 'better-sqlite3'
 import { createConnection } from 'mariadb'
 import { Client } from 'pg'
 
-import { resetDatabase as resetMysqlDatabase } from '../packages/core/src/testing/mysql'
-import { resetDatabase as resetPostgresqlDatabase } from '../packages/core/src/testing/postgresql'
-import { resetDatabase as resetSqliteDatabase } from '../packages/core/src/testing/sqlite'
-import { dbProvider } from './utils'
+import { resetDatabase as resetMysqlDatabase } from '../packages/core/src/testing/mysql.ts'
+import { resetDatabase as resetPostgresqlDatabase } from '../packages/core/src/testing/postgresql.ts'
+import { resetDatabase as resetSqliteDatabase } from '../packages/core/src/testing/sqlite.ts'
+import { dbProvider } from './utils.ts'
 
 type TestDatabase = {
   reset(migrationsDirectory: string): Promise<void>

@@ -3,8 +3,8 @@ import { list, g } from '@keystone-6/core'
 import { allowAll } from '@keystone-6/core/access'
 import { text } from '@keystone-6/core/fields'
 
-import { setupTestRunner } from './test-runner'
-import { expectInternalServerError } from './utils'
+import { setupTestRunner } from './test-runner.ts'
+import { expectInternalServerError } from './utils.ts'
 
 const falseFn: (...args: any) => boolean = () => false
 const observedSchemaExtensions: unknown[] = []

@@ -1,8 +1,8 @@
 import fs from 'node:fs/promises'
 import { createRequire } from 'node:module'
 
-import { getBuiltKeystoneConfigurationPath, getBuiltPrismaModulePath } from '../lib/system'
-import type { KeystoneConfig } from '../types'
+import { getBuiltKeystoneConfigurationPath, getBuiltPrismaModulePath } from '../lib/system.ts'
+import type { KeystoneConfig } from '../types/index.ts'
 
 export class ExitError extends Error {
   code: number

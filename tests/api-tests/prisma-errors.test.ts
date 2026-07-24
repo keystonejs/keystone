@@ -3,9 +3,9 @@ import { g, list } from '@keystone-6/core'
 import { text } from '@keystone-6/core/fields'
 import { allowAll } from '@keystone-6/core/access'
 
-import { setupTestRunner } from './test-runner'
+import { setupTestRunner } from './test-runner.ts'
 import type { KeystoneContext } from '@keystone-6/core/types'
-import { dbProvider } from './utils'
+import { dbProvider } from './utils.ts'
 
 const extendGraphqlSchema = g.extend(base => ({
   mutation: {

@@ -1,10 +1,10 @@
 import type { IncomingMessage, ServerResponse } from 'http'
 import type { DocumentNode, ExecutionResult, GraphQLSchema } from 'graphql/index.js'
 import type { TypedDocumentNode } from '@graphql-typed-document-node/core'
-import type { InitialisedList } from '../lib/core/initialise-lists'
-import type { SessionStrategy } from './session'
-import type { BaseKeystoneTypeInfo, BaseListTypeInfo } from './type-info'
-import type { MaybePromise } from './utils'
+import type { InitialisedList } from '../lib/core/initialise-lists.ts'
+import type { SessionStrategy } from './session.ts'
+import type { BaseKeystoneTypeInfo, BaseListTypeInfo } from './type-info.ts'
+import type { MaybePromise } from './utils.ts'
 
 export type KeystoneContext<TypeInfo extends BaseKeystoneTypeInfo = BaseKeystoneTypeInfo> = {
   db: KeystoneDbAPI<TypeInfo['lists']>

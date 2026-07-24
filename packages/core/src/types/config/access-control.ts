@@ -1,6 +1,6 @@
-import type { KeystoneContext } from '../context'
-import type { BaseListTypeInfo } from '../type-info'
-import type { MaybePromise } from '../utils'
+import type { KeystoneContext } from '../context.ts'
+import type { BaseListTypeInfo } from '../type-info.ts'
+import type { MaybePromise } from '../utils.ts'
 
 export type BaseAccessArgs<ListTypeInfo extends BaseListTypeInfo> = {
   context: KeystoneContext<ListTypeInfo['all']>

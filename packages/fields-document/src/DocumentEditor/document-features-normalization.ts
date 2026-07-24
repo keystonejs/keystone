@@ -1,6 +1,6 @@
 import { Editor, Element, Node, Text, Transforms, type NodeEntry } from 'slate'
-import type { DocumentFeatures } from '../views-shared'
-import type { Relationships } from './relationship-shared'
+import type { DocumentFeatures } from '../views-shared.ts'
+import type { Relationships } from './relationship-shared.ts'
 
 export function areArraysEqual(a: readonly unknown[], b: readonly unknown[]) {
   return a.length === b.length && a.every((x, i) => x === b[i])

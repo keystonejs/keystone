@@ -7,7 +7,7 @@ import { HStack, VStack } from '@keystar/ui/layout'
 import { tokenSchema } from '@keystar/ui/style'
 import { Text } from '@keystar/ui/typography'
 
-import { InlineCode } from './InlineCode'
+import { InlineCode } from './InlineCode.tsx'
 
 type NullableFieldWrapperProps = {
   /** Whether to auto focus the checkbox. */

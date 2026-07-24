@@ -3,8 +3,8 @@
 /** @jsx jsx */
 import { expect, test } from 'vitest'
 import React from 'react'
-import { component, fields } from './component-blocks/api'
-import { defaultDocumentFeatures, jsx, makeEditor } from './tests/utils'
+import { component, fields } from './component-blocks/api.tsx'
+import { defaultDocumentFeatures, jsx, makeEditor } from './tests/utils.tsx'
 
 test('basic link shortcut', () => {
   const editor = makeEditor(

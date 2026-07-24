@@ -1,8 +1,8 @@
-import type { ScalarDBField, ScalarDBFieldDefault } from '../../types'
-import type { ResolvedDBField } from './resolve-relationships'
-import type { InitialisedList } from './initialise-lists'
-import type { KeystoneConfig } from '../../types'
-import { areArraysEqual, getDBFieldKeyForFieldOnMultiField } from './utils'
+import type { ScalarDBField, ScalarDBFieldDefault } from '../../types/index.ts'
+import type { ResolvedDBField } from './resolve-relationships.ts'
+import type { InitialisedList } from './initialise-lists.ts'
+import type { KeystoneConfig } from '../../types/index.ts'
+import { areArraysEqual, getDBFieldKeyForFieldOnMultiField } from './utils.ts'
 
 const modifiers = {
   required: '',

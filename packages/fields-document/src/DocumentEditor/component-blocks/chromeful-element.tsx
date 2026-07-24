@@ -20,22 +20,22 @@ import {
   type ComponentSchema,
   type ComponentBlock,
   NotEditable,
-} from './api'
-import { clientSideValidateProp } from './utils'
-import type { GenericPreviewProps } from './api'
+} from './api.tsx'
+import { clientSideValidateProp } from './utils.ts'
+import type { GenericPreviewProps } from './api.tsx'
 import {
   FormValueContentFromPreviewProps,
   previewPropsOnChange,
   previewPropsToValue,
-} from './form-from-preview'
+} from './form-from-preview.tsx'
 import { DialogContainer, Dialog } from '@keystar/ui/dialog'
 import { FieldMessage } from '@keystar/ui/field'
 import { Flex } from '@keystar/ui/layout'
 import { Content } from '@keystar/ui/slots'
 import { css, tokenSchema } from '@keystar/ui/style'
 import { TooltipTrigger, Tooltip } from '@keystar/ui/tooltip'
-import { blockElementSpacing } from '../utils-hooks'
-import { createGetPreviewProps } from './preview-props'
+import { blockElementSpacing } from '../utils-hooks.tsx'
+import { createGetPreviewProps } from './preview-props.ts'
 
 export function ChromefulComponentBlockElement(props: {
   children: ReactNode

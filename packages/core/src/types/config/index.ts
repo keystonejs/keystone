@@ -7,23 +7,23 @@ import type { CorsOptions } from 'cors'
 import type express from 'express'
 import type { GraphQLSchema } from 'graphql/index.js'
 
-import type { BaseKeystoneTypeInfo, DatabaseProvider, KeystoneContext } from '..'
-import type { SessionStrategy } from '../session'
-import type { MaybePromise } from '../utils'
-import type { FieldAccessControl, ListAccessControl } from './access-control'
-import type { BaseFields } from './fields'
-import type { FieldHooks, ListHooks } from './hooks'
+import type { BaseKeystoneTypeInfo, DatabaseProvider, KeystoneContext } from '../index.ts'
+import type { SessionStrategy } from '../session.ts'
+import type { MaybePromise } from '../utils.ts'
+import type { FieldAccessControl, ListAccessControl } from './access-control.ts'
+import type { BaseFields } from './fields.ts'
+import type { FieldHooks, ListHooks } from './hooks.ts'
 import type {
   IdFieldConfig,
   ListConfig,
   ListGraphQLConfig,
   MaybeItemFunctionWithFilter,
   MaybeSessionFunction,
-} from './lists'
+} from './lists.ts'
 
-export type * from './access-control'
-export type * from './fields'
-export type * from './lists'
+export type * from './access-control.ts'
+export type * from './fields.ts'
+export type * from './lists.ts'
 
 export type ListDefaults = {
   graphql?: Pick<ListGraphQLConfig<any>, 'omit' | 'maxTake'>

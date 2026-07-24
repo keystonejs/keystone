@@ -4,4 +4,4 @@ export { Editor } from 'slate'
 
 export { ReactEditor, withReact } from 'slate-react'
 
-export { createDocumentEditor } from './editor-shared'
+export { createDocumentEditor } from './editor-shared.ts'

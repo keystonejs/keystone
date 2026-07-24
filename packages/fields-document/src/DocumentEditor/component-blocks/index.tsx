@@ -8,17 +8,17 @@ import {
 
 import { css, tokenSchema } from '@keystar/ui/style'
 
-import type { ComponentBlock } from './api-shared'
-import { insertNodesButReplaceIfSelectionIsAtEmptyParagraphOrHeading } from '../utils'
-import { useElementWithSetNodes, useEventCallback } from '../utils-hooks'
-import { getInitialValue } from './initial-values'
-import { createGetPreviewProps } from './preview-props'
-import { updateComponentBlockElementProps } from './update-element'
-import { ComponentBlockRender } from './component-block-render'
-import { ChromefulComponentBlockElement } from './chromeful-element'
-import { ChromelessComponentBlockElement } from './chromeless-element'
+import type { ComponentBlock } from './api-shared.ts'
+import { insertNodesButReplaceIfSelectionIsAtEmptyParagraphOrHeading } from '../utils.ts'
+import { useElementWithSetNodes, useEventCallback } from '../utils-hooks.tsx'
+import { getInitialValue } from './initial-values.ts'
+import { createGetPreviewProps } from './preview-props.ts'
+import { updateComponentBlockElementProps } from './update-element.ts'
+import { ComponentBlockRender } from './component-block-render.tsx'
+import { ChromefulComponentBlockElement } from './chromeful-element.tsx'
+import { ChromelessComponentBlockElement } from './chromeless-element.tsx'
 
-export { withComponentBlocks } from './with-component-blocks'
+export { withComponentBlocks } from './with-component-blocks.tsx'
 
 export const ComponentBlockContext = createContext<Record<string, ComponentBlock>>({})
 

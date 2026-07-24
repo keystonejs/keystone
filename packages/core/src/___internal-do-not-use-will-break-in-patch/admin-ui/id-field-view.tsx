@@ -8,10 +8,15 @@ import { Grid } from '@keystar/ui/layout'
 import { TooltipTrigger, Tooltip } from '@keystar/ui/tooltip'
 import { TextField } from '@keystar/ui/text-field'
 
-import type { FieldController, FieldControllerConfig, FieldProps, IdFieldConfig } from '../../types'
+import type {
+  FieldController,
+  FieldControllerConfig,
+  FieldProps,
+  IdFieldConfig,
+} from '../../types/index.ts'
 import type { InferValueFromInputType } from '@graphql-ts/schema'
-import type { filters } from '../../fields/filters'
-import { entriesTyped } from '../../lib/core/utils'
+import type { filters } from '../../fields/filters/index.ts'
+import { entriesTyped } from '../../lib/core/utils.ts'
 
 const COPY_TOOLTIP_CONTENT = {
   neutral: 'Copy ID',

@@ -5,9 +5,9 @@ import type {
   ComponentBlock,
   ComponentSchema,
   RelationshipField,
-} from './DocumentEditor/component-blocks/api-shared'
-import { assertNever } from './DocumentEditor/component-blocks/utils'
-import type { Relationships } from './DocumentEditor/relationship-shared'
+} from './DocumentEditor/component-blocks/api-shared.ts'
+import { assertNever } from './DocumentEditor/component-blocks/utils.ts'
+import type { Relationships } from './DocumentEditor/relationship-shared.ts'
 
 const labelFieldAlias = '____document_field_relationship_item_label'
 const idFieldAlias = '____document_field_relationship_item_id'

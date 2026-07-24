@@ -1,7 +1,7 @@
 /** @jest-environment jsdom */
 
 import { expect, test } from 'vitest'
-import { htmlToEditor } from './test-utils'
+import { htmlToEditor } from './test-utils.tsx'
 
 // TODO: Word and Pages maybe? (i believe the data is massive mess though so not super eager for it rn)
 

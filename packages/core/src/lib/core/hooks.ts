@@ -1,5 +1,5 @@
-import { extensionError, validationFailureError } from './graphql-errors'
-import type { InitialisedList } from './initialise-lists'
+import { extensionError, validationFailureError } from './graphql-errors.ts'
+import type { InitialisedList } from './initialise-lists.ts'
 
 export async function validate({
   list,

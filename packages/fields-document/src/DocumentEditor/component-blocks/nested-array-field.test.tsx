@@ -3,9 +3,9 @@
 /** @jsx jsx */
 import { expect, test } from 'vitest'
 import React, { Fragment } from 'react'
-import { jsx, makeEditor } from '../tests/utils'
-import { component, fields } from '../../component-blocks'
-import { createGetPreviewProps } from './preview-props'
+import { jsx, makeEditor } from '../tests/utils.tsx'
+import { component, fields } from '../../component-blocks.tsx'
+import { createGetPreviewProps } from './preview-props.ts'
 
 const table = component({
   preview: props =>

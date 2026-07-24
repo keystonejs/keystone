@@ -1,6 +1,6 @@
 import { Client, escapeIdentifier, type ClientConfig } from 'pg'
 
-import { applyMigrations } from './migrations'
+import { applyMigrations } from './migrations.ts'
 
 export type PostgresqlDatabaseConfig = ClientConfig & {
   schema?: string

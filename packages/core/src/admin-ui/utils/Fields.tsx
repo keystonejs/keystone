@@ -15,9 +15,9 @@ import type {
   ConditionalFilterCase,
   FieldGroupMeta,
   FieldMeta,
-} from '../../types'
-import { EmptyState } from '../components/EmptyState'
-import { resolveFieldMode, serializeItemForConditionalFilters, testFilter } from './filters'
+} from '../../types/index.ts'
+import { EmptyState } from '../components/EmptyState.tsx'
+import { resolveFieldMode, serializeItemForConditionalFilters, testFilter } from './filters.ts'
 
 export function Fields({
   view,

@@ -16,7 +16,7 @@ import type {
   FieldController,
   FieldControllerConfig,
   FieldProps,
-} from '../../../../types'
+} from '../../../../types/index.ts'
 
 export type Value =
   | { kind: 'create'; value: string | null }
