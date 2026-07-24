@@ -3,9 +3,9 @@
 /** @jsx jsx */
 import { test } from 'vitest'
 import React, { type ReactElement } from 'react'
-import { jsx, makeEditor } from '../tests/utils'
-import { component, fields } from '../../component-blocks'
-import type { ArrayField, ChildField, ObjectField, PreviewProps } from './api'
+import { jsx, makeEditor } from '../tests/utils.tsx'
+import { component, fields } from '../../component-blocks.tsx'
+import type { ArrayField, ChildField, ObjectField, PreviewProps } from './api.tsx'
 
 type ListItems = ArrayField<
   ObjectField<{

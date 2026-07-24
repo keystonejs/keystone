@@ -3,7 +3,7 @@ import type { ReadStream } from 'node:fs'
 import GraphQLUpload from 'graphql-upload/GraphQLUpload.js'
 import { GraphQLError, GraphQLScalarType } from 'graphql/index.js'
 import { Decimal as DecimalValue } from 'decimal.js'
-import type { JSONValue } from '../utils'
+import type { JSONValue } from '../utils.ts'
 
 export const JSON = new GraphQLScalarType<JSONValue>({
   name: 'JSON',

@@ -3,13 +3,13 @@ import { gfmAutolinkLiteralFromMarkdown } from 'mdast-util-gfm-autolink-literal'
 import { gfmStrikethroughFromMarkdown } from 'mdast-util-gfm-strikethrough'
 import { gfmStrikethrough } from 'micromark-extension-gfm-strikethrough'
 import { gfmAutolinkLiteral } from 'micromark-extension-gfm-autolink-literal'
-import type { Block } from '../editor-shared'
+import type { Block } from '../editor-shared.ts'
 import {
   type InlineFromExternalPaste,
   addMarkToChildren,
   getInlineNodes,
   setLinkForChildren,
-} from './utils'
+} from './utils.ts'
 
 const markdownConfig = {
   mdastExtensions: [gfmAutolinkLiteralFromMarkdown(), gfmStrikethroughFromMarkdown()],

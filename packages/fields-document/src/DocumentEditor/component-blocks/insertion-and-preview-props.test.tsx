@@ -4,11 +4,11 @@
 import { expect, test } from 'vitest'
 import { Transforms, type Editor } from 'slate'
 import React, { type ReactElement } from 'react'
-import { jsx, makeEditor } from '../tests/utils'
-import { component, fields } from '../../component-blocks'
-import { createGetPreviewProps } from './preview-props'
-import { ChildFieldEditable } from './component-block-render'
-import { insertComponentBlock } from '.'
+import { jsx, makeEditor } from '../tests/utils.tsx'
+import { component, fields } from '../../component-blocks.tsx'
+import { createGetPreviewProps } from './preview-props.ts'
+import { ChildFieldEditable } from './component-block-render.tsx'
+import { insertComponentBlock } from './index.tsx'
 
 const objectProp = fields.object({
   prop: fields.text({ label: 'Prop' }),

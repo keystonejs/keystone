@@ -7,10 +7,10 @@ import type {
   KeystoneContext,
   MaybePromise,
   StorageStrategy,
-} from '../../../types'
-import { fieldType } from '../../../types'
-import { g } from '../../..'
-import { merge } from '../../resolve-hooks'
+} from '../../../types/index.ts'
+import { fieldType } from '../../../types/index.ts'
+import { g } from '../../../index.ts'
+import { merge } from '../../resolve-hooks.ts'
 import type { InferValueFromArg, InferValueFromInputType } from '@graphql-ts/schema'
 import { randomBytes } from 'node:crypto'
 

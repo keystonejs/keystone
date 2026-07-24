@@ -1,5 +1,5 @@
-import { cli } from './cli'
-import { ExitError } from './utils'
+import { cli } from './cli.ts'
+import { ExitError } from './utils.ts'
 
 async function main() {
   const argv = process.argv.slice(2)

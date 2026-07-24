@@ -4,7 +4,7 @@ import { describe, test } from 'node:test'
 import { list } from '@keystone-6/core'
 import { allowAll, denyAll } from '@keystone-6/core/access'
 import { text } from '@keystone-6/core/fields'
-import { dbProvider, setupTestSuite } from './utils'
+import { dbProvider, setupTestSuite } from './utils.ts'
 
 describe(`field access sudo tests (${dbProvider})`, () => {
   const suite = setupTestSuite({

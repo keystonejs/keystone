@@ -5,11 +5,11 @@ import { Text } from '@keystar/ui/typography'
 import type { CellComponent, FieldProps } from '@keystone-6/core/types'
 import { Node } from 'slate'
 
-import { DocumentEditor } from './DocumentEditor'
-import { ForceValidationProvider } from './DocumentEditor/utils-hooks'
-import type { controller, DocumentFeatures } from './views-shared'
+import { DocumentEditor } from './DocumentEditor/index.tsx'
+import { ForceValidationProvider } from './DocumentEditor/utils-hooks.tsx'
+import type { controller, DocumentFeatures } from './views-shared.ts'
 
-export { controller } from './views-shared'
+export { controller } from './views-shared.ts'
 export { type DocumentFeatures }
 
 export function Field(props: FieldProps<typeof controller>) {

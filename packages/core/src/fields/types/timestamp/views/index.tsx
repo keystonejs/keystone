@@ -17,9 +17,9 @@ import type {
   FieldControllerConfig,
   FieldProps,
   SimpleFieldTypeInfo,
-} from '../../../../types'
-import { entriesTyped } from '../../../../lib/core/utils'
-import type { Value } from './utils'
+} from '../../../../types/index.ts'
+import { entriesTyped } from '../../../../lib/core/utils.ts'
+import type { Value } from './utils.ts'
 
 export function Field(props: FieldProps<typeof controller>) {
   const { field, value, forceValidation, onChange, isRequired } = props

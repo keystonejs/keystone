@@ -5,7 +5,7 @@ import { list } from '@keystone-6/core'
 import { setupTestRunner } from '@keystone-6/api-tests/test-runner'
 import type { KeystoneContext } from '@keystone-6/core/types'
 import { allowAll, denyAll } from '@keystone-6/core/access'
-import type { ContextFromRunner } from '../../utils'
+import type { ContextFromRunner } from '../../utils.ts'
 
 type IdType = any
 

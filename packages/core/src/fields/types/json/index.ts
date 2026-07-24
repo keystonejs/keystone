@@ -1,11 +1,11 @@
-import { g } from '../../..'
+import { g } from '../../../index.ts'
 import {
   type BaseListTypeInfo,
   type CommonFieldConfig,
   fieldType,
   type FieldTypeFunc,
   type JSONValue,
-} from '../../../types'
+} from '../../../types/index.ts'
 
 type FieldTypeInfo = {
   item: JSONValue | null

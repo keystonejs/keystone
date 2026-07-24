@@ -2,17 +2,17 @@ import type { CacheHint } from '@apollo/cache-control-types'
 import type { allIcons as KeystarIcons } from '@keystar/ui/icon/all'
 import type { GArg, InferValueFromArgs } from '@graphql-ts/schema'
 
-import type { KeystoneContext } from '../context'
-import type { BaseListTypeInfo } from '../type-info'
-import type { MaybePromise } from '../utils'
+import type { KeystoneContext } from '../context.ts'
+import type { BaseListTypeInfo } from '../type-info.ts'
+import type { MaybePromise } from '../utils.ts'
 import type {
   FieldAccessControl,
   ListAccessControl,
   ActionAccessControlFunction,
-} from './access-control'
-import type { BaseFields, BaseFieldTypeInfo, FieldGraphQLOmit } from './fields'
-import type { ListHooks } from './hooks'
-import type { FieldTypeFunc } from '../next-fields'
+} from './access-control.ts'
+import type { BaseFields, BaseFieldTypeInfo, FieldGraphQLOmit } from './fields.ts'
+import type { ListHooks } from './hooks.ts'
+import type { FieldTypeFunc } from '../next-fields.ts'
 
 export type ActionArgumentsConfig = Record<string, GArg<any, any>>
 

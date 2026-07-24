@@ -1,8 +1,8 @@
-import type { BaseFieldTypeInfo, CommonFieldConfig } from '../types'
-import type { BaseListTypeInfo, FieldData } from '../types'
-import type { FieldHooks } from '../types/config/hooks'
-import type { ValidateFieldHook } from '../types/config/hooks'
-import { merge } from './resolve-hooks'
+import type { BaseFieldTypeInfo, CommonFieldConfig } from '../types/index.ts'
+import type { BaseListTypeInfo, FieldData } from '../types/index.ts'
+import type { FieldHooks } from '../types/config/hooks.ts'
+import type { ValidateFieldHook } from '../types/config/hooks.ts'
+import { merge } from './resolve-hooks.ts'
 
 export function resolveDbNullable(
   validation: undefined | { isRequired?: boolean },

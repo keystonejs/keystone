@@ -1,10 +1,10 @@
 import { GInputObjectType, type GNullableInputType } from '@graphql-ts/schema'
 import type { GraphQLNamedType } from 'graphql/index.js'
 
-import type { BaseItem, KeystoneContext } from '../../../types'
-import type { UniquePrismaFilter } from '../../../types/prisma'
-import { g } from '../../../types/schema'
-import { withSpan } from '../../otel'
+import type { BaseItem, KeystoneContext } from '../../../types/index.ts'
+import type { UniquePrismaFilter } from '../../../types/prisma.ts'
+import { g } from '../../../types/schema/index.ts'
+import { withSpan } from '../../otel.ts'
 import {
   cannotActionForItem,
   cannotForItem,
@@ -12,38 +12,38 @@ import {
   enforceListLevelAccessControl,
   getAccessFilters,
   getOperationAccess,
-} from '../access-control'
-import { checkFilterOrderAccess } from '../access-control'
+} from '../access-control.ts'
+import { checkFilterOrderAccess } from '../access-control.ts'
 import {
   accessDeniedError,
   extensionError,
   relationshipError,
   resolverError,
-} from '../graphql-errors'
-import { runSideEffectOnlyHook, validate } from '../hooks'
-import type { InitialisedAction, InitialisedList } from '../initialise-lists'
-import { mapUniqueWhereToWhere, traverse } from '../queries/resolvers'
-import type { ResolvedDBField } from '../resolve-relationships'
+} from '../graphql-errors.ts'
+import { runSideEffectOnlyHook, validate } from '../hooks.ts'
+import type { InitialisedAction, InitialisedList } from '../initialise-lists.ts'
+import { mapUniqueWhereToWhere, traverse } from '../queries/resolvers.ts'
+import type { ResolvedDBField } from '../resolve-relationships.ts'
 import {
   type IdType,
   getDBFieldKeyForFieldOnMultiField,
   promiseAllRejectWithAllErrors,
-} from '../utils'
+} from '../utils.ts'
 import {
   type InputFilter,
   type UniqueInputFilter,
   resolveUniqueWhereInput,
   resolveWhereInput,
-} from '../where-inputs'
+} from '../where-inputs.ts'
 import {
   RelationshipErrors,
   resolveRelateToManyForCreateInput,
   resolveRelateToManyForUpdateInput,
-} from './nested-mutation-many-input-resolvers'
+} from './nested-mutation-many-input-resolvers.ts'
 import {
   resolveRelateToOneForCreateInput,
   resolveRelateToOneForUpdateInput,
-} from './nested-mutation-one-input-resolvers'
+} from './nested-mutation-one-input-resolvers.ts'
 
 async function getFilteredItem(
   list: InitialisedList,

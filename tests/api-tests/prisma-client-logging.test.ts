@@ -3,7 +3,7 @@ import { list } from '@keystone-6/core'
 import { allowAll } from '@keystone-6/core/access'
 import { text } from '@keystone-6/core/fields'
 import { setupTestRunner } from '@keystone-6/api-tests/test-runner'
-import { monitorLogs, prismaClientOptions, waitFor } from './utils'
+import { monitorLogs, prismaClientOptions, waitFor } from './utils.ts'
 
 const runner = (enableLogging: boolean) =>
   setupTestRunner({

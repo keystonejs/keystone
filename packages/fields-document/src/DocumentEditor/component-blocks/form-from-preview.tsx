@@ -34,12 +34,12 @@ import type {
   ObjectField,
   RelationshipField,
   ValueForComponentSchema,
-} from './api'
-import { getKeysForArrayValue, setKeysForArrayValue } from './preview-props'
+} from './api.tsx'
+import { getKeysForArrayValue, setKeysForArrayValue } from './preview-props.ts'
 
 import { Content } from '@keystar/ui/slots'
-import { createGetPreviewProps } from './preview-props'
-import { assertNever, clientSideValidateProp } from './utils'
+import { createGetPreviewProps } from './preview-props.ts'
+import { assertNever, clientSideValidateProp } from './utils.ts'
 
 type DefaultFieldProps<Key> = GenericPreviewProps<
   Extract<ComponentSchema, { kind: Key }>,

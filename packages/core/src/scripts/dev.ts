@@ -9,25 +9,25 @@ import express from 'express'
 import { printSchema } from 'graphql/index.js'
 import next from 'next'
 
-import { generateAdminUI } from '../admin-ui/system'
+import { generateAdminUI } from '../admin-ui/system/index.ts'
 import {
   generateArtifacts,
   generatePrismaClient,
   generateTypes,
   getFormattedGraphQLSchema,
   pushPrisma,
-} from '../artifacts'
-import { printPrismaSchema } from '../lib/core/prisma-schema-printer'
-import { createExpressServer } from '../lib/express'
-import { createAdminUIMiddlewareWithNextApp } from '../lib/middleware'
-import { ensurePrismaConfig } from '../lib/prisma-config'
-import { createSystem } from '../lib/system'
-import { runTelemetry } from '../lib/telemetry'
-import { pkgDir } from '../pkg-dir'
-import type { KeystoneConfig } from '../types'
-import type { Flags } from './cli'
-import { getEsbuildConfig, getEsbuildPrismaConfig } from './esbuild'
-import { importBuiltKeystoneConfiguration, importBuiltPrismaModule } from './utils'
+} from '../artifacts.ts'
+import { printPrismaSchema } from '../lib/core/prisma-schema-printer.ts'
+import { createExpressServer } from '../lib/express.ts'
+import { createAdminUIMiddlewareWithNextApp } from '../lib/middleware.ts'
+import { ensurePrismaConfig } from '../lib/prisma-config.ts'
+import { createSystem } from '../lib/system.ts'
+import { runTelemetry } from '../lib/telemetry.ts'
+import { pkgDir } from '../pkg-dir.ts'
+import type { KeystoneConfig } from '../types/index.ts'
+import type { Flags } from './cli.ts'
+import { getEsbuildConfig, getEsbuildPrismaConfig } from './esbuild.ts'
+import { importBuiltKeystoneConfiguration, importBuiltPrismaModule } from './utils.ts'
 
 async function noop() {}
 

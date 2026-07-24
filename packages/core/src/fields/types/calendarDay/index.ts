@@ -6,7 +6,7 @@ import type {
   InferValueFromInputType,
 } from '@graphql-ts/schema'
 
-import { g } from '../../..'
+import { g } from '../../../index.ts'
 import {
   type BaseListTypeInfo,
   type CommonFieldConfig,
@@ -14,10 +14,10 @@ import {
   type SimpleFieldTypeInfo,
   fieldType,
   orderDirectionEnum,
-} from '../../../types'
-import { filters } from '../../filters'
-import { defaultIsRequired, makeValidateHook } from '../../non-null-graphql'
-import type { CalendarDayFieldMeta } from './views'
+} from '../../../types/index.ts'
+import { filters } from '../../filters/index.ts'
+import { defaultIsRequired, makeValidateHook } from '../../non-null-graphql.ts'
+import type { CalendarDayFieldMeta } from './views/index.tsx'
 
 export type CalendarDayFieldConfig<ListTypeInfo extends BaseListTypeInfo> = CommonFieldConfig<
   ListTypeInfo,

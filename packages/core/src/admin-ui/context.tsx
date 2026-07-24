@@ -5,7 +5,7 @@ import { ClientSideOnlyDocumentElement, KeystarProvider } from '@keystar/ui/core
 import { injectGlobal, tokenSchema } from '@keystar/ui/style'
 import { Toaster } from '@keystar/ui/toast'
 
-import { snapValueToClosest } from '../___internal-do-not-use-will-break-in-patch/admin-ui/pages/ListPage/PaginationControls'
+import { snapValueToClosest } from '../___internal-do-not-use-will-break-in-patch/admin-ui/pages/ListPage/PaginationControls.tsx'
 import type {
   AdminConfig,
   BaseListTypeInfo,
@@ -13,8 +13,8 @@ import type {
   ConditionalFilterCase,
   FieldViews,
   ListMeta,
-} from '../types'
-import { type AdminMetaQuery, adminMetaQuery } from './admin-meta-graphql'
+} from '../types/index.ts'
+import { type AdminMetaQuery, adminMetaQuery } from './admin-meta-graphql.ts'
 import {
   ApolloClient,
   ApolloProvider,
@@ -22,13 +22,13 @@ import {
   InMemoryCache,
   gql,
   useQuery,
-} from './apollo'
-import { useRouter } from './router'
+} from './apollo.ts'
+import { useRouter } from './router.tsx'
 import {
   getConditionalFilterCaseFieldKeys,
   getConditionalFilterFieldKeys,
   isActionAvailable,
-} from './utils/filters'
+} from './utils/filters.ts'
 
 type KeystoneContextType = {
   adminConfig: AdminConfig | null

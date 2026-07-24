@@ -9,17 +9,17 @@ import { Radio, RadioGroup } from '@keystar/ui/radio'
 import { tokenSchema } from '@keystar/ui/style'
 import { Text } from '@keystar/ui/typography'
 
-import { NullableFieldWrapper } from '../../../../admin-ui/components'
-import { SegmentedControl } from './SegmentedControl'
+import { NullableFieldWrapper } from '../../../../admin-ui/components/index.ts'
+import { SegmentedControl } from './SegmentedControl.tsx'
 
-import { entriesTyped } from '../../../../lib/core/utils'
+import { entriesTyped } from '../../../../lib/core/utils.ts'
 import type {
   CellComponent,
   FieldController,
   FieldControllerConfig,
   FieldProps,
   SimpleFieldTypeInfo,
-} from '../../../../types'
+} from '../../../../types/index.ts'
 
 export function Field(props: FieldProps<typeof controller>) {
   const { autoFocus, field, forceValidation, onChange, value, isRequired } = props

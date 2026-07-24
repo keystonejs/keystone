@@ -7,15 +7,15 @@ import type {
   MaybePromise,
   FieldHooks,
   StorageStrategy,
-} from '../../../types'
-import { fieldType } from '../../../types'
-import { g } from '../../..'
-import { SUPPORTED_IMAGE_EXTENSIONS } from './utils'
-import { merge } from '../../resolve-hooks'
+} from '../../../types/index.ts'
+import { fieldType } from '../../../types/index.ts'
+import { g } from '../../../index.ts'
+import { SUPPORTED_IMAGE_EXTENSIONS } from './utils.ts'
+import { merge } from '../../resolve-hooks.ts'
 import type { InferValueFromArg, InferValueFromInputType } from '@graphql-ts/schema'
 import { randomBytes } from 'node:crypto'
-import type { ImageExtension } from './internal-utils'
-import { getBytesFromStream, getImageMetadata, teeStream } from './internal-utils'
+import type { ImageExtension } from './internal-utils.ts'
+import { getBytesFromStream, getImageMetadata, teeStream } from './internal-utils.ts'
 
 export type FieldTypeInfo = {
   item: undefined

@@ -1,16 +1,16 @@
 import path from 'node:path'
 
-import type { AdminMetaSource } from '../../lib/admin-meta'
-import type { KeystoneConfig } from '../../types'
-import { appTemplate } from './app'
-import { createItemTemplate } from './create-item'
-import { documentTemplate } from './document'
-import { homeTemplate } from './home'
-import { itemTemplate } from './item'
-import { listTemplate } from './list'
-import { nextConfigTemplate } from './next-config'
-import { noAccessTemplate } from './no-access'
-import { pkgDir } from '../../pkg-dir'
+import type { AdminMetaSource } from '../../lib/admin-meta.ts'
+import type { KeystoneConfig } from '../../types/index.ts'
+import { appTemplate } from './app.ts'
+import { createItemTemplate } from './create-item.ts'
+import { documentTemplate } from './document.ts'
+import { homeTemplate } from './home.ts'
+import { itemTemplate } from './item.ts'
+import { listTemplate } from './list.ts'
+import { nextConfigTemplate } from './next-config.ts'
+import { noAccessTemplate } from './no-access.ts'
+import { pkgDir } from '../../pkg-dir.ts'
 
 export function writeAdminFiles(config: KeystoneConfig, adminMeta: AdminMetaSource) {
   return [

@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict'
 import { describe, test } from 'node:test'
-import { dbProvider, setupTestSuite } from './utils'
-import { config, lists, expectEqualItem, expectEqualItems, seed, seedMany } from './utils2'
+import { dbProvider, setupTestSuite } from './utils.ts'
+import { config, lists, expectEqualItem, expectEqualItems, seed, seedMany } from './utils2.ts'
 
 describe(`*.access.delete tests (${dbProvider})`, () => {
   const suite = setupTestSuite({ config })()

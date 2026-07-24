@@ -10,7 +10,7 @@ import {
   Text,
   Transforms,
 } from 'slate'
-import type { Node as StructureNode } from '../structure-validation'
+import type { Node as StructureNode } from '../structure-validation.ts'
 
 export type Mark =
   | 'bold'

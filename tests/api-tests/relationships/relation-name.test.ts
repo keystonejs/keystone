@@ -2,7 +2,7 @@ import { expect, test } from 'vitest'
 import { list } from '@keystone-6/core'
 import { allowAll } from '@keystone-6/core/access'
 import { relationship } from '@keystone-6/core/fields'
-import { getPrismaSchema, dbProvider } from '../utils'
+import { getPrismaSchema, dbProvider } from '../utils.ts'
 
 test('when not specifying relationName in a many to many relationship, the name is picked based on the lexicographic list key + field key ordering', async () => {
   const prismaSchema = await getPrismaSchema({

@@ -7,8 +7,8 @@ import type {
   ConditionalFilterCase,
   FieldController,
   FieldMeta,
-} from '../../types'
-import { serializeItemForConditionalFilters, testFilter } from './filters'
+} from '../../types/index.ts'
+import { serializeItemForConditionalFilters, testFilter } from './filters.ts'
 
 function extractRootFields(selectedFields: Set<string>, selectionSet: SelectionSetNode) {
   selectionSet.selections.forEach(selection => {

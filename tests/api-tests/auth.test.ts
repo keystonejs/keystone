@@ -5,7 +5,7 @@ import { statelessSessions } from '@keystone-6/core/session'
 import { createAuth } from '@keystone-6/auth'
 import { setupTestRunner } from '@keystone-6/api-tests/test-runner'
 import { allowAll } from '@keystone-6/core/access'
-import { seed } from './utils'
+import { seed } from './utils.ts'
 
 const initialData = {
   User: [

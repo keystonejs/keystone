@@ -1,7 +1,7 @@
 import { describe } from 'vitest'
 import { select } from '@keystone-6/core/fields'
-import { dbProvider } from '../../utils'
-import { orderableFilterTests, filterTests, uniqueEqualityFilterTest } from './utils'
+import { dbProvider } from '../../utils.ts'
+import { orderableFilterTests, filterTests, uniqueEqualityFilterTest } from './utils.ts'
 
 for (const isNullable of [true, false]) {
   describe(`select with isNullable: ${isNullable}`, () => {

@@ -1,6 +1,6 @@
 import { expect, test } from 'vitest'
-import { fields } from './api'
-import { getAncestorSchemas, getSchemaAtPropPath } from './utils'
+import { fields } from './api.tsx'
+import { getAncestorSchemas, getSchemaAtPropPath } from './utils.ts'
 
 const blockChild = fields.child({ kind: 'block', placeholder: '' })
 const blockChild2 = fields.child({ kind: 'block', placeholder: '' })

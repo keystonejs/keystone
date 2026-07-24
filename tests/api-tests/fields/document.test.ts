@@ -1,6 +1,6 @@
 import { expect, test } from 'vitest'
 import { list } from '@keystone-6/core'
-import { setupTestRunner } from '../test-runner'
+import { setupTestRunner } from '../test-runner.ts'
 import { allowAll } from '@keystone-6/core/access'
 import { document } from '@keystone-6/fields-document'
 import { component, fields } from '@keystone-6/fields-document/component-blocks'

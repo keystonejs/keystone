@@ -4,7 +4,7 @@ import { list } from '@keystone-6/core'
 import { text } from '@keystone-6/core/fields'
 import { setupTestEnv } from '@keystone-6/api-tests/test-runner'
 import { allowAll } from '@keystone-6/core/access'
-import { dbProvider } from '../utils'
+import { dbProvider } from '../utils.ts'
 
 const testModules = globby.sync(`tests/api-tests/fields/types/fixtures/**/test-fixtures.{js,ts}`, {
   absolute: true,

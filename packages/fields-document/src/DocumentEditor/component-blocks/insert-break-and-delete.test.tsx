@@ -2,8 +2,8 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 import { expect, test } from 'vitest'
-import { component, fields } from '../../component-blocks'
-import { jsx, makeEditor } from '../tests/utils'
+import { component, fields } from '../../component-blocks.tsx'
+import { jsx, makeEditor } from '../tests/utils.tsx'
 
 const componentBlocks = {
   basic: component({

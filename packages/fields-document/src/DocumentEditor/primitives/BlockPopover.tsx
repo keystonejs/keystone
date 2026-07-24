@@ -24,7 +24,7 @@ import { type Element, Editor } from 'slate'
 import { Overlay, type PopoverProps } from '@keystar/ui/overlays'
 import { css, tokenSchema, transition } from '@keystar/ui/style'
 
-import { nodeTypeMatcher } from '../utils'
+import { nodeTypeMatcher } from '../utils.ts'
 
 type RenderFn = (close: () => void) => ReactElement
 type BlockPopoverTriggerProps = {

@@ -8,11 +8,19 @@ import { linkIcon } from '@keystar/ui/icon/icons/linkIcon'
 import { externalLinkIcon } from '@keystar/ui/icon/icons/externalLinkIcon'
 import { editIcon } from '@keystar/ui/icon/icons/editIcon'
 
-import { useToolbarState } from './toolbar-state'
-import { focusWithPreviousSelection, useElementWithSetNodes, useEventCallback } from './utils-hooks'
-import { isValidURL } from './isValidURL'
-import { wrapLink } from './link-shared'
-import { BlockPopover, BlockPopoverTrigger, useActiveBlockPopover } from './primitives/BlockPopover'
+import { useToolbarState } from './toolbar-state.tsx'
+import {
+  focusWithPreviousSelection,
+  useElementWithSetNodes,
+  useEventCallback,
+} from './utils-hooks.tsx'
+import { isValidURL } from './isValidURL.ts'
+import { wrapLink } from './link-shared.ts'
+import {
+  BlockPopover,
+  BlockPopoverTrigger,
+  useActiveBlockPopover,
+} from './primitives/BlockPopover.tsx'
 import { ActionButton, Button, ButtonGroup } from '@keystar/ui/button'
 import { Dialog, DialogContainer, useDialogContainer } from '@keystar/ui/dialog'
 import { Flex } from '@keystar/ui/layout'
@@ -23,7 +31,7 @@ import { Content } from '@keystar/ui/slots'
 import { unlinkIcon } from '@keystar/ui/icon/icons/unlinkIcon'
 import { sanitizeUrl } from '@braintree/sanitize-url'
 
-export * from './link-shared'
+export * from './link-shared.ts'
 
 export function LinkElement({
   attributes,

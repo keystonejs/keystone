@@ -1,5 +1,5 @@
 import { checkbox } from '@keystone-6/core/fields'
-import { filterTests } from './utils'
+import { filterTests } from './utils.ts'
 
 filterTests(checkbox(), match => {
   const values = [true, false]

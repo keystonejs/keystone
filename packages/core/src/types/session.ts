@@ -1,5 +1,5 @@
-import type { MaybePromise } from './utils'
-import type { BaseKeystoneTypeInfo, KeystoneContext } from '.'
+import type { MaybePromise } from './utils.ts'
+import type { BaseKeystoneTypeInfo, KeystoneContext } from './index.ts'
 
 export type SessionStrategy<
   Session,

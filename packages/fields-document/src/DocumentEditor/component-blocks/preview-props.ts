@@ -9,8 +9,8 @@ import type {
   ObjectField,
   RelationshipField,
   GenericPreviewProps,
-} from './api-shared'
-import { updateValue } from './initial-values'
+} from './api-shared.ts'
+import { updateValue } from './initial-values.ts'
 
 const arrayValuesToElementKeys = new WeakMap<readonly unknown[], readonly string[]>()
 

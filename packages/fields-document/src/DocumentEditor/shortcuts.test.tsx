@@ -2,8 +2,8 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 import { describe, expect, test } from 'vitest'
-import { shortcuts } from './shortcuts'
-import { jsx, makeEditor } from './tests/utils'
+import { shortcuts } from './shortcuts.ts'
+import { jsx, makeEditor } from './tests/utils.tsx'
 
 describe.each(Object.entries(shortcuts))('shortcut "%s" for "%s"', (shortcut, result) => {
   test('can be inserted', () => {

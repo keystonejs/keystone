@@ -1,4 +1,4 @@
-import type { DatabaseProvider } from './core'
+import type { DatabaseProvider } from './core.ts'
 
 export type TelemetryVersion1 =
   | undefined

@@ -3,7 +3,7 @@
 /** @jsx jsx */
 import { expect, test } from 'vitest'
 import { Transforms } from 'slate'
-import { jsx, makeEditor } from './tests/utils'
+import { jsx, makeEditor } from './tests/utils.tsx'
 
 test('insertMenu mark is removed when cursor is outside with a forced normalize', () => {
   const editor = makeEditor(

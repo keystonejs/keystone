@@ -1,11 +1,11 @@
 import { type RenderElementProps, useSelected } from 'slate-react'
 
-import { LayoutArea, LayoutContainer } from './layouts'
-import { ComponentBlocksElement, ComponentInlineProp } from './component-blocks'
-import { LinkElement } from './link'
-import { HeadingElement } from './heading'
-import { BlockquoteElement } from './blockquote'
-import { RelationshipElement } from './relationship'
+import { LayoutArea, LayoutContainer } from './layouts.tsx'
+import { ComponentBlocksElement, ComponentInlineProp } from './component-blocks/index.tsx'
+import { LinkElement } from './link.tsx'
+import { HeadingElement } from './heading.tsx'
+import { BlockquoteElement } from './blockquote.tsx'
+import { RelationshipElement } from './relationship.tsx'
 import { tokenSchema } from '@keystar/ui/style'
 
 // some of the renderers read properties of the element

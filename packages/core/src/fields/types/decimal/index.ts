@@ -1,4 +1,4 @@
-import type { SimpleFieldTypeInfo } from '../../../types'
+import type { SimpleFieldTypeInfo } from '../../../types/index.ts'
 import {
   type BaseListTypeInfo,
   type CommonFieldConfig,
@@ -6,11 +6,11 @@ import {
   fieldType,
   orderDirectionEnum,
   Decimal,
-} from '../../../types'
-import { g } from '../../..'
-import { filters } from '../../filters'
-import { makeValidateHook, defaultIsRequired } from '../../non-null-graphql'
-import type { controller } from './views'
+} from '../../../types/index.ts'
+import { g } from '../../../index.ts'
+import { filters } from '../../filters/index.ts'
+import { makeValidateHook, defaultIsRequired } from '../../non-null-graphql.ts'
+import type { controller } from './views/index.tsx'
 
 export type DecimalFieldConfig<ListTypeInfo extends BaseListTypeInfo> = CommonFieldConfig<
   ListTypeInfo,
