@@ -54,7 +54,11 @@ export function createAdminUIMiddlewareWithNextApp(
       res.status(500)
       res.format({
         'text/html': function () {
-          res.sendFile(adminErrorHTMLFilepath)
+          res.sendFile(adminErrorHTMLFilepath, {
+            // since in pnpm the static file will be in node_modules/.pnpm and this check
+            // checks if any path segment starts with a dot
+            dotfiles: 'allow',
+          })
         },
         'application/json': function () {
           res.send({ error: true })
