@@ -6,7 +6,7 @@ import { ApolloClient, gql, InMemoryCache, HttpLink, type TypedDocumentNode } fr
 import { useSubscription } from '@apollo/client/react'
 import { createClient } from 'graphql-ws'
 import { GraphQLWsLink } from '@apollo/client/link/subscriptions'
-import { css } from '@emotion/css'
+import { css } from '@keystar/ui/style'
 
 const styles = {
   container: css`
