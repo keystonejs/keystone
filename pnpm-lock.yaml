@@ -2926,15 +2926,9 @@ importers:
       enquirer:
         specifier: ^2.4.1
         version: 2.4.1
-      execa:
-        specifier: ^5.1.1
-        version: 5.1.1
       meow:
         specifier: ^9.0.0
         version: 9.0.0
-      ora:
-        specifier: ^9.0.0
-        version: 9.4.0
       package-json:
         specifier: ^10.0.0
         version: 10.0.1

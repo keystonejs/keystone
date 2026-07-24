@@ -2,9 +2,10 @@
 
 Welcome to Keystone!
 
-Run
+Install dependencies and start Keystone:
 
 ```
+npm install
 npm run dev
 ```
 
