@@ -1,3 +1,4 @@
+import { spawn } from 'node:child_process'
 import { createRequire } from 'node:module'
 import path from 'node:path'
 
@@ -13,7 +14,7 @@ import { createSystem } from '../lib/system'
 import { ensurePrismaConfig } from '../lib/prisma-config'
 import type { Flags } from './cli'
 import { getEsbuildConfig, getEsbuildPrismaConfig } from './esbuild'
-import { importBuiltKeystoneConfiguration } from './utils'
+import { ExitError, importBuiltKeystoneConfiguration } from './utils'
 
 export async function build(
   cwd: string,
@@ -53,22 +54,21 @@ export async function build(
 
   log('✨ Building Admin UI')
 
-  // do _NOT_ change this to a static import, it is intentionally like this
-  // to avoid loading it in the common case where the UI is not being built
-  // eslint-disable-next-line @typescript-eslint/consistent-type-imports
-  const nextBuild = createRequire(path.join(cwd, 'package.json'))('next/dist/build')
-    .default as typeof import('next/dist/build/index.js').default
-  await nextBuild(
-    paths.admin,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    'default',
-    undefined,
-    undefined
-  )
+  const nextCli = createRequire(path.join(cwd, 'package.json')).resolve('next/dist/bin/next')
+  await new Promise<void>((resolve, reject) => {
+    const child = spawn(process.execPath, [nextCli, 'build', paths.admin], {
+      cwd,
+      stdio: 'inherit',
+    })
+    child.once('error', reject)
+    child.once('exit', (code, signal) => {
+      if (typeof code === 'number' && code !== 0) {
+        reject(new ExitError(code))
+      } else if (code === null) {
+        reject(new Error(`Next.js was terminated by signal ${signal ?? 'unknown'}`))
+      } else {
+        resolve()
+      }
+    })
+  })
 }
