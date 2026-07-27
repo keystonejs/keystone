@@ -6,9 +6,10 @@
   "scripts": {
     "dev": "SHOW_NEXT_RELEASE=1 next -p 8000",
     "dev:live": "next -p 8000",
-    "build": "pnpm validate-links && next build && pnpm sitemap",
+    "build": "pnpm validate-links && pnpm build:llms && next build && pnpm sitemap",
     "start": "next start -p 8000",
     "sitemap": "next-sitemap",
+    "build:llms": "tsx scripts/llms-txt/generate.ts",
     "build:rss": "tsx scripts/rss.ts",
     "validate-links": "tsx scripts/validate-links.ts",
     "remove-conditionals": "tsx scripts/replace-show-next-release/index.ts"
