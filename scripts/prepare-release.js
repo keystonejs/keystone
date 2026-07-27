@@ -3,6 +3,8 @@ const { readFileSync, writeFileSync } = require('fs')
 const { default: getReleasePlan } = require('@changesets/get-release-plan')
 const { getInfo } = require('@changesets/get-github-info')
 
+const repo = 'keystonejs/keystone'
+
 // TODO: move this to CI linting
 const verbs = new Set([
   'Adds',
@@ -48,6 +50,60 @@ function gitCommitsSince(tag) {
 function gitLatestReleaseTag() {
   const { stdout } = spawnSync('git', ['tag', '--list', '20??-??-??', '--sort=-version:refname'])
   return stdout.toString('utf-8').split('\n')[0]
+}
+
+async function githubRequest(path, options = {}) {
+  if (!process.env.GITHUB_TOKEN) throw new Error('Missing GITHUB_TOKEN')
+
+  const response = await fetch(`https://api.github.com${path}`, {
+    ...options,
+    headers: {
+      Accept: 'application/vnd.github+json',
+      Authorization: `Bearer ${process.env.GITHUB_TOKEN}`,
+      'X-GitHub-Api-Version': '2026-03-10',
+      ...options.headers,
+    },
+  })
+
+  if (!response.ok) {
+    throw new Error(`GitHub request failed (${response.status}): ${await response.text()}`)
+  }
+
+  return response.json()
+}
+
+async function getDraftGitHubRelease() {
+  const releases = await githubRequest(`/repos/${repo}/releases?per_page=100`)
+  return releases
+    .filter(release => release.draft)
+    .sort((a, b) => b.created_at.localeCompare(a.created_at))[0]
+}
+
+function formatReleaseTitle(tag) {
+  let date
+  try {
+    date = Temporal.PlainDate.from(tag)
+  } catch {
+    throw new Error(`Draft release tag must be a date in YYYY-MM-DD format, received '${tag}'`)
+  }
+
+  if (date.toString() !== tag) {
+    throw new Error(`Draft release tag must be a date in YYYY-MM-DD format, received '${tag}'`)
+  }
+
+  return date.toLocaleString('en-AU', {
+    day: '2-digit',
+    month: 'long',
+    year: 'numeric',
+  })
+}
+
+async function updateDraftGitHubRelease(release, body) {
+  await githubRequest(`/repos/${repo}/releases/${release.id}`, {
+    method: 'PATCH',
+    body: JSON.stringify({ body, name: formatReleaseTitle(release.tag_name) }),
+  })
+  console.error(`Updated draft GitHub release: ${release.html_url}`)
 }
 
 function gitCommitsFor(path) {
@@ -98,7 +154,7 @@ async function fetchData(tag) {
 
     usersByEmail.set(
       email,
-      getInfo({ repo: 'keystonejs/keystone', commit }).then(info => info.user)
+      getInfo({ repo, commit }).then(info => info.user)
     )
   }
 
@@ -183,7 +239,7 @@ function formatCVE({ id, href, upstream, description }) {
 }
 
 function formatLink(pull) {
-  return `[#${pull}](https://github.com/keystonejs/keystone/pull/${pull})`
+  return `[#${pull}](https://github.com/${repo}/pull/${pull})`
 }
 
 function sortByCommit(a, b) {
@@ -202,14 +258,13 @@ function groupPullsByUser(list) {
     .sort((a, b) => a.user.localeCompare(b.user))
 }
 
-async function generateGitHubReleaseText(previousTag) {
+async function generateGitHubReleaseText(previousTag, releaseTag) {
   if (!previousTag) throw new Error('Missing tag')
 
-  const date = new Date().toISOString().slice(0, 10)
   const { packages, changes, contributors } = await fetchData(previousTag)
-  //    writeFileSync(`./CHANGELOG-${date}.json`, JSON.stringify({ packages, changes, contributors }, null, 2))
+  //    writeFileSync(`./CHANGELOG-${releaseTag}.json`, JSON.stringify({ packages, changes, contributors }, null, 2))
   //    return process.exit(0)
-  //    const { packages, changes, contributors } = JSON.parse(readFileSync(`./CHANGELOG-${date}.json`))
+  //    const { packages, changes, contributors } = JSON.parse(readFileSync(`./CHANGELOG-${releaseTag}.json`))
 
   const output = []
   output.push(formatPackagesChanged(packages))
@@ -274,11 +329,32 @@ async function generateGitHubReleaseText(previousTag) {
 
   output.push(`#### :eyes: Review`)
   output.push(
-    `See https://github.com/keystonejs/keystone/compare/${previousTag}...${date} to compare with our previous release.`
+    `See https://github.com/${repo}/compare/${previousTag}...${releaseTag} to compare with our previous release.`
   )
 
-  writeFileSync('./.changeset/contributors.json', JSON.stringify(contributors.sort(), null, 2))
-  console.log(output.join('\n'))
+  writeFileSync(
+    './.changeset/contributors.json',
+    JSON.stringify(contributors.sort(), null, 2) + '\n'
+  )
+  return output.join('\n')
 }
 
-generateGitHubReleaseText(process.argv[2] ?? gitLatestReleaseTag())
+async function main() {
+  const updateDraft = process.argv.includes('--update-draft')
+  const previousTag =
+    process.argv.slice(2).find(argument => argument !== '--update-draft') ?? gitLatestReleaseTag()
+  const draftRelease = updateDraft ? await getDraftGitHubRelease() : undefined
+  const releaseTag =
+    draftRelease?.tag_name ?? Temporal.Now.plainDateISO('Australia/Sydney').toString()
+  const output = await generateGitHubReleaseText(previousTag, releaseTag)
+
+  console.log(output)
+
+  if (draftRelease) {
+    await updateDraftGitHubRelease(draftRelease, output)
+  } else if (updateDraft) {
+    console.error('No draft GitHub release found; skipping release update')
+  }
+}
+
+main()

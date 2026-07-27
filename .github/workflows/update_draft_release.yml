@@ -1,0 +1,29 @@
+name: Update Draft Release
+
+on:
+  workflow_dispatch:
+
+concurrency: update-draft-release
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    name: Update
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@main
+        with:
+          fetch-depth: 0
+
+      - uses: ./.github/actions/ci-setup
+
+      - name: Add back examples
+        run: git checkout -- examples tests/test-projects
+
+      - name: Update draft release
+        run: node scripts/prepare-release.js --update-draft
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
