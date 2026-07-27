@@ -2,16 +2,14 @@
 // at build time, so agents can discover and fetch the Keystone docs as markdown:
 //
 //   public/llms.txt            index of the docs, grouped by the sidebar nav
-//   public/docs/<slug>.md      each docs page as gated raw Markdoc
+//   public/docs/<slug>.md      each docs page as raw markdown
 //   public/llms-full.txt       every docs page concatenated in nav order
 //
 // Scope is the docs collection only (content/docs/**); blog and examples are
-// excluded. See docs/adr/0001-llms-txt-support.md for the design and the
-// next-release gating trap that stripNextReleaseConditions guards against.
-import fs from 'fs/promises'
-import path from 'path'
+// excluded.
+import fs, { glob } from 'node:fs/promises'
+import path from 'node:path'
 import { load } from 'js-yaml'
-import { stripNextReleaseConditions } from './strip-next-release'
 
 // Keep in sync with next-sitemap.config.js
 const SITE_URL = 'https://keystonejs.com'
@@ -30,9 +28,9 @@ type Doc = {
   slug: string
   title: string
   description: string
-  /** Full on-disk file (frontmatter + body), next-release blocks stripped. */
+  /** Full on-disk file: frontmatter + body. */
   markdown: string
-  /** Body only (no frontmatter), next-release blocks stripped. */
+  /** Body only, without frontmatter. */
   body: string
 }
 
@@ -57,16 +55,16 @@ function extractFrontmatter(file: string, raw: string) {
 }
 
 async function loadDocs(): Promise<Map<string, Doc>> {
-  const { globby } = await import('globby')
-  const files = await globby(`${DOCS_DIR}/**/*.md`)
+  const files: string[] = []
+  for await (const file of glob(`${DOCS_DIR}/**/*.md`)) files.push(file)
+  files.sort()
   const docs = new Map<string, Doc>()
-  for (const file of files.sort()) {
+  for (const file of files) {
     const raw = await fs.readFile(file, 'utf8')
     const { title, description } = extractFrontmatter(file, raw)
     const slug = path.relative(DOCS_DIR, file).replace(/\.md$/, '')
-    const markdown = stripNextReleaseConditions(raw)
-    const body = markdown.replace(frontMatterPattern, '').trimStart()
-    docs.set(slug, { slug, title, description, markdown, body })
+    const body = raw.replace(frontMatterPattern, '').trimStart()
+    docs.set(slug, { slug, title, description, markdown: raw, body })
   }
   return docs
 }
