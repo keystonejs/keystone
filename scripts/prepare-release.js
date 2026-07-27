@@ -98,10 +98,10 @@ function formatReleaseTitle(tag) {
   })
 }
 
-async function updateDraftGitHubRelease(release, body) {
+async function updateDraftGitHubRelease(release, tag, body) {
   await githubRequest(`/repos/${repo}/releases/${release.id}`, {
     method: 'PATCH',
-    body: JSON.stringify({ body, name: formatReleaseTitle(release.tag_name) }),
+    body: JSON.stringify({ body, name: formatReleaseTitle(tag), tag_name: tag }),
   })
   console.error(`Updated draft GitHub release: ${release.html_url}`)
 }
@@ -351,7 +351,7 @@ async function main() {
   console.log(output)
 
   if (draftRelease) {
-    await updateDraftGitHubRelease(draftRelease, output)
+    await updateDraftGitHubRelease(draftRelease, releaseTag, output)
   } else if (updateDraft) {
     console.error('No draft GitHub release found; skipping release update')
   }
