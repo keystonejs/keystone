@@ -195,8 +195,12 @@ export function Field(props: FieldProps<typeof controller>) {
 // NOTE: fix for `TagGroup` perf issue, should typically be okay to just
 // inline the render function
 function renderItem(item: { id: string; href: string; label: string }) {
-  if (item.href === '') return <Item>{item.label}</Item>
-  return <Item href={item.href}>{item.label}</Item>
+  if (item.href === '') return <Item key={item.id}>{item.label}</Item>
+  return (
+    <Item key={item.id} href={item.href}>
+      {item.label}
+    </Item>
+  )
 }
 
 export const Cell: CellComponent<typeof controller> = ({ field, item }) => {
