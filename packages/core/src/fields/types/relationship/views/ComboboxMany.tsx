@@ -104,7 +104,7 @@ export function ComboboxMany({
         '[role="button"]': { width: 'auto' },
       })}
     >
-      {item => <Item>{item.label || item.id}</Item>}
+      {item => <Item key={item.id}>{item.label || item.id}</Item>}
     </ComboboxMulti>
   )
 }

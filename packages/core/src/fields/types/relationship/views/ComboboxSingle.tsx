@@ -95,8 +95,8 @@ export function ComboboxSingle({
       }}
       inputValue={search}
       onLoadMore={onLoadMore}
-      selectedKey={state.value ? state.value.id.toString() : null}
-      onSelectionChange={key => {
+      value={state.value ? state.value.id.toString() : null}
+      onChange={key => {
         const selectedItem = items.find(item => item.id.toString() === key) ?? null
         state.onChange(selectedItem)
         setSearch(selectedItem?.label ?? '')
@@ -109,7 +109,7 @@ export function ComboboxSingle({
         '[role="button"]': { width: 'auto' },
       })}
     >
-      {item => <Item>{item.label || item.id}</Item>}
+      {item => <Item key={item.id}>{item.label || item.id}</Item>}
     </Combobox>
   )
 }
