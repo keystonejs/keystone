@@ -97,6 +97,7 @@
   "peerDependencies": {
     "@prisma/client": "^7.9.0",
     "better-sqlite3": "^12.6.0",
+    "graphql": "catalog:",
     "mariadb": "^3.4.5",
     "pg": "^8.16.3",
     "prisma": "^7.9.0",
