@@ -1,1 +1,6 @@
 public/feed.xml
+
+# Generated at build time by scripts/llms-txt (pnpm build:llms)
+public/llms.txt
+public/llms-full.txt
+public/docs/
