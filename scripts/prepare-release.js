@@ -45,6 +45,11 @@ function gitCommitsSince(tag) {
     .filter(x => x)
 }
 
+function gitLatestReleaseTag() {
+  const { stdout } = spawnSync('git', ['tag', '--list', '20??-??-??', '--sort=-version:refname'])
+  return stdout.toString('utf-8').split('\n')[0]
+}
+
 function gitCommitsFor(path) {
   const { stdout } = spawnSync('git', ['log', '--pretty=format:%H', '--follow', 'HEAD', '--', path])
   return stdout
@@ -273,8 +278,7 @@ async function generateGitHubReleaseText(previousTag) {
   )
 
   writeFileSync('./.changeset/contributors.json', JSON.stringify(contributors.sort(), null, 2))
-  writeFileSync(`./RELEASE-${date}.md`, output.join('\n'))
-  console.error('files written')
+  console.log(output.join('\n'))
 }
 
-generateGitHubReleaseText(process.argv[2])
+generateGitHubReleaseText(process.argv[2] ?? gitLatestReleaseTag())

@@ -19,6 +19,7 @@
     "lint": "oxlint",
     "lint:fix": "oxlint --fix",
     "build": "preconstruct build",
+    "ci:version-packages": "node scripts/prepare-release.js && changeset version",
     "postinstall": "preconstruct dev && pnpm -r check",
     "resolve:create-starter-catalog": "node scripts/resolve-create-starter-catalog.mts",
     "format": "prettier --write .",

@@ -1,0 +1,34 @@
+name: Version Packages
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+concurrency: ${{ github.workflow }}-${{ github.ref }}
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  versioning:
+    name: Pull Request
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@main
+        with:
+          fetch-depth: 0
+
+      - uses: ./.github/actions/ci-setup
+
+      - name: Add back examples
+        run: git checkout -- examples tests/test-projects
+
+      - uses: changesets/action@v1
+        with:
+          version: pnpm ci:version-packages
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
