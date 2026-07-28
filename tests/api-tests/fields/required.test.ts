@@ -1,14 +1,15 @@
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, test } from 'vitest'
-import globby from 'globby'
+import { globSync } from 'node:fs'
+import { resolve } from 'node:path'
 import { list } from '@keystone-6/core'
 import { text } from '@keystone-6/core/fields'
 import { setupTestRunner } from '@keystone-6/api-tests/test-runner'
 import { allowAll } from '@keystone-6/core/access'
 import { dbProvider, expectValidationError } from '../utils.ts'
 
-const testModules = globby.sync(`tests/api-tests/fields/types/fixtures/**/test-fixtures.{js,ts}`, {
-  absolute: true,
-})
+const testModules = globSync(`tests/api-tests/fields/types/fixtures/**/test-fixtures.{js,ts}`).map(
+  modulePath => resolve(modulePath)
+)
 
 for (const modulePath of testModules) {
   const mod = await import(modulePath)

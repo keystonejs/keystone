@@ -1,18 +1,15 @@
-import path from 'path'
-import fs from 'fs/promises'
+import path from 'node:path'
+import { glob, readFile, writeFile } from 'node:fs/promises'
 import RSS from 'rss'
 import { extractBlogFrontmatter } from '../markdoc'
 import { siteBaseUrl } from '../lib/og-util'
 
 async function getPosts() {
-  const { globby } = await import('globby')
-  const files = await globby('*.md', {
-    cwd: path.join(process.cwd(), 'pages/blog'),
-  })
+  const files = glob('*.md', { cwd: path.join(process.cwd(), 'pages/blog') })
 
   const posts = await Promise.all(
-    files.map(async filename => {
-      const contents = await fs.readFile(path.join(process.cwd(), 'pages/blog', filename), 'utf8')
+    (await Array.fromAsync(files)).map(async filename => {
+      const contents = await readFile(path.join(process.cwd(), 'pages/blog', filename), 'utf8')
       return {
         slug: filename.replace(/\.md$/, ''),
         frontmatter: extractBlogFrontmatter(contents),
@@ -53,7 +50,7 @@ export default async function generateRssFeed() {
     })
   })
 
-  return fs.writeFile('./public/feed.xml', feed.xml({ indent: true }))
+  return writeFile('./public/feed.xml', feed.xml({ indent: true }))
 }
 
 ;(async () => {
