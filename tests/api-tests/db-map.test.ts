@@ -2,7 +2,8 @@ import { expect, test } from 'vitest'
 import { list } from '@keystone-6/core'
 import { allowAll } from '@keystone-6/core/access'
 import { text } from '@keystone-6/core/fields'
-import globby from 'globby'
+import { globSync } from 'node:fs'
+import { resolve } from 'node:path'
 import { dbProvider, getPrismaSchema } from './utils.ts'
 
 test('db.map at the list level adds @@map with the value to the Prisma schema', async () => {
@@ -41,9 +42,9 @@ model SomeList {
 `)
 })
 
-const testModules = globby.sync(`packages/*/src/**/test-fixtures.{js,ts}`, {
-  absolute: true,
-})
+const testModules = globSync(`packages/*/src/**/test-fixtures.{js,ts}`).map(modulePath =>
+  resolve(modulePath)
+)
 
 for (const modulePath of testModules) {
   const mod = await import(modulePath)
