@@ -1,4 +1,4 @@
-import { type Tag, transform } from '@markdoc/markdoc'
+import Markdoc, { type Tag } from '@markdoc/markdoc'
 import { notFound } from 'next/navigation'
 
 import { getOgAbsoluteUrl } from '../../../../lib/og-util'
@@ -35,7 +35,7 @@ export default async function Page({ params }) {
         JSON.stringify({
           ...post,
           // Prepare content for Markdoc renderer
-          content: transform(post.content.node, baseMarkdocConfig),
+          content: Markdoc.transform(post.content.node, baseMarkdocConfig),
         })
       )}
       formattedDate={formattedDateStr}

@@ -1,10 +1,7 @@
-import {
+import Markdoc, {
   type Config,
-  nodes,
-  Tag,
   type ValidationError,
   type Node,
-  functions,
   type ConfigFunction,
 } from '@markdoc/markdoc'
 import slugify from '@sindresorhus/slugify'
@@ -16,7 +13,7 @@ export const baseMarkdocConfig: Config = {
   variables: {},
   // we want to disable the built-in functions
   functions: Object.fromEntries(
-    Object.keys(functions).map(key => [key, undefined as unknown as ConfigFunction])
+    Object.keys(Markdoc.functions).map(key => [key, undefined as unknown as ConfigFunction])
   ),
   validation: { validateFunctions: true },
   tags: {
@@ -34,15 +31,15 @@ export const baseMarkdocConfig: Config = {
     },
     details: {
       render: 'details',
-      children: nodes.document.children,
+      children: Markdoc.nodes.document.children,
     },
     summary: {
       render: 'summary',
-      children: nodes.document.children,
+      children: Markdoc.nodes.document.children,
     },
     sup: {
       render: 'sup',
-      children: nodes.strong.children,
+      children: Markdoc.nodes.strong.children,
     },
     hint: {
       children: ['paragraph'],
@@ -53,8 +50,8 @@ export const baseMarkdocConfig: Config = {
         const children = node.transformChildren(config)
         const attributes = node.transformAttributes(config)
         return children.map(child => {
-          if (child instanceof Tag) {
-            return new Tag(
+          if (child instanceof Markdoc.Tag) {
+            return new Markdoc.Tag(
               child.name,
               {
                 ...child.attributes,
@@ -94,7 +91,7 @@ export const baseMarkdocConfig: Config = {
   },
   nodes: {
     document: {
-      ...nodes.document,
+      ...Markdoc.nodes.document,
       validate(document) {
         const errors: ValidationError[] = []
         // we want good stable ids so we require documentation authors write ids
@@ -159,7 +156,7 @@ export const baseMarkdocConfig: Config = {
             }:${node.location?.start.line ?? '(unknown line)'}`
           )
         }
-        return new Tag(this.render, { ...attributes, content: children.join('') }, [])
+        return new Markdoc.Tag(this.render, { ...attributes, content: children.join('') }, [])
       },
     },
     heading: {
@@ -192,17 +189,17 @@ export const baseMarkdocConfig: Config = {
       transform(node, config) {
         const attributes = node.transformAttributes(config)
         const children = node.transformChildren(config)
-        return new Tag(this.render, { ...attributes, id: getIdForHeading(node) }, children)
+        return new Markdoc.Tag(this.render, { ...attributes, id: getIdForHeading(node) }, children)
       },
     },
     link: {
-      ...nodes.link,
+      ...Markdoc.nodes.link,
       validate: validateLink,
     },
     image: {
-      ...nodes.image,
+      ...Markdoc.nodes.image,
       attributes: {
-        ...nodes.image.attributes,
+        ...Markdoc.nodes.image.attributes,
         width: { type: String },
         height: { type: String },
       },

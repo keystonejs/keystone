@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation'
-import { type Tag, transform } from '@markdoc/markdoc'
+import Markdoc, { type Tag } from '@markdoc/markdoc'
 
 import { reader } from '../../../../keystatic/reader'
 import { baseMarkdocConfig } from '../../../../markdoc/config'
@@ -27,7 +27,7 @@ export default async function DocPage({ params }) {
 
   const transformedDoc: Document = {
     ...doc,
-    content: transform(doc.content.node, baseMarkdocConfig) as Tag,
+    content: Markdoc.transform(doc.content.node, baseMarkdocConfig) as Tag,
   }
 
   const headings = [

@@ -19,7 +19,7 @@
   },
   "overrides": [
     {
-      "files": ["examples/**/*", "docs/**/*", "tests/sandbox/**/*", "tests/test-projects/**/*"],
+      "files": ["examples/**/*", "tests/sandbox/**/*", "tests/test-projects/**/*"],
       "rules": {
         "esm-imports/node-esm-imports": "off"
       }

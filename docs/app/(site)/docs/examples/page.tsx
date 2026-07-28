@@ -1,4 +1,4 @@
-import { transform } from '@markdoc/markdoc'
+import Markdoc from '@markdoc/markdoc'
 import { DocsLayout } from '../../../../components/docs/DocsLayout'
 import { reader } from '../../../../keystatic/reader'
 import PageClient from './page-client'
@@ -20,7 +20,7 @@ async function getGroupedExamples() {
         ...example,
         entry: {
           ...example.entry,
-          description: transform(example.entry.description.node, baseMarkdocConfig),
+          description: Markdoc.transform(example.entry.description.node, baseMarkdocConfig),
         },
       }
     })
