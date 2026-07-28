@@ -10,7 +10,7 @@ import type { Lists } from './generated/keystone/types'
 
 const readOnly = {
   access: {
-    read: { item: allowAll, filter: denyAll, order: denyAll },
+    read: allowAll,
     create: denyAll,
     update: denyAll,
   },
