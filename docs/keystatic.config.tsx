@@ -109,6 +109,12 @@ export default config({
         content: fields.markdoc({
           label: 'Content',
           extension: 'md',
+          options: {
+            image: {
+              directory: 'public/assets/blog/images',
+              publicPath: '/assets/blog/images',
+            },
+          },
           components: {
             hint: hint('Callout'),
             emoji: emoji(),

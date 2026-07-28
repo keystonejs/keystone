@@ -23,6 +23,11 @@ navGroups:
           discriminant: url
           value: /docs/guides/overview
         status: default
+      - label: Migrate to 8.0.0
+        link:
+          discriminant: page
+          value: guides/migrate-to-8
+        status: new
       - label: Command Line
         link:
           discriminant: page
@@ -42,32 +47,32 @@ navGroups:
         link:
           discriminant: page
           value: guides/database-migration
-        status: new
+        status: default
       - label: Query Filters
         link:
           discriminant: page
           value: guides/filters
-        status: updated
+        status: default
       - label: Hooks
         link:
           discriminant: page
           value: guides/hooks
-        status: updated
+        status: default
       - label: Auth & Access Control
         link:
           discriminant: page
           value: guides/auth-and-access-control
-        status: new
+        status: default
       - label: Images & Files
         link:
           discriminant: page
           value: guides/images-and-files
-        status: new
+        status: default
       - label: GraphQL Schema Extension
         link:
           discriminant: page
           value: guides/schema-extension
-        status: new
+        status: default
       - label: Testing
         link:
           discriminant: page
@@ -134,12 +139,12 @@ navGroups:
         link:
           discriminant: page
           value: config/access-control
-        status: updated
+        status: default
       - label: Hooks
         link:
           discriminant: page
           value: config/hooks
-        status: updated
+        status: default
       - label: Session
         link:
           discriminant: page
@@ -275,12 +280,12 @@ navGroups:
         link:
           discriminant: page
           value: graphql/overview
-        status: updated
+        status: default
       - label: Query Filters
         link:
           discriminant: page
           value: graphql/filters
-        status: updated
+        status: default
   - groupName: Reference
     items:
       - label: Telemetry
