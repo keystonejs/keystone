@@ -1,6 +1,6 @@
 import { afterAll, beforeAll, test } from 'vitest'
 import type { Browser, Page } from 'playwright'
-import { exampleProjectTests, loadIndex } from './utils'
+import { exampleProjectTests, loadIndex } from './utils.ts'
 
 exampleProjectTests('default-values', browserType => {
   let browser: Browser = undefined as any

@@ -2,7 +2,7 @@ import { afterAll, beforeAll, test } from 'vitest'
 import retry from 'async-retry'
 import type { Browser, Page } from 'playwright'
 
-import { exampleProjectTests, loadIndex } from './utils'
+import { exampleProjectTests, loadIndex } from './utils.ts'
 
 exampleProjectTests('custom-admin-ui-pages', browserType => {
   let browser: Browser = undefined as any

@@ -1,6 +1,6 @@
 import { afterAll, beforeAll, expect, test } from 'vitest'
 import type { Browser, Page } from 'playwright'
-import { exampleProjectTests, initialUserTest, loadIndex } from './utils'
+import { exampleProjectTests, initialUserTest, loadIndex } from './utils.ts'
 
 exampleProjectTests(
   '../examples/auth',

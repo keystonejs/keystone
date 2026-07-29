@@ -1,6 +1,6 @@
 import { afterAll, beforeAll, expect, test } from 'vitest'
 import type { Browser, Page } from 'playwright'
-import { exampleProjectTests, loadIndex } from './utils'
+import { exampleProjectTests, loadIndex } from './utils.ts'
 
 exampleProjectTests('extend-express-app', browserType => {
   let browser: Browser = undefined as any

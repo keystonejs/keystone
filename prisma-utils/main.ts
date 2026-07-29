@@ -1,6 +1,6 @@
 import fs from 'node:fs/promises'
 import type { DMMF } from '@prisma/client/runtime/client'
-import { getDMMF } from '@prisma/internals'
+import prisma from '@prisma/internals'
 
 // https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#model-field-scalar-types
 //
@@ -124,7 +124,7 @@ function generateGQLType(scalar: Scalar, filter: DMMF.InputType, nesting: boolea
 
 async function generate(provider: Provider) {
   const schema = getSchemaForProvider(provider)
-  const prismaFilterTypes = (await getDMMF({ datamodel: schema })).schema.inputObjectTypes
+  const prismaFilterTypes = (await prisma.getDMMF({ datamodel: schema })).schema.inputObjectTypes
     .prisma as DMMF.InputType[] // TODO: why...
 
   // for generation
@@ -191,7 +191,7 @@ async function main() {
     for (const provider of PROVIDERS) {
       console.log(`verifying ${provider} prisma filter types`)
       const before = await fs.readFile(
-        `${__dirname}/../packages/core/src/fields/filters/providers/${provider}.ts`,
+        new URL(`../packages/core/src/fields/filters/providers/${provider}.ts`, import.meta.url),
         { encoding: 'utf-8' }
       )
       const now = await generate(provider)
@@ -204,7 +204,10 @@ async function main() {
 
   for (const provider of PROVIDERS) {
     console.log(`generating ${provider} prisma filter types`)
-    const outputPath = `${__dirname}/../packages/core/src/fields/filters/providers/${provider}.ts`
+    const outputPath = new URL(
+      `../packages/core/src/fields/filters/providers/${provider}.ts`,
+      import.meta.url
+    )
     await fs.writeFile(outputPath, await generate(provider))
   }
 }

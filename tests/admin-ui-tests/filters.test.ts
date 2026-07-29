@@ -1,6 +1,12 @@
 import { afterAll, afterEach, beforeAll, beforeEach, describe, test } from 'vitest'
 import type { Browser, Page, BrowserContext } from 'playwright'
-import { adminUITests, deleteAllData, generateDataArray, loadIndex, makeGqlRequest } from './utils'
+import {
+  adminUITests,
+  deleteAllData,
+  generateDataArray,
+  loadIndex,
+  makeGqlRequest,
+} from './utils.ts'
 
 adminUITests('./tests/test-projects/basic', browserType => {
   let browser: Browser = undefined as any

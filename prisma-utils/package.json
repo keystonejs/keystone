@@ -1,14 +1,14 @@
 {
   "name": "@keystone-6/prisma-utils",
   "version": "0.0.2",
+  "type": "module",
   "private": true,
   "devDependencies": {
     "@prisma/client": "catalog:",
-    "@prisma/internals": "catalog:",
-    "tsx": "^4.0.0"
+    "@prisma/internals": "catalog:"
   },
   "scripts": {
-    "generate": "tsx main.ts",
-    "verify": "tsx main.ts --verify"
+    "generate": "node main.ts",
+    "verify": "node main.ts --verify"
   }
 }
