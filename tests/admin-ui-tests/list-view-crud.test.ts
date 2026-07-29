@@ -1,7 +1,7 @@
 import { afterAll, beforeAll, beforeEach, expect, test } from 'vitest'
 import type { Browser, Page } from 'playwright'
 
-import { adminUITests, deleteAllData, makeGqlRequest } from './utils'
+import { adminUITests, deleteAllData, makeGqlRequest } from './utils.ts'
 
 adminUITests('./tests/test-projects/crud-notifications', browserType => {
   let browser: Browser = undefined as any

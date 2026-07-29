@@ -7,7 +7,7 @@ import {
   schemas,
   symlinkKeystoneDeps,
   testdir,
-} from './utils'
+} from './utils.ts'
 
 describe.each(['postinstall', ['build', '--frozen']])('%s', command => {
   test('logs an error and exits with 1 when the schemas do not exist', async () => {

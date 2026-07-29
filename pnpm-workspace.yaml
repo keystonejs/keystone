@@ -4,7 +4,6 @@ packages:
   - 'packages/*'
   - 'tests/admin-ui-tests'
   - 'tests/api-tests'
-  - 'tests/benchmarks'
   - 'tests/examples-smoke-tests'
   - 'tests/test-projects/*'
   - 'tests/sandbox'

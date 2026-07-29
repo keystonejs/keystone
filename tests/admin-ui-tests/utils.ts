@@ -7,6 +7,7 @@ import { DatabaseSync } from 'node:sqlite'
 import dotenv from 'dotenv'
 import type { ExecaChildProcess } from 'execa'
 import * as playwright from 'playwright'
+import { fileURLToPath } from 'node:url'
 
 vi.setConfig({ testTimeout: 1_200_000 })
 
@@ -25,7 +26,7 @@ export async function loadIndex(page: playwright.Page) {
   }
 }
 
-const projectRoot = path.resolve(__dirname, '..', '..')
+const projectRoot = fileURLToPath(new URL('../../', import.meta.url))
 
 export async function makeGqlRequest(query: string, variables?: Record<string, any>) {
   const { data, errors } = await fetch('http://localhost:3000/api/graphql', {

@@ -9,7 +9,7 @@ import {
   schemas,
   symlinkKeystoneDeps,
   testdir,
-} from './utils'
+} from './utils.ts'
 
 vi.setConfig({ testTimeout: 120_000 }) // these tests are slow
 

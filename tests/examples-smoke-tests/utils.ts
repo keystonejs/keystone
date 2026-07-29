@@ -5,6 +5,7 @@ import { DatabaseSync } from 'node:sqlite'
 import execa, { type ExecaChildProcess } from 'execa'
 import _treeKill from 'tree-kill'
 import * as playwright from 'playwright'
+import { fileURLToPath } from 'url'
 
 vi.setConfig({ testTimeout: 1_200_000, hookTimeout: 30_000 })
 
@@ -95,7 +96,7 @@ export const exampleProjectTests = (
   ) => void,
   options: { waitForInitialUser?: boolean } = {}
 ) => {
-  const projectDir = path.join(__dirname, '..', '..', 'examples', exampleName)
+  const projectDir = fileURLToPath(new URL(`../../examples/${exampleName}`, import.meta.url))
   const env = {
     ...process.env,
     DATABASE_URL: `file:${path.join(projectDir, 'keystone-example.db')}`,

@@ -6,7 +6,7 @@ import path from 'node:path'
 import { type Browser, type Page, chromium } from 'playwright'
 import { expect as playwrightExpect } from 'playwright/test'
 
-import { loadIndex, makeGqlRequest, spawnCommand3, waitForIO } from './utils'
+import { loadIndex, makeGqlRequest, spawnCommand3, waitForIO } from './utils.ts'
 
 const gql = ([content]: TemplateStringsArray) => content
 const testProjectPath = path.join(__dirname, '..', 'test-projects', 'live-reloading')

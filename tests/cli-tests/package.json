@@ -3,6 +3,7 @@
   "description": "A set of tests for running against the KeystoneJS CLI.",
   "private": true,
   "version": "0.0.3",
+  "type": "module",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "repository": "https://github.com/keystonejs/keystone/tree/main/tests/api-tests",
