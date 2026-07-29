@@ -2,14 +2,14 @@
 
 'use client'
 
-import { CommunitySlackCTA } from '../../../components/docs/CommunitySlackCTA'
-import { Keystone5DocsCTA } from '../../../components/docs/Keystone5DocsCTA'
-import { Type } from '../../../components/primitives/Type'
-import { CommunityCta } from '../../../components/content/CommunityCta'
-import { Alert } from '../../../components/primitives/Alert'
-import { Button } from '../../../components/primitives/Button'
-import { ArrowR } from '../../../components/icons'
-import { KeystoneExperience } from '../../../components/docs/KeystoneExperience'
+import { CommunitySlackCTA } from '../../../components/docs/CommunitySlackCTA.tsx'
+import { Keystone5DocsCTA } from '../../../components/docs/Keystone5DocsCTA.tsx'
+import { Type } from '../../../components/primitives/Type.tsx'
+import { CommunityCta } from '../../../components/content/CommunityCta.tsx'
+import { Alert } from '../../../components/primitives/Alert.tsx'
+import { Button } from '../../../components/primitives/Button.tsx'
+import { ArrowR } from '../../../components/icons/index.ts'
+import { KeystoneExperience } from '../../../components/docs/KeystoneExperience.tsx'
 
 export default function DocsPageClient({ featuredExamples, featuredDocs }) {
   return (

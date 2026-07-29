@@ -1,8 +1,8 @@
 import path from 'node:path'
 import { glob, readFile, writeFile } from 'node:fs/promises'
 import RSS from 'rss'
-import { extractBlogFrontmatter } from '../markdoc'
-import { siteBaseUrl } from '../lib/og-util'
+import { extractBlogFrontmatter } from '../markdoc/index.ts'
+import { siteBaseUrl } from '../lib/og-util.ts'
 
 async function getPosts() {
   const files = glob('*.md', { cwd: path.join(process.cwd(), 'pages/blog') })

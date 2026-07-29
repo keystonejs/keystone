@@ -13,10 +13,10 @@ import {
 import { usePathname } from 'next/navigation'
 import Link from 'next/link'
 
-import { useMediaQuery } from '../../lib/media'
-import { useHeaderContext } from '../Header'
-import { Badge } from '../primitives/Badge'
-import { ArrowR } from '../icons/ArrowR'
+import { useMediaQuery } from '../../lib/media.ts'
+import { useHeaderContext } from '../Header.tsx'
+import { Badge } from '../primitives/Badge.tsx'
+import { ArrowR } from '../icons/ArrowR.tsx'
 
 type NavContext = {
   isSectionCollapsed: (title: string) => boolean

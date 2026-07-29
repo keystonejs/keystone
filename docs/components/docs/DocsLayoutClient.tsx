@@ -4,17 +4,17 @@
 
 import { type ReactNode, useRef } from 'react'
 import { usePathname } from 'next/navigation'
-import { Header } from '../Header'
-import { Wrapper } from '../primitives/Wrapper'
-import { Sidebar } from './Sidebar'
-import { Stack } from '../primitives/Stack'
-import { Breadcrumbs } from '../Breadcrumbs'
-import { EditButton } from '../primitives/EditButton'
-import { TableOfContents } from './TableOfContents'
+import { Header } from '../Header.tsx'
+import { Wrapper } from '../primitives/Wrapper.tsx'
+import { Sidebar } from './Sidebar.tsx'
+import { Stack } from '../primitives/Stack.tsx'
+import { Breadcrumbs } from '../Breadcrumbs.tsx'
+import { EditButton } from '../primitives/EditButton.tsx'
+import { TableOfContents } from './TableOfContents.tsx'
 
-import { useMediaQuery } from '../../lib/media'
-import { DocsFooter } from '../Footer'
-import type { HeadingType } from '../../markdoc/headings'
+import { useMediaQuery } from '../../lib/media.ts'
+import { DocsFooter } from '../Footer.tsx'
+import type { HeadingType } from '../../markdoc/headings.ts'
 
 export function DocsLayoutClient({
   children,

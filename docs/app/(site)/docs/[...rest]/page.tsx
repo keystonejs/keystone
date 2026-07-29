@@ -1,13 +1,13 @@
 import { notFound } from 'next/navigation'
-import { type Tag, transform } from '@markdoc/markdoc'
+import Markdoc, { type Tag } from '@markdoc/markdoc'
 
-import { reader } from '../../../../keystatic/reader'
-import { baseMarkdocConfig } from '../../../../markdoc/config'
-import { extractHeadings } from '../../../../markdoc/headings'
-import PageClient from './page-client'
+import { reader } from '../../../../keystatic/reader.ts'
+import { baseMarkdocConfig } from '../../../../markdoc/config.ts'
+import { extractHeadings } from '../../../../markdoc/headings.ts'
+import PageClient from './page-client.tsx'
 import type { EntryWithResolvedLinkedFiles } from '@keystatic/core/reader'
 import type keystaticConfig from '../../../../keystatic.config'
-import { DocsLayout } from '../../../../components/docs/DocsLayout'
+import { DocsLayout } from '../../../../components/docs/DocsLayout.tsx'
 
 export type Document = NonNullable<
   Pick<
@@ -27,7 +27,7 @@ export default async function DocPage({ params }) {
 
   const transformedDoc: Document = {
     ...doc,
-    content: transform(doc.content.node, baseMarkdocConfig) as Tag,
+    content: Markdoc.transform(doc.content.node, baseMarkdocConfig) as Tag,
   }
 
   const headings = [

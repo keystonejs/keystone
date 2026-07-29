@@ -4,8 +4,8 @@
 
 import { useState, useEffect, type HTMLAttributes } from 'react'
 
-import { Loading } from './Loading'
-import { Type } from './Type'
+import { Loading } from './Loading.tsx'
+import { Type } from './Type.tsx'
 
 type GitHubButtonProps = {
   repo: string

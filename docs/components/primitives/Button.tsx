@@ -4,8 +4,8 @@ import type { ReactNode } from 'react'
 import { type CSSObject, jsx } from '@emotion/react'
 import Link from 'next/link'
 
-import { forwardRefWithAs } from '../../lib/forwardRefWithAs'
-import { Loading } from './Loading'
+import { forwardRefWithAs } from '../../lib/forwardRefWithAs.ts'
+import { Loading } from './Loading.tsx'
 
 const styleMap = {
   default: {},

@@ -2,14 +2,14 @@
 
 import React, { type ElementType, type ReactNode, type JSX } from 'react'
 import type { RenderableTreeNodes, Scalar, RenderableTreeNode, Tag } from '@markdoc/markdoc'
-import { isTag } from '../markdoc/isTag'
-import { Code, InlineCode } from './primitives/Code'
-import { Heading } from './docs/Heading'
-import { RelatedContent } from './RelatedContent'
-import { Well } from './primitives/Well'
-import { YouTubeEmbed } from './primitives/YouTubeEmbed'
-import { Emoji } from './primitives/Emoji'
-import { ComingSoon } from './docs/ComingSoon'
+import { isTag } from '../markdoc/isTag.ts'
+import { Code, InlineCode } from './primitives/Code.tsx'
+import { Heading } from './docs/Heading.tsx'
+import { RelatedContent } from './RelatedContent.tsx'
+import { Well } from './primitives/Well.tsx'
+import { YouTubeEmbed } from './primitives/YouTubeEmbed.tsx'
+import { Emoji } from './primitives/Emoji.tsx'
+import { ComingSoon } from './docs/ComingSoon.tsx'
 
 const renderers: Record<string, ElementType> = {
   code: InlineCode,

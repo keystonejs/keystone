@@ -2,7 +2,7 @@
 
 import type { HTMLAttributes } from 'react'
 
-import { SPACE } from '../../lib/TOKENS'
+import { SPACE } from '../../lib/TOKENS.ts'
 
 const gapMap: Record<number, string> = {}
 Object.keys(SPACE).forEach((name, i) => {

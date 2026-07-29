@@ -5,7 +5,7 @@
 import slugify from '@sindresorhus/slugify'
 import type { ReactNode } from 'react'
 
-import { HeadingIdLink } from './CopyToClipboard'
+import { HeadingIdLink } from './CopyToClipboard.tsx'
 
 /*
  * !THIS IS OLD. PLEASE USE THE Type COMPONENT INSTEAD!

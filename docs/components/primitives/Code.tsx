@@ -5,7 +5,7 @@
 import { Highlight, Prism, type LineOutputProps, type TokenOutputProps } from 'prism-react-renderer'
 import { type ReactNode, useEffect, useMemo, useState } from 'react'
 
-import theme from '../../lib/prism-theme'
+import theme from '../../lib/prism-theme.ts'
 
 type Range = { start: number; end: number }
 type CollapseRange = Range & { isCollapsed: boolean }

@@ -2,10 +2,10 @@
 
 import { Fragment, useState, useEffect, type HTMLAttributes } from 'react'
 
-import type { COLORS } from '../lib/TOKENS'
-import { LightMode } from './icons/LightMode'
-import { DarkMode } from './icons/DarkMode'
-import { useThemeContext } from '../app/(site)/layout-client'
+import type { COLORS } from '../lib/TOKENS.ts'
+import { LightMode } from './icons/LightMode.tsx'
+import { DarkMode } from './icons/DarkMode.tsx'
+import { useThemeContext } from '../app/(site)/layout-client.tsx'
 
 export function ThemeToggle(props: HTMLAttributes<HTMLButtonElement>) {
   /*

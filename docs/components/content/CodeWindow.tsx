@@ -2,7 +2,7 @@
 
 import type { HTMLAttributes } from 'react'
 
-import { useMediaQuery } from '../../lib/media'
+import { useMediaQuery } from '../../lib/media.ts'
 
 const codeFontStyle = {
   fontSize: 13,

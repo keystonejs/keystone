@@ -5,12 +5,12 @@ import Link from 'next/link'
 import { Fragment, useEffect, type ReactNode, type MouseEvent } from 'react'
 import FocusLock from 'react-focus-lock'
 
-import { useHeaderContext } from './Header'
-import { Highlight } from './primitives/Highlight'
+import { useHeaderContext } from './Header.tsx'
+import { Highlight } from './primitives/Highlight.tsx'
 
-import { DocsNavigation, NavItem } from './docs/Navigation'
-import { Keystone } from './icons/Keystone'
-import { Close } from './icons/Close'
+import { DocsNavigation, NavItem } from './docs/Navigation.tsx'
+import { Keystone } from './icons/Keystone.tsx'
+import { Close } from './icons/Close.tsx'
 
 type MobileMenuProps = {
   handleClose: (e?: MouseEvent) => void

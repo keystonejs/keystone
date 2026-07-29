@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 
-import { Gradients, type IconProps } from './util'
+import { Gradients, type IconProps } from './util.tsx'
 
 export function SearchKeys({ grad, ...props }: IconProps) {
   return (

@@ -1,8 +1,8 @@
-import PageClient from './page-client'
-import { FeaturedExamples } from '../../../components/docs/featured-examples'
-import { FeaturedDocs } from '../../../components/docs/featured-docs'
+import PageClient from './page-client.tsx'
+import { FeaturedExamples } from '../../../components/docs/featured-examples/index.tsx'
+import { FeaturedDocs } from '../../../components/docs/featured-docs/index.tsx'
 
-import { DocsLayout } from '../../../components/docs/DocsLayout'
+import { DocsLayout } from '../../../components/docs/DocsLayout.tsx'
 
 export const metadata = {
   title: 'Keystone Docs Home',

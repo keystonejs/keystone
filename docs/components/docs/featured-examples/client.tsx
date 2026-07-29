@@ -2,11 +2,11 @@
 
 'use client'
 
-import { Well } from '../../primitives/Well'
-import { useMediaQuery } from '../../../lib/media'
-import { Markdoc } from '../../Markdoc'
-import type { FeaturedExamples } from '.'
-import { Type } from '../../primitives/Type'
+import { Well } from '../../primitives/Well.tsx'
+import { useMediaQuery } from '../../../lib/media.ts'
+import { Markdoc } from '../../Markdoc.tsx'
+import type { FeaturedExamples } from './index.tsx'
+import { Type } from '../../primitives/Type.tsx'
 
 export default function ExamplesList({ featuredExamples }: { featuredExamples: FeaturedExamples }) {
   const mq = useMediaQuery()

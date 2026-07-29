@@ -1,4 +1,4 @@
-import PageClient from './page-client'
+import PageClient from './page-client.tsx'
 
 export const metadata = {
   title: 'KeystoneJS: The superpowered Node.js Headless CMS for developers',

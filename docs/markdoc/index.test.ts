@@ -1,7 +1,7 @@
 import type { RenderableTreeNode } from '@markdoc/markdoc'
 import React, { type ReactNode } from 'react'
-import { isTag } from './isTag'
-import { transformContent } from '.'
+import { isTag } from './isTag.ts'
+import { transformContent } from './index.ts'
 
 function renderableToReactElement(node: RenderableTreeNode, key = 1): ReactNode {
   if (

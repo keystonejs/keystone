@@ -17,7 +17,7 @@ import {
   buildIndex,
   extractFrontmatter,
   frontMatterPattern,
-} from './build-artifacts'
+} from './build-artifacts.ts'
 
 const DOCS_DIR = 'content/docs'
 const PUBLIC_DIR = 'public'

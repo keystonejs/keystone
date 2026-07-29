@@ -4,8 +4,8 @@ import { mark, wrapper } from '@keystatic/core/content-components'
 import { cableIcon } from '@keystar/ui/icon/icons/cableIcon'
 import { creditCardIcon } from '@keystar/ui/icon/icons/creditCardIcon'
 
-import { emoji, hint } from './keystatic/content-components'
-import { gradientSelector } from './keystatic/gradient-selector'
+import { emoji, hint } from './keystatic/content-components.tsx'
+import { gradientSelector } from './keystatic/gradient-selector.ts'
 
 export default config({
   storage: {

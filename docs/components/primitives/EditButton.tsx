@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 
-import { Edit } from '../../components/icons/Edit'
-import { Button } from './Button'
+import { Edit } from '../icons/Edit.tsx'
+import { Button } from './Button.tsx'
 
 export function EditButton({
   pathName,

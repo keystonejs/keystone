@@ -4,11 +4,11 @@
 
 import Link from 'next/link'
 
-import { MWrapper } from '../../../components/content/MWrapper'
-import { Page } from '../../../components/Page'
-import { Type } from '../../../components/primitives/Type'
-import { Highlight } from '../../../components/primitives/Highlight'
-import { useMediaQuery } from '../../../lib/media'
+import { MWrapper } from '../../../components/content/MWrapper.tsx'
+import { Page } from '../../../components/Page.tsx'
+import { Type } from '../../../components/primitives/Type.tsx'
+import { Highlight } from '../../../components/primitives/Highlight.tsx'
+import { useMediaQuery } from '../../../lib/media.ts'
 
 export default function Docs({ posts }) {
   const mq = useMediaQuery()

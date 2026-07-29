@@ -1,5 +1,5 @@
 import type { RenderableTreeNode, Tag } from '@markdoc/markdoc'
-import { isTag } from './isTag'
+import { isTag } from './isTag.ts'
 
 export type HeadingType = {
   id: string

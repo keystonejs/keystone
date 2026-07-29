@@ -1,6 +1,6 @@
-import { type Tag, transform } from '@markdoc/markdoc'
-import { reader } from './reader'
-import { baseMarkdocConfig } from '../markdoc/config'
+import Markdoc, { type Tag } from '@markdoc/markdoc'
+import { reader } from './reader.ts'
+import { baseMarkdocConfig } from '../markdoc/config.ts'
 
 export type FeaturedDocsMap = Awaited<ReturnType<typeof getFeaturedDocsMap>>
 
@@ -21,14 +21,14 @@ export async function getFeaturedDocsMap() {
 
     switch (discriminant) {
       case 'url': {
-        description = transform(value.description.node, baseMarkdocConfig) as Tag
+        description = Markdoc.transform(value.description.node, baseMarkdocConfig) as Tag
         href = value.url
         break
       }
       case 'docs': {
         const docPage = value.docPage ? docsBySlug.get(value.docPage) : null
         if (!docPage) throw new Error(`No doc page found for slug: ${value.docPage}`)
-        description = transform(value.description.node, baseMarkdocConfig) as Tag
+        description = Markdoc.transform(value.description.node, baseMarkdocConfig) as Tag
         href = docPage.slug ? `/docs/${docPage.slug}` : '#'
         break
       }
@@ -40,7 +40,10 @@ export async function getFeaturedDocsMap() {
   // Processing all groups...
   const processedGroups = await Promise.all(
     featuredDocs.groups.map(async ({ groupName, groupDescription, gradient, items }) => {
-      const transformedGroupDescription = transform(groupDescription.node, baseMarkdocConfig) as Tag
+      const transformedGroupDescription = Markdoc.transform(
+        groupDescription.node,
+        baseMarkdocConfig
+      ) as Tag
       const processedItems = await Promise.all(items.map(processItem))
 
       return {

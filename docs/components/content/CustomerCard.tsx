@@ -2,8 +2,8 @@
 
 import type { HTMLAttributes, JSX } from 'react'
 
-import { Type } from '../primitives/Type'
-import type { IconProps } from '../icons/util'
+import { Type } from '../primitives/Type.tsx'
+import type { IconProps } from '../icons/util.tsx'
 
 type CustomerCardProps = {
   icon: (props: IconProps) => JSX.Element

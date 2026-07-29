@@ -2,7 +2,7 @@
 
 import type { ElementType, HTMLAttributes } from 'react'
 
-import { useMediaQuery } from '../../lib/media'
+import { useMediaQuery } from '../../lib/media.ts'
 
 type WrapperProps = {
   as?: ElementType

@@ -1,6 +1,6 @@
 import { Global } from '@emotion/react'
 
-import { COLORS, SPACE, TYPE, TYPESCALE } from '../lib/TOKENS'
+import { COLORS, SPACE, TYPE, TYPESCALE } from '../lib/TOKENS.ts'
 
 export function Theme() {
   return (

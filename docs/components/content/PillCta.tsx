@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 
 import type { HTMLAttributes } from 'react'
-import { useMediaQuery } from '../../lib/media'
+import { useMediaQuery } from '../../lib/media.ts'
 
 type PillCtaProps = {
   grad?: 'grad1' | 'grad2' | 'grad3' | 'grad4' | 'grad5' | 'grad6'

@@ -2,13 +2,13 @@
 
 'use client'
 
-import { Type } from '../../../../components/primitives/Type'
-import type { FeaturedDocsMap } from '../../../../keystatic/get-featured-docs-map'
+import { Type } from '../../../../components/primitives/Type.tsx'
+import type { FeaturedDocsMap } from '../../../../keystatic/get-featured-docs-map.ts'
 import {
   FeaturedCard,
   FullWidthCardContainer,
   SplitCardContainer,
-} from '../../../../components/docs/FeaturedCard'
+} from '../../../../components/docs/FeaturedCard.tsx'
 
 export default function Docs({
   quickstart,

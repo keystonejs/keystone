@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 
-import { useMediaQuery } from '../../lib/media'
-import { DocsNavigation } from './Navigation'
+import { useMediaQuery } from '../../lib/media.ts'
+import { DocsNavigation } from './Navigation.tsx'
 
 type SidebarProps = {
   docsNavigation?: React.ReactNode

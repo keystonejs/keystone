@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 
-import { Alert } from '../primitives/Alert'
+import { Alert } from '../primitives/Alert.tsx'
 
 export function ComingSoon() {
   return (

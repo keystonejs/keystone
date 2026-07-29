@@ -1,8 +1,8 @@
-import ClientComponent from './client'
+import ClientComponent from './client.tsx'
 
-import { type Tag, transform } from '@markdoc/markdoc'
-import { reader } from '../../../keystatic/reader'
-import { baseMarkdocConfig } from '../../../markdoc/config'
+import Markdoc, { type Tag } from '@markdoc/markdoc'
+import { reader } from '../../../keystatic/reader.ts'
+import { baseMarkdocConfig } from '../../../markdoc/config.ts'
 
 export type FeaturedExamples = Awaited<ReturnType<typeof getFeaturedExamples>>
 
@@ -16,7 +16,7 @@ async function getFeaturedExamples() {
   // Get the rich text fields Markdoc-ready
   const transformedFeaturedExamples = {
     ...featuredExamples,
-    description: transform(featuredExamples.description.node, baseMarkdocConfig) as Tag,
+    description: Markdoc.transform(featuredExamples.description.node, baseMarkdocConfig) as Tag,
     items: await Promise.all(
       featuredExamples.items.map(async itemSlug => {
         const item = await reader.collections.examples.read(itemSlug, {
@@ -25,7 +25,7 @@ async function getFeaturedExamples() {
         if (!item) return null
         return {
           ...item,
-          description: transform(item.description.node, baseMarkdocConfig) as Tag,
+          description: Markdoc.transform(item.description.node, baseMarkdocConfig) as Tag,
         }
       })
     ),

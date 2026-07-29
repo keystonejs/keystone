@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 
-import { forwardRefWithAs } from '../../lib/forwardRefWithAs'
-import { useMediaQuery } from '../../lib/media'
+import { forwardRefWithAs } from '../../lib/forwardRefWithAs.ts'
+import { useMediaQuery } from '../../lib/media.ts'
 
 const common = {
   brand: {

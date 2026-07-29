@@ -2,12 +2,12 @@
 
 import { Fragment, useState, type ReactNode, type HTMLAttributes, useTransition } from 'react'
 
-import { subscribeToButtondown } from '../app/actions'
+import { subscribeToButtondown } from '../app/actions.ts'
 
-import { useMediaQuery } from '../lib/media'
-import { Button } from './primitives/Button'
-import { Field } from './primitives/Field'
-import { Stack } from './primitives/Stack'
+import { useMediaQuery } from '../lib/media.ts'
+import { Button } from './primitives/Button.tsx'
+import { Field } from './primitives/Field.tsx'
+import { Stack } from './primitives/Stack.tsx'
 import { usePathname } from 'next/navigation'
 
 type SubscriptFormProps = {

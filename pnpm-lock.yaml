@@ -218,9 +218,6 @@ importers:
       rss:
         specifier: ^1.2.2
         version: 1.2.2
-      tsx:
-        specifier: ^4.0.0
-        version: 4.21.0
     devDependencies:
       '@types/babel__core':
         specifier: 7.20.5

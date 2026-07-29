@@ -1,8 +1,8 @@
 import fs from 'fs/promises'
 import type { ValidateError } from '@markdoc/markdoc'
-import { loadAllMarkdoc } from '../../markdoc/load-all'
-import { printValidationError } from '../../markdoc'
-import { removeNextReleaseConditions } from './markdoc'
+import { loadAllMarkdoc } from '../../markdoc/load-all.ts'
+import { printValidationError } from '../../markdoc/index.ts'
+import { removeNextReleaseConditions } from './markdoc.ts'
 
 async function updateMarkdocFiles() {
   const docs = await loadAllMarkdoc()

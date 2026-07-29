@@ -1,6 +1,6 @@
 import { jsx } from '@emotion/react'
 
-import type { IconProps } from './util'
+import type { IconProps } from './util.tsx'
 
 export function PrintBarLogo(props: IconProps) {
   return (

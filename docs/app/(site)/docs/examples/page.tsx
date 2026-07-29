@@ -1,8 +1,8 @@
-import { transform } from '@markdoc/markdoc'
-import { DocsLayout } from '../../../../components/docs/DocsLayout'
-import { reader } from '../../../../keystatic/reader'
-import PageClient from './page-client'
-import { baseMarkdocConfig } from '../../../../markdoc/config'
+import Markdoc from '@markdoc/markdoc'
+import { DocsLayout } from '../../../../components/docs/DocsLayout.tsx'
+import { reader } from '../../../../keystatic/reader.ts'
+import PageClient from './page-client.tsx'
+import { baseMarkdocConfig } from '../../../../markdoc/config.ts'
 
 export const metadata = {
   title: 'Examples',
@@ -20,7 +20,7 @@ async function getGroupedExamples() {
         ...example,
         entry: {
           ...example.entry,
-          description: transform(example.entry.description.node, baseMarkdocConfig),
+          description: Markdoc.transform(example.entry.description.node, baseMarkdocConfig),
         },
       }
     })

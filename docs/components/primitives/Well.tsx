@@ -3,8 +3,8 @@
 import Link from 'next/link'
 import type { AnchorHTMLAttributes, ReactNode } from 'react'
 
-import { Type } from './Type'
-import { Badge } from './Badge'
+import { Type } from './Type.tsx'
+import { Badge } from './Badge.tsx'
 
 export type WellGradient = 'grad1' | 'grad2' | 'grad3' | 'grad4'
 

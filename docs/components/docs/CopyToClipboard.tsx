@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 
-import { Link } from '../icons/Link'
+import { Link } from '../icons/Link.tsx'
 
 export function HeadingIdLink({ value }: { value: string }) {
   return (

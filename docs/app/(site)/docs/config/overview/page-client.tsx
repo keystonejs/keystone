@@ -2,10 +2,10 @@
 
 'use client'
 
-import { CommunitySlackCTA } from '../../../../../components/docs/CommunitySlackCTA'
-import { Type } from '../../../../../components/primitives/Type'
-import { Well } from '../../../../../components/primitives/Well'
-import { useMediaQuery } from '../../../../../lib/media'
+import { CommunitySlackCTA } from '../../../../../components/docs/CommunitySlackCTA.tsx'
+import { Type } from '../../../../../components/primitives/Type.tsx'
+import { Well } from '../../../../../components/primitives/Well.tsx'
+import { useMediaQuery } from '../../../../../lib/media.ts'
 
 export default function Docs() {
   const mq = useMediaQuery()
