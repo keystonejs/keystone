@@ -5,12 +5,12 @@
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
 
-import { Markdoc } from '../../../../components/Markdoc'
-import { BlogPage } from '../../../../components/Page'
-import { Heading } from '../../../../components/docs/Heading'
-import { Type } from '../../../../components/primitives/Type'
-import type { BlogPost } from './page'
-import { extractHeadings } from '../../../../markdoc/headings'
+import { Markdoc } from '../../../../components/Markdoc.tsx'
+import { BlogPage } from '../../../../components/Page.tsx'
+import { Heading } from '../../../../components/docs/Heading.tsx'
+import { Type } from '../../../../components/primitives/Type.tsx'
+import type { BlogPost } from './page.tsx'
+import { extractHeadings } from '../../../../markdoc/headings.ts'
 
 export default function Page({ post, formattedDate }: { post: BlogPost; formattedDate: string }) {
   const params = useParams()

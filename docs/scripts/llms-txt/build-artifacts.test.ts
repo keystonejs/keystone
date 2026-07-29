@@ -1,5 +1,11 @@
 import { afterEach, beforeEach, expect, test, vi } from 'vitest'
-import { type Doc, type NavGroup, buildFull, buildIndex, slugForNavItem } from './build-artifacts'
+import {
+  type Doc,
+  type NavGroup,
+  buildFull,
+  buildIndex,
+  slugForNavItem,
+} from './build-artifacts.ts'
 
 function doc(slug: string, title: string, description: string): Doc {
   return { slug, title, description, markdown: `---\n---\n${title} body`, body: `${title} body` }

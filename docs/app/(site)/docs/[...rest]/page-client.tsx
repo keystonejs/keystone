@@ -1,10 +1,10 @@
 'use client'
 
-import type { Document } from './page'
+import type { Document } from './page.tsx'
 
-import { Markdoc } from '../../../../components/Markdoc'
+import { Markdoc } from '../../../../components/Markdoc.tsx'
 
-import { Heading } from '../../../../components/docs/Heading'
+import { Heading } from '../../../../components/docs/Heading.tsx'
 
 export default function PageClient({ document }: { document: Document }) {
   return (

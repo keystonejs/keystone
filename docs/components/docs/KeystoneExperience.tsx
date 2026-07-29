@@ -4,14 +4,14 @@
 
 import Link from 'next/link'
 
-import { Bulb } from '../icons/Bulb'
-import { Content } from '../icons/Content'
-import { Code } from '../icons/Code'
-import { Organization } from '../icons/Organization'
-import { Video } from '../icons/Video'
+import { Bulb } from '../icons/Bulb.tsx'
+import { Content } from '../icons/Content.tsx'
+import { Code } from '../icons/Code.tsx'
+import { Organization } from '../icons/Organization.tsx'
+import { Video } from '../icons/Video.tsx'
 
-import { useMediaQuery } from '../../lib/media'
-import { Type } from '../primitives/Type'
+import { useMediaQuery } from '../../lib/media.ts'
+import { Type } from '../primitives/Type.tsx'
 
 export function KeystoneExperience() {
   const mq = useMediaQuery()

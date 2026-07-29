@@ -2,8 +2,8 @@
 
 import type { HTMLAttributes } from 'react'
 
-import { Type } from '../primitives/Type'
-import { Quote } from '../icons/Quote'
+import { Type } from '../primitives/Type.tsx'
+import { Quote } from '../icons/Quote.tsx'
 
 type TweetBoxProps = {
   user: string

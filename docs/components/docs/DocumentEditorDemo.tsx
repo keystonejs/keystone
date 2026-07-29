@@ -12,21 +12,21 @@ import {
 import type { document } from '@keystone-6/fields-document'
 import { Global } from '@emotion/react'
 
-import { getInitialPropsValue } from '../../../packages/fields-document/src/DocumentEditor/component-blocks/initial-values'
-import { DocumentEditor } from '../../../packages/fields-document/src/DocumentEditor'
+import { getInitialPropsValue } from '../../../packages/fields-document/src/DocumentEditor/component-blocks/initial-values.ts'
+import { DocumentEditor } from '../../../packages/fields-document/src/DocumentEditor/index.tsx'
 import {
   createDocumentEditor,
   Editor,
   ReactEditor,
   withReact,
-} from '../../../packages/fields-document/src/DocumentEditor/demo'
-import { FormValueContentFromPreviewProps } from '../../../packages/fields-document/src/DocumentEditor/component-blocks/form-from-preview'
-import { createGetPreviewProps } from '../../../packages/fields-document/src/DocumentEditor/component-blocks/preview-props'
-import { componentBlocks as componentBlocksInExample } from '../../../examples/document-field-customisation/keystone-server/src/component-blocks'
-import { initialContent } from '../../lib/initialDocumentDemoContent'
-import { Code } from '../primitives/Code'
+} from '../../../packages/fields-document/src/DocumentEditor/demo.ts'
+import { FormValueContentFromPreviewProps } from '../../../packages/fields-document/src/DocumentEditor/component-blocks/form-from-preview.tsx'
+import { createGetPreviewProps } from '../../../packages/fields-document/src/DocumentEditor/component-blocks/preview-props.ts'
+import { componentBlocks as componentBlocksInExample } from '../../../examples/document-field-customisation/keystone-server/src/component-blocks/index.tsx'
+import { initialContent } from '../../lib/initialDocumentDemoContent.ts'
+import { Code } from '../primitives/Code.tsx'
 import { KeystarProvider } from '@keystar/ui/core'
-import { useThemeContext } from '../../app/(site)/layout-client'
+import { useThemeContext } from '../../app/(site)/layout-client.tsx'
 
 const headingLevels = ['1', '2', '3', '4', '5', '6'] as const
 

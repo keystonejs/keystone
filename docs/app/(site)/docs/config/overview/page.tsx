@@ -1,5 +1,5 @@
-import { DocsLayout } from '../../../../../components/docs/DocsLayout'
-import PageClient from './page-client'
+import { DocsLayout } from '../../../../../components/docs/DocsLayout.tsx'
+import PageClient from './page-client.tsx'
 
 export const metadata = {
   title: 'APIs',

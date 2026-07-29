@@ -1,13 +1,13 @@
 import { notFound } from 'next/navigation'
 import Markdoc, { type Tag } from '@markdoc/markdoc'
 
-import { reader } from '../../../../keystatic/reader'
-import { baseMarkdocConfig } from '../../../../markdoc/config'
-import { extractHeadings } from '../../../../markdoc/headings'
-import PageClient from './page-client'
+import { reader } from '../../../../keystatic/reader.ts'
+import { baseMarkdocConfig } from '../../../../markdoc/config.ts'
+import { extractHeadings } from '../../../../markdoc/headings.ts'
+import PageClient from './page-client.tsx'
 import type { EntryWithResolvedLinkedFiles } from '@keystatic/core/reader'
 import type keystaticConfig from '../../../../keystatic.config'
-import { DocsLayout } from '../../../../components/docs/DocsLayout'
+import { DocsLayout } from '../../../../components/docs/DocsLayout.tsx'
 
 export type Document = NonNullable<
   Pick<

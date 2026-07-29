@@ -1,11 +1,11 @@
 'use client'
 
-import { Well } from '../../primitives/Well'
-import { Type } from '../../primitives/Type'
+import { Well } from '../../primitives/Well.tsx'
+import { Type } from '../../primitives/Type.tsx'
 
-import { Markdoc } from '../../Markdoc'
-import { FeaturedCard, FullWidthCardContainer, SplitCardContainer } from '../FeaturedCard'
-import type { FeaturedDocsMap } from '../../../keystatic/get-featured-docs-map'
+import { Markdoc } from '../../Markdoc.tsx'
+import { FeaturedCard, FullWidthCardContainer, SplitCardContainer } from '../FeaturedCard.tsx'
+import type { FeaturedDocsMap } from '../../../keystatic/get-featured-docs-map.ts'
 
 export function FeaturedDocsClient({ featuredDocsMap }: { featuredDocsMap: FeaturedDocsMap }) {
   if (!featuredDocsMap) return null

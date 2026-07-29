@@ -2,11 +2,11 @@
 
 import { Fragment, useState, type ReactNode, type SyntheticEvent, type HTMLAttributes } from 'react'
 
-import { useMediaQuery } from '../lib/media'
-import { Button } from './primitives/Button'
-import { Field } from './primitives/Field'
-import { Stack } from './primitives/Stack'
-import { Type } from './primitives/Type'
+import { useMediaQuery } from '../lib/media.ts'
+import { Button } from './primitives/Button.tsx'
+import { Field } from './primitives/Field.tsx'
+import { Stack } from './primitives/Stack.tsx'
+import { Type } from './primitives/Type.tsx'
 
 function validEmail(email: string) {
   return /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/.test(

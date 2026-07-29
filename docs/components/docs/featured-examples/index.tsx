@@ -1,8 +1,8 @@
-import ClientComponent from './client'
+import ClientComponent from './client.tsx'
 
 import Markdoc, { type Tag } from '@markdoc/markdoc'
-import { reader } from '../../../keystatic/reader'
-import { baseMarkdocConfig } from '../../../markdoc/config'
+import { reader } from '../../../keystatic/reader.ts'
+import { baseMarkdocConfig } from '../../../markdoc/config.ts'
 
 export type FeaturedExamples = Awaited<ReturnType<typeof getFeaturedExamples>>
 

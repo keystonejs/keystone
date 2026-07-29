@@ -1,5 +1,5 @@
-import { reader } from '../../../keystatic/reader'
-import { DocsNavigationClient } from './client'
+import { reader } from '../../../keystatic/reader.ts'
+import { DocsNavigationClient } from './client.tsx'
 
 export type NavigationMap = Awaited<ReturnType<typeof getNavigationMap>>
 

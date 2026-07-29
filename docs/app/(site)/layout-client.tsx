@@ -9,10 +9,10 @@ import createCache from '@emotion/cache'
 import Script from 'next/script'
 import { Global, css } from '@emotion/react'
 
-import { proseStyles } from '../../lib/prose-lite'
-import { Theme } from '../../components/Theme'
-import { NavContextProvider } from '../../components/docs/Navigation'
-import { SkipLinks } from '../../components/SkipLinks'
+import { proseStyles } from '../../lib/prose-lite.ts'
+import { Theme } from '../../components/Theme.tsx'
+import { NavContextProvider } from '../../components/docs/Navigation.tsx'
+import { SkipLinks } from '../../components/SkipLinks.tsx'
 import { createContext } from 'react'
 
 function getTheme() {

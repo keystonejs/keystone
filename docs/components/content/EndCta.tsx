@@ -2,14 +2,14 @@
 
 import type { HTMLAttributes } from 'react'
 
-import { Highlight } from '../primitives/Highlight'
-import { Button } from '../primitives/Button'
-import { Type } from '../primitives/Type'
-import { ArrowR } from '../icons/ArrowR'
-import { useMediaQuery } from '../../lib/media'
-import { Tick } from '../icons/Tick'
-import { CodeBox } from './CodeBox'
-import { Section } from './Section'
+import { Highlight } from '../primitives/Highlight.tsx'
+import { Button } from '../primitives/Button.tsx'
+import { Type } from '../primitives/Type.tsx'
+import { ArrowR } from '../icons/ArrowR.tsx'
+import { useMediaQuery } from '../../lib/media.ts'
+import { Tick } from '../icons/Tick.tsx'
+import { CodeBox } from './CodeBox.tsx'
+import { Section } from './Section.tsx'
 
 type EndCtaProps = {
   grad?: 'grad1' | 'grad2' | 'grad3' | 'grad4' | 'grad5'

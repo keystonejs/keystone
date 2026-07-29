@@ -1,14 +1,14 @@
 'use client'
 
-import { H1, H2 } from '../../../../../components/docs/Heading'
+import { H1, H2 } from '../../../../../components/docs/Heading.tsx'
 
 import {
   DocumentEditorDemo,
   DocumentFeaturesProvider,
-} from '../../../../../components/docs/DocumentEditorDemo'
-import { Well } from '../../../../../components/primitives/Well'
-import { RelatedContent } from '../../../../../components/RelatedContent'
-import { InlineCode } from '../../../../../components/primitives/Code'
+} from '../../../../../components/docs/DocumentEditorDemo.tsx'
+import { Well } from '../../../../../components/primitives/Well.tsx'
+import { RelatedContent } from '../../../../../components/RelatedContent.tsx'
+import { InlineCode } from '../../../../../components/primitives/Code.tsx'
 
 export default function DocumentFieldDemo() {
   const title = 'Document Fields Demo'

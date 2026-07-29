@@ -1,9 +1,9 @@
 import fs from 'fs/promises'
 import Markdoc, { type Config, type Tag, type ValidateError } from '@markdoc/markdoc'
 import { load } from 'js-yaml'
-import { baseMarkdocConfig } from './config'
-import { showNextReleaseWithoutReplacement } from './show-next-release'
-import { isTag } from './isTag'
+import { baseMarkdocConfig } from './config.ts'
+import { showNextReleaseWithoutReplacement } from './show-next-release.ts'
+import { isTag } from './isTag.ts'
 
 export function printValidationError(error: ValidateError) {
   const location = error.error.location || error.location

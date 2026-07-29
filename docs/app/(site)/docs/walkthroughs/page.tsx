@@ -1,7 +1,7 @@
-import { DocsLayout } from '../../../../components/docs/DocsLayout'
-import { getFeaturedDocsMap } from '../../../../keystatic/get-featured-docs-map'
-import { reader } from '../../../../keystatic/reader'
-import PageClient from './page-client'
+import { DocsLayout } from '../../../../components/docs/DocsLayout.tsx'
+import { getFeaturedDocsMap } from '../../../../keystatic/get-featured-docs-map.ts'
+import { reader } from '../../../../keystatic/reader.ts'
+import PageClient from './page-client.tsx'
 
 export const metadata = {
   title: 'Walkthroughs',

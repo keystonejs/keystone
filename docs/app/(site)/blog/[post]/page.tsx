@@ -1,14 +1,14 @@
 import Markdoc, { type Tag } from '@markdoc/markdoc'
 import { notFound } from 'next/navigation'
 
-import { getOgAbsoluteUrl } from '../../../../lib/og-util'
-import { reader } from '../../../../keystatic/reader'
-import { baseMarkdocConfig } from '../../../../markdoc/config'
+import { getOgAbsoluteUrl } from '../../../../lib/og-util.ts'
+import { reader } from '../../../../keystatic/reader.ts'
+import { baseMarkdocConfig } from '../../../../markdoc/config.ts'
 import type { EntryWithResolvedLinkedFiles } from '@keystatic/core/reader'
 import type keystaticConfig from '../../../../keystatic.config'
-import PageClient from './page-client'
+import PageClient from './page-client.tsx'
 import type { Metadata } from 'next'
-import { blogDateFormatter } from '../../../../lib/date'
+import { blogDateFormatter } from '../../../../lib/date.ts'
 
 export type BlogPost = NonNullable<
   Omit<

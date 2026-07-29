@@ -3,14 +3,14 @@
 import Link from 'next/link'
 import type { HTMLAttributes } from 'react'
 
-import { useMediaQuery } from '../lib/media'
-import { GitHubButton } from './primitives/GitHubButton'
-import { SubscribeForm } from './SubscribeForm'
-import { Wrapper } from './primitives/Wrapper'
-import { Keystone } from './icons/Keystone'
-import { Emoji } from './primitives/Emoji'
-import { Type } from './primitives/Type'
-import { Socials } from './Socials'
+import { useMediaQuery } from '../lib/media.ts'
+import { GitHubButton } from './primitives/GitHubButton.tsx'
+import { SubscribeForm } from './SubscribeForm.tsx'
+import { Wrapper } from './primitives/Wrapper.tsx'
+import { Keystone } from './icons/Keystone.tsx'
+import { Emoji } from './primitives/Emoji.tsx'
+import { Type } from './primitives/Type.tsx'
+import { Socials } from './Socials.tsx'
 
 function List(props: HTMLAttributes<HTMLElement>) {
   return (

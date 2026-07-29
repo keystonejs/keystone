@@ -2,9 +2,9 @@
 
 import type { HTMLAttributes } from 'react'
 
-import { Twitter } from './icons/Twitter'
+import { Twitter } from './icons/Twitter.tsx'
 // import { YouTube } from './icons/YouTube';
-import { Slack } from './icons/Slack'
+import { Slack } from './icons/Slack.tsx'
 
 export function Socials(props: HTMLAttributes<HTMLElement>) {
   return (

@@ -2,7 +2,7 @@
 
 import type { HTMLAttributes } from 'react'
 
-import { Type } from '../primitives/Type'
+import { Type } from '../primitives/Type.tsx'
 
 export function IntroWrapper(props: HTMLAttributes<HTMLElement>) {
   return (

@@ -5,15 +5,15 @@
 import { useRef, Fragment, type ReactNode } from 'react'
 import { usePathname } from 'next/navigation'
 
-import { useMediaQuery } from '../lib/media'
-import { TableOfContents } from './docs/TableOfContents'
-import { Wrapper } from './primitives/Wrapper'
-import { EditButton } from './primitives/EditButton'
-import { Breadcrumbs } from './Breadcrumbs'
-import { Stack } from './primitives/Stack'
-import { Header } from './Header'
-import { Footer } from './Footer'
-import type { HeadingType } from './Markdoc'
+import { useMediaQuery } from '../lib/media.ts'
+import { TableOfContents } from './docs/TableOfContents.tsx'
+import { Wrapper } from './primitives/Wrapper.tsx'
+import { EditButton } from './primitives/EditButton.tsx'
+import { Breadcrumbs } from './Breadcrumbs.tsx'
+import { Stack } from './primitives/Stack.tsx'
+import { Header } from './Header.tsx'
+import { Footer } from './Footer.tsx'
+import type { HeadingType } from './Markdoc.tsx'
 
 export function BlogPage({
   children,

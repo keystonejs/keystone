@@ -4,9 +4,9 @@
 
 import { usePathname } from 'next/navigation'
 
-import { Highlight } from '../../components/primitives/Highlight'
-import { Type } from '../../components/primitives/Type'
-import { Page } from '../../components/Page'
+import { Highlight } from '../../components/primitives/Highlight.tsx'
+import { Type } from '../../components/primitives/Type.tsx'
+import { Page } from '../../components/Page.tsx'
 
 function ConstructionIllustration() {
   return (

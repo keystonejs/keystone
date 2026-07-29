@@ -5,12 +5,12 @@ import Image from 'next/image'
 
 import communityMap from '../../public/assets/community-map.png'
 
-import { useMediaQuery } from '../../lib/media'
-import { Button } from '../primitives/Button'
-import { Type } from '../primitives/Type'
-import { ArrowR } from '../icons/ArrowR'
-import { Tick } from '../icons/Tick'
-import { Section } from './Section'
+import { useMediaQuery } from '../../lib/media.ts'
+import { Button } from '../primitives/Button.tsx'
+import { Type } from '../primitives/Type.tsx'
+import { ArrowR } from '../icons/ArrowR.tsx'
+import { Tick } from '../icons/Tick.tsx'
+import { Section } from './Section.tsx'
 
 export function CommunityCta(props: HTMLAttributes<HTMLElement>) {
   const mq = useMediaQuery()

@@ -1,6 +1,6 @@
 import Markdoc, { type Tag } from '@markdoc/markdoc'
-import { reader } from './reader'
-import { baseMarkdocConfig } from '../markdoc/config'
+import { reader } from './reader.ts'
+import { baseMarkdocConfig } from '../markdoc/config.ts'
 
 export type FeaturedDocsMap = Awaited<ReturnType<typeof getFeaturedDocsMap>>
 

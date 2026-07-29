@@ -2,10 +2,10 @@
 
 import type { HTMLAttributes } from 'react'
 
-import { useMediaQuery } from '../../lib/media'
-import { Quote as QuoteIcon } from '../icons/Quote'
-import { Type } from '../primitives/Type'
-import { Section } from './Section'
+import { useMediaQuery } from '../../lib/media.ts'
+import { Quote as QuoteIcon } from '../icons/Quote.tsx'
+import { Type } from '../primitives/Type.tsx'
+import { Section } from './Section.tsx'
 
 type QuoteProps = {
   name: string

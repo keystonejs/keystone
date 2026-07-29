@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
-import RootLayoutClient, { Html } from './layout-client'
-import { siteBaseUrl } from '../../lib/og-util'
+import RootLayoutClient, { Html } from './layout-client.tsx'
+import { siteBaseUrl } from '../../lib/og-util.ts'
 
 const defaultTitle = 'KeystoneJS: The superpowered Node.js Headless CMS for developers'
 const defaultDescription =

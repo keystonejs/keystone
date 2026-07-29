@@ -4,22 +4,27 @@
 
 import { Fragment, useState } from 'react'
 
-import { CodeWindow, WindowWrapper, WindowL, WindowR } from '../../../components/content/CodeWindow'
-import { GitHubButton } from '../../../components/primitives/GitHubButton'
-import { COLORS, TYPESCALE, TYPE, SPACE } from '../../../lib/TOKENS'
-import { Highlight } from '../../../components/primitives/Highlight'
-import { styleMap, Type } from '../../../components/primitives/Type'
-import { InlineCode } from '../../../components/primitives/Code'
-import { Status } from '../../../components/primitives/Status'
-import { Button } from '../../../components/primitives/Button'
-import { Alert } from '../../../components/primitives/Alert'
-import { Badge } from '../../../components/primitives/Badge'
-import { Emoji } from '../../../components/primitives/Emoji'
-import { Stack } from '../../../components/primitives/Stack'
-import { Field } from '../../../components/primitives/Field'
-import { Well } from '../../../components/primitives/Well'
-import * as allIcons from '../../../components/icons'
-import { Page } from '../../../components/Page'
+import {
+  CodeWindow,
+  WindowWrapper,
+  WindowL,
+  WindowR,
+} from '../../../components/content/CodeWindow.tsx'
+import { GitHubButton } from '../../../components/primitives/GitHubButton.tsx'
+import { COLORS, TYPESCALE, TYPE, SPACE } from '../../../lib/TOKENS.ts'
+import { Highlight } from '../../../components/primitives/Highlight.tsx'
+import { styleMap, Type } from '../../../components/primitives/Type.tsx'
+import { InlineCode } from '../../../components/primitives/Code.tsx'
+import { Status } from '../../../components/primitives/Status.tsx'
+import { Button } from '../../../components/primitives/Button.tsx'
+import { Alert } from '../../../components/primitives/Alert.tsx'
+import { Badge } from '../../../components/primitives/Badge.tsx'
+import { Emoji } from '../../../components/primitives/Emoji.tsx'
+import { Stack } from '../../../components/primitives/Stack.tsx'
+import { Field } from '../../../components/primitives/Field.tsx'
+import { Well } from '../../../components/primitives/Well.tsx'
+import * as allIcons from '../../../components/icons/index.ts'
+import { Page } from '../../../components/Page.tsx'
 
 const EXCEPT_ICONS = ['FrontEndLogos', 'ClientLogos']
 

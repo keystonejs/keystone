@@ -1,6 +1,6 @@
 import { jsx } from '@emotion/react'
 
-import type { IconProps } from './util'
+import type { IconProps } from './util.tsx'
 
 export function RugbyAuLogo(props: IconProps) {
   return (

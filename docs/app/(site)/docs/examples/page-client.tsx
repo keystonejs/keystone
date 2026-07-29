@@ -4,11 +4,11 @@
 
 import type { Tag } from '@markdoc/markdoc'
 
-import type { GroupedExamples } from './page'
-import { GitHubExamplesCTA } from '../../../../components/docs/GitHubExamplesCTA'
-import { Type } from '../../../../components/primitives/Type'
-import { FeaturedCard, SplitCardContainer } from '../../../../components/docs/FeaturedCard'
-import { useMediaQuery } from '../../../../lib/media'
+import type { GroupedExamples } from './page.tsx'
+import { GitHubExamplesCTA } from '../../../../components/docs/GitHubExamplesCTA.tsx'
+import { Type } from '../../../../components/primitives/Type.tsx'
+import { FeaturedCard, SplitCardContainer } from '../../../../components/docs/FeaturedCard.tsx'
+import { useMediaQuery } from '../../../../lib/media.ts'
 
 export default function Docs({
   standaloneExamples,

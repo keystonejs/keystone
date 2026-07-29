@@ -2,7 +2,7 @@
 
 import type { HTMLAttributes, ReactNode } from 'react'
 
-import { Wrapper } from './primitives/Wrapper'
+import { Wrapper } from './primitives/Wrapper.tsx'
 
 type AnnounceProps = {
   children: ReactNode

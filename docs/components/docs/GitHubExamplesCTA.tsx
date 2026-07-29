@@ -1,8 +1,8 @@
 /** @jsxImportSource @emotion/react */
 
-import { Alert } from '../primitives/Alert'
-import { Button } from '../primitives/Button'
-import { ArrowR } from '../icons/ArrowR'
+import { Alert } from '../primitives/Alert.tsx'
+import { Button } from '../primitives/Button.tsx'
+import { ArrowR } from '../icons/ArrowR.tsx'
 
 export function GitHubExamplesCTA() {
   return (

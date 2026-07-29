@@ -4,19 +4,19 @@
 
 import Link from 'next/link'
 
-import { useMediaQuery } from '../../../lib/media'
-import { IntroWrapper, IntroHeading, IntroLead } from '../../../components/content/Intro'
-import { Highlight } from '../../../components/primitives/Highlight'
-import { MWrapper } from '../../../components/content/MWrapper'
-import { Type } from '../../../components/primitives/Type'
-import { Page } from '../../../components/Page'
-import { EndCta } from '../../../components/content/EndCta'
-import { Alert } from '../../../components/primitives/Alert'
-import { Emoji } from '../../../components/primitives/Emoji'
+import { useMediaQuery } from '../../../lib/media.ts'
+import { IntroWrapper, IntroHeading, IntroLead } from '../../../components/content/Intro.tsx'
+import { Highlight } from '../../../components/primitives/Highlight.tsx'
+import { MWrapper } from '../../../components/content/MWrapper.tsx'
+import { Type } from '../../../components/primitives/Type.tsx'
+import { Page } from '../../../components/Page.tsx'
+import { EndCta } from '../../../components/content/EndCta.tsx'
+import { Alert } from '../../../components/primitives/Alert.tsx'
+import { Emoji } from '../../../components/primitives/Emoji.tsx'
 import { Fragment, type ComponentProps, type ReactNode } from 'react'
-import { Gradient } from '../../../components/primitives/Gradient'
-import { InlineCode } from '../../../components/primitives/Code'
-import { Tick } from '../../../components/icons'
+import { Gradient } from '../../../components/primitives/Gradient.tsx'
+import { InlineCode } from '../../../components/primitives/Code.tsx'
+import { Tick } from '../../../components/icons/index.ts'
 
 function TimelineItem({ children }: { children: ReactNode }) {
   return (

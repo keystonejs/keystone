@@ -1,4 +1,4 @@
-import { removeNextReleaseConditions } from './markdoc'
+import { removeNextReleaseConditions } from './markdoc.ts'
 
 test('removes if', () => {
   const content = `## Heading 1

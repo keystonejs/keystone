@@ -1,8 +1,8 @@
 import Markdoc from '@markdoc/markdoc'
-import { DocsLayout } from '../../../../components/docs/DocsLayout'
-import { reader } from '../../../../keystatic/reader'
-import PageClient from './page-client'
-import { baseMarkdocConfig } from '../../../../markdoc/config'
+import { DocsLayout } from '../../../../components/docs/DocsLayout.tsx'
+import { reader } from '../../../../keystatic/reader.ts'
+import PageClient from './page-client.tsx'
+import { baseMarkdocConfig } from '../../../../markdoc/config.ts'
 
 export const metadata = {
   title: 'Examples',

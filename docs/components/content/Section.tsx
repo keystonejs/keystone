@@ -2,7 +2,7 @@
 
 import type { HTMLAttributes } from 'react'
 
-import { useMediaQuery } from '../../lib/media'
+import { useMediaQuery } from '../../lib/media.ts'
 
 export function Section(props: HTMLAttributes<HTMLElement>) {
   const mq = useMediaQuery()

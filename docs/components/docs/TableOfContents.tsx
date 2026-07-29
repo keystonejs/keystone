@@ -4,8 +4,8 @@
 
 import { useState, useEffect } from 'react'
 
-import { useMediaQuery } from '../../lib/media'
-import { Type } from '../primitives/Type'
+import { useMediaQuery } from '../../lib/media.ts'
+import { Type } from '../primitives/Type.tsx'
 
 // it's important that IDs are sorted by the order they appear in the document
 // so we can pluck active from the beginning

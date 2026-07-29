@@ -5,7 +5,7 @@
 import { usePathname, useRouter } from 'next/navigation'
 import Link from 'next/link'
 
-import { Type } from './primitives/Type'
+import { Type } from './primitives/Type.tsx'
 
 type Path = { title: string; href: string }
 

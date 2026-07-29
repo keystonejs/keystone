@@ -1,4 +1,4 @@
-import { Gradients, type IconProps } from './util'
+import { Gradients, type IconProps } from './util.tsx'
 
 export function Keystone({ grad, ...props }: IconProps) {
   return (

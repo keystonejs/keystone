@@ -4,7 +4,7 @@ import { type HTMLAttributes, useEffect, useState } from 'react'
 
 import { Icon } from '@keystar/ui/icon'
 import { checkIcon } from '@keystar/ui/icon/icons/checkIcon'
-import { Copy } from '../icons/Copy'
+import { Copy } from '../icons/Copy.tsx'
 
 type CodeBoxProps = {
   code: string
