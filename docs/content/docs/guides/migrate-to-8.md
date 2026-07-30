@@ -71,7 +71,7 @@ builds or tests against:
 Projects with custom Admin UI code must replace `@keystone-ui/*` with `@keystar/ui`.
 
 ```bash
-pnpm add @keystar/ui@0.9.1
+pnpm add @keystar/ui@0.9.2
 ```
 
 If you recieve a peer dependency warning, you should use the newer version

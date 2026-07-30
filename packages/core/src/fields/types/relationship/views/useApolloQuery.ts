@@ -163,21 +163,30 @@ export function useApolloQuery(args: {
   }
 
   return {
-    data: loading ? previousData : data,
+    data: data ?? previousData,
     error,
     loading,
-    loadingState: getLoadingState({ loading, search }),
+    loadingState: getLoadingState({
+      loading,
+      loadingMore: lastFetchMore !== null,
+      search,
+    }),
     search,
     setSearch,
     onLoadMore,
   }
 }
 
-function getLoadingState(options: { loading: boolean; search: string }): LoadingState {
+function getLoadingState(options: {
+  loading: boolean
+  loadingMore: boolean
+  search: string
+}): LoadingState {
   if (options.loading) {
     if (options.search.length) return 'filtering'
     return 'loading'
   }
+  if (options.loadingMore) return 'loadingMore'
 
   return 'idle'
 }
