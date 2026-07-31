@@ -1,5 +1,11 @@
 # @keystone-6/core
 
+## 8.0.1
+
+### Patch Changes
+
+- [#9966](https://github.com/keystonejs/keystone/pull/9966) [`1e4327c`](https://github.com/keystonejs/keystone/commit/1e4327c61c1df0e7ad49b74f124e65b8aab1cab7) Thanks [@emmatown](https://github.com/emmatown)! - Fix relationship field comboboxes only opening on second click and scroll position jumping
+
 ## 8.0.0
 
 ### Major Changes
