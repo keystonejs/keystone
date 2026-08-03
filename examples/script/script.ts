@@ -1,7 +1,7 @@
 import { getContext } from '@keystone-6/core/context'
-import config from './keystone'
+import config from './keystone.ts'
 
-import * as PrismaModule from './generated/prisma/client'
+import * as PrismaModule from './generated/prisma/client.ts'
 
 async function main() {
   const context = getContext(config, PrismaModule)

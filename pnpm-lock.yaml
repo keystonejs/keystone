@@ -2266,9 +2266,6 @@ importers:
       prisma:
         specifier: 'catalog:'
         version: 7.9.0(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(better-sqlite3@12.11.1)(magicast@0.3.5)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(typescript@6.0.3)
-      tsx:
-        specifier: ^4.0.0
-        version: 4.21.0
       typescript:
         specifier: 'catalog:'
         version: 6.0.3

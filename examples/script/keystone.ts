@@ -2,7 +2,7 @@ import { PrismaBetterSqlite3 } from '@prisma/adapter-better-sqlite3'
 import { config, list } from '@keystone-6/core'
 import { allowAll } from '@keystone-6/core/access'
 import { text, timestamp } from '@keystone-6/core/fields'
-import type { TypeInfo } from './generated/keystone/types'
+import type { TypeInfo } from './generated/keystone/types.ts'
 
 export default config<TypeInfo>({
   db: {
