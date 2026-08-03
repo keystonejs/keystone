@@ -60,8 +60,18 @@ function InternalKeystoneProvider({
   fieldViews,
   children,
 }: KeystoneProviderProps) {
-  const { push: navigate } = useRouter()
-  const keystarRouter = useMemo(() => ({ navigate }), [navigate])
+  const { push: navigate, basePath } = useRouter()
+  const keystarRouter = useMemo(
+    () => ({
+      navigate,
+      useHref: (href: string) => {
+        if (!basePath || !href.startsWith('/') || href.startsWith('//')) return href
+        if (href === '/') return basePath
+        return `${basePath}${href}`
+      },
+    }),
+    [basePath, navigate]
+  )
   const { data, loading, error } = useQuery<AdminMetaQuery>(adminMetaQuery, {
     errorPolicy: 'all',
   })

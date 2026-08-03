@@ -94,7 +94,7 @@ export const exampleProjectTests = (
     mode: 'dev' | 'prod',
     getInitialUser: () => InitialUser
   ) => void,
-  options: { waitForInitialUser?: boolean } = {}
+  options: { waitForInitialUser?: boolean; buildScript?: string } = {}
 ) => {
   const projectDir = fileURLToPath(new URL(`../../examples/${exampleName}`, import.meta.url))
   const env = {
@@ -140,7 +140,7 @@ export const exampleProjectTests = (
 
     if (mode === 'prod') {
       test('build keystone', async () => {
-        const keystoneBuildProcess = execa('pnpm', ['build'], {
+        const keystoneBuildProcess = execa('pnpm', [options.buildScript ?? 'build'], {
           cwd: projectDir,
           env,
         })

@@ -327,6 +327,7 @@ jobs:
             'usecase-todo.test.ts',
             'virtual-field.test.ts',
             'field-groups.test.ts',
+            'framework-nextjs-pages-directory.test.ts',
           ]
       fail-fast: false
     steps:
