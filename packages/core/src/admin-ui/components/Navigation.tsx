@@ -1,6 +1,7 @@
 import { type ReactNode, type PropsWithChildren, useState } from 'react'
 
 import { ActionButton } from '@keystar/ui/button'
+import { KeystarProvider } from '@keystar/ui/core'
 import { DialogContainer } from '@keystar/ui/dialog'
 import { Icon } from '@keystar/ui/icon'
 import { bookTextIcon } from '@keystar/ui/icon/icons/bookTextIcon'
@@ -30,7 +31,8 @@ type NavItemProps = {
   children: ReactNode
   /**
    * The URL to navigate to when the item is clicked. Omit the origin, as it
-   * interferes with client-side routing. Use `/` for the dashboard.
+   * interferes with client-side routing. Do not include the configured
+   * `ui.basePath`, it is applied automatically. Use `/` for the dashboard.
    */
   href: string
   /**
@@ -114,6 +116,9 @@ export function NavFooter(props: PropsWithChildren) {
   )
 }
 
+// because the apiPath is not behind the basePath for the Admin UI
+const router = { navigate: (href: string) => window.location.assign(href) }
+
 /** A footer item in the navigation. */
 export function DeveloperResourcesMenu() {
   const { apiPath } = useKeystone()
@@ -122,7 +127,7 @@ export function DeveloperResourcesMenu() {
   if (process.env.NODE_ENV === 'production') return null
   if (!apiPath) return null // TODO: FIXME: ?
   return (
-    <>
+    <KeystarProvider router={router}>
       <MenuTrigger>
         <TooltipTrigger>
           <ActionButton aria-label="Developer resources">
@@ -162,6 +167,6 @@ export function DeveloperResourcesMenu() {
       <DialogContainer onDismiss={() => setDialogIsOpen(false)}>
         {dialogIsOpen && <WelcomeDialog />}
       </DialogContainer>
-    </>
+    </KeystarProvider>
   )
 }
