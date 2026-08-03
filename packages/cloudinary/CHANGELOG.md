@@ -1,5 +1,11 @@
 # @keystone-6/cloudinary
 
+## 10.0.1
+
+### Patch Changes
+
+- [#9971](https://github.com/keystonejs/keystone/pull/9971) [`2e32c3d`](https://github.com/keystonejs/keystone/commit/2e32c3de852790cca900bf02f6dacfd96674d644) Thanks [@emmatown](https://github.com/emmatown)! - Updates `@keystar/ui` to `0.9.2` to align with `@keystone-6/core`
+
 ## 10.0.0
 
 ### Major Changes

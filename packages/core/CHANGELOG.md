@@ -1,5 +1,11 @@
 # @keystone-6/core
 
+## 8.0.2
+
+### Patch Changes
+
+- [#9973](https://github.com/keystonejs/keystone/pull/9973) [`77c06f5`](https://github.com/keystonejs/keystone/commit/77c06f5233d1282445b92cda79f997e82e1c72ce) Thanks [@emmatown](https://github.com/emmatown)! - Fixes Admin UI links to include the configured `ui.basePath`.
+
 ## 8.0.1
 
 ### Patch Changes
