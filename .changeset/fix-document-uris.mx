@@ -1,5 +1,0 @@
----
-"@keystone-6/fields-document": major
----
-
-Changes `fields.url` and document links to sanitise and `encodeURI` on blur
