@@ -5,4 +5,4 @@
 '@keystone-6/fields-document': patch
 ---
 
-Updates `@keystar/ui` to `0.9.2` to align with `@keystone-6/core@8.0.1`
+Updates `@keystar/ui` to `0.9.2` to align with `@keystone-6/core`
