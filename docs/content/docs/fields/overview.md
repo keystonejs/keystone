@@ -91,9 +91,48 @@ Options:
     See the [Lists API](../config/lists#ui) for details.
   - `createView.isRequired` (default: `undefined`): Controls whether the field is marked as required in the create view. Can be a boolean or an async function with an argument `{ session, context }` that returns a boolean. When `true`, the Admin UI will show the field as required.
   - `itemView.fieldMode` (default: `'edit'`): Controls the item view page of the Admin UI.
-    Can be one of `['edit', 'read', 'hidden']`, or an async function with an argument `{ session, context, listKey, fieldKey, item, itemField }` that returns one of `['edit', 'read', 'hidden']`. The `item` argument may be `null`.
+    Can be one of `'edit' | 'read' | 'hidden'`, a conditional filter object, or an async function with an argument `{ session, context, listKey, fieldKey, item, itemField }` that returns a field mode or conditional filter object. The `item` argument may be `null`.
+
+    A function that depends on `item` is initially called with `item: null`. Do not return `'hidden'` in this case. Keystone treats `'hidden'` as an indication that it does not need to fetch the field for the item page, so the function cannot later show the field after it receives the item. Return `'read'` until the item is available instead:
+
+    ```typescript
+    // Broken: the field will not be fetched for the item page
+    fieldMode: ({ item }) => {
+      if (item === null) return 'hidden'
+      return item.status === 'archived' ? 'hidden' : 'edit'
+    }
+
+    // Good: keep fetching the field until the item is available
+    fieldMode: ({ item }) => {
+      if (item === null) return 'read'
+      return item.status === 'archived' ? 'hidden' : 'edit'
+    }
+    ```
+
+    When a condition can be expressed as a filter, you should prefer that instead of a function. This allows the UI to respond immediately without saving the item. For example, this hides the field when `status` is `'archived'`:
+
+    ```typescript
+    fieldMode: {
+      hidden: { status: { equals: 'archived' } },
+    }
+    ```
+
+    If the mode depends on both the session and item fields, prefer a function for the session-based decision and return a conditional filter object for the item-based decision. For example, this hides the field from non-admin sessions and uses `status` to determine the mode for admins:
+
+    ```typescript
+    fieldMode: ({ context }) => {
+      if (context.session?.data.role !== 'admin') return 'hidden'
+      return {
+        hidden: { status: { equals: 'archived' } },
+      }
+    }
+    ```
+
+    `fieldMode` only controls the Admin UI. Use [field access control](../config/access-control#field-access-control) to protect field values.
+
     Defaults to the list's `fieldDefaults.ui.itemView.fieldMode` config if defined.
     See the [Lists API](../config/lists#ui) for details.
+
 - `itemView.fieldPosition` (default: `form`): Controls which side of the page the field is placed in the Admin UI.
   Can be either `form` or `sidebar`, or an async function with an argument `{ session, context, listKey, fieldKey, item, itemField }` that returns one of `['form', 'sidebar']`. The `item` argument may be `null`. `form` or blank places the field on the left hand side of the item view. `sidebar` places the field on the right hand side under the ID field
   - `itemView.isRequired` (default: `undefined`): Controls whether the field is marked as required in the item view. Can be a boolean or an async function with an argument `{ session, context }` that returns a boolean. When `true`, the Admin UI will show the field as required.
