@@ -35,7 +35,12 @@ function getSystemPaths(cwd: string, config: KeystoneConfig) {
 
   const builtPrismaPath = path.resolve(cwd, config.db.prismaSchemaPath)
 
-  const relativePrismaPath = relativeModulePath(path.dirname(builtTypesPath), prismaClientPath)
+  // note using .js is the best way to generically import TypeScript types since TS:
+  // - allows .js imports to .ts files in all module resolution modes with any options
+  // - doesn't allow bare imports to .ts files in with moduleResolution: nodenext + "type": "module" (like Node)
+  // - only allows .ts imports to .ts files when using allowImportingTsExtensions: true
+  const relativePrismaPath =
+    relativeModulePath(path.dirname(builtTypesPath), prismaClientPath) + '.js'
 
   const builtGraphqlPath = config.graphql?.schemaPath
     ? path.join(cwd, config.graphql.schemaPath) // TODO: enforce initConfig before getSystemPaths

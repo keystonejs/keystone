@@ -22,10 +22,13 @@ test("start errors when a build hasn't happened", async () => {
   await expect(cliMock(cwd, 'start')).rejects.toEqual(new Error('You need to run "keystone build"'))
 })
 
-test('build works with typescript without the user defining a babel config', async () => {
+test('build works in a Node ESM project without the user defining a babel config', async () => {
   const cwd = await testdir({
     ...symlinkKeystoneDeps,
     ...schemas,
+    'package.json': JSON.stringify({ type: 'module' }),
+    // this is just to show it gets overridden
+    '.keystone/package.json': JSON.stringify({ type: 'module' }),
     'keystone.ts': await readFile(`${__dirname}/fixtures/with-ts.ts`, 'utf8'),
   })
   const result = await execa('node', [cliBinPath, 'build'], {
@@ -36,10 +39,11 @@ test('build works with typescript without the user defining a babel config', asy
       NEXT_TELEMETRY_DISABLED: '1',
     } as any,
   })
+  expect(result.exitCode, result.all).toBe(0)
   expect(result.stdout.includes('Compiled successfully')).toBe(true)
   expect(result.stdout.includes('Generating static pages')).toBe(true)
   expect(result.stdout.includes('Finalizing page optimization')).toBe(true)
-  expect(result.exitCode).toBe(0)
+  expect(await readFile(`${cwd}/.keystone/package.json`, 'utf8')).toEqual('{}\n')
   expect(require(`${cwd}/.keystone/config.js`)).toEqual(
     expect.objectContaining({ default: expect.any(Object) })
   )
