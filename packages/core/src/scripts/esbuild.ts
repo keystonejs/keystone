@@ -9,6 +9,18 @@ function identity(x: BuildOptions) {
   return x
 }
 
+async function ensureKeystoneDirectory(cwd: string) {
+  const directory = nodePath.join(cwd, '.keystone')
+  await fs.mkdir(directory, { recursive: true })
+  // this is to reset the module type to be ambiguous in `.keystone`
+  // so that Keystone users can use "type": "module" in their package.json
+  // we use an empty object instead of "type": "commonjs"
+  // because inside `.keystone/admin` the ambiguous behaviour is expected
+  // e.g. next.config.js is commonjs but pages are ESM
+  // even though Node doesn't load the pages, Turbopack errors on the ESM pages if "type": "commonjs" is set
+  await fs.writeFile(nodePath.join(directory, 'package.json'), '{}\n')
+}
+
 async function getEsbuildConfigFn(
   cwd: string
 ): Promise<((x: BuildOptions) => BuildOptions | Promise<BuildOptions>) | undefined> {
@@ -40,15 +52,10 @@ async function getEsbuildConfigForEntry(
   outfile: string,
   define?: BuildOptions['define']
 ): Promise<BuildOptions> {
+  await ensureKeystoneDirectory(cwd)
   const esbuildFn = (await getEsbuildConfigFn(cwd)) ?? identity
   const resolveDir = nodePath.join(cwd, '.keystone')
   const importer = outfile
-  // we need the .keystone directory to exist so when we resolve from it below, it actually exists
-  await fs.mkdir(resolveDir, {
-    // while we don't need to actually make this recursive,
-    // this will make mkdir not error when the directory already exists
-    recursive: true,
-  })
   return esbuildFn({
     entryPoints: [entryPoint],
     absWorkingDir: cwd,

@@ -119,22 +119,22 @@ export type KeystoneAdminUISortDirection =
   | 'DESC'
 
 type ResolvedPostCreateInput = {
-  id?: import('./generated/custom-prisma/client').Prisma.PostCreateInput['id']
-  title?: import('./generated/custom-prisma/client').Prisma.PostCreateInput['title']
-  content?: import('./generated/custom-prisma/client').Prisma.PostCreateInput['content']
-  publishDate?: import('./generated/custom-prisma/client').Prisma.PostCreateInput['publishDate']
+  id?: import('./generated/custom-prisma/client.js').Prisma.PostCreateInput['id']
+  title?: import('./generated/custom-prisma/client.js').Prisma.PostCreateInput['title']
+  content?: import('./generated/custom-prisma/client.js').Prisma.PostCreateInput['content']
+  publishDate?: import('./generated/custom-prisma/client.js').Prisma.PostCreateInput['publishDate']
 }
 type ResolvedPostUpdateInput = {
   id?: undefined
-  title?: import('./generated/custom-prisma/client').Prisma.PostUpdateInput['title']
-  content?: import('./generated/custom-prisma/client').Prisma.PostUpdateInput['content']
-  publishDate?: import('./generated/custom-prisma/client').Prisma.PostUpdateInput['publishDate']
+  title?: import('./generated/custom-prisma/client.js').Prisma.PostUpdateInput['title']
+  content?: import('./generated/custom-prisma/client.js').Prisma.PostUpdateInput['content']
+  publishDate?: import('./generated/custom-prisma/client.js').Prisma.PostUpdateInput['publishDate']
 }
 
 export declare namespace Lists {
   export type Post<Session = any> = import('@keystone-6/core/types').ListConfig<Lists.Post.TypeInfo<Session>>
   namespace Post {
-    export type Item = import('./generated/custom-prisma/client').Post
+    export type Item = import('./generated/custom-prisma/client.js').Post
     export type TypeInfo<Session = any> = {
       key: 'Post'
       isSingleton: false
@@ -163,8 +163,8 @@ export type TypeInfo<Session = any> = {
   lists: {
     readonly Post: Lists.Post.TypeInfo<Session>
   }
-  prisma: import('./generated/custom-prisma/client').PrismaClient
-  prismaClientOptions: import('./generated/custom-prisma/client').Prisma.PrismaClientOptions
+  prisma: import('./generated/custom-prisma/client.js').PrismaClient
+  prismaClientOptions: import('./generated/custom-prisma/client.js').Prisma.PrismaClientOptions
   session: Session
   dbProvider: 'sqlite'
 }
