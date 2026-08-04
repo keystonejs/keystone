@@ -44,9 +44,9 @@ export type FieldGraphQLOmit =
       read?:
         | boolean
         | {
-            item: boolean
-            filter: boolean
-            order: boolean
+            item?: boolean
+            filter?: boolean
+            order?: boolean
           }
       create?: boolean
       update?: boolean

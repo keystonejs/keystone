@@ -305,7 +305,11 @@ function resolveFieldOmit(
         ? resolvedDefault.read
         : typeof read === 'boolean'
           ? { item: read, filter: read, order: read }
-          : read,
+          : {
+              item: read.item ?? resolvedDefault.read.item,
+              filter: read.filter ?? resolvedDefault.read.filter,
+              order: read.order ?? resolvedDefault.read.order,
+            },
     create: fieldOmit.create ?? resolvedDefault.create,
     update: fieldOmit.update ?? resolvedDefault.update,
   }
