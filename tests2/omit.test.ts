@@ -157,6 +157,24 @@ const listsMatrix = [
       omit: false,
     },
   },
+  {
+    name__: 'List_partial_field_read_omit',
+    access: allowAll,
+    fields: {
+      itemShown: text({ graphql: { omit: { read: { item: false } } } }),
+      filterShown: text({ graphql: { omit: { read: { filter: false } } } }),
+      orderShown: text({ graphql: { omit: { read: { order: false } } } }),
+    },
+    fieldDefaults: {
+      graphql: {
+        omit: { read: true },
+      },
+    },
+    graphql: {
+      plural: 'List_partial_field_read_omits',
+      omit: false,
+    },
+  },
   makeList({
     fields: [],
     omit: {
@@ -512,6 +530,22 @@ describe(`Omit (${dbProvider})`, () => {
     assert.deepEqual(schema.schemaFieldsByType.list_fielddefaults_booleancreateinput, [
       'createshown',
       'visible',
+    ])
+  })
+
+  test('partial field read omission overrides inherit unspecified defaults', async () => {
+    const schema = await data
+    assert.deepEqual(schema.schemaFieldsByType.list_partial_field_read_omit, ['id', 'itemshown'])
+    assert.deepEqual(schema.schemaFieldsByType.list_partial_field_read_omitwhereinput, [
+      'and',
+      'or',
+      'not',
+      'id',
+      'filtershown',
+    ])
+    assert.deepEqual(schema.schemaFieldsByType.list_partial_field_read_omitorderbyinput, [
+      'id',
+      'ordershown',
     ])
   })
 })
