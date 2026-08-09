@@ -218,7 +218,7 @@ export type FieldViews = Record<
   string,
   {
     Field: (props: FieldProps<any>) => ReactElement | null
-    Cell: CellComponent
+    Cell?: CellComponent
     controller: (args: FieldControllerConfig<any>) => FieldController<unknown, JSONValue>
     allowedExportsOnCustomViews?: string[]
   }

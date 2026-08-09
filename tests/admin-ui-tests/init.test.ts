@@ -44,7 +44,11 @@ adminUITests('./tests/test-projects/basic', browserType => {
       `
       const variables = {
         data: generateDataArray(
-          (key: number) => ({ label: `Test Task: ${key}`, isComplete: false }),
+          (key: number) => ({
+            label: `Test Task: ${key}`,
+            priority: 'high',
+            isComplete: false,
+          }),
           52
         ),
       }
@@ -65,6 +69,9 @@ adminUITests('./tests/test-projects/basic', browserType => {
       await page.getByRole('button', { name: 'Yes, delete' }).click()
       await page.waitForURL(/localhost:3000\/tasks\?.*(page=5)/)
       await page.getByText('Test Task: 45').waitFor()
+    })
+    test('Field custom views can override the list view cell', async () => {
+      await page.getByText('Custom cell: high').first().waitFor()
     })
   })
 
