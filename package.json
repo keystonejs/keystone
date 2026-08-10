@@ -7,7 +7,7 @@
   "license": "MIT",
   "repository": "https://github.com/keystonejs/keystone",
   "homepage": "https://github.com/keystonejs/keystone",
-  "packageManager": "pnpm@11.5.2",
+  "packageManager": "pnpm@11.21.0",
   "scripts": {
     "test:vitest": "vitest run ./packages/fields-document",
     "test:filters": "cd prisma-utils && pnpm verify",
