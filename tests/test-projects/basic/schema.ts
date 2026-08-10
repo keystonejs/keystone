@@ -6,10 +6,12 @@ import { select } from '@keystone-6/core/fields'
 export const lists = {
   Task: list({
     access: allowAll,
+    ui: { listView: { initialColumns: ['label', 'priority'] } },
     fields: {
       label: text({ validation: { isRequired: true } }),
       priority: select({
         type: 'enum',
+        ui: { views: './custom-cell' },
         options: [
           { label: 'Low', value: 'low' },
           { label: 'Medium', value: 'medium' },

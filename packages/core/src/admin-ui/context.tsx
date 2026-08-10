@@ -52,7 +52,8 @@ type KeystoneProviderProps = {
   children: ReactNode
 }
 
-const expectedExports = new Set(['Field', 'controller'])
+const requiredExports = new Set(['Field', 'controller'])
+const overridableExports = new Set([...requiredExports, 'Cell'])
 
 function InternalKeystoneProvider({
   adminConfig,
@@ -91,7 +92,7 @@ function InternalKeystoneProvider({
       }
 
       function hydrateField(field: (typeof listData.fields)[number]) {
-        for (const exportName of expectedExports) {
+        for (const exportName of requiredExports) {
           if ((fieldViews[field.viewsIndex] as any)[exportName] === undefined) {
             throw new Error(
               `The view for the field at ${listData.key}.${field.key} is missing the ${exportName} export`
@@ -108,7 +109,7 @@ function InternalKeystoneProvider({
           for (const exportName in customViewsSource) {
             if (allowedExportsOnCustomViews.has(exportName)) {
               customViews[exportName] = customViewsSource[exportName]
-            } else if (expectedExports.has(exportName)) {
+            } else if (overridableExports.has(exportName)) {
               ;(views as any)[exportName] = customViewsSource[exportName]
             }
           }
