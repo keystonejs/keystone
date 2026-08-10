@@ -5,7 +5,7 @@ import { Dialog, DialogTrigger } from '@keystar/ui/dialog'
 import { Icon } from '@keystar/ui/icon'
 import { chevronDownIcon } from '@keystar/ui/icon/icons/chevronDownIcon'
 import { Grid } from '@keystar/ui/layout'
-import { Item, Menu, MenuTrigger } from '@keystar/ui/menu'
+import { MenuItem, Menu, MenuTrigger } from '@keystar/ui/menu'
 import { Picker } from '@keystar/ui/picker'
 import { Content } from '@keystar/ui/slots'
 import { Heading, Text } from '@keystar/ui/typography'
@@ -118,7 +118,7 @@ export function FilterAdd({
                     }
                   }}
                 >
-                  {item => <Item key={item.value}>{item.label}</Item>}
+                  {item => <MenuItem key={item.value}>{item.label}</MenuItem>}
                 </Picker>
 
                 {/*
@@ -176,7 +176,7 @@ export function FilterAdd({
             })
           }}
         >
-          {item => <Item key={item.value}>{item.label}</Item>}
+          {item => <MenuItem key={item.value}>{item.label}</MenuItem>}
         </Menu>
       </MenuTrigger>
     </Fragment>

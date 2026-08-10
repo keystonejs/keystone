@@ -8,8 +8,7 @@ import { Transforms } from 'slate'
 
 import type { DocumentFeatures } from '../views-shared.ts'
 import { useToolbarState } from './toolbar-state.tsx'
-import { MenuTrigger, Menu } from '@keystar/ui/menu'
-import { Item } from '@keystar/ui/tag'
+import { MenuTrigger, Menu, MenuItem } from '@keystar/ui/menu'
 import { TooltipTrigger, Tooltip } from '@keystar/ui/tooltip'
 import { ReactEditor } from 'slate-react'
 import { Text } from '@keystar/ui/typography'
@@ -81,10 +80,10 @@ export const TextAlignMenu = ({
         >
           {item => {
             return (
-              <Item key={item.key} textValue={item.label}>
+              <MenuItem id={item.key} textValue={item.label}>
                 <Text>{item.label}</Text>
                 {item.icon}
-              </Item>
+              </MenuItem>
             )
           }}
         </Menu>

@@ -1,4 +1,4 @@
-import { ComboboxMulti, Item } from '@keystar/ui/combobox'
+import { Combobox, ComboboxItem } from '@keystar/ui/combobox'
 import { css } from '@keystar/ui/style'
 
 import type { ListMeta, ListSortDescriptor } from '../../../../types/index.ts'
@@ -43,7 +43,7 @@ export function ComboboxMany({
   }
   extraSelection?: string
 }) {
-  const { data, loadingState, error, onLoadMore, search, setSearch } = useApolloQuery({
+  const { data, error, search, setSearch } = useApolloQuery({
     labelField,
     list,
     searchFields,
@@ -71,12 +71,11 @@ export function ComboboxMany({
   }
 
   return (
-    <ComboboxMulti
+    <Combobox
       {...props}
       isDisabled={isDisabled || isReadOnly}
       isRequired={isRequired}
       items={items}
-      loadingState={loadingState}
       errorMessage={
         !!validationMessages.length && (shouldShowErrors || forceValidation)
           ? validationMessages.join('. ')
@@ -87,14 +86,11 @@ export function ComboboxMany({
       }}
       onInputChange={setSearch}
       inputValue={search}
-      onLoadMore={onLoadMore}
-      selectedKeys={state.value?.map(item => item.id.toString())}
+      selectedKey={null}
       onSelectionChange={selection => {
-        // TODO
-        if (selection === 'all') return
-
-        const selectedItems = items.filter(item => selection.has(item.id.toString()))
-        state.onChange(selectedItems)
+        if (selection == null || state.value.some(item => item.id.toString() === selection)) return
+        const item = items.find(item => item.id.toString() === selection)
+        if (item) state.onChange([...state.value, item])
       }}
       minWidth="alias.singleLineWidth"
       width="auto"
@@ -104,7 +100,7 @@ export function ComboboxMany({
         '[role="button"]': { width: 'auto' },
       })}
     >
-      {item => <Item key={item.id}>{item.label || item.id}</Item>}
-    </ComboboxMulti>
+      {item => <ComboboxItem key={item.id}>{item.label || item.id}</ComboboxItem>}
+    </Combobox>
   )
 }

@@ -2,6 +2,7 @@ import { useOverlay } from 'react-aria/useOverlay'
 import { useOverlayPosition } from 'react-aria/useOverlayPosition'
 import type { AriaPopoverProps, PopoverAria } from 'react-aria/usePopover'
 import { mergeProps } from 'react-aria/mergeProps'
+import { Overlay } from 'react-aria/Overlay'
 import {
   type OverlayTriggerState,
   useOverlayTriggerState,
@@ -21,7 +22,7 @@ import {
 } from 'react'
 import { type Element, Editor } from 'slate'
 
-import { Overlay, type PopoverProps } from '@keystar/ui/overlays'
+import type { PopoverProps } from '@keystar/ui/overlays'
 import { css, tokenSchema, transition } from '@keystar/ui/style'
 
 import { nodeTypeMatcher } from '../utils.ts'
@@ -89,8 +90,9 @@ export function BlockPopover(props: BlockPopoverProps) {
   const { state } = useBlockPopoverContext()
   let wrapperRef = useRef<HTMLDivElement>(null)
 
+  if (!state.isOpen) return null
   return (
-    <Overlay isOpen={state.isOpen} nodeRef={wrapperRef}>
+    <Overlay>
       <BlockPopoverWrapper wrapperRef={wrapperRef} {...props} />
     </Overlay>
   )

@@ -5,7 +5,7 @@ import { chevronRightIcon } from '@keystar/ui/icon/icons/chevronRightIcon'
 import { undo2Icon } from '@keystar/ui/icon/icons/undo2Icon'
 import { HStack } from '@keystar/ui/layout'
 import { Picker } from '@keystar/ui/picker'
-import { Item } from '@keystar/ui/tag'
+import { PickerItem } from '@keystar/ui/picker'
 import { Tooltip, TooltipTrigger } from '@keystar/ui/tooltip'
 import { Text } from '@keystar/ui/typography'
 import type { ReactNode } from 'react'
@@ -70,7 +70,7 @@ export function PaginationControls(props: {
             selectedKey={pageSize}
             width="scale.1000"
           >
-            {item => <Item>{item.label}</Item>}
+            {item => <PickerItem>{item.label}</PickerItem>}
           </Picker>
           {defaultPageSize !== undefined && pageSize !== defaultPageSize ? (
             <TooltipTrigger>
@@ -105,7 +105,7 @@ export function PaginationControls(props: {
             selectedKey={currentPage}
             width="scale.1000"
           >
-            {item => <Item>{item.label}</Item>}
+            {item => <PickerItem>{item.label}</PickerItem>}
           </Picker>
           <Text>of {lastPage} pages</Text>
         </HStack>

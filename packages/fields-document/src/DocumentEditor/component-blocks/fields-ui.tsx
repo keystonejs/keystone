@@ -2,14 +2,13 @@ import { useFilter } from 'react-aria/useFilter'
 import { useState } from 'react'
 
 import { sanitizeUrl } from '@braintree/sanitize-url'
-import { Combobox, Item as ComboboxItem } from '@keystar/ui/combobox'
+import { Combobox, ComboboxItem } from '@keystar/ui/combobox'
 import { VStack } from '@keystar/ui/layout'
 import { NumberField } from '@keystar/ui/number-field'
-import { Picker, Item as PickerItem } from '@keystar/ui/picker'
+import { Picker, PickerItem } from '@keystar/ui/picker'
 import { tokenSchema } from '@keystar/ui/style'
-import { TagGroup } from '@keystar/ui/tag'
+import { Tag, TagGroup, TagList } from '@keystar/ui/tag'
 import { TextField } from '@keystar/ui/text-field'
-import { Text } from '@keystar/ui/typography'
 
 import type { FormField } from './api-shared.ts'
 
@@ -125,7 +124,6 @@ export function makeMultiselectFieldInput({
           label={label}
           isReadOnly={onChange === undefined}
           items={filteredItems}
-          loadingState="idle"
           onInputChange={setFilterText}
           inputValue={filterText}
           // selectedKey={null}
@@ -140,19 +138,12 @@ export function makeMultiselectFieldInput({
 
         <TagGroup
           aria-label={`${label} selected items`}
-          items={value}
-          maxRows={2}
           onRemove={keys => {
             const key = keys.values().next().value
             onChange?.(value.filter(x => x !== key))
           }}
-          renderEmptyState={() => (
-            <Text color="neutralSecondary" size="small">
-              No items…
-            </Text>
-          )}
         >
-          {item => <ComboboxItem key={item}>{item}</ComboboxItem>}
+          <TagList items={value}>{item => <Tag id={item}>{item}</Tag>}</TagList>
         </TagGroup>
       </VStack>
     )

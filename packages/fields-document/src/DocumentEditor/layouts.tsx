@@ -19,7 +19,7 @@ import { css, tokenSchema } from '@keystar/ui/style'
 import { ActionGroup } from '@keystar/ui/action-group'
 import { ActionButton } from '@keystar/ui/button'
 import { Flex } from '@keystar/ui/layout'
-import { Item } from '@keystar/ui/tag'
+import { ActionGroupItem } from '@keystar/ui/action-group'
 import { TooltipTrigger, Tooltip } from '@keystar/ui/tooltip'
 import { EditorToolbarButton } from '@keystar/ui/editor'
 
@@ -66,7 +66,7 @@ export const LayoutContainer = ({
               selectedKeys={currentLayoutIndex !== -1 ? [currentLayoutIndex.toString()] : []}
             >
               {layoutOptions.map((layoutOption, i) => (
-                <Item key={i}>{makeLayoutIcon(layoutOption)}</Item>
+                <ActionGroupItem id={i}>{makeLayoutIcon(layoutOption)}</ActionGroupItem>
               ))}
             </ActionGroup>
             <TooltipTrigger>

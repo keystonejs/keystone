@@ -9,7 +9,7 @@ import { Field } from '@keystar/ui/field'
 import { Icon } from '@keystar/ui/icon'
 import { trash2Icon } from '@keystar/ui/icon/icons/trash2Icon'
 import { HStack, VStack } from '@keystar/ui/layout'
-import { Item, ListView } from '@keystar/ui/list-view'
+import { ListViewItem, ListView } from '@keystar/ui/list-view'
 import { Tooltip, TooltipTrigger } from '@keystar/ui/tooltip'
 import { Heading, Text } from '@keystar/ui/typography'
 
@@ -570,7 +570,7 @@ function ArrayFieldListView<Element extends ComponentSchema>(
       {item => {
         const label = props.schema.itemLabel?.(item) || `Item ${props.elements.indexOf(item) + 1}`
         return (
-          <Item key={item.key} textValue={label}>
+          <ListViewItem key={item.key} textValue={label}>
             <Text>{label}</Text>
             <TooltipTrigger placement="start">
               <ActionButton onPress={() => onRemoveKey(item.key)}>
@@ -578,7 +578,7 @@ function ArrayFieldListView<Element extends ComponentSchema>(
               </ActionButton>
               <Tooltip>Delete</Tooltip>
             </TooltipTrigger>
-          </Item>
+          </ListViewItem>
         )
       }}
     </ListView>

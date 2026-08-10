@@ -4,7 +4,7 @@ import { Fragment, useState } from 'react'
 import { DialogContainer } from '@keystar/ui/dialog'
 import { HStack, VStack } from '@keystar/ui/layout'
 import { TextLink } from '@keystar/ui/link'
-import { Item, TagGroup } from '@keystar/ui/tag'
+import { Tag, TagGroup, TagList } from '@keystar/ui/tag'
 import { TextField } from '@keystar/ui/text-field'
 import { Numeral, Text } from '@keystar/ui/typography'
 
@@ -118,13 +118,6 @@ export function Field(props: FieldProps<typeof controller>) {
         {value.kind === 'many' && (
           <TagGroup
             aria-label={`related ${foreignList.plural}`}
-            isRequired={isRequired}
-            items={value.value.map(item => ({
-              id: item.id.toString() ?? '',
-              label: item.label ?? '',
-              href: item.built ? '' : `/${foreignList.path}/${item.id}`,
-            }))}
-            maxRows={2}
             onRemove={
               isReadOnly
                 ? undefined
@@ -135,13 +128,16 @@ export function Field(props: FieldProps<typeof controller>) {
                     })
                   }
             }
-            renderEmptyState={() => (
-              <Text color="neutralSecondary" size="small">
-                No related {foreignList.plural.toLowerCase()}…
-              </Text>
-            )}
           >
-            {renderItem}
+            <TagList
+              items={value.value.map(item => ({
+                id: item.id.toString(),
+                label: item.label ?? '',
+                href: item.built ? '' : `/${foreignList.path}/${item.id}`,
+              }))}
+            >
+              {renderItem}
+            </TagList>
           </TagGroup>
         )}
       </VStack>
@@ -195,11 +191,11 @@ export function Field(props: FieldProps<typeof controller>) {
 // NOTE: fix for `TagGroup` perf issue, should typically be okay to just
 // inline the render function
 function renderItem(item: { id: string; href: string; label: string }) {
-  if (item.href === '') return <Item key={item.id}>{item.label}</Item>
+  if (item.href === '') return <Tag key={item.id}>{item.label}</Tag>
   return (
-    <Item key={item.id} href={item.href}>
+    <Tag key={item.id} href={item.href}>
       {item.label}
-    </Item>
+    </Tag>
   )
 }
 
@@ -435,22 +431,19 @@ export function controller(
             />
             <TagGroup
               aria-label={`related ${foreignList.plural}`}
-              items={value.map(item => ({
-                id: item.id.toString() ?? '',
-                label: item.label ?? '',
-                href: item.built ? '' : `/${foreignList.path}/${item.id}`,
-              }))}
-              maxRows={2}
               onRemove={keys => {
                 props.onChange(ids.filter(id => !keys.has(id)))
               }}
-              renderEmptyState={() => (
-                <Text color="neutralSecondary" size="small">
-                  Select related {foreignList.plural.toLowerCase()}…
-                </Text>
-              )}
             >
-              {renderItem}
+              <TagList
+                items={value.map(item => ({
+                  id: item.id.toString(),
+                  label: item.label ?? '',
+                  href: item.built ? '' : `/${foreignList.path}/${item.id}`,
+                }))}
+              >
+                {renderItem}
+              </TagList>
             </TagGroup>
           </VStack>
         )

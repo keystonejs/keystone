@@ -1,12 +1,10 @@
-import { useField } from 'react-aria/useField'
-
 import { type ActionGroupProps, ActionGroup } from '@keystar/ui/action-group'
-import { type FieldProps, FieldPrimitive } from '@keystar/ui/field'
+import { type FieldProps, Field } from '@keystar/ui/field'
 import { TextField } from '@keystar/ui/text-field'
 
 type Key = number | string // React.Key now includes bigint, which isn't supported by @react-aria
 
-type SegmentedControlProps<T> = FieldProps &
+type SegmentedControlProps<T extends object> = FieldProps &
   Pick<ActionGroupProps<T>, 'children' | 'items'> & {
     value: Key | null
     onChange: (value: Key) => void
@@ -14,7 +12,7 @@ type SegmentedControlProps<T> = FieldProps &
     textValue?: string
   }
 
-export function SegmentedControl<T>(props: SegmentedControlProps<T>) {
+export function SegmentedControl<T extends object>(props: SegmentedControlProps<T>) {
   const {
     children,
     isDisabled,
@@ -29,7 +27,6 @@ export function SegmentedControl<T>(props: SegmentedControlProps<T>) {
     textValue,
     ...otherProps
   } = props
-  const { labelProps, fieldProps, descriptionProps, errorMessageProps } = useField(props)
   const selectedKeys = value ? [value] : []
 
   // The `ActionGroup` isn’t really designed for use within forms, so we need to
@@ -49,35 +46,33 @@ export function SegmentedControl<T>(props: SegmentedControlProps<T>) {
   }
 
   return (
-    <FieldPrimitive
+    <Field
       description={description}
-      descriptionProps={descriptionProps}
       errorMessage={errorMessage}
-      errorMessageProps={errorMessageProps}
       isRequired={isRequired}
       label={label}
       labelElementType="span"
-      labelProps={labelProps}
       {...otherProps}
     >
-      <ActionGroup
-        {...fieldProps}
-        density="compact"
-        disallowEmptySelection
-        isDisabled={isDisabled}
-        overflowMode="collapse"
-        selectionMode="single"
-        items={items}
-        onSelectionChange={selection => {
-          if (selection === 'all') return // irrelevant for single-select
-          const next = selection.values().next().value
-          if (!next) return
-          onChange(next)
-        }}
-        selectedKeys={selectedKeys}
-      >
-        {children}
-      </ActionGroup>
-    </FieldPrimitive>
+      {fieldProps => (
+        <ActionGroup
+          {...fieldProps}
+          density="compact"
+          disallowEmptySelection
+          isDisabled={isDisabled}
+          overflowMode="collapse"
+          selectionMode="single"
+          items={items}
+          onSelectionChange={selection => {
+            const next = selection.values().next().value
+            if (!next) return
+            onChange(next)
+          }}
+          selectedKeys={selectedKeys}
+        >
+          {children}
+        </ActionGroup>
+      )}
+    </Field>
   )
 }

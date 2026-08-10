@@ -3,8 +3,8 @@ import type { HTMLAttributes, ReactNode } from 'react'
 import { Fragment, useMemo, useState } from 'react'
 import isDeepEqual from 'fast-deep-equal'
 
-import { ActionGroup } from '@keystar/ui/action-group'
-import { Breadcrumbs, Item } from '@keystar/ui/breadcrumbs'
+import { ActionGroup, ActionGroupItem } from '@keystar/ui/action-group'
+import { Breadcrumbs, BreadcrumbItem } from '@keystar/ui/breadcrumbs'
 import { AlertDialog, DialogContainer } from '@keystar/ui/dialog'
 import { Icon } from '@keystar/ui/icon'
 import { allIcons as KeystarIcons } from '@keystar/ui/icon/all'
@@ -66,8 +66,8 @@ export function ItemPageHeader({
       ) : (
         <>
           <Breadcrumbs size="medium" gridArea="primary">
-            <Item href={`/${list.path}`}>{list.label}</Item>
-            <Item href={router.asPath}>{label}</Item>
+            <BreadcrumbItem href={`/${list.path}`}>{list.label}</BreadcrumbItem>
+            <BreadcrumbItem href={router.asPath}>{label}</BreadcrumbItem>
           </Breadcrumbs>
 
           {/* Every page must have an H1 for accessibility. */}
@@ -225,10 +225,10 @@ function ItemActions({
         }}
       >
         {item => (
-          <Item textValue={item.label}>
+          <ActionGroupItem id={item.id} textValue={item.label}>
             {item.icon && <Icon src={item.icon} />}
             <Text>{item.label}</Text>
-          </Item>
+          </ActionGroupItem>
         )}
       </ActionGroup>
       <DialogContainer onDismiss={() => setActiveAction(null)}>

@@ -9,7 +9,7 @@ import { constructionIcon } from '@keystar/ui/icon/icons/constructionIcon'
 import { fileJson2Icon } from '@keystar/ui/icon/icons/fileJson2Icon'
 import { githubIcon } from '@keystar/ui/icon/icons/githubIcon'
 import { heartHandshakeIcon } from '@keystar/ui/icon/icons/heartHandshakeIcon'
-import { MenuTrigger, Menu, Item } from '@keystar/ui/menu'
+import { MenuTrigger, Menu, MenuItem } from '@keystar/ui/menu'
 import { Divider, HStack, VStack } from '@keystar/ui/layout'
 import {
   type NavListProps,
@@ -142,26 +142,26 @@ export function DeveloperResourcesMenu() {
             }
           }}
         >
-          <Item href={apiPath} textValue="API explorer">
+          <MenuItem href={apiPath} textValue="API explorer">
             <Icon src={fileJson2Icon} />
             <Text>API explorer</Text>
-          </Item>
-          <Item
+          </MenuItem>
+          <MenuItem
             target="_blank"
             href="https://github.com/keystonejs/keystone"
             textValue="GitHub repository"
           >
             <Icon src={githubIcon} />
             <Text>GitHub repository</Text>
-          </Item>
-          <Item target="_blank" href="https://keystonejs.com" textValue="Documentation">
+          </MenuItem>
+          <MenuItem target="_blank" href="https://keystonejs.com" textValue="Documentation">
             <Icon src={bookTextIcon} />
             <Text>Documentation</Text>
-          </Item>
-          <Item key="community" textValue="Community">
+          </MenuItem>
+          <MenuItem key="community" textValue="Community">
             <Icon src={heartHandshakeIcon} />
             <Text>Community</Text>
-          </Item>
+          </MenuItem>
         </Menu>
       </MenuTrigger>
       <DialogContainer onDismiss={() => setDialogIsOpen(false)}>

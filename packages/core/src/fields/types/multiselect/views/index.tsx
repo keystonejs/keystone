@@ -3,9 +3,9 @@ import { useFilter } from 'react-aria/useFilter'
 import { useListFormatter } from 'react-aria/useListFormatter'
 
 import { Checkbox, CheckboxGroup } from '@keystar/ui/checkbox'
-import { Combobox, Item } from '@keystar/ui/combobox'
+import { Combobox, ComboboxItem } from '@keystar/ui/combobox'
 import { VStack } from '@keystar/ui/layout'
-import { TagGroup } from '@keystar/ui/tag'
+import { Tag, TagGroup, TagList } from '@keystar/ui/tag'
 import { Text } from '@keystar/ui/typography'
 
 import type {
@@ -34,7 +34,6 @@ function SelectModeField(props: FieldProps<typeof controller>) {
         description={field.description}
         isReadOnly={onChange === undefined}
         items={filteredItems}
-        loadingState="idle"
         onInputChange={setFilterText}
         inputValue={filterText}
         // selectedKey={null}
@@ -44,24 +43,17 @@ function SelectModeField(props: FieldProps<typeof controller>) {
         }}
         width="auto"
       >
-        {item => <Item key={item.value}>{item.label}</Item>}
+        {item => <ComboboxItem key={item.value}>{item.label}</ComboboxItem>}
       </Combobox>
 
       <TagGroup
         aria-label={`${field.label} selected items`}
-        items={value}
-        maxRows={2}
         onRemove={keys => {
           const key = keys.values().next().value
           onChange?.(value.filter(x => x.value !== key))
         }}
-        renderEmptyState={() => (
-          <Text color="neutralSecondary" size="small">
-            No items…
-          </Text>
-        )}
       >
-        {item => <Item key={item.value}>{item.label}</Item>}
+        <TagList items={value}>{item => <Tag id={item.value}>{item.label}</Tag>}</TagList>
       </TagGroup>
     </VStack>
   )

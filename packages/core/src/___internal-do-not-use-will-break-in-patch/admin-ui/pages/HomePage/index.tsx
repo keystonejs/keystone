@@ -1,11 +1,11 @@
-import { type PropsWithChildren, useId, useMemo, useRef } from 'react'
+import { useId, useMemo } from 'react'
 
 import { ActionButton } from '@keystar/ui/button'
 import { Icon } from '@keystar/ui/icon'
 import { plusIcon } from '@keystar/ui/icon/icons/plusIcon'
 import { Grid, VStack } from '@keystar/ui/layout'
-import { useLink } from '@keystar/ui/link'
-import { css, FocusRing, tokenSchema, transition } from '@keystar/ui/style'
+import { Link } from '@keystar/ui/link'
+import { css, tokenSchema, transition } from '@keystar/ui/style'
 import { Tooltip, TooltipTrigger } from '@keystar/ui/tooltip'
 import { Heading, Text } from '@keystar/ui/typography'
 
@@ -133,51 +133,44 @@ function ListCard({
   )
 }
 
-function CardLink(props: PropsWithChildren<{ href: string }>) {
-  const ref = useRef<HTMLAnchorElement>(null)
-  const { isPressed, linkProps } = useLink(props, ref)
+function CardLink(props: { children: string; href: string; 'aria-describedby': string }) {
   return (
-    <FocusRing>
-      <a
-        ref={ref}
-        {...props}
-        {...linkProps}
-        data-pressed={isPressed}
-        className={css({
-          color: tokenSchema.color.foreground.neutral,
-          outline: 'none',
-          textDecoration: 'none',
+    <Link
+      {...props}
+      className={css({
+        color: tokenSchema.color.foreground.neutral,
+        outline: 'none',
+        textDecoration: 'none',
 
-          '&:hover': {
-            color: tokenSchema.color.foreground.neutralEmphasis,
+        '&:hover': {
+          color: tokenSchema.color.foreground.neutralEmphasis,
 
-            '::before': {
-              backgroundColor: tokenSchema.color.alias.backgroundIdle,
-              borderColor: tokenSchema.color.border.neutral,
-            },
+          '::before': {
+            backgroundColor: tokenSchema.color.alias.backgroundIdle,
+            borderColor: tokenSchema.color.border.neutral,
           },
-          '&[data-pressed=true]': {
-            '::before': {
-              backgroundColor: tokenSchema.color.alias.backgroundHovered,
-              borderColor: tokenSchema.color.alias.borderHovered,
-            },
+        },
+        '&:active': {
+          '::before': {
+            backgroundColor: tokenSchema.color.alias.backgroundHovered,
+            borderColor: tokenSchema.color.alias.borderHovered,
           },
-          '&[data-focus=visible]::before': {
-            outline: `${tokenSchema.size.alias.focusRing} solid ${tokenSchema.color.alias.focusRing}`,
-            outlineOffset: tokenSchema.size.alias.focusRingGap,
-          },
+        },
+        '&:focus-visible::before': {
+          outline: `${tokenSchema.size.alias.focusRing} solid ${tokenSchema.color.alias.focusRing}`,
+          outlineOffset: tokenSchema.size.alias.focusRingGap,
+        },
 
-          // fill available space so the entire card is clickable
-          '&::before': {
-            border: `${tokenSchema.size.border.regular} solid ${tokenSchema.color.border.muted}`,
-            borderRadius: tokenSchema.size.radius.medium,
-            content: '""',
-            position: 'absolute',
-            inset: 0,
-            transition: transition(['background-color', 'border-color']),
-          },
-        })}
-      />
-    </FocusRing>
+        // fill available space so the entire card is clickable
+        '&::before': {
+          border: `${tokenSchema.size.border.regular} solid ${tokenSchema.color.border.muted}`,
+          borderRadius: tokenSchema.size.radius.medium,
+          content: '""',
+          position: 'absolute',
+          inset: 0,
+          transition: transition(['background-color', 'border-color']),
+        },
+      })}
+    ></Link>
   )
 }

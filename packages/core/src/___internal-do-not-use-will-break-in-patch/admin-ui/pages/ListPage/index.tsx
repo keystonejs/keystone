@@ -4,7 +4,7 @@ import { useRouter } from '../../../../admin-ui/router.tsx'
 import type { ParsedUrlQuery, ParsedUrlQueryInput } from 'querystring'
 import { type FormEvent, type Key, Fragment, useEffect, useId, useMemo, useState } from 'react'
 
-import { ActionBar, ActionBarContainer, Item } from '@keystar/ui/action-bar'
+import { ActionBar, ActionBarContainer, ActionBarItem } from '@keystar/ui/action-bar'
 import { ActionButton, Button, ButtonGroup } from '@keystar/ui/button'
 import { Dialog, DialogContainer, DialogTrigger } from '@keystar/ui/dialog'
 import { Icon } from '@keystar/ui/icon'
@@ -14,7 +14,7 @@ import { searchXIcon } from '@keystar/ui/icon/icons/searchXIcon'
 import { textSelectIcon } from '@keystar/ui/icon/icons/textSelectIcon'
 import { undo2Icon } from '@keystar/ui/icon/icons/undo2Icon'
 import { Box, Flex, HStack, VStack } from '@keystar/ui/layout'
-import { Menu, MenuTrigger } from '@keystar/ui/menu'
+import { Menu, MenuItem, MenuTrigger } from '@keystar/ui/menu'
 import { ProgressCircle } from '@keystar/ui/progress'
 import { SearchField } from '@keystar/ui/search-field'
 import { Content } from '@keystar/ui/slots'
@@ -584,7 +584,7 @@ function ListPage({ listKey }: ListPageProps) {
               selectionMode="multiple"
               selectedKeys={columns}
             >
-              {item => <Item key={item.value}>{item.label}</Item>}
+              {item => <MenuItem key={item.value}>{item.label}</MenuItem>}
             </Menu>
           </MenuTrigger>
           {dirty ? (
@@ -636,23 +636,6 @@ function ListPage({ listKey }: ListPageProps) {
             overflowMode="truncate"
             onSelectionChange={setSelectedItems}
             selectedKeys={selectedItems}
-            renderEmptyState={() =>
-              loading ? (
-                <ProgressCircle aria-label="Preparing items" isIndeterminate />
-              ) : isConstrained ? (
-                <EmptyState
-                  icon={searchXIcon}
-                  title="No results"
-                  message="No items found. Try adjusting your search or filters."
-                />
-              ) : (
-                <EmptyState
-                  icon={textSelectIcon}
-                  title="Empty list"
-                  message="Add the first item to see it here."
-                />
-              )
-            }
             flex
             UNSAFE_style={{
               opacity: loading && !!data ? 0.5 : undefined,
@@ -665,13 +648,32 @@ function ListPage({ listKey }: ListPageProps) {
                 </Column>
               )}
             </TableHeader>
-            <TableBody items={data?.items ?? []}>
+            <TableBody
+              items={data?.items ?? []}
+              renderEmptyState={() =>
+                loading ? (
+                  <ProgressCircle aria-label="Preparing items" isIndeterminate />
+                ) : isConstrained ? (
+                  <EmptyState
+                    icon={searchXIcon}
+                    title="No results"
+                    message="No items found. Try adjusting your search or filters."
+                  />
+                ) : (
+                  <EmptyState
+                    icon={textSelectIcon}
+                    title="Empty list"
+                    message="Add the first item to see it here."
+                  />
+                )
+              }
+            >
               {row => {
                 return (
                   <Row href={`/${list.path}/${row?.id}`}>
                     {key => {
-                      const field = list.fields[key]
-                      const value = row[key]
+                      const field = list.fields[key as string]
+                      const value = row[key as string]
                       const CellContent = field.views.Cell
                       return (
                         <Cell>
@@ -710,10 +712,10 @@ function ListPage({ listKey }: ListPageProps) {
                 for (const action of actions) {
                   const iconComponent = action.icon ? KeystarIcons[action.icon] : null
                   yield (
-                    <Item key={action.key} textValue={action.label}>
+                    <ActionBarItem id={action.key} textValue={action.label}>
                       {iconComponent ? <Icon src={iconComponent} /> : null}
                       <Text>{action.label}</Text>
-                    </Item>
+                    </ActionBarItem>
                   )
                 }
               })(),

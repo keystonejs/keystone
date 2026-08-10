@@ -121,19 +121,6 @@ export function RelationshipTable({
             density="compact"
             UNSAFE_style={{ minHeight: 29 * 10, maxHeight: 29 * 10 }}
             overflowMode="truncate"
-            renderEmptyState={() =>
-              loading ? (
-                <ProgressCircle isIndeterminate />
-              ) : error ? (
-                <GraphQLErrorNotice errors={[error]} />
-              ) : (
-                <EmptyState
-                  icon={textSelectIcon}
-                  title="Empty related items"
-                  message="There are no related items."
-                />
-              )
-            }
             flex
           >
             <TableHeader columns={columns}>
@@ -143,13 +130,28 @@ export function RelationshipTable({
                 </Column>
               )}
             </TableHeader>
-            <TableBody items={items}>
+            <TableBody
+              items={items}
+              renderEmptyState={() =>
+                loading ? (
+                  <ProgressCircle isIndeterminate />
+                ) : error ? (
+                  <GraphQLErrorNotice errors={[error]} />
+                ) : (
+                  <EmptyState
+                    icon={textSelectIcon}
+                    title="Empty related items"
+                    message="There are no related items."
+                  />
+                )
+              }
+            >
               {row => {
                 return (
                   <Row href={`/${list.path}/${row?.id}`}>
                     {key => {
-                      const field = list.fields[key]
-                      const value = row[key]
+                      const field = list.fields[key as string]
+                      const value = row[key as string]
                       const CellContent = field.views.Cell
                       return (
                         <Cell>

@@ -31,9 +31,10 @@ catalog:
   react: ^19.2.4
   react-dom: ^19.2.4
   typescript: ^6.0.0
-  '@keystar/ui': 0.9.2
-  react-aria: 3.50.0
-  react-stately: 3.48.0
+  '@keystar/ui': https://pkg.pr.new/@keystar/ui@61e8781
+  react-aria: 3.51.0
+  react-stately: 3.49.0
+  react-aria-components: 1.20.0
 allowBuilds:
   '@apollo/protobufjs': true
   '@parcel/watcher': true
