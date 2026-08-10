@@ -2,13 +2,14 @@
   "name": "@keystone-6/example-script",
   "version": null,
   "private": true,
+  "type": "module",
   "license": "MIT",
   "scripts": {
     "dev": "keystone dev",
     "start": "keystone start",
     "build": "keystone build",
     "check": "keystone postinstall",
-    "go": "tsx script.ts"
+    "go": "node script.ts"
   },
   "dependencies": {
     "@keystone-6/core": "workspace:^",
@@ -21,7 +22,6 @@
   },
   "devDependencies": {
     "prisma": "catalog:",
-    "tsx": "^4.0.0",
     "typescript": "catalog:"
   }
 }

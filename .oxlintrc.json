@@ -23,6 +23,12 @@
       "rules": {
         "esm-imports/node-esm-imports": "off"
       }
+    },
+    {
+      "files": ["examples/script/**/*"],
+      "rules": {
+        "esm-imports/node-esm-imports": "error"
+      }
     }
   ],
   "ignorePatterns": ["tests/test-projects/live-reloading/schemas/syntax-error.js"]

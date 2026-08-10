@@ -14,8 +14,8 @@ Using the `getContext` function does not use the typical Keystone entry point - 
 
 ```typescript
 import { getContext } from '@keystone-6/core/context'
-import config from './keystone'
-import * as PrismaModule from './generated/prisma/client'
+import config from './keystone.ts'
+import * as PrismaModule from './generated/prisma/client.ts'
 
 const context = getContext(config, PrismaModule)
 
@@ -23,7 +23,7 @@ const context = getContext(config, PrismaModule)
 ```
 
 {% hint kind="tip" %}
-For inspiration, see [the script example project](https://github.com/keystonejs/keystone/tree/main/examples/script), and how we use [`tsx`](https://github.com/esbuild-kit/tsx) to seed the database with some data.
+For inspiration, see [the script example project](https://github.com/keystonejs/keystone/tree/main/examples/script), which uses Node.js's built-in TypeScript support to seed the database with some data. Running the example requires Node.js 22.18 or newer and `"allowImportingTsExtensions": true` in your `tsconfig.json. You can also use tools like [tsx](https://github.com/esbuild-kit/tsx) if you don't want to use imports with extensions that Node's built-in TypeScript support requires or you want to use syntax that Node's built-in TypeScript support doesn't support.
 {% /hint %}
 
 A context created in this way does not have an implicit `session`, nor is it a `sudo()` context.
