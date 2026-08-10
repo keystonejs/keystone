@@ -52,7 +52,6 @@
     "@braintree/sanitize-url": "7.1.2",
     "@emotion/weak-memoize": "^0.4.0",
     "@keystar/ui": "catalog:",
-    "@keystone-6/document-renderer": "workspace:^",
     "graphql": "catalog:",
     "is-hotkey": "^0.2.0",
     "match-sorter": "^8.0.0",
