@@ -1,5 +1,15 @@
 # @keystone-6/core
 
+## 8.0.3
+
+### Patch Changes
+
+- [#9976](https://github.com/keystonejs/keystone/pull/9976) [`2a81e18`](https://github.com/keystonejs/keystone/commit/2a81e18571647ce3e56328e7cc7dfbd6d0a67d91) Thanks [@emmatown](https://github.com/emmatown)! - Adds support for Keystone projects using `"type": "module"` in their `package.json` by generating an empty `package.json` in `.keystone` so Node continues inferring module types in `.keystone`
+
+- [#9983](https://github.com/keystonejs/keystone/pull/9983) [`748db8e`](https://github.com/keystonejs/keystone/commit/748db8e4dfd7935bfb5d29ef2d431b6729fe897a) Thanks [@emmatown](https://github.com/emmatown)! - Fixes `Cell` components in custom views on fields not being used
+
+- [#9980](https://github.com/keystonejs/keystone/pull/9980) [`30035a3`](https://github.com/keystonejs/keystone/commit/30035a38adfe0b4e16bc64cf8f75aca2751d4259) Thanks [@emmatown](https://github.com/emmatown)! - Allows `item`, `filter`, and `order` to be omitted from field `graphql.omit.read` objects.
+
 ## 8.0.2
 
 ### Patch Changes
