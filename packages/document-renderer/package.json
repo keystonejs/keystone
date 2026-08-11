@@ -8,6 +8,9 @@
     ".": "./dist/keystone-6-document-renderer.js",
     "./package.json": "./package.json"
   },
+  "files": [
+    "dist"
+  ],
   "peerDependencies": {
     "react": "^16.14.0 || 17 || 18 || 19"
   },

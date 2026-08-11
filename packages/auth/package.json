@@ -9,6 +9,9 @@
     "./components/Navigation": "./dist/keystone-6-auth-components-Navigation.js",
     "./package.json": "./package.json"
   },
+  "files": [
+    "dist"
+  ],
   "dependencies": {
     "@babel/runtime": "^7.24.7",
     "@keystar/ui": "catalog:",

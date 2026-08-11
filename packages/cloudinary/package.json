@@ -8,6 +8,9 @@
     "./views": "./dist/keystone-6-cloudinary-views.js",
     "./package.json": "./package.json"
   },
+  "files": [
+    "dist"
+  ],
   "dependencies": {
     "@babel/runtime": "^7.24.7",
     "@keystar/ui": "catalog:",
