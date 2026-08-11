@@ -14,4 +14,4 @@ jobs:
       - name: Build
         run: pnpm build
 
-      - run: pnpm dlx pkg-pr-new publish --comment=off './packages/*'
+      - run: pnpm dlx pkg-pr-new publish --pnpm --comment=off './packages/*'
