@@ -57,6 +57,11 @@
   "bin": {
     "keystone": "bin/cli.js"
   },
+  "files": [
+    "bin",
+    "dist",
+    "static"
+  ],
   "dependencies": {
     "@apollo/cache-control-types": "^1.0.3",
     "@apollo/client": "^4.1.6",
