@@ -129,10 +129,8 @@ function SigninPage({
               id="password"
               isRequired
               label={capitalizeFirstLetter(secretField)}
-              // @ts-expect-error — valid prop, types need to be fixed in "@keystar/ui"
               name="password"
               onChange={v => setState({ ...state, secret: v })}
-              type="password"
               value={state.secret}
             />
           </VStack>

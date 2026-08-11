@@ -1,5 +1,5 @@
 'use client'
-import { ActionGroup, Item } from '@keystar/ui/action-group'
+import { ActionGroup, ActionGroupItem } from '@keystar/ui/action-group'
 import { ActionButton } from '@keystar/ui/button'
 import { Tooltip, TooltipTrigger } from '@keystar/ui/tooltip'
 import { Text } from '@keystar/ui/typography'
@@ -92,10 +92,10 @@ export function CalloutToolbar(props: {
         items={props.tones}
       >
         {item => (
-          <Item key={item.value} textValue={item.label}>
+          <ActionGroupItem id={item.value} textValue={item.label}>
             <Icon src={toneToIcon[item.value]} />
             <Text>{item.label}</Text>
-          </Item>
+          </ActionGroupItem>
         )}
       </ActionGroup>
       <Divider orientation="vertical" />

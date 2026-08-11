@@ -4,7 +4,7 @@ import { Icon } from '@keystar/ui/icon'
 import { arrowUpRightIcon } from '@keystar/ui/icon/icons/arrowUpRightIcon'
 import { plusIcon } from '@keystar/ui/icon/icons/plusIcon'
 import { Grid } from '@keystar/ui/layout'
-import { ActionMenu, Item } from '@keystar/ui/menu'
+import { ActionMenu, MenuItem } from '@keystar/ui/menu'
 import { Text } from '@keystar/ui/typography'
 
 import { useList } from '../../../../admin-ui/context.tsx'
@@ -88,10 +88,10 @@ function ContextualActionsMenu(props: RelationshipProps) {
       onAction={onAction}
     >
       {item => (
-        <Item key={item.key} href={item.href ?? undefined} textValue={item.label}>
+        <MenuItem key={item.key} href={item.href ?? undefined} textValue={item.label}>
           <Icon src={item.icon} />
           <Text>{item.label}</Text>
-        </Item>
+        </MenuItem>
       )}
     </ActionMenu>
   )

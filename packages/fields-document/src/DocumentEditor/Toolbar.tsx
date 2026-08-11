@@ -29,7 +29,9 @@ import { ActionGroup } from '@keystar/ui/action-group'
 import { ActionButton } from '@keystar/ui/button'
 import { Flex } from '@keystar/ui/layout'
 import { Menu, MenuTrigger } from '@keystar/ui/menu'
-import { Item, Picker } from '@keystar/ui/picker'
+import { PickerItem, Picker } from '@keystar/ui/picker'
+import { MenuItem } from '@keystar/ui/menu'
+import { ActionGroupItem } from '@keystar/ui/action-group'
 import { Tooltip, TooltipTrigger } from '@keystar/ui/tooltip'
 import { ReactEditor, useSlateStatic } from 'slate-react'
 import type { DocumentFeatures } from '../views-shared.ts'
@@ -187,7 +189,7 @@ const HeadingMenu = ({
           ReactEditor.focus(editor)
         }}
       >
-        {item => <Item key={item.id}>{item.name}</Item>}
+        {item => <PickerItem key={item.id}>{item.name}</PickerItem>}
       </Picker>
     ),
     [editor, isDisabled, items, selected]
@@ -216,7 +218,7 @@ function InsertBlockMenu() {
         }}
         items={Object.entries(componentBlocks)}
       >
-        {([key, item]) => <Item key={key}>{item.label}</Item>}
+        {([key, item]) => <MenuItem id={key}>{item.label}</MenuItem>}
       </Menu>
     </MenuTrigger>
   )
@@ -321,11 +323,11 @@ function InlineMarks({
       >
         {item => {
           return (
-            <Item key={item.key} textValue={item.label}>
+            <ActionGroupItem id={item.key} textValue={item.label}>
               <Text>{item.label}</Text>
               {'shortcut' in item && <Kbd meta>{item.shortcut}</Kbd>}
               <Icon src={item.icon} />
-            </Item>
+            </ActionGroupItem>
           )
         }}
       </ActionGroup>

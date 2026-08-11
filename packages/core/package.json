@@ -72,7 +72,7 @@
     "@graphql-ts/schema": "^1.0.0",
     "@graphql-typed-document-node/core": "^3.1.2",
     "@hapi/iron": "^7.0.0",
-    "@internationalized/date": "^3.12.2",
+    "@internationalized/date": "^3.12.3",
     "@keystar/ui": "catalog:",
     "@nodelib/fs.walk": "^3.0.0",
     "@opentelemetry/api": "^1.9.0",
@@ -97,6 +97,7 @@
     "meow": "^14.1.0",
     "pluralize": "^8.0.0",
     "react-aria": "catalog:",
+    "react-aria-components": "catalog:",
     "react-stately": "catalog:"
   },
   "peerDependencies": {

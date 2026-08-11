@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-import { Combobox, Item } from '@keystar/ui/combobox'
+import { Combobox, ComboboxItem } from '@keystar/ui/combobox'
 import { css } from '@keystar/ui/style'
 
 import type { ListMeta, ListSortDescriptor } from '../../../../types/index.ts'
@@ -39,7 +39,7 @@ export function ComboboxSingle({
     onChange(value: RelationshipValue | null): void
   }
 }) {
-  const { data, loading, error, onLoadMore, search, setSearch } = useApolloQuery({
+  const { data, error, search, setSearch } = useApolloQuery({
     labelField,
     list,
     searchFields,
@@ -78,7 +78,6 @@ export function ComboboxSingle({
       {...props}
       isRequired={isRequired}
       items={items}
-      loadingState={loading || isLoading ? 'loading' : 'idle'}
       errorMessage={
         !!validationMessages.length && (shouldShowErrors || forceValidation)
           ? validationMessages.join('. ')
@@ -94,7 +93,6 @@ export function ComboboxSingle({
         if (input === '') state.onChange(null)
       }}
       inputValue={search}
-      onLoadMore={onLoadMore}
       value={state.value ? state.value.id.toString() : null}
       onChange={key => {
         const selectedItem = items.find(item => item.id.toString() === key) ?? null
@@ -109,7 +107,7 @@ export function ComboboxSingle({
         '[role="button"]': { width: 'auto' },
       })}
     >
-      {item => <Item key={item.id}>{item.label || item.id}</Item>}
+      {item => <ComboboxItem key={item.id}>{item.label || item.id}</ComboboxItem>}
     </Combobox>
   )
 }

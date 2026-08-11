@@ -4,7 +4,7 @@ import { type Key, useMemo, useState } from 'react'
 import { FieldLabel } from '@keystar/ui/field'
 import { VStack } from '@keystar/ui/layout'
 import { ListView } from '@keystar/ui/list-view'
-import { Item, Picker } from '@keystar/ui/picker'
+import { PickerItem, Picker } from '@keystar/ui/picker'
 import { Radio, RadioGroup } from '@keystar/ui/radio'
 import { tokenSchema } from '@keystar/ui/style'
 import { Text } from '@keystar/ui/typography'
@@ -84,7 +84,7 @@ export function Field(props: FieldProps<typeof controller>) {
             value={selectedKey}
             textValue={field.options.find(item => item.value === selectedKey)?.label || ''}
           >
-            {item => <Item key={item.value}>{item.label}</Item>}
+            {item => <PickerItem key={item.value}>{item.label}</PickerItem>}
           </SegmentedControl>
         )
       case 'radio':
@@ -127,7 +127,7 @@ export function Field(props: FieldProps<typeof controller>) {
               width: `clamp(${tokenSchema.size.alias.singleLineWidth}, calc(${longestLabelLength}ex + ${tokenSchema.size.icon.regular}), 100%)`,
             }}
           >
-            {item => <Item key={item.value}>{item.label}</Item>}
+            {item => <PickerItem key={item.value}>{item.label}</PickerItem>}
           </Picker>
         )
     }
@@ -257,7 +257,7 @@ export function controller(config: Config): FieldController<
             selectedKeys={value}
             {...otherProps}
           >
-            {item => <Item key={item.value}>{item.label}</Item>}
+            {item => <PickerItem key={item.value}>{item.label}</PickerItem>}
           </ListView>
         )
 
