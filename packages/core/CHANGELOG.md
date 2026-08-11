@@ -1,5 +1,15 @@
 # @keystone-6/core
 
+## 8.0.4
+
+### Patch Changes
+
+- [#9992](https://github.com/keystonejs/keystone/pull/9992) [`b47867b`](https://github.com/keystonejs/keystone/commit/b47867b28b1bc26e2cef1d5b04fb978f65be7224) Thanks [@emmatown](https://github.com/emmatown)! - Updates `@keystar/ui` to `0.9.3`
+
+- [#9991](https://github.com/keystonejs/keystone/pull/9991) [`07b9f7c`](https://github.com/keystonejs/keystone/commit/07b9f7c3c670deb189487568ca502380b57a4b66) Thanks [@emmatown](https://github.com/emmatown)! - Removes declaration maps and `src` from published package
+
+- [#9990](https://github.com/keystonejs/keystone/pull/9990) [`fbfb17a`](https://github.com/keystonejs/keystone/commit/fbfb17abb16a53cf5e89a889ca21d9d88a5fd16d) Thanks [@emmatown](https://github.com/emmatown)! - Fixes "Is not one of" filter UI for relationship fields
+
 ## 8.0.3
 
 ### Patch Changes

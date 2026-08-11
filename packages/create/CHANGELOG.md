@@ -1,5 +1,11 @@
 # create-keystone-app
 
+## 11.0.2
+
+### Patch Changes
+
+- [#9991](https://github.com/keystonejs/keystone/pull/9991) [`07b9f7c`](https://github.com/keystonejs/keystone/commit/07b9f7c3c670deb189487568ca502380b57a4b66) Thanks [@emmatown](https://github.com/emmatown)! - Removes declaration maps and `src` from published package
+
 ## 11.0.1
 
 ### Patch Changes
