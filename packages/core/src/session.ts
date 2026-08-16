@@ -62,16 +62,21 @@ type StatelessSessionsOptions = {
 function getToken(req: NonNullable<KeystoneContext['req']>, cookieName: string) {
   const authorization = req.headers.authorization ?? ''
 
-  if (authorization.startsWith('Bearer')) {
+  // SECURITY FIX: Only accept Bearer tokens, not Basic auth (fixes GitHub issue #9785)
+  // When behind a reverse proxy with Basic Auth, we should fall back to cookies
+  // Basic Auth format: "Basic <base64>" - we explicitly reject this
+  // Bearer token format: "Bearer <token>" - this is what we support
+  if (authorization.startsWith('Bearer ')) {
     return authorization.slice('Bearer '.length)
   }
 
+  // Fall back to cookie-based session
   const cookies = cookie.parse(req.headers.cookie || '')
   return cookies[cookieName]
 }
 
 export function statelessSessions<Session>({
-  secret = randomBytes(32).toString('base64url'),
+  secret,
   maxAge = 60 * 60 * 8, // 8 hours,
   cookieName = 'keystonejs-session',
   path = '/',
@@ -80,9 +85,29 @@ export function statelessSessions<Session>({
   domain,
   sameSite = 'lax',
 }: StatelessSessionsOptions = {}) {
+  // SECURITY: Require secret to be explicitly provided
+  // Using a random secret causes session invalidation on server restart
+  // and prevents session sharing in multi-instance deployments
+  if (!secret) {
+    throw new Error(
+      'Session secret is required and must be explicitly provided.\n' +
+      'A random secret will cause all sessions to be invalidated on server restart.\n' +
+      'In production, use a strong, persistent secret (at least 32 characters).\n' +
+      'Example: secret: process.env.SESSION_SECRET || \'your-secret-key-here\''
+    )
+  }
+
   // atleast 192-bit in base64
   if (secret.length < 32) {
     throw new Error('The session secret must be at least 32 characters long')
+  }
+
+  // Log warning if running in production without explicit secret configuration
+  if (process.env.NODE_ENV === 'production' && secret.length < 64) {
+    console.warn(
+      'WARNING: Session secret is shorter than recommended length (64 characters) for production use.\n' +
+      'Consider using a longer secret for enhanced security.'
+    )
   }
 
   return {

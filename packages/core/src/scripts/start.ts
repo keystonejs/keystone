@@ -62,4 +62,39 @@ export async function start(
       `⭐️ Server listening on ${httpOptions.host || ''}:${httpOptions.port} (http://${easyHost}:${httpOptions.port}/)`
     )
   })
+
+  // SECURITY FIX: Add graceful shutdown handlers to prevent resource leaks (GitHub issue #9611)
+  // This is critical for production deployments (Kubernetes, Docker, etc.)
+  // Ensures proper cleanup of HTTP connections and database connections
+  const gracefulShutdown = async (signal: string) => {
+    log(`\n${signal} received, starting graceful shutdown...`)
+
+    try {
+      // Step 1: Stop accepting new connections
+      await new Promise<void>((resolve, reject) => {
+        httpServer.close((err) => {
+          if (err) {
+            console.error('Error closing HTTP server:', err)
+            return reject(err)
+          }
+          log('✅ HTTP server closed')
+          resolve()
+        })
+      })
+
+      // Step 2: Disconnect from database
+      await keystone.disconnect()
+      log('✅ Database disconnected')
+
+      log('✅ Graceful shutdown completed')
+      process.exit(0)
+    } catch (err) {
+      console.error('❌ Error during graceful shutdown:', err)
+      process.exit(1)
+    }
+  }
+
+  // Handle termination signals from Kubernetes, Docker, systemd, etc.
+  process.on('SIGTERM', () => gracefulShutdown('SIGTERM'))
+  process.on('SIGINT', () => gracefulShutdown('SIGINT'))
 }

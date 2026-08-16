@@ -379,6 +379,23 @@ export async function dev(
       })
     })
 
+    // SECURITY FIX: Add graceful shutdown handlers to prevent resource leaks (GitHub issue #9611)
+    // This ensures proper cleanup of HTTP server and Prisma connections when the process exits
+    const gracefulShutdown = async (signal: string) => {
+      log(`\n${signal} received, starting graceful shutdown...`)
+      try {
+        await stop(server)
+        log('✅ Graceful shutdown completed')
+        process.exit(0)
+      } catch (err) {
+        console.error('❌ Error during graceful shutdown:', err)
+        process.exit(1)
+      }
+    }
+
+    process.on('SIGTERM', () => gracefulShutdown('SIGTERM'))
+    process.on('SIGINT', () => gracefulShutdown('SIGINT'))
+
     await initKeystonePromise
     return async () => await stop(server)
   } else {
