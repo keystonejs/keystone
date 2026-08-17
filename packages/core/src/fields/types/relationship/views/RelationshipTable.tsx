@@ -123,7 +123,7 @@ export function RelationshipTable({
             overflowMode="truncate"
             renderEmptyState={() =>
               loading ? (
-                <ProgressCircle isIndeterminate />
+                <ProgressCircle isIndeterminate aria-label={`Loading ${list.plural}`} />
               ) : error ? (
                 <GraphQLErrorNotice errors={[error]} />
               ) : (
