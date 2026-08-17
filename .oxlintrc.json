@@ -25,7 +25,7 @@
       }
     },
     {
-      "files": ["examples/script/**/*"],
+      "files": ["examples/script/**/*", "examples/graphql-gql.tada-persisted-queries/**/*"],
       "rules": {
         "esm-imports/node-esm-imports": "error"
       }

@@ -1,0 +1,34 @@
+{
+  "compilerOptions": {
+    "allowImportingTsExtensions": true,
+    "declaration": true,
+    "declarationMap": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "isolatedModules": true,
+    "jsx": "react",
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
+    "noEmit": true,
+    "noUnusedLocals": true,
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "target": "esnext",
+    "plugins": [
+      {
+        "name": "gql.tada/ts-plugin",
+        "schemas": [
+          {
+            "name": "keystone",
+            "schema": "./schema.graphql",
+            "tadaOutputLocation": "./tada.generated.d.ts",
+            "tadaPersistedLocation": "./persisted-queries.json"
+          }
+        ]
+      }
+    ]
+  },
+  "include": ["**/*"],
+  "exclude": ["**/node_modules/**/*"]
+}
