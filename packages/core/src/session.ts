@@ -62,7 +62,7 @@ type StatelessSessionsOptions = {
 function getToken(req: NonNullable<KeystoneContext['req']>, cookieName: string) {
   const authorization = req.headers.authorization ?? ''
 
-  if (authorization.startsWith('Bearer')) {
+  if (authorization.startsWith('Bearer ')) {
     return authorization.slice('Bearer '.length)
   }
 
