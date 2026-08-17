@@ -173,6 +173,51 @@ describe('Auth testing', () => {
     )
 
     test(
+      'Uses the cookie when the authorization header is not a valid Bearer scheme',
+      runner(async ({ context, gqlSuper }) => {
+        await seed(context, initialData)
+        const { sessionToken } = await login(
+          gqlSuper,
+          initialData.User[0].email,
+          initialData.User[0].password
+        )
+
+        expect(sessionToken).toBeTruthy()
+
+        const { body } = await gqlSuper({ query: '{ users { id } }' })
+          .set('Authorization', 'BearerXXX')
+          .set('Cookie', `keystonejs-session=${sessionToken}`)
+        const { data, errors } = body
+        expect(data).toHaveProperty('users')
+        expect(data.users).toHaveLength(initialData.User.length)
+        expect(errors).toBe(undefined)
+      })
+    )
+
+    test(
+      'Rejects a valid token that is not separated from Bearer by a space',
+      runner(async ({ context, gqlSuper }) => {
+        await seed(context, initialData)
+        const { sessionToken } = await login(
+          gqlSuper,
+          initialData.User[0].email,
+          initialData.User[0].password
+        )
+
+        expect(sessionToken).toBeTruthy()
+
+        const { body } = await gqlSuper({ query: '{ users { id } }' }).set(
+          'Authorization',
+          `Bearerx${sessionToken}`
+        )
+        const { data, errors } = body
+        expect(data).toHaveProperty('users')
+        expect(data.users).toHaveLength(0) // not a valid Bearer scheme
+        expect(errors).toBe(undefined)
+      })
+    )
+
+    test(
       'Invalid session receives nothing',
       runner(async ({ context, gqlSuper }) => {
         await seed(context, initialData)
