@@ -208,7 +208,7 @@ describe('Auth testing', () => {
 
         const { body } = await gqlSuper({ query: '{ users { id } }' }).set(
           'Authorization',
-          `Bearer${sessionToken}`
+          `Bearerx${sessionToken}`
         )
         const { data, errors } = body
         expect(data).toHaveProperty('users')
