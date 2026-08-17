@@ -35,7 +35,7 @@ export function useSearchFilter(value: string, list: ListMeta, searchFields: str
     if (idField.type === 'String') {
       // TODO: remove in breaking change?
       if (idField.kind === 'uuid') {
-        if (isUuid(value)) {
+        if (isUuid(trimmedSearch)) {
           conditions.push({ id: { equals: trimmedSearch } })
         }
       } else {
