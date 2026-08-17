@@ -823,9 +823,11 @@ function getListsWithInitialisedFields(
                 'edit')
               : isEnabledField.read
                 ? (f.ui?.itemView?.fieldMode ??
-                  group?.fieldDefaults?.ui?.itemView?.fieldMode ??
-                  listConfig.fieldDefaults?.ui?.itemView?.fieldMode ??
-                  'read')
+                    group?.fieldDefaults?.ui?.itemView?.fieldMode ??
+                    listConfig.fieldDefaults?.ui?.itemView?.fieldMode ??
+                    'read') === 'hidden'
+                  ? 'hidden'
+                  : 'read'
                 : 'hidden',
           },
 

@@ -488,3 +488,62 @@ test(
     })
   })
 )
+
+const omitUpdateRunner = setupTestRunner({
+  config: {
+    lists: {
+      User: list({
+        access: allowAll,
+        fields: {
+          name: text({
+            graphql: { omit: { update: true } },
+            ui: { itemView: { fieldMode: 'edit' } },
+          }),
+        },
+      }),
+    },
+  },
+})
+
+test(
+  'graphql.omit.update forces itemView.fieldMode to read even if edit is configured',
+  omitUpdateRunner(async ({ context }) => {
+    const data = await context.sudo().graphql.run({
+      query: gql`
+        query {
+          keystone {
+            adminMeta {
+              list(key: "User") {
+                fields {
+                  key
+                  itemView {
+                    fieldMode
+                  }
+                }
+              }
+            }
+          }
+        }
+      `,
+    })
+
+    expect(data).toEqual({
+      keystone: {
+        adminMeta: {
+          list: {
+            fields: [
+              {
+                key: 'id',
+                itemView: { fieldMode: 'read' },
+              },
+              {
+                key: 'name',
+                itemView: { fieldMode: 'read' },
+              },
+            ],
+          },
+        },
+      },
+    })
+  })
+)
