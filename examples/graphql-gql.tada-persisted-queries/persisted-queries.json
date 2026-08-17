@@ -1,0 +1,4 @@
+{
+  "7071ab8c8e86577597dd37576045dbf7ec4a7a64b4699fcfd9b553b97b718b4e": "query PublicPosts($take: Int = 10) {\n  posts(orderBy: {title: asc}, take: $take) {\n    id\n    title\n  }\n}",
+  "84b0d402d852b6dde989e0bec64efa51ef7229035dd7d2fe09f72b851a27f26e": "query PublicPost($id: ID!) {\n  post(where: {id: $id}) {\n    id\n    title\n  }\n}"
+}
