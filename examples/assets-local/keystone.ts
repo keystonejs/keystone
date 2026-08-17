@@ -3,6 +3,7 @@ import { config } from '@keystone-6/core'
 import { lists } from './schema'
 import bytes from 'bytes'
 import express from 'express'
+import fs from 'node:fs/promises'
 
 export default config({
   db: {
@@ -12,6 +13,13 @@ export default config({
         url: process.env.DATABASE_URL ?? 'file:./keystone-example.db',
       }),
     }),
+    async onConnect() {
+      // `public/` is gitignored, so these directories do not exist in a fresh clone.
+      await Promise.all([
+        fs.mkdir('public/images', { recursive: true }),
+        fs.mkdir('public/files', { recursive: true }),
+      ])
+    },
   },
   lists,
   server: {
