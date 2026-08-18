@@ -2,4 +2,4 @@
 "@keystone-6/core": patch
 ---
 
-Force Admin UI item view to read-only when `graphql.omit.update` is set, even if `ui.itemView.fieldMode` is configured as `edit`.
+When `graphql.omit.update` is set, coerce a static `ui.itemView.fieldMode: 'edit'` to `'read'`. Dynamic field modes that switch between `read` and `hidden` are left unchanged.

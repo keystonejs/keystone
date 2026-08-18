@@ -379,6 +379,27 @@ function getIsEnabledField(
   }
 }
 
+type ItemViewFieldMode = InitialisedField['ui']['itemView']['fieldMode']
+
+function demoteItemViewEditToRead(mode: ItemViewFieldMode): ItemViewFieldMode {
+  if (mode === 'edit') return 'read'
+  if (typeof mode !== 'function') return mode
+  return async args => {
+    const resolved = await mode(args)
+    return resolved === 'edit' ? 'read' : resolved
+  }
+}
+
+function resolveItemViewFieldMode(
+  isEnabledField: { read: boolean; update: boolean },
+  configured: ItemViewFieldMode | undefined
+): ItemViewFieldMode {
+  if (!isEnabledField.read) return 'hidden'
+  if (isEnabledField.update) return configured ?? 'edit'
+  // graphql.omit.update: keep dynamic / hidden modes, only drop static edit.
+  return demoteItemViewEditToRead(configured ?? 'read')
+}
+
 function defaultListHooksResolveInput({ resolvedData }: { resolvedData: any }) {
   return resolvedData
 }
@@ -775,6 +796,10 @@ function getListsWithInitialisedFields(
         intermediateLists,
         listConfig.fieldDefaults?.graphql?.omit
       )
+      const configuredItemViewFieldMode =
+        f.ui?.itemView?.fieldMode ??
+        group?.fieldDefaults?.ui?.itemView?.fieldMode ??
+        listConfig.fieldDefaults?.ui?.itemView?.fieldMode
       resultFields[fieldKey] = {
         fieldKey,
 
@@ -816,19 +841,7 @@ function getListsWithInitialisedFields(
           itemView: {
             isRequired: f.ui?.itemView?.isRequired ?? false,
             fieldPosition: f.ui?.itemView?.fieldPosition ?? 'form',
-            fieldMode: isEnabledField.update
-              ? (f.ui?.itemView?.fieldMode ??
-                group?.fieldDefaults?.ui?.itemView?.fieldMode ??
-                listConfig.fieldDefaults?.ui?.itemView?.fieldMode ??
-                'edit')
-              : isEnabledField.read
-                ? (f.ui?.itemView?.fieldMode ??
-                    group?.fieldDefaults?.ui?.itemView?.fieldMode ??
-                    listConfig.fieldDefaults?.ui?.itemView?.fieldMode ??
-                    'read') === 'hidden'
-                  ? 'hidden'
-                  : 'read'
-                : 'hidden',
+            fieldMode: resolveItemViewFieldMode(isEnabledField, configuredItemViewFieldMode),
           },
 
           listView: {
