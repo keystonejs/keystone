@@ -121,7 +121,7 @@ export function useRelatedItemHref({
   if (field.refFieldKey && value.id !== null) {
     query = buildQueryForRelationshipFieldWithForeignField(foreignList, field.refFieldKey, value.id)
   } else if (value.kind === 'many' && value.value.length > 0) {
-    query = `!id_in=${JSON.stringify(value.value.map(x => x.id))}`
+    query = `filter=id_in_${JSON.stringify(value.value.map(x => x.id))}`
   }
   if (query === undefined) return null
 
