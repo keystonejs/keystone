@@ -1,5 +1,11 @@
 # @keystone-6/cloudinary
 
+## 10.0.3
+
+### Patch Changes
+
+- [#10001](https://github.com/keystonejs/keystone/pull/10001) [`ed985e7`](https://github.com/keystonejs/keystone/commit/ed985e7a95a0ebcc48b10ad3e04a485fb7b73f2e) Thanks [@emmatown](https://github.com/emmatown)! - Updates `@keystar/ui` to `0.9.5`
+
 ## 10.0.2
 
 ### Patch Changes

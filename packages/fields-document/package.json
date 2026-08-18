@@ -1,7 +1,7 @@
 {
   "name": "@keystone-6/fields-document",
   "description": "KeystoneJS Document Field Type",
-  "version": "11.0.2",
+  "version": "11.0.3",
   "license": "MIT",
   "type": "module",
   "exports": {
