@@ -1,5 +1,17 @@
 # @keystone-6/core
 
+## 8.0.5
+
+### Patch Changes
+
+- [#10001](https://github.com/keystonejs/keystone/pull/10001) [`ed985e7`](https://github.com/keystonejs/keystone/commit/ed985e7a95a0ebcc48b10ad3e04a485fb7b73f2e) Thanks [@emmatown](https://github.com/emmatown)! - Updates `@keystar/ui` to `0.9.5`
+
+- [#10005](https://github.com/keystonejs/keystone/pull/10005) [`fce59d1`](https://github.com/keystonejs/keystone/commit/fce59d108bbc5c085747af2c62d0c0849a06254f) Thanks [@emmatown](https://github.com/emmatown)! - Removes leading and trailing whitespace from UUIDs provided in Admin UI list search fields
+
+- [#9996](https://github.com/keystonejs/keystone/pull/9996) [`286f487`](https://github.com/keystonejs/keystone/commit/286f487e4cb202fcbcf3a27436c0ddaa35d98769) Thanks [@FirmaSpring](https://github.com/FirmaSpring)! - Fixes incorrectly accepting arbitrary character after `Bearer` in `Authorization` header before token instead of only a space
+
+- [#10004](https://github.com/keystonejs/keystone/pull/10004) [`085097d`](https://github.com/keystonejs/keystone/commit/085097d0df737270dda4e9897fb8fc89d1502cc8) Thanks [@emmatown](https://github.com/emmatown)! - Fixes "View related ${list} …" button on one sided many relationship fields going to filtered view
+
 ## 8.0.4
 
 ### Patch Changes
