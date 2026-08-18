@@ -5,4 +5,4 @@
 '@keystone-6/fields-document': patch
 ---
 
-Updates `@keystar/ui` to `0.9.4`
+Updates `@keystar/ui` to `0.9.5`
