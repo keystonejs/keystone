@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 
 import { Button } from '@keystar/ui/button'
 import { Grid, HStack, VStack } from '@keystar/ui/layout'
@@ -7,74 +7,120 @@ import { PasswordField } from '@keystar/ui/password-field'
 import { Content } from '@keystar/ui/slots'
 import { TextField } from '@keystar/ui/text-field'
 import { Heading, Text } from '@keystar/ui/typography'
+import { print } from 'graphql'
 
-import { gql, type TypedDocumentNode, useMutation } from '@keystone-6/core/admin-ui/apollo'
+import { useApolloClient } from '@keystone-6/core/admin-ui/apollo'
 import { GraphQLErrorNotice, Logo } from '@keystone-6/core/admin-ui/components'
+import { useKeystone } from '@keystone-6/core/admin-ui/context'
 import { useRouter } from '@keystone-6/core/admin-ui/router'
+import { getSigninPageQuery } from '../signin-query.ts'
 import type { AuthGqlNames } from '../types.ts'
 
 export default (props: Parameters<typeof SigninPage>[0]) => () => <SigninPage {...props} />
+
+type SigninData = {
+  authenticate: { __typename: string; item?: { id: string }; message?: string }
+}
+
+type MutationState =
+  | { status: 'idle' | 'loading' | 'success' }
+  | { status: 'error'; error: Error }
+  | { status: 'failure'; message: string }
 
 function SigninPage({
   identityField,
   secretField,
   authGqlNames,
+  persistedQueryHash,
 }: {
   identityField: string
   secretField: string
   authGqlNames: AuthGqlNames
+  persistedQueryHash?: string
 }) {
   const router = useRouter()
+  const apolloClient = useApolloClient()
+  const { apiPath } = useKeystone()
   const [state, setState] = useState({ identity: '', secret: '' })
+  const [mutationState, setMutationState] = useState<MutationState>({ status: 'idle' })
   const {
-    authenticateItemWithPassword,
     ItemAuthenticationWithPasswordSuccess: successTypename,
     ItemAuthenticationWithPasswordFailure: failureTypename,
   } = authGqlNames
-  const [tryAuthenticate, { error, loading, data }] = useMutation(
-    gql`
-    mutation KsAuthSignin ($identity: String!, $secret: String!) {
-      authenticate: ${authenticateItemWithPassword}(${identityField}: $identity, ${secretField}: $secret) {
-        ... on ${successTypename} {
-          item {
-            id
-          }
-        }
-        ... on ${failureTypename} {
-          message
-        }
-      }
-    }` as TypedDocumentNode<
-      { authenticate: { __typename: string; item?: { id: string }; message?: string } },
-      { identity: string; secret: string }
-    >,
-    {
-      refetchQueries: ['KsFetchAdminMeta'],
-    }
+  const signinQuery = useMemo(
+    () => print(getSigninPageQuery({ authGqlNames, identityField, secretField })),
+    [authGqlNames, identityField, secretField]
   )
 
   const onSubmit = async (event: React.SubmitEvent) => {
     if (event.target !== event.currentTarget) return
     event.preventDefault()
 
-    try {
-      const { data } = await tryAuthenticate({
-        variables: {
-          identity: state.identity,
-          secret: state.secret,
-        },
-      })
+    setMutationState({ status: 'loading' })
 
-      if (data?.authenticate.item) {
+    try {
+      if (!apiPath) throw new Error('The GraphQL API path is unavailable')
+
+      const response = await fetch(apiPath, {
+        method: 'POST',
+        credentials: 'same-origin',
+        headers: {
+          'content-type': 'application/json',
+        },
+        body: JSON.stringify({
+          operationName: 'KsAuthSignin',
+          query: signinQuery,
+          variables: {
+            identity: state.identity,
+            secret: state.secret,
+          },
+          ...(persistedQueryHash === undefined
+            ? {}
+            : {
+                extensions: {
+                  persistedQuery: {
+                    version: 1,
+                    sha256Hash: persistedQueryHash,
+                  },
+                },
+              }),
+        }),
+      })
+      const result = (await response.json()) as {
+        data?: SigninData
+        errors?: { message: string }[]
+      }
+
+      if (result.errors?.length) {
+        throw new Error(result.errors.map(error => error.message).join('\n'))
+      }
+      if (!response.ok) throw new Error(`Sign in failed with status ${response.status}`)
+      if (!result.data) throw new Error('The sign-in response contained no data')
+
+      const { authenticate } = result.data
+
+      if (authenticate.__typename === successTypename && authenticate.item) {
+        setMutationState({ status: 'success' })
+        await apolloClient.refetchQueries({ include: ['KsFetchAdminMeta'] })
         router.push('/')
+      } else if (authenticate.__typename === failureTypename) {
+        setMutationState({
+          status: 'failure',
+          message: authenticate.message ?? 'Sign in failed',
+        })
+      } else {
+        throw new Error('The sign-in response was invalid')
       }
     } catch (e) {
       console.error(e)
-      return
+      setMutationState({
+        status: 'error',
+        error: e instanceof Error ? e : new Error('Sign in failed'),
+      })
     }
   }
 
-  const pending = loading || data?.authenticate?.__typename === successTypename
+  const pending = mutationState.status === 'loading' || mutationState.status === 'success'
 
   return (
     <>
@@ -105,12 +151,14 @@ function SigninPage({
             Sign in
           </Heading>
 
-          <GraphQLErrorNotice errors={[error]} />
+          <GraphQLErrorNotice
+            errors={[mutationState.status === 'error' ? mutationState.error : undefined]}
+          />
 
-          {data?.authenticate?.__typename === failureTypename && (
+          {mutationState.status === 'failure' && (
             <Notice tone="critical">
               <Content>
-                <Text>{data?.authenticate.message}</Text>
+                <Text>{mutationState.message}</Text>
               </Content>
             </Notice>
           )}

@@ -1,3 +1,4 @@
+import { createHash } from 'node:crypto'
 import type {
   AdminFileToWrite,
   BaseListTypeInfo,
@@ -6,9 +7,11 @@ import type {
   BaseKeystoneTypeInfo,
   KeystoneConfig,
 } from '@keystone-6/core/types'
+import { print } from 'graphql'
 import type { AuthConfig, AuthGqlNames } from './types.ts'
 
 import { getSchemaExtension } from './schema.ts'
+import { getSigninPageQuery } from './signin-query.ts'
 import configTemplate from './templates/config.ts'
 import signinTemplate from './templates/signin.ts'
 
@@ -42,6 +45,31 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
   identityField,
   sessionData = 'id',
 }: AuthConfig<ListTypeInfo>) {
+  function getSigninQuery(authGqlNames: AuthGqlNames) {
+    const query = print(
+      getSigninPageQuery({
+        authGqlNames,
+        identityField,
+        secretField,
+      })
+    )
+
+    return {
+      query,
+      hash: createHash('sha256').update(query).digest('hex'),
+    }
+  }
+
+  function persistedQueries(
+    listConfig: { graphql?: { singular?: string } } = {}
+  ): Record<string, string> {
+    const { query, hash } = getSigninQuery(getAuthGqlNames(listConfig.graphql?.singular ?? listKey))
+
+    return {
+      [hash]: query,
+    }
+  }
+
   /**
    * getAdditionalFiles
    *
@@ -64,10 +92,19 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
             : 'id')
 
     const authGqlNames = getAuthGqlNames(listConfig.graphql?.singular ?? listKey)
+    const persistedQueryHash =
+      config.graphql?.apolloConfig?.persistedQueries === false
+        ? undefined
+        : getSigninQuery(authGqlNames).hash
     const filesToWrite: AdminFileToWrite[] = [
       {
         mode: 'write',
-        src: signinTemplate({ authGqlNames, identityField, secretField }),
+        src: signinTemplate({
+          authGqlNames,
+          identityField,
+          secretField,
+          persistedQueryHash,
+        }),
         outputPath: 'pages/signin.js',
       },
       {
@@ -236,6 +273,7 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
   }
 
   return {
+    persistedQueries,
     withAuth,
   }
 }

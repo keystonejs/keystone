@@ -22,6 +22,58 @@ const auth = createAuth({
   sessionData: 'id name',
 })
 
+describe('persistedQueries', () => {
+  test('uses the list key as the default GraphQL singular', () => {
+    const queries = Object.values(auth.persistedQueries())
+
+    expect(queries).toHaveLength(1)
+    expect(queries[0]).toContain('authenticateUserWithPassword')
+  })
+
+  test('accepts a list config with a custom GraphQL singular', () => {
+    const queries = Object.values(auth.persistedQueries({ graphql: { singular: 'Account' } }))
+
+    expect(queries).toHaveLength(1)
+    expect(queries[0]).toContain('authenticateAccountWithPassword')
+    expect(queries[0]).toContain('AccountAuthenticationWithPasswordSuccess')
+    expect(queries[0]).toContain('AccountAuthenticationWithPasswordFailure')
+  })
+
+  test('passes the precomputed hash to the sign-in page when persisted queries are enabled', async () => {
+    const signinSource = await getSigninPageSource()
+    const [hash] = Object.keys(auth.persistedQueries())
+
+    expect(signinSource).toContain(`"persistedQueryHash":"${hash}"`)
+  })
+
+  test('does not pass a hash when persisted queries are disabled', async () => {
+    const signinSource = await getSigninPageSource(false)
+
+    expect(signinSource).not.toContain('persistedQueryHash')
+  })
+})
+
+async function getSigninPageSource(persistedQueries?: false) {
+  const authConfig = auth.withAuth({
+    lists: {
+      User: list({
+        access: allowAll,
+        fields: {
+          email: text({ isIndexed: 'unique' }),
+          password: password(),
+        },
+      }),
+    },
+    session: statelessSessions(),
+    graphql: persistedQueries === false ? { apolloConfig: { persistedQueries } } : undefined,
+  } as any)
+  const files = await authConfig.ui!.getAdditionalFiles!()
+  const signinPage = files.find(file => file.outputPath === 'pages/signin.js')
+
+  if (signinPage?.mode !== 'write') throw new Error('The sign-in page was not generated')
+  return signinPage.src
+}
+
 const runner = setupTestRunner({
   serve: true,
   config: {
