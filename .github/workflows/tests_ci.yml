@@ -49,6 +49,8 @@ jobs:
 
       - run: cd examples/graphql-gql.tada && pnpm check:tada-output
 
+      - run: cd examples/graphql-gql.tada-persisted-queries && pnpm check:tada
+
   unit_tests:
     name: Package Unit Tests (Vitest)
     runs-on: ubuntu-latest
