@@ -11,8 +11,8 @@ import { Content } from '@keystar/ui/slots'
 import { Heading, Text } from '@keystar/ui/typography'
 
 import type { Filter } from './index.tsx'
-import { useList } from '../../../../admin-ui/context.tsx'
-import type { FieldMeta, JSONValue } from '../../../../types/index.ts'
+import { useList } from '../../context.tsx'
+import type { FieldMeta, JSONValue } from '../../../types/index.ts'
 
 type State =
   | { kind: 'selecting-field' }

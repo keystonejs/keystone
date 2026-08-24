@@ -2,13 +2,11 @@ import { Icon } from '@keystar/ui/icon'
 import { shieldAlertIcon } from '@keystar/ui/icon/icons/shieldAlertIcon'
 import { Heading, Text } from '@keystar/ui/typography'
 
-import { ErrorContainer } from '../../../../admin-ui/components/Errors.tsx'
+import { ErrorContainer } from '../../components/Errors.tsx'
 
-type NoAccessPage = { sessionsEnabled: boolean }
+type NoAccessPageProps = { sessionsEnabled: boolean }
 
-export const getNoAccessPage = (props: NoAccessPage) => () => <NoAccessPage {...props} />
-
-export function NoAccessPage(_: NoAccessPage) {
+export function NoAccessPage(_: NoAccessPageProps) {
   return (
     <ErrorContainer>
       <Icon color="neutral" src={shieldAlertIcon} size="large" />

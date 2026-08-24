@@ -5,7 +5,7 @@ import { ClientSideOnlyDocumentElement, KeystarProvider } from '@keystar/ui/core
 import { injectGlobal, tokenSchema } from '@keystar/ui/style'
 import { Toaster } from '@keystar/ui/toast'
 
-import { snapValueToClosest } from '../___internal-do-not-use-will-break-in-patch/admin-ui/pages/ListPage/PaginationControls.tsx'
+import { snapValueToClosest } from './pages/ListPage/PaginationControls.tsx'
 import type {
   AdminConfig,
   BaseListTypeInfo,

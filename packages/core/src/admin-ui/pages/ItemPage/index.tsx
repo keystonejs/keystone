@@ -1,4 +1,4 @@
-import { useRouter } from '../../../../admin-ui/router.tsx'
+import { useRouter } from '../../router.tsx'
 import {
   type FormEvent,
   Fragment,
@@ -20,12 +20,12 @@ import { SlotProvider } from '@keystar/ui/slots'
 import { toastQueue } from '@keystar/ui/toast'
 import { Heading, Text } from '@keystar/ui/typography'
 
-import { CombinedGraphQLErrors, gql, useMutation } from '../../../../admin-ui/apollo.ts'
-import { CreateButtonLink } from '../../../../admin-ui/components/CreateButtonLink.tsx'
-import { ErrorDetailsDialog } from '../../../../admin-ui/components/Errors.tsx'
-import { GraphQLErrorNotice } from '../../../../admin-ui/components/GraphQLErrorNotice.tsx'
-import { PageContainer } from '../../../../admin-ui/components/PageContainer.tsx'
-import { useList, useListItem } from '../../../../admin-ui/context.tsx'
+import { CombinedGraphQLErrors, gql, useMutation } from '../../apollo.ts'
+import { CreateButtonLink } from '../../components/CreateButtonLink.tsx'
+import { ErrorDetailsDialog } from '../../components/Errors.tsx'
+import { GraphQLErrorNotice } from '../../components/GraphQLErrorNotice.tsx'
+import { PageContainer } from '../../components/PageContainer.tsx'
+import { useList, useListItem } from '../../context.tsx'
 import {
   deserializeItemToValue,
   Fields,
@@ -36,15 +36,15 @@ import {
   serializeValueToOperationItem,
   useHasChanges,
   useInvalidFields,
-} from '../../../../admin-ui/utils/index.ts'
-import { pick } from '../../../../admin-ui/utils/pick.ts'
+} from '../../utils/index.ts'
+import { pick } from '../../utils/pick.ts'
 import type {
   ActionMeta,
   BaseListTypeInfo,
   ConditionalFilter,
   ConditionalFilterCase,
   ListMeta,
-} from '../../../../types/index.ts'
+} from '../../../types/index.ts'
 import { BaseToolbar, ColumnLayout, ItemPageHeader, StickySidebar } from './common.tsx'
 
 type ItemPageProps = {
@@ -313,9 +313,7 @@ function ItemForm({
   )
 }
 
-export const getItemPage = (props: ItemPageProps) => () => <ItemPage {...props} />
-
-function ItemPage({ listKey }: ItemPageProps) {
+export function ItemPage({ listKey }: ItemPageProps) {
   const list = useList(listKey)
   const router = useRouter()
   const id_ = router.query.id
