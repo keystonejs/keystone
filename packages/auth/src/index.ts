@@ -223,15 +223,6 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
       },
       ui,
       session: authSessionStrategy(config.session),
-      lists: {
-        ...config.lists,
-        [listKey]: {
-          ...listConfig,
-          fields: {
-            ...listConfig.fields,
-          },
-        },
-      },
     }
   }
 
