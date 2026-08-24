@@ -1,1 +1,1 @@
-export { getContext } from './lib/system.ts'
+export { getContext } from './lib/getContext.ts'

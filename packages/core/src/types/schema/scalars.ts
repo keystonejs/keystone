@@ -4,6 +4,7 @@ import GraphQLUpload from 'graphql-upload/GraphQLUpload.js'
 import { GraphQLError, GraphQLScalarType } from 'graphql/index.js'
 import { Decimal as DecimalValue } from 'decimal.js'
 import type { JSONValue } from '../utils.ts'
+import { toHex } from '../../lib/encoding.ts'
 
 export const JSON = new GraphQLScalarType<JSONValue>({
   name: 'JSON',
@@ -32,14 +33,6 @@ function hexToBytes(value: string): Uint8Array {
   return bytes
 }
 
-function bytesToHex(bytes: Uint8Array): string {
-  let str = ''
-  for (const byte of bytes) {
-    str += byte.toString(16).padStart(2, '0')
-  }
-  return str
-}
-
 export const Hex = new GraphQLScalarType({
   name: 'Hex',
   description: 'The `Hex` scalar type represents bytes as a string of hexadecimal characters.',
@@ -65,7 +58,7 @@ export const Hex = new GraphQLScalarType({
     if (!(value instanceof Uint8Array)) {
       throw new GraphQLError(`unexpected value provided to Hex scalar: ${value}`)
     }
-    return bytesToHex(value)
+    return toHex(value)
   },
 })
 

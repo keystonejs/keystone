@@ -1,11 +1,7 @@
-import { randomBytes } from 'node:crypto'
 import path from 'node:path'
 
-import type { BaseKeystoneTypeInfo, KeystoneConfig, KeystoneContext } from '../types/index.ts'
-import { createAdminMeta } from './admin-meta.ts'
-import { createContext } from './context/createContext.ts'
-import { initialiseLists, type InitialisedList } from './core/initialise-lists.ts'
-import { createGraphQLSchema } from './graphql.ts'
+import type { KeystoneConfig } from '../types/index.ts'
+import { createContextSystem } from './getContext.ts'
 
 // TODO: this cannot be changed for now, circular dependency with getSystemPaths, getEsbuildConfig
 export function getBuiltKeystoneConfigurationPath(cwd: string) {
@@ -63,131 +59,13 @@ function getSystemPaths(cwd: string, config: KeystoneConfig) {
   }
 }
 
-function getInternalGraphQLSchema(config: KeystoneConfig) {
-  // omit `graphql.omit`
-  const withoutOmit: KeystoneConfig = {
-    ...config,
-    lists: Object.fromEntries(
-      Object.entries(config.lists).map(([listKey, list]) => {
-        return [
-          listKey,
-          {
-            ...list,
-            graphql: { ...(list.graphql || {}), omit: false },
-            fields: Object.fromEntries(
-              Object.entries(list.fields).map(([fieldKey, field]) => {
-                if (fieldKey.startsWith('__group')) return [fieldKey, field]
-                return [
-                  fieldKey,
-                  data => {
-                    const f = field(data)
-                    return {
-                      ...f,
-                      graphql: { ...(f.graphql || {}), omit: false },
-                    }
-                  },
-                ]
-              })
-            ),
-          },
-        ]
-      })
-    ),
-  }
-
-  const lists = initialiseLists(withoutOmit)
-  const adminMeta = createAdminMeta(withoutOmit, lists)
-  return createGraphQLSchema(withoutOmit, lists, adminMeta, 'internal')
-}
-
-function injectNewDefaults(prismaClient: unknown, lists: Record<string, InitialisedList>) {
-  for (const listKey in lists) {
-    const list = lists[listKey]
-
-    // TODO: other fields might use 'random' too
-    const { dbField } = list.fields.id
-
-    if ('default' in dbField && dbField.default?.kind === 'random') {
-      const { bytes, encoding } = dbField.default
-
-      prismaClient = (prismaClient as any).$extends({
-        query: {
-          [list.prisma.listKey]: {
-            async create({ args, query }: any) {
-              return query({
-                ...args,
-                data: {
-                  ...args.data,
-                  id: args.data.id ?? randomBytes(bytes).toString(encoding),
-                },
-              })
-            },
-          },
-        },
-      })
-    }
-  }
-
-  return prismaClient
-}
-
 export function createSystem(config: KeystoneConfig) {
-  const lists = initialiseLists(config)
-  const adminMeta = createAdminMeta(config, lists)
-  const graphQLSchemas = {
-    public: createGraphQLSchema(config, lists, adminMeta, 'public'),
-    internal: getInternalGraphQLSchema(config),
-  }
+  const system = createContextSystem(config)
 
   return {
-    config,
-    graphql: {
-      schemas: graphQLSchemas,
-    },
-    adminMeta,
-    lists,
+    ...system,
     getPaths: (cwd: string) => getSystemPaths(cwd, config),
-
-    getKeystone: (PM: any, existingPrismaClient?: any) => {
-      const prismaClient =
-        existingPrismaClient ??
-        config.db.extendPrismaClient(
-          injectNewDefaults(new PM.PrismaClient(config.db.prismaClientOptions()), lists)
-        )
-      const context = createContext({
-        config,
-        lists,
-        graphQLSchemas,
-        prismaClient,
-        prismaTypes: {
-          DbNull: PM.Prisma.DbNull,
-          JsonNull: PM.Prisma.JsonNull,
-        },
-      })
-
-      return {
-        // TODO: replace with server.onStart, remove in breaking change
-        async connect() {
-          await (prismaClient as any).$connect()
-          await config.db.onConnect?.(context)
-        },
-        // TODO: only used by tests, remove in breaking change
-        async disconnect() {
-          await (prismaClient as any).$disconnect()
-        },
-        context,
-      }
-    },
   }
 }
 
 export type System = ReturnType<typeof createSystem>
-
-export function getContext<TypeInfo extends BaseKeystoneTypeInfo>(
-  config: KeystoneConfig<TypeInfo>,
-  PrismaModule: unknown
-): KeystoneContext<TypeInfo> {
-  const system = createSystem(config)
-  const { context } = system.getKeystone(PrismaModule)
-  return context
-}
