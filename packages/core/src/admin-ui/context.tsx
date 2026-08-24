@@ -2,6 +2,7 @@ import UploadLink from 'apollo-upload-client/UploadHttpLink.mjs'
 import { type ReactNode, createContext, useContext, useEffect, useMemo } from 'react'
 
 import { ClientSideOnlyDocumentElement, KeystarProvider } from '@keystar/ui/core'
+import type { Router } from '@keystar/ui/router'
 import { injectGlobal, tokenSchema } from '@keystar/ui/style'
 import { Toaster } from '@keystar/ui/toast'
 
@@ -23,12 +24,13 @@ import {
   gql,
   useQuery,
 } from './apollo.ts'
-import { useRouter } from './router.tsx'
+import { useNextPagesRouter } from './next-pages-router.ts'
 import {
   getConditionalFilterCaseFieldKeys,
   getConditionalFilterFieldKeys,
   isActionAvailable,
 } from './utils/filters.ts'
+import { checkForPreventedNavigation, hasUnsavedChanges } from './utils/navigation.ts'
 
 type KeystoneContextType = {
   adminConfig: AdminConfig | null
@@ -45,12 +47,31 @@ const KeystoneContext = createContext<KeystoneContextType>({
   fieldViews: {},
 })
 
+export type KeystoneRouter = Router & {
+  /**
+   * Handle client-side navigation blocking and beforeunload using the router's
+   * supported mechanisms. Coverage of browser Back/Forward and navigation outside
+   * Keystone depends on the adapter. Clean up on unmount and keep this hook's
+   * identity stable.
+   */
+  useNavigationBlocker: (options: {
+    /** Read the current dirty state without prompting. Use for beforeunload. */
+    hasUnsavedChanges: () => boolean
+    /** Confirm client-side navigation when dirty; true means cancel navigation. */
+    shouldBlockNavigation: () => boolean
+  }) => void
+}
+
 type KeystoneProviderProps = {
   adminConfig: AdminConfig
   apiPath: string
   fieldViews: FieldViews
+  router?: KeystoneRouter
   children: ReactNode
 }
+
+type InternalKeystoneProviderProps = Omit<KeystoneProviderProps, 'router'>
+type KeystoneProviderWithRouterProps = InternalKeystoneProviderProps & { router: KeystoneRouter }
 
 const requiredExports = new Set(['Field', 'controller'])
 const overridableExports = new Set([...requiredExports, 'Cell'])
@@ -60,27 +81,7 @@ function InternalKeystoneProvider({
   apiPath,
   fieldViews,
   children,
-}: KeystoneProviderProps) {
-  const { push, replace, basePath, isReady } = useRouter()
-  const keystarRouter = useMemo(
-    () => ({
-      navigate(href: string, options?: { replace?: boolean }) {
-        if (options?.replace) {
-          replace(href)
-        } else {
-          push(href)
-        }
-      },
-      useHref: (href: string) => {
-        if (!basePath || !href.startsWith('/') || href.startsWith('//')) return href
-        if (href === '/') return basePath
-        return `${basePath}${href}`
-      },
-      usePathname: useNextPathname,
-      useSearch: useNextSearch,
-    }),
-    [basePath, push, replace]
-  )
+}: InternalKeystoneProviderProps) {
   const { data, loading, error } = useQuery<AdminMetaQuery>(adminMetaQuery, {
     errorPolicy: 'all',
   })
@@ -201,10 +202,10 @@ function InternalKeystoneProvider({
   }, [])
 
   // TODO
-  if (loading || !isReady) return null
+  if (loading) return null
   //   if (!meta) return null
   return (
-    <KeystarProvider router={keystarRouter}>
+    <>
       <ClientSideOnlyDocumentElement bodyBackground="surface" />
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <link
@@ -224,21 +225,16 @@ function InternalKeystoneProvider({
         {children}
       </KeystoneContext.Provider>
       <Toaster />
-    </KeystarProvider>
+    </>
   )
 }
 
-function useNextPathname() {
-  const { asPath } = useRouter()
-  return useMemo(() => new URL(asPath, 'http://keystone.local').pathname, [asPath])
-}
+function KeystoneProviderWithRouter({ router, ...props }: KeystoneProviderWithRouterProps) {
+  router.useNavigationBlocker({
+    hasUnsavedChanges,
+    shouldBlockNavigation: checkForPreventedNavigation,
+  })
 
-function useNextSearch() {
-  const { asPath } = useRouter()
-  return useMemo(() => new URL(asPath, 'http://keystone.local').search, [asPath])
-}
-
-export function KeystoneProvider(props: KeystoneProviderProps) {
   const apolloClient = useMemo(
     () =>
       new ApolloClient({
@@ -252,10 +248,24 @@ export function KeystoneProvider(props: KeystoneProviderProps) {
   )
 
   return (
-    <ApolloProvider client={apolloClient}>
-      <InternalKeystoneProvider {...props} />
-    </ApolloProvider>
+    <KeystarProvider router={router}>
+      <ApolloProvider client={apolloClient}>
+        <InternalKeystoneProvider {...props} />
+      </ApolloProvider>
+    </KeystarProvider>
   )
+}
+
+function PagesRouterKeystoneProvider(props: InternalKeystoneProviderProps) {
+  const router = useNextPagesRouter()
+  if (!router) return null
+
+  return <KeystoneProviderWithRouter {...props} router={router} />
+}
+
+export function KeystoneProvider({ router, ...props }: KeystoneProviderProps) {
+  if (router === undefined) return <PagesRouterKeystoneProvider {...props} />
+  return <KeystoneProviderWithRouter {...props} router={router} />
 }
 
 export function useKeystone() {
