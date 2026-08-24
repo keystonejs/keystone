@@ -1,20 +1,16 @@
-import { useRouter } from '../../../../admin-ui/router.tsx'
+import { useRouter } from '../../router.tsx'
 
 import { Button } from '@keystar/ui/button'
 import { VStack } from '@keystar/ui/layout'
 
-import { useList } from '../../../../admin-ui/index.tsx'
-import { GraphQLErrorNotice } from '../../../../admin-ui/components/index.ts'
-import { PageContainer } from '../../../../admin-ui/components/PageContainer.tsx'
-import { Fields } from '../../../../admin-ui/utils/index.ts'
-import { useCreateItem } from '../../../../admin-ui/utils/useCreateItem.ts'
+import { useList } from '../../index.tsx'
+import { GraphQLErrorNotice } from '../../components/index.ts'
+import { PageContainer } from '../../components/PageContainer.tsx'
+import { Fields } from '../../utils/index.ts'
+import { useCreateItem } from '../../utils/useCreateItem.ts'
 import { BaseToolbar, ColumnLayout, ItemPageHeader } from '../ItemPage/common.tsx'
 
-export const getCreateItemPage = (props: Parameters<typeof CreateItemPage>[0]) => () => (
-  <CreateItemPage {...props} />
-)
-
-function CreateItemPage({ listKey }: { listKey: string }) {
+export function CreateItemPage({ listKey }: { listKey: string }) {
   const list = useList(listKey)
   const createItem = useCreateItem(list)
   const router = useRouter()

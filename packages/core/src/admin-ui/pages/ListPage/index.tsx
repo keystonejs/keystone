@@ -1,6 +1,6 @@
 import isDeepEqual from 'fast-deep-equal'
 import type { GraphQLFormattedError } from 'graphql/index.js'
-import { useRouter } from '../../../../admin-ui/router.tsx'
+import { useRouter } from '../../router.tsx'
 import type { ParsedUrlQuery, ParsedUrlQueryInput } from 'querystring'
 import { type FormEvent, type Key, Fragment, useEffect, useId, useMemo, useState } from 'react'
 
@@ -34,25 +34,25 @@ import { Heading, Text } from '@keystar/ui/typography'
 
 import { TextLink } from '@keystar/ui/link'
 import { Notice } from '@keystar/ui/notice'
-import type { TypedDocumentNode } from '../../../../admin-ui/apollo.ts'
-import { CombinedGraphQLErrors, gql, useMutation, useQuery } from '../../../../admin-ui/apollo.ts'
-import { ActionDialog } from '../../../../admin-ui/components/ActionDialog.tsx'
-import { CreateButtonLink } from '../../../../admin-ui/components/CreateButtonLink.tsx'
-import { EmptyState } from '../../../../admin-ui/components/EmptyState.tsx'
-import { GraphQLErrorNotice } from '../../../../admin-ui/components/GraphQLErrorNotice.tsx'
-import { PageContainer } from '../../../../admin-ui/components/PageContainer.tsx'
-import { useList } from '../../../../admin-ui/context.tsx'
+import type { TypedDocumentNode } from '../../apollo.ts'
+import { CombinedGraphQLErrors, gql, useMutation, useQuery } from '../../apollo.ts'
+import { ActionDialog } from '../../components/ActionDialog.tsx'
+import { CreateButtonLink } from '../../components/CreateButtonLink.tsx'
+import { EmptyState } from '../../components/EmptyState.tsx'
+import { GraphQLErrorNotice } from '../../components/GraphQLErrorNotice.tsx'
+import { PageContainer } from '../../components/PageContainer.tsx'
+import { useList } from '../../context.tsx'
 import {
   deserializeItemToValue,
   getConditionalFilterFieldKeys,
   isActionAvailable,
   resolveActionMode,
   serializeItemForConditionalFilters,
-} from '../../../../admin-ui/utils/index.ts'
-import { getActionArguments } from '../../../../admin-ui/utils/actionData.ts'
-import { pick } from '../../../../admin-ui/utils/pick.ts'
-import { useSearchFilter } from '../../../../fields/types/relationship/views/useFilter.tsx'
-import type { ActionMeta, FieldMeta, JSONValue, ListMeta } from '../../../../types/index.ts'
+} from '../../utils/index.ts'
+import { getActionArguments } from '../../utils/actionData.ts'
+import { pick } from '../../utils/pick.ts'
+import { useSearchFilter } from '../../../fields/types/relationship/views/useFilter.tsx'
+import type { ActionMeta, FieldMeta, JSONValue, ListMeta } from '../../../types/index.ts'
 import { FilterAdd } from './FilterAdd.tsx'
 import { PaginationControls, snapValueToClosest } from './PaginationControls.tsx'
 import { Tag } from './Tag.tsx'
@@ -257,10 +257,8 @@ function getColumns(list: ListMeta, query: ParsedUrlQueryInput): string[] {
   return params
 }
 
-export const getListPage = (props: ListPageProps) => () => <ListPage {...props} />
-
 type Selection = Set<string | number> | 'all'
-function ListPage({ listKey }: ListPageProps) {
+export function ListPage({ listKey }: ListPageProps) {
   const localStorageListKey = `keystone.list.${listKey}.list.page.info`
 
   const list = useList(listKey)

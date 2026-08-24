@@ -9,10 +9,10 @@ import { css, FocusRing, tokenSchema, transition } from '@keystar/ui/style'
 import { Tooltip, TooltipTrigger } from '@keystar/ui/tooltip'
 import { Heading, Text } from '@keystar/ui/typography'
 
-import { gql, type TypedDocumentNode, useQuery } from '../../../../admin-ui/apollo.ts'
-import { GraphQLErrorNotice } from '../../../../admin-ui/components/GraphQLErrorNotice.tsx'
-import { PageContainer } from '../../../../admin-ui/components/PageContainer.tsx'
-import { useKeystone, useList } from '../../../../admin-ui/context.tsx'
+import { gql, type TypedDocumentNode, useQuery } from '../../apollo.ts'
+import { GraphQLErrorNotice } from '../../components/GraphQLErrorNotice.tsx'
+import { PageContainer } from '../../components/PageContainer.tsx'
+import { useKeystone, useList } from '../../context.tsx'
 
 export function HomePage() {
   const { lists, error: metaError } = useKeystone()
