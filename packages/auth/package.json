@@ -16,7 +16,8 @@
     "@babel/runtime": "^7.24.7",
     "@keystar/ui": "catalog:",
     "graphql": "catalog:",
-    "next": "catalog:"
+    "next": "catalog:",
+    "react-aria": "catalog:"
   },
   "devDependencies": {
     "@keystone-6/core": "workspace:^",
@@ -28,7 +29,8 @@
     "graphql": "catalog:",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "@keystar/ui": "catalog:"
+    "@keystar/ui": "catalog:",
+    "react-aria": "catalog:"
   },
   "preconstruct": {
     "entrypoints": [

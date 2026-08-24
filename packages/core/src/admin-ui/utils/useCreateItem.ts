@@ -1,6 +1,7 @@
 import { type ComponentProps, useEffect, useMemo, useRef, useState } from 'react'
 
 import { toastQueue } from '@keystar/ui/toast'
+import { useNavigate } from '@keystar/ui/router'
 
 import type { Fields } from './index.ts'
 import {
@@ -11,7 +12,6 @@ import {
 } from './index.ts'
 import type { ListMeta } from '../../types/index.ts'
 import { type ErrorLike, gql, type TypedDocumentNode, useMutation } from '../apollo.ts'
-import { useRouter } from '../router.tsx'
 import { usePreventNavigation } from './usePreventNavigation.tsx'
 
 type CreateItemHookResult = {
@@ -23,7 +23,7 @@ type CreateItemHookResult = {
 }
 
 export function useCreateItem(list: ListMeta): CreateItemHookResult {
-  const router = useRouter()
+  const navigate = useNavigate()
   const [tryCreateItem, { loading, error, data: returnedData }] = useMutation(
     gql`mutation($data: ${list.graphql.names.createInputName}!) {
       item: ${list.graphql.names.createMutationName}(data: $data) {
@@ -114,7 +114,7 @@ export function useCreateItem(list: ListMeta): CreateItemHookResult {
         timeout: 5000,
         actionLabel: 'Create another',
         onAction: () => {
-          router.push(`/${list.path}/create`)
+          navigate(`/${list.path}/create`)
         },
         shouldCloseOnAction: true,
       })

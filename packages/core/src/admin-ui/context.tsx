@@ -61,17 +61,25 @@ function InternalKeystoneProvider({
   fieldViews,
   children,
 }: KeystoneProviderProps) {
-  const { push: navigate, basePath } = useRouter()
+  const { push, replace, basePath, isReady } = useRouter()
   const keystarRouter = useMemo(
     () => ({
-      navigate,
+      navigate(href: string, options?: { replace?: boolean }) {
+        if (options?.replace) {
+          replace(href)
+        } else {
+          push(href)
+        }
+      },
       useHref: (href: string) => {
         if (!basePath || !href.startsWith('/') || href.startsWith('//')) return href
         if (href === '/') return basePath
         return `${basePath}${href}`
       },
+      usePathname: useNextPathname,
+      useSearch: useNextSearch,
     }),
-    [basePath, navigate]
+    [basePath, push, replace]
   )
   const { data, loading, error } = useQuery<AdminMetaQuery>(adminMetaQuery, {
     errorPolicy: 'all',
@@ -193,7 +201,7 @@ function InternalKeystoneProvider({
   }, [])
 
   // TODO
-  if (loading) return null
+  if (loading || !isReady) return null
   //   if (!meta) return null
   return (
     <KeystarProvider router={keystarRouter}>
@@ -218,6 +226,16 @@ function InternalKeystoneProvider({
       <Toaster />
     </KeystarProvider>
   )
+}
+
+function useNextPathname() {
+  const { asPath } = useRouter()
+  return useMemo(() => new URL(asPath, 'http://keystone.local').pathname, [asPath])
+}
+
+function useNextSearch() {
+  const { asPath } = useRouter()
+  return useMemo(() => new URL(asPath, 'http://keystone.local').search, [asPath])
 }
 
 export function KeystoneProvider(props: KeystoneProviderProps) {

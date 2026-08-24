@@ -1,4 +1,3 @@
-import { useRouter } from '../../router.tsx'
 import {
   type FormEvent,
   Fragment,
@@ -16,6 +15,7 @@ import { Icon } from '@keystar/ui/icon'
 import { fileWarningIcon } from '@keystar/ui/icon/icons/fileWarningIcon'
 import { Box, VStack } from '@keystar/ui/layout'
 import { ProgressCircle } from '@keystar/ui/progress'
+import { useNavigate, usePathname } from '@keystar/ui/router'
 import { SlotProvider } from '@keystar/ui/slots'
 import { toastQueue } from '@keystar/ui/toast'
 import { Heading, Text } from '@keystar/ui/typography'
@@ -72,7 +72,7 @@ function DeleteButton({
   itemLabel: string
 }) {
   const [errorDialogValue, setErrorDialogValue] = useState<Error | null>(null)
-  const router = useRouter()
+  const navigate = useNavigate()
   const [deleteItem] = useMutation(
     gql`mutation ($id: ID!) {
       ${list.graphql.names.deleteMutationName}(where: { id: $id }) {
@@ -106,7 +106,7 @@ function DeleteButton({
             toastQueue.neutral(`${list.singular} deleted.`, {
               timeout: 5000,
             })
-            router.push(list.isSingleton ? '/' : `/${list.path}`)
+            navigate(list.isSingleton ? '/' : `/${list.path}`)
           }}
         >
           <Text>
@@ -315,9 +315,12 @@ function ItemForm({
 
 export function ItemPage({ listKey }: ItemPageProps) {
   const list = useList(listKey)
-  const router = useRouter()
-  const id_ = router.query.id
-  const [itemId] = Array.isArray(id_) ? id_ : [id_]
+  const navigate = useNavigate()
+  const pathname = usePathname()
+  const itemPathPrefix = `/${list.path}/`
+  const itemId = pathname.startsWith(itemPathPrefix)
+    ? decodeURIComponent(pathname.slice(itemPathPrefix.length))
+    : undefined
   const { data, error, loading, refetch } = useListItem(listKey, itemId ?? null)
   const item = data?.item
   const itemLabel_ = item?.[list.labelField] ?? item?.id
@@ -409,9 +412,9 @@ export function ItemPage({ listKey }: ItemPageProps) {
     if ((navigation === 'follow' && resultId === itemId) || navigation === 'refetch') {
       refetch()
     } else if (navigation === 'follow' && resultId) {
-      router.push(`/${list.path}/${resultId}`)
+      navigate(`/${list.path}/${resultId}`)
     } else {
-      router.push(list.isSingleton ? '/' : `/${list.path}`)
+      navigate(list.isSingleton ? '/' : `/${list.path}`)
     }
   }
 

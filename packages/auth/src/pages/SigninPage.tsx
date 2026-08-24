@@ -10,7 +10,7 @@ import { Heading, Text } from '@keystar/ui/typography'
 
 import { gql, type TypedDocumentNode, useMutation } from '@keystone-6/core/admin-ui/apollo'
 import { GraphQLErrorNotice, Logo } from '@keystone-6/core/admin-ui/components'
-import { useRouter } from '@keystone-6/core/admin-ui/router'
+import { useNavigate } from '@keystar/ui/router'
 import type { AuthGqlNames } from '../types.ts'
 
 export default (props: Parameters<typeof SigninPage>[0]) => () => <SigninPage {...props} />
@@ -24,7 +24,7 @@ function SigninPage({
   secretField: string
   authGqlNames: AuthGqlNames
 }) {
-  const router = useRouter()
+  const navigate = useNavigate()
   const [state, setState] = useState({ identity: '', secret: '' })
   const {
     authenticateItemWithPassword,
@@ -66,7 +66,7 @@ function SigninPage({
       })
 
       if (data?.authenticate.item) {
-        router.push('/')
+        navigate('/')
       }
     } catch (e) {
       console.error(e)
