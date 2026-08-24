@@ -1,10 +1,10 @@
-import type { SVGAttributes } from 'react'
+import { type SVGAttributes, useRef } from 'react'
 
+import { useLink } from '@keystar/ui/link'
 import { css, tokenSchema } from '@keystar/ui/style'
 import { Heading } from '@keystar/ui/typography'
 
 import { useKeystone } from '../context.tsx'
-import { Link } from '../router.tsx'
 
 export function Logo() {
   const { adminConfig } = useKeystone()
@@ -13,10 +13,14 @@ export function Logo() {
 }
 
 function DefaultLogo() {
+  const ref = useRef<HTMLAnchorElement>(null)
+  const { linkProps } = useLink({ href: '/' }, ref)
+
   return (
     <Heading elementType="div" size="small" UNSAFE_className={css({ lineHeight: 1 })}>
-      <Link
-        href="/"
+      <a
+        ref={ref}
+        {...linkProps}
         className={css({
           alignItems: 'center',
           color: tokenSchema.color.alias.foregroundIdle,
@@ -39,7 +43,7 @@ function DefaultLogo() {
       >
         <LogoMark className={css({ width: tokenSchema.size.element.small })} />
         <span>Keystone</span>
-      </Link>
+      </a>
     </Heading>
   )
 }
