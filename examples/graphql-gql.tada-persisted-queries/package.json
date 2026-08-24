@@ -1,0 +1,32 @@
+{
+  "name": "@keystone-6/example-graphql-gql.tada-persisted-queries",
+  "version": null,
+  "private": true,
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "dev": "gql-tada generate-output && gql-tada generate-persisted && keystone dev",
+    "client": "node client.ts",
+    "start": "keystone start",
+    "build": "gql-tada generate-output && gql-tada generate-persisted && keystone build && gql-tada check",
+    "generate": "gql-tada generate-output && gql-tada generate-persisted",
+    "check:tada": "gql-tada generate-output && gql-tada generate-persisted && gql-tada check",
+    "check": "keystone postinstall"
+  },
+  "dependencies": {
+    "@keystone-6/auth": "workspace:^",
+    "@keystone-6/core": "workspace:^",
+    "@prisma/adapter-better-sqlite3": "catalog:",
+    "@prisma/client": "catalog:",
+    "better-sqlite3": "catalog:",
+    "gql.tada": "^1.11.3",
+    "graphql": "catalog:",
+    "next": "catalog:",
+    "react": "catalog:",
+    "react-dom": "catalog:"
+  },
+  "devDependencies": {
+    "prisma": "catalog:",
+    "typescript": "catalog:"
+  }
+}
