@@ -54,7 +54,7 @@ const Sidebar = ({
     >
       <aside
         className={css({
-          height: '100%',
+          minHeight: '100%',
           minWidth: 0, // resolves collapsing issues in children
         })}
         {...props}
