@@ -26,7 +26,7 @@ export function writeAdminFiles(config: KeystoneConfig, adminMeta: AdminMetaSour
     },
     {
       mode: 'write' as const,
-      src: noAccessTemplate(config.session),
+      src: noAccessTemplate,
       outputPath: 'pages/no-access.js',
     },
     {
