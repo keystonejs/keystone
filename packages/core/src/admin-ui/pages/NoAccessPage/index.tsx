@@ -4,9 +4,7 @@ import { Heading, Text } from '@keystar/ui/typography'
 
 import { ErrorContainer } from '../../components/Errors.tsx'
 
-type NoAccessPageProps = { sessionsEnabled: boolean }
-
-export function NoAccessPage(_: NoAccessPageProps) {
+export function NoAccessPage() {
   return (
     <ErrorContainer>
       <Icon color="neutral" src={shieldAlertIcon} size="large" />
