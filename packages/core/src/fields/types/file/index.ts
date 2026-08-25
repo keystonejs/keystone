@@ -12,7 +12,7 @@ import { fieldType } from '../../../types/index.ts'
 import { g } from '../../../index.ts'
 import { merge } from '../../resolve-hooks.ts'
 import type { InferValueFromArg, InferValueFromInputType } from '@graphql-ts/schema'
-import { randomBytes } from 'node:crypto'
+import { toBase64Url } from '../../../lib/encoding.ts'
 
 export type FieldTypeInfo = {
   item: undefined
@@ -161,7 +161,7 @@ function defaultTransformName(path: string) {
   // followed by any alphanumerical character before the end of the string
   const [, name, ext] = path.match(/^([^:\n].*?)(\.[A-Za-z0-9]{0,10})?$/) as RegExpMatchArray
 
-  const id = randomBytes(16).toString('base64url')
+  const id = toBase64Url(crypto.getRandomValues(new Uint8Array(16)))
   const urlSafeName = name.replace(/[^A-Za-z0-9]/g, '-')
   if (ext) return `${urlSafeName}-${id}${ext}`
   return `${urlSafeName}-${id}`

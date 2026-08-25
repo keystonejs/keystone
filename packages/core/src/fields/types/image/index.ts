@@ -13,7 +13,7 @@ import { g } from '../../../index.ts'
 import { SUPPORTED_IMAGE_EXTENSIONS } from './utils.ts'
 import { merge } from '../../resolve-hooks.ts'
 import type { InferValueFromArg, InferValueFromInputType } from '@graphql-ts/schema'
-import { randomBytes } from 'node:crypto'
+import { toBase64Url } from '../../../lib/encoding.ts'
 import type { ImageExtension } from './internal-utils.ts'
 import { getBytesFromStream, getImageMetadata, teeStream } from './internal-utils.ts'
 
@@ -240,5 +240,5 @@ export function image<ListTypeInfo extends BaseListTypeInfo>(
 }
 
 function defaultTransformName(_: string) {
-  return randomBytes(16).toString('base64url')
+  return toBase64Url(crypto.getRandomValues(new Uint8Array(16)))
 }

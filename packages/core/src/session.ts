@@ -1,6 +1,6 @@
-import { randomBytes } from 'node:crypto'
 import * as cookie from 'cookie'
 import Iron from '@hapi/iron'
+import { toBase64Url } from './lib/encoding.ts'
 import type { KeystoneContext, SessionStrategy, SessionStoreFunction } from './types/index.ts'
 
 // TODO: should we also accept httpOnly?
@@ -71,7 +71,7 @@ function getToken(req: NonNullable<KeystoneContext['req']>, cookieName: string) 
 }
 
 export function statelessSessions<Session>({
-  secret = randomBytes(32).toString('base64url'),
+  secret = toBase64Url(crypto.getRandomValues(new Uint8Array(32))),
   maxAge = 60 * 60 * 8, // 8 hours,
   cookieName = 'keystonejs-session',
   path = '/',
@@ -153,7 +153,7 @@ export function storedSessions<Session>({
       return store.get(sessionId)
     },
     async start({ context, data }) {
-      const sessionId = randomBytes(24).toString('base64url') // 192-bit
+      const sessionId = toBase64Url(crypto.getRandomValues(new Uint8Array(24))) // 192-bit
       await store.set(sessionId, data)
       return stateless.start({ context, data: sessionId }) || ''
     },

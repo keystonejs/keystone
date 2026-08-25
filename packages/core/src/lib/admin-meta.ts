@@ -1,5 +1,3 @@
-import path from 'node:path'
-
 import type {
   BaseFieldTypeInfo,
   BaseItem,
@@ -412,7 +410,7 @@ function assertValidView(view: string, location: string) {
     )
   }
 
-  if (path.isAbsolute(view)) {
+  if (view.startsWith('/') || /^[A-Za-z]:\//.test(view)) {
     throw new Error(
       `${location} is an absolute path, which is invalid. You need to use a module path that is resolved from where 'keystone start' is run (see https://github.com/keystonejs/keystone/pull/7805)`
     )
