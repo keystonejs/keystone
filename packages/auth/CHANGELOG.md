@@ -1,5 +1,13 @@
 # @keystone-6/auth
 
+## 10.0.5
+
+### Patch Changes
+
+- [#10023](https://github.com/keystonejs/keystone/pull/10023) [`b4e9a21`](https://github.com/keystonejs/keystone/commit/b4e9a21a3ded01022443c93fc5627c912ae2a240) Thanks [@emmatown](https://github.com/emmatown)! - Updates `@keystar/ui` to `0.10.0`
+
+- [#10024](https://github.com/keystonejs/keystone/pull/10024) [`2ca7da5`](https://github.com/keystonejs/keystone/commit/2ca7da5fcf95e8a44c9edbf9b98832351d39ea55) Thanks [@emmatown](https://github.com/emmatown)! - Moves `next` from `dependencies` to `peerDependencies` in `@keystone-6/auth`, previously you may have had duplicate copies of `next` because of this
+
 ## 10.0.4
 
 ### Patch Changes

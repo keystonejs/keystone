@@ -1,5 +1,19 @@
 # @keystone-6/core
 
+## 8.1.0
+
+### Minor Changes
+
+- [#9578](https://github.com/keystonejs/keystone/pull/9578) [`ed1b32b`](https://github.com/keystonejs/keystone/commit/ed1b32b748031948d193bc91ed80f0d010909e9f) Thanks [@emmatown](https://github.com/emmatown)! - Adds support for setting the `Session` type with `declare module "./generated/keystone/types" { interface Session {} }`. The existing session type parameter still exists though will be removed in a future major version.
+
+### Patch Changes
+
+- [#10023](https://github.com/keystonejs/keystone/pull/10023) [`b4e9a21`](https://github.com/keystonejs/keystone/commit/b4e9a21a3ded01022443c93fc5627c912ae2a240) Thanks [@emmatown](https://github.com/emmatown)! - Updates `@keystar/ui` to `0.10.0`
+
+- [#10021](https://github.com/keystonejs/keystone/pull/10021) [`af32f87`](https://github.com/keystonejs/keystone/commit/af32f8721cba146287da7811ec75aa360dadbc07) Thanks [@emmatown](https://github.com/emmatown)! - Removes runtime `node:` imports from `@keystone-6/core` and `@keystone-6/core/context`
+
+- [#10020](https://github.com/keystonejs/keystone/pull/10020) [`640dcb2`](https://github.com/keystonejs/keystone/commit/640dcb2d423dc30de9acca27e35c803783e29815) Thanks [@mikehazell](https://github.com/mikehazell)! - Changes `height` to `minHeight` in `PageContainer`
+
 ## 8.0.6
 
 ### Patch Changes
