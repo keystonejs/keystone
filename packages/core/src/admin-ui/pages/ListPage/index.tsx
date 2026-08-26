@@ -1,8 +1,8 @@
 import isDeepEqual from 'fast-deep-equal'
 import type { GraphQLFormattedError } from 'graphql/index.js'
-import { useRouter } from '../../router.tsx'
 import type { ParsedUrlQuery, ParsedUrlQueryInput } from 'querystring'
 import { type FormEvent, type Key, Fragment, useEffect, useId, useMemo, useState } from 'react'
+import { useEffectEvent } from 'react-aria/private/utils/useEffectEvent'
 
 import { ActionBar, ActionBarContainer, Item } from '@keystar/ui/action-bar'
 import { ActionButton, Button, ButtonGroup } from '@keystar/ui/button'
@@ -16,6 +16,7 @@ import { undo2Icon } from '@keystar/ui/icon/icons/undo2Icon'
 import { Box, Flex, HStack, VStack } from '@keystar/ui/layout'
 import { Menu, MenuTrigger } from '@keystar/ui/menu'
 import { ProgressCircle } from '@keystar/ui/progress'
+import { useNavigate, usePathname, useSearch } from '@keystar/ui/router'
 import { SearchField } from '@keystar/ui/search-field'
 import { Content } from '@keystar/ui/slots'
 import { css, tokenSchema } from '@keystar/ui/style'
@@ -257,12 +258,47 @@ function getColumns(list: ListMeta, query: ParsedUrlQueryInput): string[] {
   return params
 }
 
+function parseSearch(search: string): ParsedUrlQuery {
+  const query: ParsedUrlQuery = {}
+  for (const [key, value] of new URLSearchParams(search)) {
+    const existing = query[key]
+    query[key] =
+      existing === undefined
+        ? value
+        : Array.isArray(existing)
+          ? [...existing, value]
+          : [existing, value]
+  }
+  return query
+}
+
+function stringifyQuery(query: ParsedUrlQueryInput) {
+  const searchParams = new URLSearchParams()
+  for (const [key, value] of Object.entries(query)) {
+    if (Array.isArray(value)) {
+      for (const item of value) {
+        if (item != null) searchParams.append(key, String(item))
+      }
+    } else if (value != null) {
+      searchParams.set(key, String(value))
+    }
+  }
+  const search = searchParams.toString()
+  return search ? `?${search}` : ''
+}
+
 type Selection = Set<string | number> | 'all'
 export function ListPage({ listKey }: ListPageProps) {
   const localStorageListKey = `keystone.list.${listKey}.list.page.info`
 
   const list = useList(listKey)
-  const { query, replace: routerReplace, isReady } = useRouter()
+  const navigate = useNavigate()
+  const pathname = usePathname()
+  const urlSearch = useSearch()
+  const query = useMemo(() => parseSearch(urlSearch), [urlSearch])
+  const replaceQuery = useEffectEvent((updatedQuery: ParsedUrlQueryInput) => {
+    navigate(pathname + stringifyQuery(updatedQuery), { replace: true })
+  })
   const [loaded, setLoaded] = useState(false)
   const [sort, setSort] = useState<SortDescriptor | null>(() => getSort(list, {}))
   const [columns, setColumns] = useState<string[]>(list.initialColumns)
@@ -285,7 +321,6 @@ export function ListPage({ listKey }: ListPageProps) {
   }, [searchString, filters, sort, columns, list.initialColumns])
 
   useEffect(() => {
-    if (!isReady) return
     if (loaded) return
     let localStorageQuery
     try {
@@ -299,10 +334,9 @@ export function ListPage({ listKey }: ListPageProps) {
     setPageSize(getPageSize(list, { ...localStorageQuery, ...query }))
     setSearchString(typeof query.search === 'string' ? query.search : '')
     setLoaded(true)
-  }, [list, isReady])
+  }, [list, loaded, localStorageListKey, query])
 
   useEffect(() => {
-    if (!isReady) return
     if (!loaded) return // TODO: stop this race condition properly
     const updatedQuery: ParsedUrlQueryInput = {
       ...(columns.length ? { column: columns } : {}),
@@ -329,8 +363,18 @@ export function ListPage({ listKey }: ListPageProps) {
     }
 
     localStorage.setItem(localStorageListKey, JSON.stringify(updatedQuery))
-    routerReplace({ query: updatedQuery })
-  }, [columns, sort, filters, currentPage, pageSize, searchString, list, loaded])
+    replaceQuery(updatedQuery)
+  }, [
+    columns,
+    sort,
+    filters,
+    currentPage,
+    pageSize,
+    searchString,
+    list,
+    loaded,
+    localStorageListKey,
+  ])
 
   const allowCreate = !(list.hideCreate ?? true)
   const isConstrained = Boolean(filters.length || query.search)
@@ -593,9 +637,7 @@ export function ListPage({ listKey }: ListPageProps) {
               <Tooltip>Reset to defaults</Tooltip>
             </TooltipTrigger>
           ) : null}
-          {isReady && loading && (
-            <ProgressCircle aria-label="Loading…" size="small" isIndeterminate />
-          )}
+          {loading && <ProgressCircle aria-label="Loading…" size="small" isIndeterminate />}
         </HStack>
 
         {filters.length ? (

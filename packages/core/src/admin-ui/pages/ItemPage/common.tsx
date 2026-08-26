@@ -1,4 +1,3 @@
-import { useRouter } from '../../router.tsx'
 import type { HTMLAttributes, ReactNode } from 'react'
 import { Fragment, useMemo, useState } from 'react'
 import isDeepEqual from 'fast-deep-equal'
@@ -9,6 +8,7 @@ import { AlertDialog, DialogContainer } from '@keystar/ui/dialog'
 import { Icon } from '@keystar/ui/icon'
 import { allIcons as KeystarIcons } from '@keystar/ui/icon/all'
 import { Grid, HStack } from '@keystar/ui/layout'
+import { usePathname, useSearch } from '@keystar/ui/router'
 import { breakpointQueries, css, tokenSchema } from '@keystar/ui/style'
 import { toastQueue } from '@keystar/ui/toast'
 import { Heading, Text } from '@keystar/ui/typography'
@@ -42,7 +42,8 @@ export function ItemPageHeader({
   title: string
   onAction: ((action: ActionMeta, resultId: string | null) => void) | null
 }) {
-  const router = useRouter()
+  const pathname = usePathname()
+  const search = useSearch()
 
   return (
     <Grid
@@ -67,7 +68,7 @@ export function ItemPageHeader({
         <>
           <Breadcrumbs size="medium" gridArea="primary">
             <Item href={`/${list.path}`}>{list.label}</Item>
-            <Item href={router.asPath}>{label}</Item>
+            <Item href={pathname + search}>{label}</Item>
           </Breadcrumbs>
 
           {/* Every page must have an H1 for accessibility. */}

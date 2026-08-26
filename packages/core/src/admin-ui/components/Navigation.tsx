@@ -21,7 +21,7 @@ import { Text } from '@keystar/ui/typography'
 
 import type { ListMeta } from '../../types/index.ts'
 import { useKeystone } from '../context.tsx'
-import { useRouter } from '../router.tsx'
+import { usePathname } from '@keystar/ui/router'
 import { WelcomeDialog } from './WelcomeDialog.tsx'
 
 type NavItemProps = {
@@ -49,13 +49,13 @@ export function getHrefFromList(list: Pick<ListMeta, 'path' | 'isSingleton'>) {
 /** A navigation item represents a page in the AdminUI. */
 export function NavItem(props: NavItemProps) {
   const { children, href, isSelected: isSelectedProp } = props
-  const router = useRouter()
+  const pathname = usePathname()
 
   let ariaCurrent: 'page' | boolean | undefined = isSelectedProp
   if (!ariaCurrent) {
-    if (router.pathname === href) {
+    if (pathname === href) {
       ariaCurrent = 'page'
-    } else if (router.pathname.split('/')[1] === href.split('/')[1]) {
+    } else if (pathname.split('/')[1] === href.split('/')[1]) {
       ariaCurrent = true
     }
   }

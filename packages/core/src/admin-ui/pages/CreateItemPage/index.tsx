@@ -1,5 +1,4 @@
-import { useRouter } from '../../router.tsx'
-
+import { useNavigate } from '@keystar/ui/router'
 import { Button } from '@keystar/ui/button'
 import { VStack } from '@keystar/ui/layout'
 
@@ -13,7 +12,7 @@ import { BaseToolbar, ColumnLayout, ItemPageHeader } from '../ItemPage/common.ts
 export function CreateItemPage({ listKey }: { listKey: string }) {
   const list = useList(listKey)
   const createItem = useCreateItem(list)
-  const router = useRouter()
+  const navigate = useNavigate()
 
   return (
     <PageContainer
@@ -40,7 +39,7 @@ export function CreateItemPage({ listKey }: { listKey: string }) {
             const item = await createItem.create()
             if (!item) return
 
-            router.push(`/${list.path}/${item.id}`)
+            navigate(`/${list.path}/${item.id}`)
           }}
           style={{ display: 'contents' }}
         >

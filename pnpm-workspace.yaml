@@ -31,7 +31,7 @@ catalog:
   react: ^19.2.4
   react-dom: ^19.2.4
   typescript: ^6.0.0
-  '@keystar/ui': ~0.9.6
+  '@keystar/ui': ~0.10.0
   '@keystatic/core': 0.6.7
   react-aria: 3.50.0
   react-stately: 3.48.0
