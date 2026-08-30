@@ -784,16 +784,16 @@ const resolveAdminMetaRunner = setupTestRunner({
           title: text({
             ui: {
               createView: {
-                fieldMode: async () => 'hidden',
+                fieldMode: async () => 'hidden' as const,
                 isRequired: async () => true,
               },
               itemView: {
-                fieldMode: async () => 'read',
-                fieldPosition: async () => 'sidebar',
+                fieldMode: async () => 'read' as const,
+                fieldPosition: async () => 'sidebar' as const,
                 isRequired: async () => true,
               },
               listView: {
-                fieldMode: async () => 'hidden',
+                fieldMode: async () => 'hidden' as const,
               },
             },
           }),
