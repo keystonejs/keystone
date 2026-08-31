@@ -18,12 +18,17 @@ import type { ActionMeta, FieldMeta, ListMeta } from '../types/admin-meta.ts'
 import type { GraphQLNames, JSONValue } from '../types/utils.ts'
 import type { InitialisedList } from './core/initialise-lists.ts'
 import { addCallbackFields, addItemField } from './core/queries/select.ts'
+import { toHex } from './encoding.ts'
+
+const textEncoder = new TextEncoder()
 
 type EmptyResolver<Return> = (args: {}, context: KeystoneContext) => MaybePromise<Return>
 
 type FieldMetaSource_ = {
   listKey: string
   fieldKey: string
+  views: Promise<string>
+  customViews: Promise<string> | null
   isOrderable: EmptyResolver<boolean>
   isFilterable: EmptyResolver<boolean>
 
@@ -97,7 +102,7 @@ export type ListMetaSource = ListMetaSource_ & Omit<ListMeta, keyof ListMetaSour
 export type AdminMetaSource = {
   lists: ListMetaSource[]
   listsByKey: Record<string, ListMetaSource>
-  views: string[]
+  views: Record<string, Promise<string>>
   isAccessAllowed: (context: KeystoneContext) => MaybePromise<boolean>
 }
 
@@ -109,7 +114,7 @@ export function createAdminMeta(
   const adminMetaRoot: AdminMetaSource = {
     listsByKey: {},
     lists: [],
-    views: [],
+    views: Object.create(null),
     isAccessAllowed: config.ui?.isAccessAllowed,
   }
 
@@ -193,15 +198,11 @@ export function createAdminMeta(
     adminMetaRoot.lists.push(adminMetaRoot.listsByKey[listKey])
   }
 
-  let uniqueViewCount = -1
-  const stringViewsToIndex: Record<string, number> = {}
-  function getViewId(view: string) {
-    if (stringViewsToIndex[view] !== undefined) return stringViewsToIndex[view]
-
-    uniqueViewCount++
-    stringViewsToIndex[view] = uniqueViewCount
-    adminMetaRoot.views.push(view)
-    return uniqueViewCount
+  function getViewHash(view: string) {
+    adminMetaRoot.views[view] ??= crypto.subtle
+      .digest('SHA-256', textEncoder.encode(view))
+      .then(digest => toHex(new Uint8Array(digest)))
+    return adminMetaRoot.views[view]
   }
 
   for (const [listKey, list] of Object.entries(initialisedLists)) {
@@ -224,12 +225,12 @@ export function createAdminMeta(
         label: field.ui.label,
         description: field.ui.description,
         fieldMeta: null,
-        viewsIndex: getViewId(field.views),
-        customViewsIndex:
+        views: getViewHash(field.views),
+        customViews:
           field.ui.views === null
             ? null
             : (assertValidView(field.views, `lists.${listKey}.fields.${fieldKey}.ui.views`),
-              getViewId(field.ui.views)),
+              getViewHash(field.ui.views)),
         search: list.ui.searchableFields.get(fieldKey) ?? null,
 
         // FieldMetaSource_
