@@ -129,7 +129,7 @@ export type KeystoneAdminUiFieldGroupMeta = {
 export type KeystoneAdminUiFieldMeta = {
   __typename?: 'KeystoneAdminUIFieldMeta';
   createView: KeystoneAdminUiFieldMetaCreateView;
-  customViewsIndex?: Maybe<Scalars['Int']['output']>;
+  customViews?: Maybe<Scalars['String']['output']>;
   description?: Maybe<Scalars['String']['output']>;
   fieldMeta?: Maybe<Scalars['JSON']['output']>;
   isFilterable: Scalars['Boolean']['output'];
@@ -140,7 +140,7 @@ export type KeystoneAdminUiFieldMeta = {
   listView: KeystoneAdminUiFieldMetaListView;
   path: Scalars['String']['output'];
   search?: Maybe<QueryMode>;
-  viewsIndex: Scalars['Int']['output'];
+  views: Scalars['String']['output'];
 };
 
 
