@@ -12,7 +12,7 @@ import { nextConfigTemplate } from './next-config.ts'
 import { noAccessTemplate } from './no-access.ts'
 import { pkgDir } from '../../pkg-dir.ts'
 
-export function writeAdminFiles(config: KeystoneConfig, adminMeta: AdminMetaSource) {
+export async function writeAdminFiles(config: KeystoneConfig, adminMeta: AdminMetaSource) {
   return [
     {
       mode: 'write' as const,
@@ -31,7 +31,7 @@ export function writeAdminFiles(config: KeystoneConfig, adminMeta: AdminMetaSour
     },
     {
       mode: 'write' as const,
-      src: appTemplate(config, adminMeta),
+      src: await appTemplate(config, adminMeta),
       outputPath: 'pages/_app.js',
     },
     {

@@ -27,8 +27,8 @@ const KeystoneAdminUIFieldMeta = g.object<FieldMetaSource>()({
       ),
     }),
     fieldMeta: g.field({ type: g.JSON }),
-    viewsIndex: g.field({ type: g.nonNull(g.Int) }),
-    customViewsIndex: g.field({ type: g.Int }),
+    views: g.field({ type: g.nonNull(g.String) }),
+    customViews: g.field({ type: g.String }),
     createView: g.field({
       type: g.nonNull(
         g.object<FieldMetaSource['createView']>()({
@@ -179,6 +179,8 @@ const KeystoneAdminUIActionMeta = g.object<ActionMetaSource>()({
                             ...source,
                             field: {
                               ...source.field,
+                              views: await source.field.views,
+                              customViews: await source.field.customViews,
                               label: resolvedLabel,
                               description: resolvedDescription,
                             },
