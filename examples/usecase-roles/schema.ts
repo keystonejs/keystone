@@ -3,14 +3,13 @@ import { allOperations, denyAll } from '@keystone-6/core/access'
 import { checkbox, password, relationship, text } from '@keystone-6/core/fields'
 
 import type { Lists } from './generated/keystone/types'
-import type { Session } from './access'
 import { isSignedIn as hasSession, permissions, rules } from './access'
 
 // WARNING: this example is for demonstration purposes only
 //   as with each of our examples, it has not been vetted
 //   or tested for any particular usage
 
-export const lists: Lists<Session> = {
+export const lists: Lists = {
   Todo: list({
     access: {
       operation: {
@@ -206,4 +205,4 @@ export const lists: Lists<Session> = {
       }),
     },
   }),
-} satisfies Lists<Session>
+} satisfies Lists
