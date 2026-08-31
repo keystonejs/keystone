@@ -101,18 +101,18 @@ function InternalKeystoneProvider({
 
       function hydrateField(field: (typeof listData.fields)[number]) {
         for (const exportName of requiredExports) {
-          if ((fieldViews[field.viewsIndex] as any)[exportName] === undefined) {
+          if ((fieldViews[field.views] as any)[exportName] === undefined) {
             throw new Error(
               `The view for the field at ${listData.key}.${field.key} is missing the ${exportName} export`
             )
           }
         }
 
-        const views = { ...fieldViews[field.viewsIndex] }
+        const views = { ...fieldViews[field.views] }
         const customViews: Record<string, any> = {}
-        if (field.customViewsIndex !== null) {
-          const customViewsSource: FieldViews[number] & Record<string, any> =
-            fieldViews[field.customViewsIndex]
+        if (field.customViews !== null) {
+          const customViewsSource: FieldViews[string] & Record<string, any> =
+            fieldViews[field.customViews]
           const allowedExportsOnCustomViews = new Set(views.allowedExportsOnCustomViews)
           for (const exportName in customViewsSource) {
             if (allowedExportsOnCustomViews.has(exportName)) {

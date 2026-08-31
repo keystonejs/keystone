@@ -192,7 +192,7 @@ export interface NexusGenObjects {
   }
   KeystoneAdminUIFieldMeta: { // root type
     createView: NexusGenRootTypes['KeystoneAdminUIFieldMetaCreateView']; // KeystoneAdminUIFieldMetaCreateView!
-    customViewsIndex?: number | null; // Int
+    customViews?: string | null; // String
     description?: string | null; // String
     fieldMeta?: NexusGenScalars['JSON'] | null; // JSON
     isNonNull?: NexusGenEnums['KeystoneAdminUIFieldMetaIsNonNull'][] | null; // [KeystoneAdminUIFieldMetaIsNonNull!]
@@ -200,7 +200,7 @@ export interface NexusGenObjects {
     listView: NexusGenRootTypes['KeystoneAdminUIFieldMetaListView']; // KeystoneAdminUIFieldMetaListView!
     path: string; // String!
     search?: NexusGenEnums['QueryMode'] | null; // QueryMode
-    viewsIndex: number; // Int!
+    views: string; // String!
   }
   KeystoneAdminUIFieldMetaCreateView: {};
   KeystoneAdminUIFieldMetaItemView: {};
@@ -288,7 +288,7 @@ export interface NexusGenFieldTypes {
   }
   KeystoneAdminUIFieldMeta: { // field return type
     createView: NexusGenRootTypes['KeystoneAdminUIFieldMetaCreateView']; // KeystoneAdminUIFieldMetaCreateView!
-    customViewsIndex: number | null; // Int
+    customViews: string | null; // String
     description: string | null; // String
     fieldMeta: NexusGenScalars['JSON'] | null; // JSON
     isFilterable: boolean; // Boolean!
@@ -299,7 +299,7 @@ export interface NexusGenFieldTypes {
     listView: NexusGenRootTypes['KeystoneAdminUIFieldMetaListView']; // KeystoneAdminUIFieldMetaListView!
     path: string; // String!
     search: NexusGenEnums['QueryMode'] | null; // QueryMode
-    viewsIndex: number; // Int!
+    views: string; // String!
   }
   KeystoneAdminUIFieldMetaCreateView: { // field return type
     fieldMode: NexusGenEnums['KeystoneAdminUIFieldMetaCreateViewFieldMode']; // KeystoneAdminUIFieldMetaCreateViewFieldMode!
@@ -419,7 +419,7 @@ export interface NexusGenFieldTypeNames {
   }
   KeystoneAdminUIFieldMeta: { // field return type name
     createView: 'KeystoneAdminUIFieldMetaCreateView'
-    customViewsIndex: 'Int'
+    customViews: 'String'
     description: 'String'
     fieldMeta: 'JSON'
     isFilterable: 'Boolean'
@@ -430,7 +430,7 @@ export interface NexusGenFieldTypeNames {
     listView: 'KeystoneAdminUIFieldMetaListView'
     path: 'String'
     search: 'QueryMode'
-    viewsIndex: 'Int'
+    views: 'String'
   }
   KeystoneAdminUIFieldMetaCreateView: { // field return type name
     fieldMode: 'KeystoneAdminUIFieldMetaCreateViewFieldMode'
