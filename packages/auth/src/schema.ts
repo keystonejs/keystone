@@ -1,7 +1,7 @@
 import { assertInputObjectType, GraphQLString, GraphQLID, parse, validate } from 'graphql/index.js'
 
 import { g } from '@keystone-6/core'
-import type { AuthGqlNames, AuthTokenTypeConfig } from './types.ts'
+import type { AuthGqlNames } from './types.ts'
 import { getBaseAuthSchema } from './gql/getBaseAuthSchema.ts'
 
 export const getSchemaExtension = ({
@@ -15,8 +15,6 @@ export const getSchemaExtension = ({
   listKey: string
   identityField: string
   secretField: string
-  passwordResetLink?: AuthTokenTypeConfig
-  magicAuthLink?: AuthTokenTypeConfig
   sessionData: string
 }) =>
   g.extend(base => {
