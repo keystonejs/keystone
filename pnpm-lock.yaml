@@ -909,6 +909,9 @@ importers:
       better-sqlite3:
         specifier: 'catalog:'
         version: 12.11.1
+      cookie:
+        specifier: ^1.0.0
+        version: 1.1.1
       next:
         specifier: 'catalog:'
         version: 16.2.10(@babel/core@7.29.0(supports-color@7.2.0))(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)

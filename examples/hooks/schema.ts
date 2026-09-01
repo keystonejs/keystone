@@ -104,12 +104,12 @@ export const lists = {
       resolveInput: {
         create: ({ context, resolvedData }) => {
           //resolvedData.createdAt = new Date(); // see createdAt field hook
-          resolvedData.createdBy = `${context.req?.socket.remoteAddress} (${context.req?.headers['user-agent']})`
+          resolvedData.createdBy = `${context.req?.get('x-forwarded-for')} (${context.req?.get('user-agent')})`
           return resolvedData
         },
         update: ({ context, resolvedData }) => {
           //resolvedData.updatedAt = new Date(); // see updatedAt field hook
-          resolvedData.updatedBy = `${context.req?.socket.remoteAddress} (${context.req?.headers['user-agent']})`
+          resolvedData.updatedBy = `${context.req?.get('x-forwarded-for')} (${context.req?.get('user-agent')})`
           return resolvedData
         },
       },
