@@ -40,7 +40,7 @@ const jwtSessionStrategy = {
   async get({ context }: { context: Context }): Promise<Session | undefined> {
     if (!context.req) return
 
-    const { cookie = '' } = context.req.headers
+    const cookie = context.req.get('cookie') ?? ''
     const [cookieName, jwt] = cookie.split('=')
     if (cookieName !== 'user') return
 

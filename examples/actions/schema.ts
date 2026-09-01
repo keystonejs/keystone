@@ -60,7 +60,7 @@ export const lists = {
     actions: {
       vote: action({
         access: ({ context }) => {
-          const ua = context.req?.headers['user-agent'] ?? ''
+          const ua = context.req?.get('user-agent') ?? ''
           // only allow voting from Chrome browsers
           return ua.includes('Chrome')
         },

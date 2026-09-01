@@ -13,7 +13,7 @@ const sillySessionStrategy = {
     //   use `Cookie:user=clh9v7ahs0004sbhmpx30w85n` for Eve (contributor)
     //
     // in practice, you should use authentication for your sessions, such as OAuth or JWT
-    const { cookie = '' } = context.req.headers
+    const cookie = context.req.get('cookie') ?? ''
     const [cookieName, id] = cookie.split('=')
     if (cookieName !== 'user') return
 
