@@ -28,6 +28,10 @@ export default config<TypeInfo>({
   server: {
     extendExpressApp(app) {
       app.use(pino)
+      app.use((req, _res, next) => {
+        if (req.id !== undefined) req.headers['x-request-id'] = String(req.id)
+        next()
+      })
     },
   },
   graphql: {
@@ -46,7 +50,7 @@ export default config<TypeInfo>({
                 pino.logger.info(
                   {
                     req: requestContext.contextValue.req
-                      ? { id: requestContext.contextValue.req?.id }
+                      ? { id: requestContext.contextValue.req?.get('x-request-id') }
                       : undefined,
                     responseTime: Date.now() - start,
                     graphql: {

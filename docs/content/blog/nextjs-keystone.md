@@ -76,10 +76,10 @@ import { createYoga } from 'graphql-yoga';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { keystoneContext } from '../../keystone/context';
 
-// Use Keystone's context to create GraphQL handler
+// Use Keystone API to create GraphQL handler
 export default createYoga<{
-  req: NextApiRequest;
-  res: NextApiResponse;
+  req: NextApiRequest
+  res: NextApiResponse
 }>({
   graphqlEndpoint: '/api/graphql',
   multipart: false,
@@ -87,12 +87,34 @@ export default createYoga<{
   /*
     `keystoneContext` object doesn't have user's session information.
     You need an authenticated context to CRUD data behind access control.
-    keystoneContext.withRequest(req, res) automatically unwraps the session cookie
+    keystoneContext.withRequest(request.headers, responseHeaders) automatically unwraps the session cookie
     in the request object and gives you a `context` object with session info
     and an elevated sudo context to bypass access control if needed (context.sudo()).
   */
-  context: ({ req, res }) => keystoneContext.withRequest(req, res),
-});
+  context: ({ request }) => {
+    const responseHeaders = new Headers()
+    requestToResponseHeaders.set(request, responseHeaders)
+    return keystoneContext.withRequest(request.headers, responseHeaders)
+  },
+  plugins: [
+    {
+      onResponse({ response, request }) {
+        const headers = requestToResponseHeaders.get(request)
+        if (headers) {
+          for (const [key, value] of headers.entries()) {
+            if (key !== 'set-cookie') response.headers.set(key, value)
+          }
+          for (const value of headers.getSetCookie()) {
+            response.headers.append('set-cookie', value)
+          }
+        }
+      },
+    },
+  ],
+  fetchAPI: globalThis,
+})
+
+const requestToResponseHeaders = new WeakMap<Request, Headers>()
 ```
 
 ## Deploying to Vercel

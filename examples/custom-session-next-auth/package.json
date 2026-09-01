@@ -13,6 +13,7 @@
     "@keystone-6/core": "workspace:^",
     "@prisma/adapter-better-sqlite3": "catalog:",
     "@prisma/client": "catalog:",
+    "cookie": "^1.0.0",
     "next": "catalog:",
     "next-auth": "^4.24.11",
     "react": "catalog:",
