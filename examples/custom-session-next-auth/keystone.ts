@@ -2,7 +2,7 @@ import { PrismaBetterSqlite3 } from '@prisma/adapter-better-sqlite3'
 import { config } from '@keystone-6/core'
 import { lists } from './schema'
 
-import { nextAuthSessionStrategy } from './session'
+import { getNextAuthSession } from './session'
 import type { TypeInfo } from './generated/keystone/types'
 
 // WARNING: this example is for demonstration purposes only
@@ -44,6 +44,5 @@ export default config<TypeInfo>({
     },
   },
   lists,
-  // you can find out more at https://keystonejs.com/docs/apis/session#session-api
-  session: nextAuthSessionStrategy,
+  getSession: getNextAuthSession,
 })
