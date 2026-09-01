@@ -121,7 +121,7 @@ Options:
 
     ```typescript
     fieldMode: ({ context }) => {
-      if (context.session?.data.role !== 'admin') return 'hidden'
+      if (context.session?.user.role !== 'admin') return 'hidden'
       return {
         hidden: { status: { equals: 'archived' } },
       }

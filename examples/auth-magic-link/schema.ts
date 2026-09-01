@@ -4,16 +4,18 @@ import { password, text, timestamp } from '@keystone-6/core/fields'
 import type { Lists, Context, Session } from './generated/keystone/types'
 
 import { randomBytes } from 'node:crypto'
+import { jwtSessions } from '@keystone-6/auth'
 
 const g = gWithContext<Context>()
 type g<T> = gWithContext.infer<T>
 
-declare module './generated/keystone/types' {
-  interface Session {
-    itemId: string
-    listKey: string
-  }
-}
+const sessionSecret = '-- DEV COOKIE SECRET; CHANGE ME --'
+const sessionMaxAge = 60 * 60
+
+export const sessionStrategy = jwtSessions({
+  maxAge: sessionMaxAge,
+  secret: sessionSecret,
+})
 
 function hasSession({ session }: { session?: Session }) {
   return Boolean(session)
@@ -27,7 +29,7 @@ function isSameUser({ session, item }: { session?: Session; item: Lists.User.Ite
   if (!item) return false
 
   // only yourself
-  return item.id === session.itemId
+  return item.id === session.user.id
 }
 
 function isSameUserFilter({ session }: { session?: Session }) {
@@ -37,7 +39,7 @@ function isSameUserFilter({ session }: { session?: Session }) {
   // only yourself
   return {
     id: {
-      equals: session.itemId,
+      equals: session.user.id,
     },
   }
 }
@@ -163,9 +165,6 @@ export const extendGraphqlSchema = g.extend(base => {
         },
 
         async resolve(args, { userId, token }, context) {
-          if (!context.sessionStrategy)
-            throw new Error('No session implementation available on context')
-
           const kdf = (base.schema.getType('User') as any).getFields()?.password.extensions
             ?.keystoneSecretField
           const sudoContext = context.sudo()
@@ -191,11 +190,10 @@ export const extendGraphqlSchema = g.extend(base => {
               },
             })
 
-            await context.sessionStrategy.start({
+            await sessionStrategy.start({
               context,
               data: {
-                listKey: 'User',
-                itemId: userId,
+                sub: userId,
               },
             })
           }

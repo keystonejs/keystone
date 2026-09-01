@@ -12,17 +12,13 @@ const runner = setupTestRunner({
     lists: {
       User: list({ access: allowAll, fields: { name: text() } }),
     },
-    session: {
-      async get({ context }) {
-        context.res?.set('x-request-authorization', context.req?.get('authorization') ?? '')
-        context.res?.set('x-request-empty', context.req?.get('x-empty') ?? 'missing')
-        context.res?.set('x-request-remote-address', context.req?.get('x-remote-address') ?? '')
-        context.res?.append('set-cookie', 'first=1')
-        context.res?.append('set-cookie', 'second=2')
-        return { authorization: context.req?.get('authorization') }
-      },
-      async start() {},
-      async end() {},
+    async getSession({ context }) {
+      context.res?.set('x-request-authorization', context.req?.get('authorization') ?? '')
+      context.res?.set('x-request-empty', context.req?.get('x-empty') ?? 'missing')
+      context.res?.set('x-request-remote-address', context.req?.get('x-remote-address') ?? '')
+      context.res?.append('set-cookie', 'first=1')
+      context.res?.append('set-cookie', 'second=2')
+      return { authorization: context.req?.get('authorization') }
     },
     graphql: {
       apolloConfig: {
