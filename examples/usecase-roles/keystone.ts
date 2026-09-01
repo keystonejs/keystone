@@ -1,8 +1,9 @@
 import { PrismaBetterSqlite3 } from '@prisma/adapter-better-sqlite3'
 import { config } from '@keystone-6/core'
-import { statelessSessions } from '@keystone-6/core/session'
-import { createAuth } from '@keystone-6/auth'
+import { createAuth, jwtSessions } from '@keystone-6/auth'
 import { lists } from './schema'
+
+const sessionStrategy = jwtSessions<{ sub: string }>()
 
 // WARNING: this example is for demonstration purposes only
 //   as with each of our examples, it has not been vetted
@@ -16,22 +17,13 @@ const { withAuth } = createAuth({
   // an identity field, typically a username or an email address
   identityField: 'name',
 
-  // a secret field must be a password field type
-  secretField: 'password',
+  // the password field must use the password field type
+  passwordField: 'password',
 
-  sessionData: `
-    name
-    role {
-      id
-      name
-      canCreateTodos
-      canManageAllTodos
-      canSeeOtherPeople
-      canEditOtherPeople
-      canManagePeople
-      canManageRoles
-      canUseAdminUI
-    }`,
+  sessionStrategy,
+  getAuthenticatedItemId(context) {
+    return context.session?.user.id
+  },
 })
 
 export default withAuth(
@@ -74,12 +66,22 @@ export default withAuth(
       },
     },
     lists,
+    async getSession({ context }) {
+      const data = await sessionStrategy.get({ context })
+      if (!data) return
+      const sudo = context.sudo()
+      const user = await sudo.db.User.findOne({ where: { id: data.sub } })
+      if (!user) return
+      const role =
+        typeof user.roleId === 'string'
+          ? await sudo.db.Role.findOne({ where: { id: user.roleId } })
+          : null
+      return { user, role }
+    },
     ui: {
       isAccessAllowed: ({ session }) => {
-        return session?.data.role?.canUseAdminUI ?? false
+        return session?.role?.canUseAdminUI ?? false
       },
     },
-    // you can find out more at https://keystonejs.com/docs/apis/session#session-api
-    session: statelessSessions(),
   })
 )

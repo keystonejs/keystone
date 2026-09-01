@@ -11,30 +11,24 @@ import { Heading, Text } from '@keystar/ui/typography'
 import { gql, type TypedDocumentNode, useMutation } from '@keystone-6/core/admin-ui/apollo'
 import { GraphQLErrorNotice, Logo } from '@keystone-6/core/admin-ui/components'
 import { useNavigate } from '@keystar/ui/router'
-import type { AuthGqlNames } from '../types.ts'
 
 export default (props: Parameters<typeof SigninPage>[0]) => () => <SigninPage {...props} />
 
 function SigninPage({
   identityField,
-  secretField,
-  authGqlNames,
+  passwordField,
 }: {
   identityField: string
-  secretField: string
-  authGqlNames: AuthGqlNames
+  passwordField: string
 }) {
   const navigate = useNavigate()
-  const [state, setState] = useState({ identity: '', secret: '' })
-  const {
-    authenticateItemWithPassword,
-    ItemAuthenticationWithPasswordSuccess: successTypename,
-    ItemAuthenticationWithPasswordFailure: failureTypename,
-  } = authGqlNames
+  const [state, setState] = useState({ identity: '', password: '' })
+  const successTypename = 'AuthenticationWithPasswordSuccess'
+  const failureTypename = 'AuthenticationWithPasswordFailure'
   const [tryAuthenticate, { error, loading, data }] = useMutation(
     gql`
-    mutation KsAuthSignin ($identity: String!, $secret: String!) {
-      authenticate: ${authenticateItemWithPassword}(${identityField}: $identity, ${secretField}: $secret) {
+    mutation KsAuthSignin ($identity: String!, $password: String!) {
+      authenticate: authenticateWithPassword(identity: $identity, password: $password) {
         ... on ${successTypename} {
           item {
             id
@@ -46,7 +40,7 @@ function SigninPage({
       }
     }` as TypedDocumentNode<
       { authenticate: { __typename: string; item?: { id: string }; message?: string } },
-      { identity: string; secret: string }
+      { identity: string; password: string }
     >,
     {
       refetchQueries: ['KsFetchAdminMeta'],
@@ -61,7 +55,7 @@ function SigninPage({
       const { data } = await tryAuthenticate({
         variables: {
           identity: state.identity,
-          secret: state.secret,
+          password: state.password,
         },
       })
 
@@ -128,12 +122,12 @@ function SigninPage({
             <PasswordField
               id="password"
               isRequired
-              label={capitalizeFirstLetter(secretField)}
+              label={capitalizeFirstLetter(passwordField)}
               // @ts-expect-error — valid prop, types need to be fixed in "@keystar/ui"
               name="password"
-              onChange={v => setState({ ...state, secret: v })}
+              onChange={v => setState({ ...state, password: v })}
               type="password"
-              value={state.secret}
+              value={state.password}
             />
           </VStack>
 

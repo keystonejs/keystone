@@ -119,19 +119,17 @@ test('Check access control by running updateTask as a specific user via context.
 
   // test that we can update the task (with a session)
   {
-    const result = await context
-      .withSession({ listKey: 'User', itemId: alice.id, data: {} })
-      .db.Task.updateOne({
-        where: { id: task.id },
-        data: { isComplete: true },
-      })
+    const result = await context.withSession({ user: alice }).db.Task.updateOne({
+      where: { id: task.id },
+      data: { isComplete: true },
+    })
     assert.equal(result.id, task.id)
   }
 
   // test that we can't update the task (with an invalid session (Bob))
   await assert.rejects(
     async () => {
-      await context.withSession({ listKey: 'User', itemId: bob.id, data: {} }).db.Task.updateOne({
+      await context.withSession({ user: bob }).db.Task.updateOne({
         where: { id: task.id },
         data: { isComplete: true },
       })

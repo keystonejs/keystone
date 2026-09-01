@@ -1,11 +1,11 @@
 import { describe, expect, test } from 'vitest'
 import { list } from '@keystone-6/core'
 import { text, timestamp, password } from '@keystone-6/core/fields'
-import { statelessSessions } from '@keystone-6/core/session'
-import { createAuth } from '@keystone-6/auth'
+import { createAuth, jwtSessions } from '@keystone-6/auth'
 import { setupTestRunner, setupTestEnv } from '@keystone-6/api-tests/test-runner'
 import { allowAll } from '@keystone-6/core/access'
 import { expectAccessDenied, seed } from './utils.ts'
+import { query } from './run-field.ts'
 
 const initialData = {
   User: [
@@ -14,17 +14,27 @@ const initialData = {
   ],
 }
 
-function testOptions(options?: any) {
+const sessionSecret = 'api-test-session-secret-at-least-32-characters'
+
+function testOptions() {
+  const sessionStrategy = jwtSessions({ secret: sessionSecret })
   const { withAuth } = createAuth({
     listKey: 'User',
     identityField: 'email',
-    secretField: 'password',
-    sessionData: 'id',
-    ...options,
+    passwordField: 'password',
+    sessionStrategy,
+    getAuthenticatedItemId(context) {
+      return context.session?.id
+    },
   })
 
   return {
     config: withAuth({
+      async getSession({ context }: { context: any }) {
+        const data = await sessionStrategy.get({ context })
+        if (!data) return
+        return (await context.sudo().db.User.findOne({ where: { id: data.sub } })) ?? undefined
+      },
       lists: {
         Post: list({
           access: allowAll,
@@ -42,17 +52,12 @@ function testOptions(options?: any) {
           },
         }),
       },
-      session: statelessSessions(),
     } as any) as any,
     serve: true,
   }
 }
 
 const runner = setupTestRunner(testOptions())
-
-function setup(options?: any) {
-  return setupTestRunner(testOptions(options))
-}
 
 async function login(
   gqlSuper: any,
@@ -62,8 +67,8 @@ async function login(
   const { body } = await gqlSuper({
     query: `
       mutation($email: String!, $password: String!) {
-        authenticateUserWithPassword(email: $email, password: $password) {
-          ... on UserAuthenticationWithPasswordSuccess {
+        authenticateWithPassword(identity: $email, password: $password) {
+          ... on AuthenticationWithPasswordSuccess {
             sessionToken
             item { id }
           }
@@ -72,10 +77,51 @@ async function login(
     `,
     variables: { email, password },
   })
-  return body.data?.authenticateUserWithPassword || { sessionToken: '', item: { id: undefined } }
+  return body.data?.authenticateWithPassword || { sessionToken: '', item: { id: undefined } }
 }
 
 describe('Auth testing', () => {
+  test(
+    'supports auth mutations through withHeaders',
+    runner(async ({ context }) => {
+      await seed(context, initialData)
+      const responseHeaders = new Headers()
+      const requestContext = await context.withHeaders(new Headers(), responseHeaders)
+      const { data, errors } = await requestContext.graphql.raw({
+        query: `
+          mutation ($identity: String!, $password: String!) {
+            authenticateWithPassword(
+              identity: $identity
+              password: $password
+            ) {
+              ... on AuthenticationWithPasswordSuccess { sessionToken }
+            }
+          }
+        `,
+        variables: {
+          identity: initialData.User[0].email,
+          password: initialData.User[0].password,
+        },
+      })
+      const sessionToken = (data as any).authenticateWithPassword.sessionToken
+
+      expect(errors).toBeUndefined()
+      expect(responseHeaders.get('set-cookie')).toContain(sessionToken)
+
+      const authenticatedContext = await context.withHeaders(
+        new Headers({ authorization: `Bearer ${sessionToken}` })
+      )
+      await expect(query(authenticatedContext).users({ query: 'id' })).resolves.toHaveLength(
+        initialData.User.length
+      )
+      await expect(
+        authenticatedContext.graphql.run({
+          query: `query { authenticatedItem { ... on User { email } } }`,
+        })
+      ).resolves.toEqual({ authenticatedItem: { email: initialData.User[0].email } })
+    })
+  )
+
   test(
     'Gives access denied when not logged in',
     runner(async ({ context }) => {
@@ -98,15 +144,27 @@ describe('Auth testing', () => {
   )
 
   test('Fails with useful error when identity field is not unique', async () => {
+    const sessionStrategy = jwtSessions({ secret: sessionSecret })
     const auth = createAuth({
       listKey: 'User',
       identityField: 'email',
-      secretField: 'password',
-      sessionData: 'id',
+      passwordField: 'password',
+      sessionStrategy,
+      getAuthenticatedItemId(context) {
+        return context.session?.id
+      },
     })
     await expect(
       setupTestEnv(
         auth.withAuth({
+          async getSession({ context }: { context: any }) {
+            const data = await sessionStrategy.get({ context })
+            if (!data) return
+            return (
+              (await context.db.User.findOne({ where: { id: data.sub }, select: { id: true } })) ??
+              undefined
+            )
+          },
           lists: {
             User: list({
               access: allowAll,
@@ -117,8 +175,6 @@ describe('Auth testing', () => {
               },
             }),
           },
-
-          session: statelessSessions(),
         } as any) as any
       )
     ).rejects.toMatchInlineSnapshot(
@@ -274,35 +330,5 @@ describe('Auth testing', () => {
         }
       })
     )
-
-    test('Starting up fails if there sessionData configuration has a syntax error', async () => {
-      await expect(
-        setup({
-          sessionData: 'id {',
-        })(async () => {})
-      ).rejects.toMatchInlineSnapshot(`
-              [Error: The query to get session data has a syntax error, the sessionData option in your createAuth usage is likely incorrect
-              Syntax Error: Expected Name, found "}".
-
-              GraphQL request:1:51
-              1 | query($id: ID!) { user(where: { id: $id }) { id { } }
-                |                                                   ^]
-            `)
-    })
-
-    test('Starting up fails if there sessionData configuration has a validation error', async () => {
-      await expect(
-        setup({
-          sessionData: 'id foo', // foo does not exist
-        })(async () => {})
-      ).rejects.toMatchInlineSnapshot(`
-              [Error: The query to get session data has validation errors, the sessionData option in your createAuth usage is likely incorrect
-              Cannot query field "foo" on type "User".
-
-              GraphQL request:1:49
-              1 | query($id: ID!) { user(where: { id: $id }) { id foo } }
-                |                                                 ^]
-            `)
-    })
   })
 })
