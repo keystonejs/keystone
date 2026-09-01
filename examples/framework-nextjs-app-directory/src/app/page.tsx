@@ -1,6 +1,8 @@
 import { keystoneContext } from '../keystone/context'
 import { DocumentRender } from './DocumentRender'
 
+export const dynamic = 'force-dynamic'
+
 export default async function HomePage() {
   // WARNING: this does nothing for now
   //   you will probably use getServerSession from 'next/auth'
