@@ -4,15 +4,6 @@ import { select } from '@keystone-6/core/fields'
 import { allowAll } from '@keystone-6/core/access'
 import type { Lists, Session } from './generated/keystone/types'
 
-// needs to be compatible with withAuth
-declare module './generated/keystone/types' {
-  interface Session {
-    listKey: string
-    itemId: string
-    data: {}
-  }
-}
-
 function isAssignedUserFilter({ session }: { session?: Session }) {
   // you need to have a session
   if (!session) return false
@@ -21,7 +12,7 @@ function isAssignedUserFilter({ session }: { session?: Session }) {
   return {
     assignedTo: {
       id: {
-        equals: session.itemId,
+        equals: session.user.id,
       },
     },
   }
