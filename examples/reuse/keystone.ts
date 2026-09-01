@@ -13,4 +13,12 @@ export default config({
     // WARNING: this is only needed for our monorepo examples, don't do this
   },
   lists,
+  server: {
+    extendExpressApp(app) {
+      app.use((req, _res, next) => {
+        req.headers['x-forwarded-for'] = req.socket.remoteAddress
+        next()
+      })
+    },
+  },
 })
