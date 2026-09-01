@@ -1,20 +1,15 @@
-import type { AuthGqlNames } from '../types.ts'
-
 export default function ({
-  authGqlNames,
   identityField,
-  secretField,
+  passwordField,
 }: {
-  authGqlNames: AuthGqlNames
   identityField: string
-  secretField: string
+  passwordField: string
 }) {
   return `import makeSigninPage from '@keystone-6/auth/pages/SigninPage'
 
 export default makeSigninPage(${JSON.stringify({
-    authGqlNames,
     identityField,
-    secretField,
+    passwordField,
   })})
 `
 }
