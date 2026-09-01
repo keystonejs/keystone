@@ -1,7 +1,6 @@
 import type {
   AdminFileToWrite,
   BaseListTypeInfo,
-  KeystoneContext,
   SessionStrategy,
   BaseKeystoneTypeInfo,
   KeystoneConfig,
@@ -149,10 +148,6 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
     return { kind: 'redirect', to: `${basePath}/signin` }
   }
 
-  function defaultIsAccessAllowed({ session }: KeystoneContext) {
-    return session !== undefined
-  }
-
   function defaultExtendGraphqlSchema<T>(schema: T) {
     return schema
   }
@@ -168,12 +163,7 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
     throwIfInvalidConfig(config)
     let { ui } = config
     if (!ui?.isDisabled) {
-      const {
-        getAdditionalFiles = () => [],
-        isAccessAllowed = defaultIsAccessAllowed,
-        pageMiddleware,
-        publicPages = [],
-      } = ui || {}
+      const { getAdditionalFiles = () => [], pageMiddleware, publicPages = [] } = ui || {}
       const authPublicPages = [`${ui?.basePath ?? ''}/signin`]
       ui = {
         ...ui,
@@ -182,9 +172,6 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
           ...(await getAdditionalFiles()),
           ...authGetAdditionalFiles(config),
         ],
-
-        isAccessAllowed,
-
         pageMiddleware: async args => {
           const shouldRedirect = authMiddleware(args)
           if (shouldRedirect) return shouldRedirect

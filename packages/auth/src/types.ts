@@ -1,4 +1,4 @@
-import type { BaseListTypeInfo, KeystoneContext } from '@keystone-6/core/types'
+import type { BaseListTypeInfo } from '@keystone-6/core/types'
 
 export type AuthGqlNames = {
   itemQueryName: string
@@ -8,20 +8,6 @@ export type AuthGqlNames = {
   ItemAuthenticationWithPasswordResult: string
   ItemAuthenticationWithPasswordSuccess: string
   ItemAuthenticationWithPasswordFailure: string
-}
-
-export type SendTokenFn = (args: {
-  itemId: string | number | bigint
-  identity: string
-  token: string
-  context: KeystoneContext
-}) => Promise<void> | void
-
-export type AuthTokenTypeConfig = {
-  /** Called when a user should be sent the magic signin token they requested */
-  sendToken: SendTokenFn
-  /** How long do tokens stay valid for from time of issue, in minutes **/
-  tokensValidForMins?: number
 }
 
 export type AuthConfig<ListTypeInfo extends BaseListTypeInfo> = {
