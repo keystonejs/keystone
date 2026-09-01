@@ -74,10 +74,9 @@ export function passportMiddleware(commonContext: KeystoneContext<TypeInfo>): Ro
   //   WARNING: this is for demonstration purposes only, probably dont do this
   router.get('/auth/session', async (req, res) => {
     const context = await commonContext.withRequest(req, res)
-    const session = await context.sessionStrategy?.get({ context })
 
     res.setHeader('Content-Type', 'application/json')
-    res.send(JSON.stringify(session))
+    res.send(JSON.stringify(context.session))
     res.end()
   })
 
