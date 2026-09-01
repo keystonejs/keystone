@@ -4,12 +4,13 @@ import { json } from 'body-parser'
 import { expressMiddleware } from '@as-integrations/express5'
 import express from 'express'
 import { GraphQLError, type GraphQLFormattedError } from 'graphql/index.js'
-import { type ApolloServerOptions, ApolloServer } from '@apollo/server'
+import { type ApolloServerOptions, type ApolloServerPlugin, ApolloServer } from '@apollo/server'
 import { ApolloServerPluginLandingPageDisabled } from '@apollo/server/plugin/disabled'
 import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin/landingPage/default'
 // @ts-expect-error
 import graphqlUploadExpress from 'graphql-upload/graphqlUploadExpress.js'
 import type { KeystoneContext, KeystoneConfig } from '../types/index.ts'
+import { addHeadersToResponse, headersFromRequest } from './context/node-headers.ts'
 
 /*
 NOTE: This creates the main Keystone express server, including the
@@ -69,20 +70,41 @@ export async function createExpressServer(
   await config.server.extendHttpServer(httpServer, context)
 
   const apolloConfig = config.graphql.apolloConfig
+  const responses = new WeakMap<Headers, express.Response>()
+  // Apollo runs willSendResponse hooks concurrently, so context.res writes after
+  // an await in another hook won't be written. Headers also aren't flushed if
+  // Apollo rejects the HTTP payload before entering the request pipeline.
+  // These cases are not intended to be supported and don't matter since the expected use for
+  // setting headers is in mutations for e.g. setting cookies
+  const responseHeadersPlugin: ApolloServerPlugin<KeystoneContext> = {
+    async requestDidStart() {
+      return {
+        async willSendResponse({ contextValue }) {
+          if (contextValue.res) {
+            const response = responses.get(contextValue.res)
+            // A batch shares response headers; each completed operation must flush them.
+            if (response) addHeadersToResponse(contextValue.res, response)
+          }
+        },
+      }
+    },
+  }
   const serverConfig = {
     includeStacktraceInErrorResponses: config.graphql.debug,
     ...apolloConfig,
     formatError: formatError(config.graphql),
     schema: context.graphql.schema,
-    plugins:
-      config.graphql.playground === 'apollo'
-        ? apolloConfig?.plugins
+    plugins: [
+      ...(config.graphql.playground === 'apollo'
+        ? (apolloConfig?.plugins ?? [])
         : [
             config.graphql.playground
               ? ApolloServerPluginLandingPageLocalDefault()
               : ApolloServerPluginLandingPageDisabled(),
             ...(apolloConfig?.plugins ?? []),
-          ],
+          ]),
+      responseHeadersPlugin,
+    ],
   } as ApolloServerOptions<KeystoneContext> // TODO: satisfies
 
   const apolloServer = new ApolloServer({ ...serverConfig })
@@ -95,7 +117,10 @@ export async function createExpressServer(
     json(config.graphql.bodyParser),
     expressMiddleware(apolloServer, {
       context: async ({ req, res }) => {
-        return await context.withRequest(req, res)
+        const responseHeaders = new Headers()
+        const requestContext = await context.withHeaders(headersFromRequest(req), responseHeaders)
+        responses.set(responseHeaders, res)
+        return requestContext
       },
     })
   )

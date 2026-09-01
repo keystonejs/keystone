@@ -17,9 +17,32 @@ export default createYoga<{
   /*
     `keystoneContext` object doesn't have user's session information.
     You need an authenticated context to CRUD data behind access control.
-    keystoneContext.withRequest(req, res) automatically unwraps the session cookie
+    keystoneContext.withHeaders(request.headers, responseHeaders) automatically unwraps the session cookie
     in the request object and gives you a `context` object with session info
     and an elevated sudo context to bypass access control if needed (context.sudo()).
   */
-  context: ({ req, res }) => keystoneContext.withRequest(req, res),
+  context: ({ request, res }) => {
+    const responseHeaders = new Headers()
+    requestToResponse.set(request, { headers: responseHeaders, res })
+    return keystoneContext.withHeaders(request.headers, responseHeaders)
+  },
+  plugins: [
+    {
+      onResponse({ response, request }) {
+        const target = requestToResponse.get(request)
+        if (!target) return
+        const { headers, res } = target
+        for (const [key, value] of headers.entries()) {
+          if (key !== 'set-cookie') response.headers.set(key, value)
+        }
+        // graphql-yoga's Node adapter can't write a header more than once,
+        // so set cookies on the Next.js response directly to keep each Set-Cookie value
+        const cookies = headers.getSetCookie()
+        if (cookies.length) res.setHeader('set-cookie', cookies)
+      },
+    },
+  ],
+  fetchAPI: globalThis,
 })
+
+const requestToResponse = new WeakMap<Request, { headers: Headers; res: NextApiResponse }>()
