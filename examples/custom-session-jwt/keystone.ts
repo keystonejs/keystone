@@ -1,5 +1,6 @@
 import { PrismaBetterSqlite3 } from '@prisma/adapter-better-sqlite3'
-import jwt from 'jsonwebtoken'
+import { SignJWT } from 'jose/jwt/sign'
+import { jwtVerify } from 'jose/jwt/verify'
 import { config } from '@keystone-6/core'
 import { lists } from './schema'
 import type { Context, TypeInfo, Session } from './generated/keystone/types'
@@ -9,44 +10,30 @@ import type { Context, TypeInfo, Session } from './generated/keystone/types'
 //   or tested for any particular usage
 
 // WARNING: you need to change this
-const jwtSessionSecret = '-- DEV COOKIE SECRET; CHANGE ME --'
+const jwtSessionSecret = new TextEncoder().encode('-- DEV COOKIE SECRET; CHANGE ME --')
 
 type OurJWTClaims = {
-  id: string
+  sub: string
 }
 
 async function jwtSign(claims: OurJWTClaims) {
-  return new Promise((resolve, reject) => {
-    jwt.sign(
-      claims,
-      jwtSessionSecret,
-      {
-        algorithm: 'HS256', // HMAC-SHA256
-      },
-      (err, token) => {
-        if (err) return reject(err)
-        return resolve(token)
-      }
-    )
-  })
+  return new SignJWT(claims)
+    .setProtectedHeader({ alg: 'HS256' }) // HMAC-SHA256
+    .setIssuedAt()
+    .sign(jwtSessionSecret)
 }
 
-async function jwtVerify(token: string): Promise<OurJWTClaims | null> {
-  return new Promise(resolve => {
-    jwt.verify(
-      token,
-      jwtSessionSecret,
-      {
-        algorithms: ['HS256'],
-        maxAge: '1h', // we use an expiry of 1 hour for this example
-      },
-      (err, result) => {
-        if (err || typeof result !== 'object') return resolve(null)
-        if (typeof result.id !== 'string') return resolve(null)
-        return resolve(result as OurJWTClaims)
-      }
-    )
-  })
+async function verifyJwt(token: string): Promise<OurJWTClaims | null> {
+  try {
+    const { payload } = await jwtVerify(token, jwtSessionSecret, {
+      algorithms: ['HS256'],
+      maxTokenAge: '1h', // we use an expiry of 1 hour for this example
+    })
+    if (typeof payload.sub !== 'string') return null
+    return { sub: payload.sub }
+  } catch {
+    return null
+  }
 }
 
 const jwtSessionStrategy = {
@@ -57,14 +44,14 @@ const jwtSessionStrategy = {
     const [cookieName, jwt] = cookie.split('=')
     if (cookieName !== 'user') return
 
-    const jwtResult = await jwtVerify(jwt)
+    const jwtResult = await verifyJwt(jwt)
     if (!jwtResult) return
 
-    const { id } = jwtResult
-    const who = await context.sudo().db.User.findOne({ where: { id } })
+    const { sub } = jwtResult
+    const who = await context.sudo().db.User.findOne({ where: { id: sub } })
     if (!who) return
     return {
-      id,
+      id: sub,
       admin: who.admin,
     }
   },
@@ -91,9 +78,9 @@ export default config<TypeInfo>({
       console.error(
         'Use any of the following tokens as your `user={token}` cookie for testing this session strategy',
         {
-          Alice: await jwtSign({ id: 'clh9v6pcn0000sbhm9u0j6in0' }), // admin
-          Bob: await jwtSign({ id: 'clh9v762w0002sbhmhhyc0340' }),
-          Eve: await jwtSign({ id: 'clh9v7ahs0004sbhmpx30w85n' }),
+          Alice: await jwtSign({ sub: 'clh9v6pcn0000sbhm9u0j6in0' }), // admin
+          Bob: await jwtSign({ sub: 'clh9v762w0002sbhmhhyc0340' }),
+          Eve: await jwtSign({ sub: 'clh9v7ahs0004sbhmpx30w85n' }),
         }
       )
     },
