@@ -76,20 +76,13 @@ import { createYoga } from 'graphql-yoga';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { keystoneContext } from '../../keystone/context';
 
-// An example of how to setup your own yoga graphql server
-// using the generated Keystone GraphQL schema.
-export const config = {
-  api: {
-    bodyParser: false,
-  },
-};
-
 // Use Keystone's context to create GraphQL handler
 export default createYoga<{
   req: NextApiRequest;
   res: NextApiResponse;
 }>({
   graphqlEndpoint: '/api/graphql',
+  multipart: false,
   schema: keystoneContext.graphql.schema,
   /*
     `keystoneContext` object doesn't have user's session information.
@@ -108,7 +101,7 @@ The entire application is just a **single Next.js application and can be deploye
 
 This becomes useful in a handful of situations:
 
-- **Demos**. When you're building a demo or a proof-of-concept, you can quickly prototype and build your application using [SQLite database](http://localhost:8000/docs/config/config#sqlite) and setup access control to be readonly. You will have a fully functioning demo with data without having to connect to an external database or a server. That's what we did with our [example](https://github.com/keystonejs/keystone/tree/main/examples/framework-nextjs-pages-directory). Try clicking the [**Deploy to Vercel** button](https://github.com/keystonejs/keystone/tree/main/examples/framework-nextjs-pages-directory) in the README and see it for yourself.
+- **Demos**. When you're building a demo or a proof-of-concept, you can quickly prototype and build your application using [SQLite database](http://localhost:8000/docs/config/config#sqlite) and setup access control to be readonly. You will have a fully functioning demo with data without having to connect to an external database or a server. That's what we did with our [example](https://github.com/keystonejs/keystone/tree/main/examples/framework-nextjs-pages-directory).
 - **Serverless scale**. For production-grade applications, you don't have to worry about the scale or the infra of your application. You write the code and Vercel will automatically take care of scale for you.
 - **Build fast user experiences**. Since you're directly querying your database from your Next.js server APIs (Eg. `getServerSideProps`) using Keystone's `context` API instead of making a http request, you can send your response faster to the browser.
 
