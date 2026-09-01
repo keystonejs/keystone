@@ -1,24 +1,35 @@
 import { PrismaBetterSqlite3 } from '@prisma/adapter-better-sqlite3'
 import { config } from '@keystone-6/core'
-import { statelessSessions } from '@keystone-6/core/session'
-import { createAuth } from '@keystone-6/auth'
+import { createAuth, jwtSessions } from '@keystone-6/auth'
 import { lists } from './schema'
-import type { TypeInfo } from './generated/keystone/types'
+import type { TypeInfo, Lists } from './generated/keystone/types'
+
+const sessionStrategy = jwtSessions()
 
 // WARNING: this example is for TESTING purposes only
 //   as with each of our examples, it has not been vetted
 //   or tested for any particular usage
 
+declare module './generated/keystone/types' {
+  interface Session {
+    user: Lists.User.Item
+  }
+}
+
 // withAuth is a function we can use to wrap our base configuration
-const { withAuth } = createAuth({
+const { withAuth } = createAuth<Lists.User.TypeInfo>({
   // this is the list that contains our users
   listKey: 'User',
 
   // an identity field, typically a username or an email address
   identityField: 'name',
 
-  // a secret field must be a password field type
-  secretField: 'password',
+  // the password field must use the password field type
+  passwordField: 'password',
+  sessionStrategy,
+  getAuthenticatedItemId(context) {
+    return context.session?.user.id
+  },
 })
 
 export default withAuth(
@@ -44,7 +55,13 @@ export default withAuth(
       },
     },
     lists,
-    // you can find out more at https://keystonejs.com/docs/apis/session#session-api
-    session: statelessSessions(),
+    async getSession({ context }) {
+      const data = await sessionStrategy.get({ context })
+      if (!data) return
+      const user = await context.db.User.findOne({
+        where: { id: data.sub },
+      })
+      return user ? { user } : undefined
+    },
   })
 )

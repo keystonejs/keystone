@@ -4,7 +4,7 @@ import 'dotenv/config'
 import { config } from '@keystone-6/core'
 import type { TypeInfo } from './generated/keystone/types'
 import { lists } from './schema'
-import { session, passportMiddleware } from './auth'
+import { sessionStrategy, passportMiddleware } from './auth'
 
 export default config<TypeInfo>({
   db: {
@@ -14,7 +14,12 @@ export default config<TypeInfo>({
     }),
   },
   lists,
-  session,
+  async getSession({ context }) {
+    const data = await sessionStrategy.get({ context })
+    if (!data) return
+    const author = await context.db.Author.findOne({ where: { id: data.sub } })
+    return author ? { author } : undefined
+  },
 
   server: {
     extendExpressApp(app, context) {
