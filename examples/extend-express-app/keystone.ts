@@ -28,7 +28,14 @@ export default config<TypeInfo>({
       //   http://localhost:3000/rest/posts?draft=1
       //
       app.get('/rest/posts', async (req, res) => {
-        const context = await commonContext.withRequest(req, res)
+        const context = await commonContext.withHeaders(
+          new Headers(
+            Object.entries(req.headers).flatMap(([key, value]): [string, string][] => {
+              if (value === undefined) return []
+              return Array.isArray(value) ? value.map(inner => [key, inner]) : [[key, value]]
+            })
+          )
+        )
         // if (!context.session) return res.status(401).end()
 
         const isDraft = req.query?.draft === '1'
@@ -58,7 +65,14 @@ export default config<TypeInfo>({
 
         // this example HTTP GET handler retrieves a post in the database for your context
         //   returning it as JSON
-        const context = await commonContext.withRequest(req, res)
+        const context = await commonContext.withHeaders(
+          new Headers(
+            Object.entries(req.headers).flatMap(([key, value]): [string, string][] => {
+              if (value === undefined) return []
+              return Array.isArray(value) ? value.map(inner => [key, inner]) : [[key, value]]
+            })
+          )
+        )
         // if (!context.session) return res.status(401).end()
 
         const id = req.url.slice('/rest/posts/'.length)
