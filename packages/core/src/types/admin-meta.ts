@@ -186,7 +186,7 @@ export type ListMeta = {
   pageSize: number
   initialColumns: string[]
   initialSearchFields: string[]
-  initialSort: ListSortDescriptor<string>
+  initialSort: ListSortDescriptor<string> | null
   initialFilter: JSONValue
   hiddenFilter: JSONValue | null
   isSingleton: boolean
@@ -194,6 +194,44 @@ export type ListMeta = {
   hideNavigation: boolean
   hideCreate: boolean
   hideDelete: boolean
+}
+
+/** Client-facing field metadata with internal views and controllers omitted. */
+type AdminMetaField = Omit<FieldMeta, 'views' | 'controller'>
+
+/** Client-facing field group metadata with its resolved fields. */
+type AdminMetaFieldGroup = Omit<FieldGroupMeta, 'fields'> & {
+  fields: AdminMetaField[]
+}
+
+/** Client-facing action metadata with resolved field argument sources. */
+type AdminMetaAction = Omit<ActionMeta, 'graphql'> & {
+  graphql: Omit<ActionMeta['graphql'], 'arguments'> & {
+    arguments: Array<
+      Omit<ActionMeta['graphql']['arguments'][number], 'source'> & {
+        source: ActionArgumentSourceMeta<AdminMetaField>
+      }
+    >
+  }
+}
+
+/**
+ * Request-resolved Admin UI metadata returned by the `adminMeta` GraphQL field and passed to
+ * `ui.hooks.resolveAdminMeta`.
+ *
+ * This is the client-facing shape: internal list indexes, field views, and field controllers are
+ * omitted. Values that are configured as request-dependent functions have already been resolved
+ * when this type is passed to the hook.
+ */
+export type AdminMeta = {
+  lists: Array<
+    Omit<ListMeta, 'fields' | 'groups' | 'actions' | 'initialSort'> & {
+      fields: AdminMetaField[]
+      groups: AdminMetaFieldGroup[]
+      actions: AdminMetaAction[]
+      initialSort: ListMeta['initialSort']
+    }
+  >
 }
 
 export type Item = {
