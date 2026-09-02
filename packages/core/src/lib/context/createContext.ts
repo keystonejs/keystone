@@ -1,4 +1,3 @@
-import type { IncomingMessage, ServerResponse } from 'http'
 import { type ExecutionResult, type GraphQLSchema, graphql, print } from 'graphql/index.js'
 import type { KeystoneContext, KeystoneGraphQLAPI, KeystoneConfig } from '../../types/index.ts'
 
@@ -53,8 +52,8 @@ export function createContext({
     sudo,
   }: {
     prisma: any
-    req?: IncomingMessage
-    res?: ServerResponse
+    req?: Headers
+    res?: Headers
     session?: unknown
     internal: boolean
     sudo: boolean
@@ -102,10 +101,10 @@ export function createContext({
       sessionStrategy: config.session,
       ...(session ? { session } : {}),
 
-      withRequest: async (newReq, newRes) => {
+      withHeaders: async (newReq, newRes) => {
         const newContext = construct({
           prisma,
-          req: newReq,
+          req: new Headers(newReq),
           res: newRes,
           session,
           internal,
