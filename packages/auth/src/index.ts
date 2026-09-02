@@ -3,7 +3,6 @@ import type {
   BaseListTypeInfo,
   BaseKeystoneTypeInfo,
   KeystoneConfig,
-  KeystoneContext,
 } from '@keystone-6/core/types'
 import type { AuthConfig } from './types.ts'
 
@@ -130,12 +129,6 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>(
     const { graphql } = config
     const { extendGraphqlSchema = defaultExtendGraphqlSchema } = graphql ?? {}
     const graphqlSingular = config.lists[listKey].graphql?.singular ?? listKey
-    const getAuthenticatedItemId =
-      authConfig.getAuthenticatedItemId ??
-      ((context: KeystoneContext) => {
-        const itemId = context.session?.sub
-        if (typeof itemId === 'string' || typeof itemId === 'number') return itemId
-      })
     /**
      * extendGraphqlSchema
      *
@@ -147,7 +140,7 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>(
       identityField,
       passwordField,
       sessionStrategy,
-      getAuthenticatedItemId,
+      getAuthenticatedItemId: authConfig.getAuthenticatedItemId,
     })
 
     return {

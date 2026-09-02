@@ -92,13 +92,14 @@ export default withAuth(
 )
 ```
 
-`getAuthenticatedItemId` synchronously maps the application's hydrated session to the authenticated list item. It must return a string, number, or `undefined`; `undefined` means the session does not represent an authenticated item. It may be omitted when the session has a compatible `sub` property, in which case it defaults to `context.session?.sub`. The top-level `getSession` callback is responsible for loading all session data. The application is responsible for using the same strategy in both places.
+`getAuthenticatedItemId` synchronously maps the application's hydrated session to the authenticated list item. It must return a string, number, or `undefined`; `undefined` means the session does not represent an authenticated item. The top-level `getSession` callback is responsible for loading all session data.
 
 Custom strategies used with `withHeaders` read and write WHATWG headers through `context.req` and `context.res`.
 
 ### Session strategies
 
 Keystone provides two reference implementations of session strategies that can be used with `createAuth` and `getSession`:
+
 - `jwtSessions`
 - `storedSessions`
 
@@ -117,7 +118,7 @@ const jwt = jwtSessions()
 Options:
 
 - `secret` (default: `crypto.getRandomValues(new Uint8Array(32))`): The secret used to sign the JWT with HS256. It can either be a `Uint8Array` or a string in which case it is UTF-8 encoded. It must be at least 32 characters or bytes long.
-  
+
   Production deployments should generate the value once, store it securely, and provide the same secret to every process and after restarts so that sessions remain valid through restarts.
 
 - `maxAge` (default: `60 * 60 * 8` (8 hours)): The number of seconds until the [cookie expires](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie). JWT verification also rejects tokens whose `iat` is older than `maxAge`, even if their `exp` is later.
@@ -132,7 +133,6 @@ Options:
   **Note:** Only one domain is allowed. If a domain is specified then subdomains are always included.
 - `sameSite` (default: `'lax'`): Controls whether the cookie is sent with cross-origin requests. Can be one of `true`, `false`, `'strict'`, `'lax'` or `'none'`. See [cookie attributes](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie#attributes) for more details on the `sameSite` attribute.
   **Note:** The `secure` attribute must also be set when `sameSite` is set to `none`.
-
 
 If you want to use a different signing algorithm, you can implement your own session strategy by implementing the `SessionStrategy` interface.
 
@@ -249,7 +249,7 @@ On failure the values `{ code: FAILURE, message: "Authentication failed." }` wil
 
 ##### authenticatedItem
 
-This query will return the currently logged in user, based on the `session` data. By default, this will read from `context.session.sub` to get the authenticated item ID, and then load the item from the database. You can override this behavior by providing a `getAuthenticatedItemId` function to `createAuth()`.
+This query will return the currently logged in user based on the `session` data. It uses the `getAuthenticatedItemId` function provided to `createAuth()` to get the authenticated item ID, and then loads the item from the database.
 
 #### Admin UI
 

@@ -21,6 +21,7 @@ async function getJwtSessionClaims() {
 
 void getJwtSessionClaims
 
+// @ts-expect-error getAuthenticatedItemId is required
 createAuth<TestList>({
   listKey: 'User',
   identityField: 'email',
