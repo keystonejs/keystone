@@ -43,12 +43,11 @@ test('Check that trying to create user with no name (required field) fails', asy
 
 test('Check access control by running updateTask as a specific user via context.withSession()', async () => {
   // seed a few users to test with
-  const [alice, bob] = await context.query.User.createMany({
+  const [alice, bob] = await context.db.User.createMany({
     data: [
       { name: 'Alice', password: 'dont-use-me' },
       { name: 'Bob', password: 'dont-use-me' },
     ],
-    query: 'id name',
   })
   assert.equal(alice.name, 'Alice')
   assert.equal(bob.name, 'Bob')
@@ -81,19 +80,17 @@ test('Check access control by running updateTask as a specific user via context.
 
   // test that we can update the task (with a session)
   {
-    const result = await context
-      .withSession({ listKey: 'User', itemId: alice.id, data: {} })
-      .db.Task.updateOne({
-        where: { id: task.id },
-        data: { isComplete: true },
-      })
+    const result = await context.withSession({ user: alice }).db.Task.updateOne({
+      where: { id: task.id },
+      data: { isComplete: true },
+    })
     assert.equal(result.id, task.id)
   }
 
   // test that we can't update the task (with an invalid session (Bob))
   await assert.rejects(
     async () => {
-      await context.withSession({ listKey: 'User', itemId: bob.id, data: {} }).db.Task.updateOne({
+      await context.withSession({ user: bob }).db.Task.updateOne({
         where: { id: task.id },
         data: { isComplete: true },
       })

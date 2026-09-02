@@ -1,10 +1,19 @@
 import { PrismaBetterSqlite3 } from '@prisma/adapter-better-sqlite3'
 import { config } from '@keystone-6/core'
 import { lists } from './schema'
-import type { Context, TypeInfo, Session } from './generated/keystone/types'
+import type { Context, TypeInfo } from './generated/keystone/types'
 
-const sillySessionStrategy = {
-  async get({ context }: { context: Context }): Promise<Session | undefined> {
+export default config<TypeInfo>({
+  db: {
+    provider: 'sqlite',
+    prismaClientOptions: () => ({
+      adapter: new PrismaBetterSqlite3({
+        url: process.env.DATABASE_URL ?? 'file:./keystone-example.db',
+      }),
+    }),
+  },
+  lists,
+  async getSession({ context }: { context: Context }) {
     if (!context.req) return
 
     // WARNING: for demonstrative purposes only, this has no authentication
@@ -23,24 +32,4 @@ const sillySessionStrategy = {
       admin: who.admin,
     }
   },
-
-  // we don't need these unless we want to support the functions
-  //   context.sessionStrategy.start
-  //   context.sessionStrategy.end
-  //
-  async start() {},
-  async end() {},
-}
-
-export default config<TypeInfo>({
-  db: {
-    provider: 'sqlite',
-    prismaClientOptions: () => ({
-      adapter: new PrismaBetterSqlite3({
-        url: process.env.DATABASE_URL ?? 'file:./keystone-example.db',
-      }),
-    }),
-  },
-  lists,
-  session: sillySessionStrategy,
 })

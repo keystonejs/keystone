@@ -7,16 +7,23 @@ import { PrismaBetterSqlite3 } from '@prisma/adapter-better-sqlite3'
 //   you can find out more at https://keystonejs.com/docs/apis/config
 
 import { config } from '@keystone-6/core'
+import type { Lists, TypeInfo } from './generated/keystone/types'
 
 // to keep this file tidy, we define our schema in a different file
 import { lists } from './schema.ts'
 
 // authentication is configured separately here too, but you might move this elsewhere
 // when you write your list-level access control functions, as they typically rely on session data
-import { withAuth, session } from './auth.ts'
+import { getUserIdForSession, withAuth } from './auth.ts'
 
-export default withAuth(
-  config({
+declare module './generated/keystone/types' {
+  interface Session {
+    user: Lists.User.Item
+  }
+}
+
+export default withAuth<TypeInfo>(
+  config<TypeInfo>({
     db: {
       // we're using sqlite for the fastest startup experience
       //   for more information on what database might be appropriate for you
@@ -40,6 +47,12 @@ export default withAuth(
         })().catch(error => console.error('Failed to create initial user:', error))
       },
     },
+    async getSession({ context }) {
+      const userId = await getUserIdForSession(context)
+      if (!userId) return
+      const user = await context.db.User.findOne({ where: { id: userId } })
+      return user ? { user } : undefined
+    },
     apolloConfig: {
       plugins: [
         {
@@ -58,6 +71,5 @@ export default withAuth(
       ],
     },
     lists,
-    session,
   })
 )

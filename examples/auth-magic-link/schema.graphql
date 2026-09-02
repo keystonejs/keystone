@@ -101,19 +101,19 @@ type Mutation {
   deleteUser(where: UserWhereUniqueInput!): User
   deleteUsers(where: [UserWhereUniqueInput!]!): [User]
   endSession: Boolean!
-  authenticateUserWithPassword(name: String!, password: String!): UserAuthenticationWithPasswordResult
+  authenticateWithPassword(identity: String!, password: String!): AuthenticationWithPasswordResult
   requestAuthToken(userId: String!): Boolean!
   redeemAuthToken(userId: String!, token: String!): Boolean!
 }
 
-union UserAuthenticationWithPasswordResult = UserAuthenticationWithPasswordSuccess | UserAuthenticationWithPasswordFailure
+union AuthenticationWithPasswordResult = AuthenticationWithPasswordSuccess | AuthenticationWithPasswordFailure
 
-type UserAuthenticationWithPasswordSuccess {
+type AuthenticationWithPasswordSuccess {
   sessionToken: String!
   item: User!
 }
 
-type UserAuthenticationWithPasswordFailure {
+type AuthenticationWithPasswordFailure {
   message: String!
 }
 

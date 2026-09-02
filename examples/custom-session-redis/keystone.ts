@@ -1,38 +1,26 @@
 import { PrismaBetterSqlite3 } from '@prisma/adapter-better-sqlite3'
 import { config } from '@keystone-6/core'
-import { storedSessions } from '@keystone-6/core/session'
+import { storedSessions } from '@keystone-6/auth'
 import { createAuth } from '@keystone-6/auth'
 import { createClient } from '@redis/client'
 import { lists } from './schema'
-import type { TypeInfo, Session } from './generated/keystone/types'
+import type { TypeInfo, Lists } from './generated/keystone/types'
 
 // WARNING: this example is for demonstration purposes only
 //   as with each of our examples, it has not been vetted
 //   or tested for any particular usage
 
-// withAuth is a function we can use to wrap our base configuration
-const { withAuth } = createAuth({
-  // this is the list that contains our users
-  listKey: 'User',
-
-  // an identity field, typically a username or an email address
-  identityField: 'name',
-
-  // a secret field must be a password field type
-  secretField: 'password',
-})
-
 const redis = createClient()
 
 function redisSessionStrategy() {
   // you can find out more at https://keystonejs.com/docs/apis/session#session-api
-  return storedSessions<Session>({
+  return storedSessions<{ sub: string }>({
     store: ({ maxAge }) => ({
       async get(sessionId) {
         const result = await redis.get(sessionId)
         if (!result) return
 
-        return JSON.parse(result) as Session
+        return JSON.parse(result) as { sub: string }
       },
 
       async set(sessionId, data) {
@@ -46,6 +34,19 @@ function redisSessionStrategy() {
     }),
   })
 }
+
+const sessionStrategy = redisSessionStrategy()
+
+// withAuth is a function we can use to wrap our base configuration
+const { withAuth } = createAuth<Lists.User.TypeInfo>({
+  listKey: 'User',
+  identityField: 'name',
+  passwordField: 'password',
+  sessionStrategy,
+  getAuthenticatedItemId(context) {
+    return context.session?.user.id
+  },
+})
 
 export default withAuth(
   config<TypeInfo>({
@@ -72,6 +73,11 @@ export default withAuth(
       },
     },
     lists,
-    session: redisSessionStrategy(),
+    async getSession({ context }) {
+      const data = await sessionStrategy.get({ context })
+      if (!data) return
+      const user = await context.sudo().db.User.findOne({ where: { id: data.sub } })
+      return user ? { user } : undefined
+    },
   })
 )
