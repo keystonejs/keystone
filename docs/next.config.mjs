@@ -1,4 +1,4 @@
-import redirects from './redirects.mjs'
+const isStaticExport = process.env.STATIC_EXPORT === 'true'
 
 export default {
   env: {
@@ -13,5 +13,11 @@ export default {
     //   we check Typescript elsewhere
     ignoreBuildErrors: true,
   },
-  redirects,
+  ...(isStaticExport && {
+    output: 'export',
+    trailingSlash: true,
+    images: {
+      unoptimized: true,
+    },
+  }),
 }

@@ -210,7 +210,6 @@ export default function RootLayoutClient({ children }: { children: React.ReactNo
           <Script src="/assets/resize-observer-polyfill.js" />
           <Script src="/assets/focus-visible-polyfill.js" />
           <Script src="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.js" />
-          <Script data-no-cookie data-respect-dnt src="/sb.js" data-api="/_sb" />
         </body>
       </NavContextProvider>
     </CacheProvider>
