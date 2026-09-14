@@ -109,7 +109,11 @@ async function createSingle__(
 }
 
 export class NestedMutationState {
-  #afterOperations: (() => void | Promise<void>)[] = []
+  // afterOperation hooks run once the enclosing transaction has committed, so
+  // they are deferred here and later invoked with a post-commit context (see
+  // `afterOperation` below) rather than the transaction-bound context they were
+  // created with.
+  #afterOperations: ((context: KeystoneContext) => void | Promise<void>)[] = []
   #context: KeystoneContext
   constructor(context: KeystoneContext) {
     this.#context = context
@@ -124,12 +128,12 @@ export class NestedMutationState {
     const { item, afterOperation } = await createSingle__(data, list, context)
 
     // after operation
-    this.#afterOperations.push(() => afterOperation(item))
+    this.#afterOperations.push(afterContext => afterOperation(afterContext, item))
     return { id: item.id as IdType }
   }
 
-  async afterOperation() {
-    await promiseAllRejectWithAllErrors(this.#afterOperations.map(async x => x()))
+  async afterOperation(context: KeystoneContext) {
+    await promiseAllRejectWithAllErrors(this.#afterOperations.map(async x => x(context)))
   }
 }
 
@@ -152,34 +156,43 @@ async function updateSingle__(
   return await withSpan(
     `update ${list.graphql.names.outputTypeNameLower}`,
     async span => {
-      // validate and resolve the input filter
-      const uniqueWhere = await resolveUniqueWhereInput(where, list, context)
+      // run the access-filtered read, any nested writes, and the update itself
+      // atomically, so a failure at any step rolls back cleanly instead of
+      // leaving a partially-written item behind. The transaction-bound context
+      // is shadowed as `context` so every call inside runs against it.
+      const { result, afterOperation } = await context.transaction(async context => {
+        // validate and resolve the input filter
+        const uniqueWhere = await resolveUniqueWhereInput(where, list, context)
 
-      // filter and item access control - throws an AccessDeniedError if not allowed
-      const item = await getFilteredItem(list, context, uniqueWhere!, accessFilters, 'update')
+        // filter and item access control - throws an AccessDeniedError if not allowed
+        const item = await getFilteredItem(list, context, uniqueWhere!, accessFilters, 'update')
 
-      // throw an accessDeniedError if not allowed
-      await enforceListLevelAccessControl(context, 'update', list, inputData ?? {}, item)
-      await enforceFieldLevelAccessControl(context, 'update', list, inputData ?? {}, item)
-      const { beforeOperation, afterOperation, data } = await resolveInputForCreateOrUpdate(
-        list,
-        context,
-        inputData ?? {},
-        item
-      )
+        // throw an accessDeniedError if not allowed
+        await enforceListLevelAccessControl(context, 'update', list, inputData ?? {}, item)
+        await enforceFieldLevelAccessControl(context, 'update', list, inputData ?? {}, item)
+        const { beforeOperation, afterOperation, data } = await resolveInputForCreateOrUpdate(
+          list,
+          context,
+          inputData ?? {},
+          item
+        )
 
-      // before operation
-      await beforeOperation()
+        // before operation
+        await beforeOperation()
 
-      // operation
-      const result = await context.prisma[list.listKey].update({
-        where: { id: item.id },
-        data,
+        // operation
+        const result = await context.prisma[list.listKey].update({
+          where: { id: item.id },
+          data,
+        })
+        span.setAttribute('keystone.result.id', result?.id ?? '')
+
+        return { result, afterOperation }
       })
-      span.setAttribute('keystone.result.id', result?.id ?? '')
 
-      // after operation
-      await afterOperation(result)
+      // after operation - runs once the transaction has committed, using the
+      // original (post-commit) context; an error here does not roll the write back
+      await afterOperation(context, result)
 
       return result
     },
@@ -196,39 +209,51 @@ async function deleteSingle__(
   return await withSpan(
     `delete ${list.graphql.names.outputTypeNameLower}`,
     async span => {
-      // validate and resolve the input filter
-      const uniqueWhere = await resolveUniqueWhereInput(where, list, context)
+      // run the access-filtered read, the validate/beforeOperation hooks, and the
+      // delete itself atomically. The transaction-bound context is shadowed as
+      // `context` so every call inside runs against it.
+      const { result, item } = await context.transaction(async context => {
+        // validate and resolve the input filter
+        const uniqueWhere = await resolveUniqueWhereInput(where, list, context)
 
-      // filter and item access control throw an AccessDeniedError if not allowed
-      // apply access.filter.* controls
-      const item = await getFilteredItem(list, context, uniqueWhere!, accessFilters, 'delete')
+        // filter and item access control throw an AccessDeniedError if not allowed
+        // apply access.filter.* controls
+        const item = await getFilteredItem(list, context, uniqueWhere!, accessFilters, 'delete')
 
-      await enforceListLevelAccessControl(context, 'delete', list, {}, item)
-      // WARNING: no field level access control for delete operations
+        await enforceListLevelAccessControl(context, 'delete', list, {}, item)
+        // WARNING: no field level access control for delete operations
 
-      const hookArgs = {
+        const hookArgs = {
+          operation: 'delete' as const,
+          listKey: list.listKey,
+          context,
+          item,
+          resolvedData: undefined,
+          inputData: undefined,
+        }
+
+        // hooks
+        await validate({ list, hookArgs })
+
+        // before operation
+        await runSideEffectOnlyHook(list, 'beforeOperation', hookArgs)
+
+        // operation
+        const result = await context.prisma[list.listKey].delete({ where: { id: item.id } })
+        span.setAttribute('keystone.result.id', result?.id ?? '')
+
+        return { result, item }
+      })
+
+      // after operation - runs once the transaction has committed, using the
+      // original (post-commit) context; an error here does not roll the delete back
+      await runSideEffectOnlyHook(list, 'afterOperation', {
         operation: 'delete' as const,
         listKey: list.listKey,
         context,
-        item,
+        item: undefined,
         resolvedData: undefined,
         inputData: undefined,
-      }
-
-      // hooks
-      await validate({ list, hookArgs })
-
-      // before operation
-      await runSideEffectOnlyHook(list, 'beforeOperation', hookArgs)
-
-      // operation
-      const result = await context.prisma[list.listKey].delete({ where: { id: item.id } })
-      span.setAttribute('keystone.result.id', result?.id ?? '')
-
-      // after operation
-      await runSideEffectOnlyHook(list, 'afterOperation', {
-        ...hookArgs,
-        item: undefined,
         originalItem: item,
       })
 
@@ -270,6 +295,28 @@ async function actionSingle__(
 
 //
 
+// create a single item and its nested writes atomically: the item and every
+// nested create it triggers are written inside one transaction, so a failure at
+// any point rolls all of them back instead of leaving orphaned related rows
+// behind. `createSingle__` is also used for nested creates (where it must run
+// inside the parent's transaction), so the transaction is opened here at the top
+// level rather than inside `createSingle__` to avoid nested interactive
+// transactions. afterOperation hooks run after the transaction has committed,
+// using the original (post-commit) `context` - consistent with the existing
+// behaviour where an error thrown from afterOperation does not roll back the
+// write.
+async function createSingleInTransaction(
+  inputData: InputData,
+  list: InitialisedList,
+  context: KeystoneContext
+) {
+  const { item, afterOperation } = await context.transaction(async context =>
+    createSingle__(inputData ?? {}, list, context)
+  )
+  await afterOperation(context, item)
+  return item
+}
+
 async function createOne(inputData: InputData, list: InitialisedList, context: KeystoneContext) {
   const operationAccess = await getOperationAccess(list, context, 'create')
   if (!operationAccess) throw accessDeniedError(cannotForItem('create', list))
@@ -278,12 +325,7 @@ async function createOne(inputData: InputData, list: InitialisedList, context: K
   //   NOTHING - no filters for create operations
 
   // operation
-  const { item, afterOperation } = await createSingle__(inputData ?? {}, list, context)
-
-  // after operation // TODO: move to createSingle__
-  await afterOperation(item)
-
-  return item
+  return createSingleInTransaction(inputData, list, context)
 }
 
 async function createMany(
@@ -297,17 +339,16 @@ async function createMany(
   // get list-level access control filters
   //   NOTHING - no filters for create operations
 
-  return inputDatas.map(async inputData => {
+  // each item is created in its own transaction and is independent of the
+  // others (partial success is preserved), but items are run one at a time so we
+  // never hold multiple interactive transactions open at once - SQLite is a
+  // single-writer database and cannot service concurrent write transactions.
+  return runSequentially(inputDatas, async inputData => {
     // throw for each attempt
     if (!operationAccess) throw accessDeniedError(cannotForItem('create', list))
 
     // operation
-    const { item, afterOperation } = await createSingle__(inputData ?? {}, list, context)
-
-    // after operation // TODO: move to createSingle__
-    await afterOperation(item)
-
-    return item
+    return createSingleInTransaction(inputData, list, context)
   })
 }
 
@@ -336,7 +377,9 @@ async function updateMany(
   // get list-level access control filters
   const accessFilters = await getAccessFilters(list, context, 'update')
 
-  return updateManyInput.map(async updateInput => {
+  // each item is updated in its own transaction (see createMany for why they run
+  // one at a time); partial success across the batch is preserved.
+  return runSequentially(updateManyInput, async updateInput => {
     // throw for each attempt
     if (!operationAccess) throw accessDeniedError(cannotForItem('update', list))
 
@@ -369,7 +412,9 @@ async function deleteMany(
   // get list-level access control filters
   const accessFilters = await getAccessFilters(list, context, 'delete')
 
-  return wheres.map(async where => {
+  // each item is deleted in its own transaction (see createMany for why they run
+  // one at a time); partial success across the batch is preserved.
+  return runSequentially(wheres, async where => {
     // throw for each attempt
     if (!operationAccess) throw accessDeniedError(cannotForItem('delete', list))
 
@@ -609,12 +654,17 @@ async function resolveInputForCreateOrUpdate(
       // before operation
       await runSideEffectOnlyHook(list, 'beforeOperation', hookArgs)
     },
-    afterOperation: async (updatedItem: BaseItem) => {
-      await nestedMutationState.afterOperation()
+    // `afterContext` is the context afterOperation hooks run against. The write
+    // happens inside a transaction, but afterOperation hooks run once that
+    // transaction has committed, so they are handed a post-commit context rather
+    // than the (now closed) transaction-bound context used for the write.
+    afterOperation: async (afterContext: KeystoneContext, updatedItem: BaseItem) => {
+      await nestedMutationState.afterOperation(afterContext)
 
       // after operation
       await runSideEffectOnlyHook(list, 'afterOperation', {
         ...hookArgs,
+        context: afterContext,
         item: updatedItem,
       })
     },
@@ -663,6 +713,30 @@ function transformForPrismaClient(
       }
     })(),
   ])
+}
+
+// Run each item through `fn` one at a time (never concurrently), returning an
+// array of per-item promises. Partial-success semantics are preserved: a rejected
+// item settles independently and never prevents later items from running. Running
+// sequentially means we only ever hold one interactive transaction open at a time,
+// which is required for SQLite (a single-writer database) and harmless elsewhere.
+function runSequentially<T, R>(
+  items: T[],
+  fn: (item: T, index: number) => Promise<R>
+): Promise<R>[] {
+  const results: Promise<R>[] = []
+  // a promise that always resolves (never rejects), used to gate the next item on
+  // the previous one having settled regardless of its outcome
+  let gate: Promise<unknown> = Promise.resolve()
+  for (const [index, item] of items.entries()) {
+    const result = gate.then(() => fn(item, index))
+    gate = result.then(
+      () => {},
+      () => {}
+    )
+    results.push(result)
+  }
+  return results
 }
 
 // This is not a thing that I really agree with but it's to make the behaviour consistent with old keystone.

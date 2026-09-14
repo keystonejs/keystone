@@ -51,6 +51,7 @@ export function createContext({
     session,
     internal,
     sudo,
+    transactional = false,
   }: {
     prisma: any
     req?: IncomingMessage
@@ -58,6 +59,8 @@ export function createContext({
     session?: unknown
     internal: boolean
     sudo: boolean
+    // true when this context is already bound to an open interactive transaction
+    transactional?: boolean
   }) => {
     const schema = internal ? graphQLSchemas.internal : graphQLSchemas.public
     const rawGraphQL: KeystoneGraphQLAPI['raw'] = async ({ query, variables }) => {
@@ -83,6 +86,12 @@ export function createContext({
       graphql: { raw: rawGraphQL, run: runGraphQL, schema },
 
       transaction: async (f, opts) => {
+        // already inside an interactive transaction: join it rather than opening
+        // a nested one (Prisma does not support nested interactive transactions).
+        // This keeps mutations - which now open a transaction of their own -
+        // working when they are called from within `context.transaction(...)`.
+        if (transactional) return await f(context)
+
         return await prisma.$transaction(async (prisma_: any) => {
           const newContext = construct({
             prisma: prisma_,
@@ -91,6 +100,7 @@ export function createContext({
             session,
             internal,
             sudo,
+            transactional: true,
           })
 
           return await f(newContext)
@@ -110,6 +120,7 @@ export function createContext({
           session,
           internal,
           sudo,
+          transactional,
         })
         return newContext.withSession(
           (await config.session?.get({ context: newContext })) ?? undefined
@@ -117,12 +128,13 @@ export function createContext({
       },
 
       withSession: session => {
-        return construct({ prisma, req, res, session, internal, sudo })
+        return construct({ prisma, req, res, session, internal, sudo, transactional })
       },
 
       // privilege escalation
-      internal: () => construct({ prisma, req, res, session, internal: true, sudo }),
-      sudo: () => construct({ prisma, req, res, session, internal: true, sudo: true }),
+      internal: () => construct({ prisma, req, res, session, internal: true, sudo, transactional }),
+      sudo: () =>
+        construct({ prisma, req, res, session, internal: true, sudo: true, transactional }),
 
       __internal: {
         sudo,
