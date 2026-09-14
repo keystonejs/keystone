@@ -11,16 +11,12 @@ const runner = setupTestRunner({
     lists: {
       User: list({ access: allowAll, fields: { name: text() } }),
     },
-    session: {
-      async get({ context }) {
-        context.res?.set('x-request-authorization', context.req?.get('authorization') ?? '')
-        context.res?.set('x-request-forwarded-for', context.req?.get('x-forwarded-for') ?? '')
-        context.res?.append('set-cookie', 'first=1')
-        context.res?.append('set-cookie', 'second=2')
-        return { authorization: context.req?.get('authorization') }
-      },
-      async start() {},
-      async end() {},
+    async getSession({ context }) {
+      context.res?.set('x-request-authorization', context.req?.get('authorization') ?? '')
+      context.res?.set('x-request-forwarded-for', context.req?.get('x-forwarded-for') ?? '')
+      context.res?.append('set-cookie', 'first=1')
+      context.res?.append('set-cookie', 'second=2')
+      return { authorization: context.req?.get('authorization') }
     },
     server: {
       extendExpressApp(app) {

@@ -11,30 +11,24 @@ import { Heading, Text } from '@keystar/ui/typography'
 import { gql, type TypedDocumentNode, useMutation } from '@keystone-6/core/admin-ui/apollo'
 import { GraphQLErrorNotice, Logo } from '@keystone-6/core/admin-ui/components'
 import { useNavigate } from '@keystar/ui/router'
-import type { AuthGqlNames } from '../types.ts'
 
 export default (props: Parameters<typeof SigninPage>[0]) => () => <SigninPage {...props} />
 
 function SigninPage({
   identityField,
-  secretField,
-  authGqlNames,
+  passwordField,
 }: {
   identityField: string
-  secretField: string
-  authGqlNames: AuthGqlNames
+  passwordField: string
 }) {
   const navigate = useNavigate()
   const [state, setState] = useState({ identity: '', secret: '' })
-  const {
-    authenticateItemWithPassword,
-    ItemAuthenticationWithPasswordSuccess: successTypename,
-    ItemAuthenticationWithPasswordFailure: failureTypename,
-  } = authGqlNames
+  const successTypename = 'AuthenticationWithPasswordSuccess'
+  const failureTypename = 'AuthenticationWithPasswordFailure'
   const [tryAuthenticate, { error, loading, data }] = useMutation(
     gql`
     mutation KsAuthSignin ($identity: String!, $secret: String!) {
-      authenticate: ${authenticateItemWithPassword}(${identityField}: $identity, ${secretField}: $secret) {
+      authenticate: authenticateWithPassword(identity: $identity, password: $secret) {
         ... on ${successTypename} {
           item {
             id
@@ -128,7 +122,7 @@ function SigninPage({
             <PasswordField
               id="password"
               isRequired
-              label={capitalizeFirstLetter(secretField)}
+              label={capitalizeFirstLetter(passwordField)}
               // @ts-expect-error — valid prop, types need to be fixed in "@keystar/ui"
               name="password"
               onChange={v => setState({ ...state, secret: v })}

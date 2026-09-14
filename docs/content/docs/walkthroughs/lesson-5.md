@@ -14,7 +14,7 @@ We have a working backend for a collection of interconnected posts and authors (
 import { list, config } from '@keystone-6/core'
 import { PrismaBetterSqlite3 } from '@prisma/adapter-better-sqlite3'
 import { password, text, timestamp, select, relationship } from '@keystone-6/core/fields'
-import { withAuth, session } from './auth'
+import { withAuth, sessionStrategy } from './auth'
 
 const lists = {
   User: list({
@@ -51,9 +51,14 @@ export default config(
       }),
     },
     lists,
-    session,
+    async getSession({ context }) {
+      const data = await sessionStrategy.get({ context })
+      if (!data) return
+      const user = await context.sudo().db.User.findOne({ where: { id: data.sub } })
+      return user ? { user } : undefined
+    },
     ui: {
-      isAccessAllowed: context => !!context.session?.data,
+      isAccessAllowed: context => !!context.session?.user,
     },
   })
 )
@@ -79,7 +84,7 @@ import { list, config } from '@keystone-6/core';
 import { PrismaBetterSqlite3 } from '@prisma/adapter-better-sqlite3';
 import { password, text, timestamp, select, relationship } from '@keystone-6/core/fields';
 import { document } from '@keystone-6/fields-document';
-import { withAuth, session } from './auth';
+import { withAuth, sessionStrategy } from './auth';
 
 const lists = {
   User: list({
@@ -116,8 +121,13 @@ export default config(
       }),
     },
     lists,
-    session,
-    ui: { isAccessAllowed: (context) => !!context.session?.data },
+    async getSession({ context }) {
+      const data = await sessionStrategy.get({ context })
+      if (!data) return
+      const user = await context.sudo().db.User.findOne({ where: { id: data.sub } })
+      return user ? { user } : undefined
+    },
+    ui: { isAccessAllowed: (context) => !!context.session?.user },
   })
 );
 ```
@@ -144,7 +154,7 @@ import { list, config } from '@keystone-6/core';
 import { PrismaBetterSqlite3 } from '@prisma/adapter-better-sqlite3';
 import { password, text, timestamp, select, relationship } from '@keystone-6/core/fields';
 import { document } from '@keystone-6/fields-document';
-import { withAuth, session } from './auth';
+import { withAuth, sessionStrategy } from './auth';
 
 const lists = {
   User: list({
@@ -192,8 +202,13 @@ export default config(
       }),
     },
     lists,
-    session,
-    ui: { isAccessAllowed: (context) => !!context.session?.data },
+    async getSession({ context }) {
+      const data = await sessionStrategy.get({ context })
+      if (!data) return
+      const user = await context.sudo().db.User.findOne({ where: { id: data.sub } })
+      return user ? { user } : undefined
+    },
+    ui: { isAccessAllowed: (context) => !!context.session?.user },
   })
 );
 ```
@@ -212,7 +227,7 @@ import { list, config } from '@keystone-6/core'
 import { PrismaBetterSqlite3 } from '@prisma/adapter-better-sqlite3'
 import { password, text, timestamp, select, relationship } from '@keystone-6/core/fields'
 import { document } from '@keystone-6/fields-document'
-import { withAuth, session } from './auth'
+import { withAuth, sessionStrategy } from './auth'
 
 const lists = {
   User: list({
@@ -260,8 +275,13 @@ export default config(
       }),
     },
     lists,
-    session,
-    ui: { isAccessAllowed: context => !!context.session?.data },
+    async getSession({ context }) {
+      const data = await sessionStrategy.get({ context })
+      if (!data) return
+      const user = await context.sudo().db.User.findOne({ where: { id: data.sub } })
+      return user ? { user } : undefined
+    },
+    ui: { isAccessAllowed: context => !!context.session?.user },
   })
 )
 ```

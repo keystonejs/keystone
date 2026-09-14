@@ -1,33 +1,14 @@
 import type {
   AdminFileToWrite,
   BaseListTypeInfo,
-  SessionStrategy,
   BaseKeystoneTypeInfo,
   KeystoneConfig,
 } from '@keystone-6/core/types'
-import type { AuthConfig, AuthGqlNames } from './types.ts'
+import type { AuthConfig } from './types.ts'
 
 import { getSchemaExtension } from './schema.ts'
 import configTemplate from './templates/config.ts'
 import signinTemplate from './templates/signin.ts'
-
-export type AuthSession = {
-  itemId: string | number // TODO: use ListTypeInfo
-  data: unknown // TODO: use ListTypeInfo
-}
-
-function getAuthGqlNames(singular: string): AuthGqlNames {
-  const lowerSingularName = singular.charAt(0).toLowerCase() + singular.slice(1)
-  return {
-    itemQueryName: lowerSingularName,
-    whereUniqueInputName: `${singular}WhereUniqueInput`,
-
-    authenticateItemWithPassword: `authenticate${singular}WithPassword`,
-    ItemAuthenticationWithPasswordResult: `${singular}AuthenticationWithPasswordResult`,
-    ItemAuthenticationWithPasswordSuccess: `${singular}AuthenticationWithPasswordSuccess`,
-    ItemAuthenticationWithPasswordFailure: `${singular}AuthenticationWithPasswordFailure`,
-  } as const
-}
 
 // TODO: use TypeInfo and listKey for types
 /**
@@ -35,12 +16,11 @@ function getAuthGqlNames(singular: string): AuthGqlNames {
  *
  * Generates config for Keystone to implement standard auth features.
  */
-export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
-  listKey,
-  secretField,
-  identityField,
-  sessionData = 'id',
-}: AuthConfig<ListTypeInfo>) {
+export function createAuth<ListTypeInfo extends BaseListTypeInfo>(
+  authConfig: AuthConfig<ListTypeInfo>
+) {
+  const { listKey, passwordField, identityField } = authConfig
+  const { sessionStrategy } = authConfig
   /**
    * getAdditionalFiles
    *
@@ -62,11 +42,10 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
             ? 'title'
             : 'id')
 
-    const authGqlNames = getAuthGqlNames(listConfig.graphql?.singular ?? listKey)
     const filesToWrite: AdminFileToWrite[] = [
       {
         mode: 'write',
-        src: signinTemplate({ authGqlNames, identityField, secretField }),
+        src: signinTemplate({ identityField, passwordField }),
         outputPath: 'pages/signin.js',
       },
       {
@@ -81,6 +60,10 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
   function throwIfInvalidConfig<TypeInfo extends BaseKeystoneTypeInfo>(
     config: KeystoneConfig<TypeInfo>
   ) {
+    if (config.getSession === undefined) {
+      throw new TypeError('getSession must be configured in your Keystone config to use withAuth')
+    }
+
     if (!(listKey in config.lists)) {
       throw new Error(`withAuth cannot find the list "${listKey}"`)
     }
@@ -92,45 +75,8 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
       throw new Error(`withAuth cannot find the identity field "${listKey}.${identityField}"`)
     }
 
-    if (!(secretField in list.fields)) {
-      throw new Error(`withAuth cannot find the secret field "${listKey}.${secretField}"`)
-    }
-  }
-
-  // this strategy wraps the existing session strategy,
-  //   and injects the requested session.data before returning
-  function authSessionStrategy<Session extends AuthSession>(
-    _sessionStrategy: SessionStrategy<Session>
-  ): SessionStrategy<Session> {
-    const { get, ...sessionStrategy } = _sessionStrategy
-    return {
-      ...sessionStrategy,
-      get: async ({ context }) => {
-        const session = await get({ context })
-        const sudoContext = context.sudo()
-        if (!session?.itemId) return
-
-        // TODO: replace with SessionSecret: HMAC({ listKey, identityField, secretField }, SessionSecretVar)
-        // if (session.listKey !== listKey) return null
-
-        try {
-          const data = await sudoContext.query[listKey].findOne({
-            where: { id: session.itemId },
-            query: sessionData,
-          })
-          if (!data) return
-
-          return {
-            ...session,
-            itemId: session.itemId,
-            data,
-          }
-        } catch (e) {
-          console.error(e)
-          // WARNING: this is probably an invalid configuration
-          return
-        }
-      },
+    if (!(passwordField in list.fields)) {
+      throw new Error(`withAuth cannot find the password field "${listKey}.${passwordField}"`)
     }
   }
 
@@ -180,24 +126,21 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
       }
     }
 
-    if (!config.session) throw new TypeError('Missing .session configuration')
-
     const { graphql } = config
     const { extendGraphqlSchema = defaultExtendGraphqlSchema } = graphql ?? {}
-    const listConfig = config.lists[listKey]
-
+    const graphqlSingular = config.lists[listKey].graphql?.singular ?? listKey
     /**
      * extendGraphqlSchema
      *
      * Must be added to the extendGraphqlSchema config. Can be composed.
      */
-    const authGqlNames = getAuthGqlNames(listConfig.graphql?.singular ?? listKey)
     const authExtendGraphqlSchema = getSchemaExtension({
-      authGqlNames,
+      graphqlSingular,
       listKey,
       identityField,
-      secretField,
-      sessionData,
+      passwordField,
+      sessionStrategy,
+      getAuthenticatedItemId: authConfig.getAuthenticatedItemId,
     })
 
     return {
@@ -209,7 +152,6 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
         },
       },
       ui,
-      session: authSessionStrategy(config.session),
     }
   }
 
@@ -217,3 +159,10 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
     withAuth,
   }
 }
+
+export {
+  jwtSessions,
+  storedSessions,
+  type SessionStore,
+  type SessionStoreFunction,
+} from './session.ts'
