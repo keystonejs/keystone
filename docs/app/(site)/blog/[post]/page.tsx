@@ -1,7 +1,6 @@
 import Markdoc, { type Tag } from '@markdoc/markdoc'
 import { notFound } from 'next/navigation'
 
-import { getOgAbsoluteUrl } from '../../../../lib/og-util.ts'
 import { reader } from '../../../../keystatic/reader.ts'
 import { baseMarkdocConfig } from '../../../../markdoc/config.ts'
 import type { EntryWithResolvedLinkedFiles } from '@keystatic/core/reader'
@@ -49,20 +48,22 @@ export async function generateMetadata({ params }): Promise<Metadata> {
   const post = await reader.collections.posts.read(_params!.post)
 
   const title = post?.title ? `${post.title} - Keystone 6 Blog` : 'Keystone 6 Blog'
-
-  let ogImageUrl = post?.metaImageUrl
-  if (!ogImageUrl) {
-    ogImageUrl = getOgAbsoluteUrl({
-      title,
-      type: 'Blog',
-    })
-  }
+  const description = post?.description
+  const image = `/blog/${_params!.post}/opengraph-image.png`
 
   return {
     title,
-    description: post?.description,
+    description,
     openGraph: {
-      images: ogImageUrl,
+      title,
+      description,
+      images: [{ url: image, width: 1200, height: 630, alt: 'Keystone Blog' }],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+      images: [image],
     },
   }
 }

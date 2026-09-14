@@ -1,8 +1,13 @@
 /** @jsxImportSource @emotion/react */
 
-import { Fragment, useState, type ReactNode, type HTMLAttributes, useTransition } from 'react'
-
-import { subscribeToButtondown } from '../app/actions.ts'
+import {
+  Fragment,
+  useState,
+  type FormEvent,
+  type ReactNode,
+  type HTMLAttributes,
+  useTransition,
+} from 'react'
 
 import { useMediaQuery } from '../lib/media.ts'
 import { Button } from './primitives/Button.tsx'
@@ -24,21 +29,43 @@ export function SubscribeForm({ autoFocus, stacked, children, ...props }: Subscr
   const [error, setError] = useState<string | null>(null)
   const [formSubmitted, setFormSubmitted] = useState(false)
 
-  // Augment the server action with the pathname
-  const subscribeToButtondownWithPathname = subscribeToButtondown.bind(null, pathname)
+  function submit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+    const formData = new FormData(event.currentTarget)
 
-  async function submitAction(formData: FormData) {
     startTransition(async () => {
-      const response = await subscribeToButtondownWithPathname(formData)
-      if (response.error) return setError(response.error)
-      if (response.success) return setFormSubmitted(true)
+      setError(null)
+
+      try {
+        const response = await fetch('https://endpoints.thinkmill.com.au/newsletter', {
+          method: 'POST',
+          mode: 'cors',
+          headers: {
+            'Content-Type': 'application/json; charset=utf-8',
+          },
+          body: JSON.stringify({
+            email: formData.get('email'),
+            tags: [...formData.getAll('tags'), `source:keystonejs.com${pathname}`.substring(0, 80)],
+          }),
+        })
+        const result = await response.json()
+
+        if (response.ok && result.success === true) {
+          setFormSubmitted(true)
+        } else {
+          setError('Sorry, an error has occurred — please try again later.')
+        }
+      } catch (error) {
+        console.error('Newsletter subscription failed:', error)
+        setError('Sorry, an error has occurred — please try again later.')
+      }
     })
   }
 
   return !formSubmitted ? (
     <Fragment>
       {children}
-      <form action={submitAction} {...props}>
+      <form onSubmit={submit} {...props}>
         <Stack
           orientation={stacked ? 'vertical' : 'horizontal'}
           block={stacked}

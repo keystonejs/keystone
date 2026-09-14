@@ -14,8 +14,9 @@ export function Breadcrumbs() {
   const pathname = usePathname()
 
   // remove anchor and split path
-  const linkPath = new URL(pathname || '', 'https://keystonejs.com').pathname.split('/')
-  linkPath.shift()
+  const linkPath = new URL(pathname || '', 'https://keystonejs.com').pathname
+    .split('/')
+    .filter(Boolean)
 
   const breadcrumbs = linkPath.map((path, i): Path => {
     return { title: path.replace(/-/g, ' '), href: '/' + linkPath.slice(0, i + 1).join('/') }
