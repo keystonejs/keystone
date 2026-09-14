@@ -1,5 +1,4 @@
-import type { GraphQLNames, JSONValue } from '../types/utils.ts'
-import type { ListMeta, FieldMeta, FieldGroupMeta } from '../types/index.ts'
+import type { AdminMeta } from '../types/index.ts'
 import { gql } from './apollo.ts'
 
 export const adminMetaQuery = gql`
@@ -139,32 +138,8 @@ export const adminMetaQuery = gql`
   }
 `
 
-// TODO: duplicate, reference core/src/lib/admin-meta.ts
 export type AdminMetaQuery = {
   keystone: {
-    adminMeta: {
-      lists: (ListMeta & {
-        fields: ListMeta['fields'][string][]
-        actions: ListMeta['actions']
-        groups: (FieldGroupMeta & {
-          fields: FieldMeta[]
-        })[]
-        graphql: {
-          names: GraphQLNames
-        }
-
-        pageSize: number
-        initialColumns: string[]
-        initialSearchFields: string[]
-        initialSort: ListMeta['initialSort'] | null
-        initialFilter: JSONValue
-        hiddenFilter: JSONValue | null
-        isSingleton: boolean
-
-        hideNavigation: boolean
-        hideCreate: boolean
-        hideDelete: boolean
-      })[]
-    }
+    adminMeta: AdminMeta
   }
 }

@@ -8,6 +8,7 @@ import type express from 'express'
 import type { GraphQLSchema } from 'graphql/index.js'
 
 import type { BaseKeystoneTypeInfo, DatabaseProvider, KeystoneContext } from '../index.ts'
+import type { AdminMeta } from '../admin-meta.ts'
 import type { SessionStrategy } from '../session.ts'
 import type { MaybePromise } from '../utils.ts'
 import type { FieldAccessControl, ListAccessControl } from './access-control.ts'
@@ -27,6 +28,25 @@ export type * from './lists.ts'
 
 export type ListDefaults = {
   graphql?: Pick<ListGraphQLConfig<any>, 'omit' | 'maxTake'>
+}
+
+/** Hooks for customizing the Admin UI metadata exposed through GraphQL. */
+export type AdminUIHooks<TypeInfo extends BaseKeystoneTypeInfo> = {
+  /**
+   * Runs when the `adminMeta` GraphQL field is resolved for an allowed request, after request-
+   * dependent metadata values have been resolved and before the metadata is returned to the
+   * client. It is not called for ordinary data GraphQL operations. If `adminMeta` is resolved more
+   * than once in a request, the hook may also run more than once.
+   *
+   * Use this for localization, tenant-specific presentation metadata, or other request-aware
+   * customization. The metadata passed to the hook is request-local and may be transformed, but
+   * stable structural identifiers should be preserved. `context.req` may be absent when the hook
+   * runs outside an HTTP request context.
+   */
+  resolveAdminMeta?: (args: {
+    adminMeta: AdminMeta
+    context: KeystoneContext<TypeInfo>
+  }) => MaybePromise<AdminMeta>
 }
 
 export type KeystoneConfigPre<TypeInfo extends BaseKeystoneTypeInfo = BaseKeystoneTypeInfo> = {
@@ -148,6 +168,8 @@ export type KeystoneConfigPre<TypeInfo extends BaseKeystoneTypeInfo = BaseKeysto
   telemetry?: boolean
 
   ui?: {
+    hooks?: AdminUIHooks<TypeInfo>
+
     /** Completely disables the Admin UI */
     isDisabled?: boolean
 
@@ -191,7 +213,9 @@ export type KeystoneConfig<TypeInfo extends BaseKeystoneTypeInfo = BaseKeystoneT
   }
   session: KeystoneConfigPre<TypeInfo>['session']
   telemetry: boolean
-  ui: NonNullable<Required<KeystoneConfigPre<TypeInfo>['ui']>>
+  ui: Omit<NonNullable<Required<KeystoneConfigPre<TypeInfo>['ui']>>, 'hooks'> & {
+    hooks?: AdminUIHooks<TypeInfo>
+  }
 }
 
 export type { BaseFields, ListConfig, MaybeItemFunctionWithFilter, MaybeSessionFunction }

@@ -14,7 +14,7 @@ import type {
   MaybePromise,
   MaybeSessionFunction,
 } from '../types/index.ts'
-import type { ActionMeta, FieldMeta, ListMeta } from '../types/admin-meta.ts'
+import type { ActionMeta, AdminMeta, FieldMeta, ListMeta } from '../types/admin-meta.ts'
 import type { GraphQLNames, JSONValue } from '../types/utils.ts'
 import type { InitialisedList } from './core/initialise-lists.ts'
 
@@ -92,11 +92,23 @@ type ListMetaSource_ = {
 }
 export type ListMetaSource = ListMetaSource_ & Omit<ListMeta, keyof ListMetaSource_>
 
+/**
+ * Internal Admin UI metadata assembled from the Keystone configuration.
+ *
+ * This source is shared by requests and may still contain request-dependent resolver functions.
+ * It is converted to a request-local {@link AdminMeta} by
+ * {@link resolveAdminMetaForRequest} before being passed to the public Admin UI metadata hook.
+ */
 export type AdminMetaSource = {
   lists: ListMetaSource[]
   listsByKey: Record<string, ListMetaSource>
   views: string[]
   isAccessAllowed: (context: KeystoneContext) => MaybePromise<boolean>
+  /** Request hook applied to the resolved, request-local Admin UI metadata. */
+  resolveAdminMeta?: (args: {
+    adminMeta: AdminMeta
+    context: KeystoneContext
+  }) => MaybePromise<AdminMeta>
 }
 
 export function createAdminMeta(
@@ -109,6 +121,7 @@ export function createAdminMeta(
     lists: [],
     views: [],
     isAccessAllowed: config.ui?.isAccessAllowed,
+    resolveAdminMeta: config.ui?.hooks?.resolveAdminMeta,
   }
 
   const omittedLists: string[] = []
@@ -396,6 +409,188 @@ export function createAdminMeta(
   return adminMetaRoot
 }
 
+type AdminMetaField = AdminMeta['lists'][number]['fields'][number]
+type AdminMetaAction = AdminMeta['lists'][number]['actions'][number]
+
+/**
+ * Resolves shared Admin UI metadata for a single request.
+ *
+ * Request-dependent metadata functions are evaluated with the supplied Keystone context, and the
+ * returned metadata is rebuilt as a request-local object. This prevents transformations made by
+ * `resolveAdminMeta` from mutating the shared metadata source or leaking into another request.
+ * The hook itself is invoked by the Admin Meta GraphQL resolver after this function returns.
+ */
+export async function resolveAdminMetaForRequest(
+  adminMetaRoot: AdminMetaSource,
+  context: KeystoneContext
+): Promise<AdminMeta> {
+  const resolvedFields = new Map<FieldMetaSource, AdminMetaField>()
+
+  async function resolveField(field: FieldMetaSource): Promise<AdminMetaField> {
+    const existingField = resolvedFields.get(field)
+    if (existingField) return existingField
+
+    const itemArgs = {
+      session: context.session,
+      context,
+      listKey: field.listKey,
+      fieldKey: field.fieldKey,
+      item: null,
+      itemField: null,
+    }
+    const resolvedField = {
+      key: field.key,
+      label: field.label,
+      description: field.description,
+      fieldMeta: cloneAdminMetaValue(field.fieldMeta),
+      viewsIndex: field.viewsIndex,
+      customViewsIndex: field.customViewsIndex,
+      search: field.search,
+      isNonNull: [...field.isNonNull],
+      isFilterable: await resolveAdminMetaValue(field.isFilterable, {}, context),
+      isOrderable: await resolveAdminMetaValue(field.isOrderable, {}, context),
+      createView: {
+        fieldMode: cloneAdminMetaValue(
+          await resolveAdminMetaValue(field.createView.fieldMode, {}, context)
+        ),
+        isRequired: cloneAdminMetaValue(
+          await resolveAdminMetaValue(field.createView.isRequired, {}, context)
+        ),
+      },
+      itemView: {
+        fieldMode: cloneAdminMetaValue(
+          await resolveAdminMetaValue(field.itemView.fieldMode, itemArgs, context)
+        ),
+        fieldPosition: await resolveAdminMetaValue(field.itemView.fieldPosition, itemArgs, context),
+        isRequired: cloneAdminMetaValue(
+          await resolveAdminMetaValue(field.itemView.isRequired, itemArgs, context)
+        ),
+      },
+      listView: {
+        fieldMode: cloneAdminMetaValue(
+          await resolveAdminMetaValue(field.listView.fieldMode, {}, context)
+        ),
+      },
+    } satisfies AdminMetaField
+
+    resolvedFields.set(field, resolvedField)
+    return resolvedField
+  }
+
+  async function resolveAction(action: ActionMetaSource): Promise<AdminMetaAction> {
+    const itemArgs = {
+      session: context.session,
+      context,
+      listKey: action.listKey,
+      actionKey: action.key,
+      item: null,
+    }
+    const actionArguments = []
+
+    for (const argument of action.graphql.arguments) {
+      const source = argument.source
+      let resolvedSource = argument.source
+
+      if (source && 'field' in source) {
+        resolvedSource = {
+          field: await resolveField(source.field),
+        }
+      } else if (source && 'itemField' in source) {
+        resolvedSource = {
+          itemField: source.itemField,
+        }
+      }
+
+      actionArguments.push({
+        name: argument.name,
+        type: argument.type,
+        source: resolvedSource,
+      })
+    }
+
+    return {
+      key: action.key,
+      label: action.label,
+      icon: action.icon,
+      messages: { ...action.messages },
+      graphql: {
+        arguments: actionArguments,
+        names: cloneAdminMetaValue(action.graphql.names),
+      },
+      itemView: {
+        actionMode: cloneAdminMetaValue(
+          await resolveAdminMetaValue(action.itemView.actionMode, itemArgs, context)
+        ),
+        navigation: action.itemView.navigation,
+        hidePrompt: action.itemView.hidePrompt,
+        hideToast: action.itemView.hideToast,
+      },
+      listView: {
+        actionMode: cloneAdminMetaValue(
+          await resolveAdminMetaValue(action.listView.actionMode, {}, context)
+        ),
+      },
+    }
+  }
+
+  const lists: AdminMeta['lists'] = []
+  for (const list of adminMetaRoot.lists) {
+    const fields = []
+    for (const field of list.fields) {
+      fields.push(await resolveField(field))
+    }
+
+    const groups = []
+    for (const group of list.groups) {
+      const groupFields = []
+      for (const field of group.fields) {
+        groupFields.push(await resolveField(field))
+      }
+      groups.push({
+        label: group.label,
+        description: group.description,
+        fields: groupFields,
+      })
+    }
+
+    const actions = []
+    for (const action of list.actions) {
+      actions.push(await resolveAction(action))
+    }
+
+    lists.push({
+      key: list.key,
+      label: list.label,
+      singular: list.singular,
+      plural: list.plural,
+      path: list.path,
+      labelField: list.labelField,
+      fields,
+      groups,
+      actions,
+      graphql: {
+        names: cloneAdminMetaValue(list.graphql.names),
+      },
+      pageSize: list.pageSize,
+      initialColumns: [...list.initialColumns],
+      initialSearchFields: [...list.initialSearchFields],
+      initialSort: cloneAdminMetaValue(list.initialSort),
+      initialFilter: cloneAdminMetaValue(
+        await resolveAdminMetaValue(list.initialFilter, {}, context)
+      ),
+      hiddenFilter: cloneAdminMetaValue(
+        await resolveAdminMetaValue(list.hiddenFilter, {}, context)
+      ),
+      isSingleton: list.isSingleton,
+      hideNavigation: await resolveAdminMetaValue(list.hideNavigation, {}, context),
+      hideCreate: await resolveAdminMetaValue(list.hideCreate, {}, context),
+      hideDelete: await resolveAdminMetaValue(list.hideDelete, {}, context),
+    })
+  }
+
+  return { lists }
+}
+
 let currentAdminMeta: undefined | AdminMetaSource
 
 export function getAdminMetaForRelationshipField() {
@@ -415,6 +610,53 @@ function assertValidView(view: string, location: string) {
       `${location} is an absolute path, which is invalid. You need to use a module path that is resolved from where 'keystone start' is run (see https://github.com/keystonejs/keystone/pull/7805)`
     )
   }
+}
+
+/**
+ * Resolves one static or request-dependent Admin UI metadata value.
+ *
+ * Function values receive the location-specific arguments and the current Keystone context; both
+ * synchronous and asynchronous results are supported. Static values are returned unchanged. This
+ * helper does not clone object results, so callers must apply the appropriate request-local clone
+ * when a resolved value will be exposed to `resolveAdminMeta`.
+ */
+async function resolveAdminMetaValue<Value>(
+  value: Value | ((args: any, context: KeystoneContext) => MaybePromise<Value>),
+  args: any,
+  context: KeystoneContext
+): Promise<Value> {
+  if (typeof value === 'function') {
+    return await (value as (args: any, context: KeystoneContext) => MaybePromise<Value>)(
+      args,
+      context
+    )
+  }
+  return value
+}
+
+/**
+ * Creates a request-local copy of a JSON-like admin metadata value.
+ *
+ * The metadata source is shared across requests, but `resolveAdminMeta` is
+ * allowed to transform the value it receives. Cloning recursively prevents a
+ * hook that mutates a nested object or array from mutating shared metadata or
+ * leaking that mutation into a later request.
+ *
+ * This is intentionally a JSON-tree clone, not a general-purpose deep clone.
+ * Admin metadata should contain JSON-compatible values; values such as
+ * `Date`, `Map`, `Set`, `RegExp`, and class instances are not preserved by
+ * this helper and must be normalised before reaching it.
+ */
+function cloneAdminMetaValue<Value>(value: Value): Value {
+  if (Array.isArray(value)) {
+    return value.map(cloneAdminMetaValue) as Value
+  }
+  if (value !== null && typeof value === 'object') {
+    return Object.fromEntries(
+      Object.entries(value).map(([key, nestedValue]) => [key, cloneAdminMetaValue(nestedValue)])
+    ) as Value
+  }
+  return value
 }
 
 function normalizeMaybeSessionFunction<

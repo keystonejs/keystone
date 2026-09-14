@@ -1,6 +1,7 @@
 import { QueryMode } from '../types/index.ts'
 import { g } from '../types/schema/index.ts'
 import type { GraphQLNames } from '../types/utils.ts'
+import { resolveAdminMetaForRequest } from './admin-meta.ts'
 import type {
   ActionMetaSource,
   AdminMetaSource,
@@ -366,9 +367,10 @@ const adminMeta = g.object<AdminMetaSource>()({
         itemId: g.arg({ type: g.ID }),
       },
       async resolve(source, { key, itemId }, context) {
+        const list = source.listsByKey?.[key] ?? source.lists.find(list => list.key === key)
         if (itemId === null || itemId === undefined) {
           return {
-            ...source.listsByKey[key],
+            ...list,
             item: null,
           }
         }
@@ -376,12 +378,12 @@ const adminMeta = g.object<AdminMetaSource>()({
         const item = await context.db[key].findOne({ where: { id: itemId } })
         if (!item) {
           return {
-            ...source.listsByKey[key],
+            ...list,
             item: null,
           }
         }
         return {
-          ...source.listsByKey[key],
+          ...list,
           item,
         }
       },
@@ -395,13 +397,21 @@ export const KeystoneMeta = g.object<{ adminMeta: AdminMetaSource }>()({
     adminMeta: g.field({
       type: g.nonNull(adminMeta),
       async resolve({ adminMeta }, _, context) {
-        if (context.__internal.sudo) return adminMeta
+        if (!context.__internal.sudo) {
+          const isAllowed = await adminMeta.isAccessAllowed(context)
+          if (!isAllowed) {
+            // TODO: we need better errors
+            throw new Error('Access denied')
+          }
+        }
 
-        const isAllowed = await adminMeta.isAccessAllowed(context)
-        if (isAllowed) return adminMeta
+        if (!adminMeta.resolveAdminMeta) return adminMeta
 
-        // TODO: we need better errors
-        throw new Error('Access denied')
+        const resolvedAdminMeta = await resolveAdminMetaForRequest(adminMeta, context)
+        return (await adminMeta.resolveAdminMeta({
+          adminMeta: resolvedAdminMeta,
+          context,
+        })) as unknown as AdminMetaSource
       },
     }),
   },
