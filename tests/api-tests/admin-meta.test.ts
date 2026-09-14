@@ -488,3 +488,86 @@ test(
     })
   })
 )
+
+const omitUpdateRunner = setupTestRunner({
+  config: {
+    lists: {
+      User: list({
+        access: allowAll,
+        fields: {
+          name: text({
+            graphql: { omit: { update: true } },
+            ui: { itemView: { fieldMode: 'edit' } },
+          }),
+          secret: text({
+            graphql: { omit: { update: true } },
+            ui: { itemView: { fieldMode: () => 'hidden' } },
+          }),
+          bio: text({
+            graphql: { omit: { update: true } },
+            ui: { itemView: { fieldMode: () => 'read' } },
+          }),
+          note: text({
+            graphql: { omit: { update: true } },
+            ui: { itemView: { fieldMode: { hidden: { name: { equals: 'secret' } } } } },
+          }),
+        },
+      }),
+    },
+  },
+})
+
+async function getUserItemViewFieldModes(context: { graphql: { run: Function } }) {
+  // Query the public schema. sudo() uses the internal schema, which strips graphql.omit.
+  const data = await context.graphql.run({
+    query: gql`
+      query {
+        keystone {
+          adminMeta {
+            list(key: "User") {
+              fields {
+                key
+                itemView {
+                  fieldMode
+                }
+              }
+            }
+          }
+        }
+      }
+    `,
+  })
+
+  return Object.fromEntries(
+    data.keystone.adminMeta.list.fields.map(
+      (field: { key: string; itemView: { fieldMode: string } }) => [
+        field.key,
+        field.itemView.fieldMode,
+      ]
+    )
+  )
+}
+
+test(
+  'graphql.omit.update forces itemView.fieldMode to read even if edit is configured',
+  omitUpdateRunner(async ({ context }) => {
+    const fieldModes = await getUserItemViewFieldModes(context)
+    expect(fieldModes).toEqual({
+      id: 'edit',
+      name: 'read',
+      secret: 'hidden',
+      bio: 'read',
+      note: { hidden: { name: { equals: 'secret' } } },
+    })
+  })
+)
+
+test(
+  'graphql.omit.update preserves a dynamic itemView.fieldMode between read and hidden',
+  omitUpdateRunner(async ({ context }) => {
+    const fieldModes = await getUserItemViewFieldModes(context)
+    expect(fieldModes.secret).toBe('hidden')
+    expect(fieldModes.bio).toBe('read')
+    expect(fieldModes.note).toEqual({ hidden: { name: { equals: 'secret' } } })
+  })
+)
