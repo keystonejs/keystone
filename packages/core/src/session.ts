@@ -60,13 +60,13 @@ type StatelessSessionsOptions = {
 }
 
 function getToken(req: NonNullable<KeystoneContext['req']>, cookieName: string) {
-  const authorization = req.headers.authorization ?? ''
+  const authorization = req.get('authorization') ?? ''
 
   if (authorization.startsWith('Bearer ')) {
     return authorization.slice('Bearer '.length)
   }
 
-  const cookies = cookie.parse(req.headers.cookie || '')
+  const cookies = cookie.parse(req.get('cookie') || '')
   return cookies[cookieName]
 }
 
@@ -100,7 +100,7 @@ export function statelessSessions<Session>({
     async end({ context }) {
       if (!context?.res) return
 
-      context.res.setHeader(
+      context.res.set(
         'Set-Cookie',
         cookie.serialize(cookieName, '', {
           maxAge: 0,
@@ -117,7 +117,7 @@ export function statelessSessions<Session>({
       if (!context?.res) return
 
       const sealedData = await Iron.seal(data, secret, { ...ironOptions, ttl: maxAge * 1000 })
-      context.res.setHeader(
+      context.res.set(
         'Set-Cookie',
         cookie.serialize(cookieName, sealedData, {
           maxAge,

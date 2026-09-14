@@ -29,7 +29,18 @@ export function extendHttpServer(httpServer: http.Server, commonContext: Context
       schema: commonContext.graphql.schema,
       // run these onSubscribe functions as needed or remove them if you don't need them
       onSubscribe: async (ctx: any, msg) => {
-        const context = await commonContext.withRequest(ctx.extra.request)
+        const context = await commonContext.withHeaders(
+          new Headers(
+            Object.entries(ctx.extra.request.headers as http.IncomingHttpHeaders).flatMap(
+              ([key, value]): [string, string][] =>
+                value
+                  ? Array.isArray(value)
+                    ? value.map(inner => [key, inner])
+                    : [[key, value]]
+                  : []
+            )
+          )
+        )
         // Return the execution args for this subscription passing through the Keystone Context
         return {
           schema: commonContext.graphql.schema,

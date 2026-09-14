@@ -59,13 +59,22 @@ export function passportMiddleware(commonContext: KeystoneContext<TypeInfo>): Ro
       return
     }
 
-    const context = await commonContext.withRequest(req, res)
+    const responseHeaders = new Headers()
+    const context = await commonContext.withHeaders(
+      new Headers(
+        Object.entries(req.headers).flatMap(([key, value]): [string, string][] =>
+          value ? (Array.isArray(value) ? value.map(inner => [key, inner]) : [[key, value]]) : []
+        )
+      ),
+      responseHeaders
+    )
 
     // starts the session, and sets the cookie on context.res
     await context.sessionStrategy?.start({
       context,
       data: req.user,
     })
+    for (const value of responseHeaders.getSetCookie()) res.appendHeader('Set-Cookie', value)
 
     res.redirect('/auth/session')
   })
@@ -73,8 +82,13 @@ export function passportMiddleware(commonContext: KeystoneContext<TypeInfo>): Ro
   // show the current session object
   //   WARNING: this is for demonstration purposes only, probably dont do this
   router.get('/auth/session', async (req, res) => {
-    const context = await commonContext.withRequest(req, res)
-
+    const context = await commonContext.withHeaders(
+      new Headers(
+        Object.entries(req.headers).flatMap(([key, value]): [string, string][] =>
+          value ? (Array.isArray(value) ? value.map(inner => [key, inner]) : [[key, value]]) : []
+        )
+      )
+    )
     res.setHeader('Content-Type', 'application/json')
     res.send(JSON.stringify(context.session))
     res.end()
