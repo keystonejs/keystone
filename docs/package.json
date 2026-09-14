@@ -11,6 +11,7 @@
     "start": "next start -p 8000",
     "sitemap": "next-sitemap",
     "build:llms": "node scripts/llms-txt/generate.ts",
+    "generate-redirects": "node scripts/generate-redirects.ts",
     "build:rss": "node scripts/rss.ts",
     "validate-links": "node scripts/validate-links.ts",
     "remove-conditionals": "node scripts/replace-show-next-release/index.ts"
@@ -29,7 +30,6 @@
     "@keystone-6/fields-document": "workspace:^",
     "@markdoc/markdoc": "^0.5.0",
     "@sindresorhus/slugify": "^3.0.0",
-    "@vercel/og": "^0.11.0",
     "classnames": "^2.3.1",
     "dedent": "^1.0.0",
     "facepaint": "^1.2.1",

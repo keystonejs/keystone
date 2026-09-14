@@ -1,15 +1,18 @@
 import { gWithContext, list } from '@keystone-6/core'
 import { allowAll, denyAll } from '@keystone-6/core/access'
 import { password, text, timestamp } from '@keystone-6/core/fields'
-import type { Lists, Context } from './generated/keystone/types'
+import type { Lists, Context, Session } from './generated/keystone/types'
 
 import { randomBytes } from 'node:crypto'
 
 const g = gWithContext<Context>()
 type g<T> = gWithContext.infer<T>
 
-export type Session = {
-  itemId: string
+declare module './generated/keystone/types' {
+  interface Session {
+    itemId: string
+    listKey: string
+  }
 }
 
 function hasSession({ session }: { session?: Session }) {
@@ -98,7 +101,7 @@ export const lists = {
       oneTimeTokenCreatedAt: timestamp({ ...hiddenField }),
     },
   }),
-} satisfies Lists<Session>
+} satisfies Lists
 
 // WARNING: this example is for demonstration purposes only
 //   as with each of our examples, it has not been vetted
@@ -191,7 +194,7 @@ export const extendGraphqlSchema = g.extend(base => {
             await context.sessionStrategy.start({
               context,
               data: {
-                listkey: 'User',
+                listKey: 'User',
                 itemId: userId,
               },
             })

@@ -12,8 +12,8 @@ _Note: Since you are not starting the keystone server, the Admin UI will not be 
 ## Notes
 
 - This example is setup with seed data. Demo user email is `bruce@email.com`, password is `passw0rd`.
-- `pnpm next:dev` is all you need to develop your Next.js app. You don't need to start the keystone server since `getContext` will work without starting the Keystone server.
-- However when you make changes to your keystone lists, the schema files need to be regenerated. So you'll either have to run `pnpm keystone:dev` or `pnpm keystone:build` just once after making changes to your lists. Alternatively you can open two terminal tabs and run both `pnpm keystone:dev` and `pnpm next:dev` concurrently during development.
+- Run `pnpm keystone:dev` once after cloning the example to create and seed the local database. Run it again whenever you change your Keystone lists so the database and generated schema files stay up to date.
+- After that, `pnpm next:dev` is all you need to develop your Next.js app. Alternatively, run `pnpm keystone:dev` and `pnpm next:dev` concurrently while changing your Keystone schema.
 - When you deploy your Next.js app, remember to run `pnpm keystone:build` once to make sure you have the latest schema files built for `getContext` API.
 
 ## FAQ
@@ -30,9 +30,3 @@ Easy. Deploy twice to two different servers.
 2. Deploy the Keystone server (commands in package.json) to another instance (Eg. Digital Ocean).
 
 Both these apps connect to the same database and are built with the same source code so everything will work as you expect it to.
-
-## Give it a try
-
-Deploy this example to Vercel and see it for yourself.
-
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fkeystonejs%2Fkeystone%2Ftree%2Fmain%2Fexamples%2Fframework-nextjs-pages-directory)

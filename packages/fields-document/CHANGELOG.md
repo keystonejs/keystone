@@ -1,5 +1,11 @@
 # @keystone-6/fields-document
 
+## 11.0.5
+
+### Patch Changes
+
+- [#10023](https://github.com/keystonejs/keystone/pull/10023) [`b4e9a21`](https://github.com/keystonejs/keystone/commit/b4e9a21a3ded01022443c93fc5627c912ae2a240) Thanks [@emmatown](https://github.com/emmatown)! - Updates `@keystar/ui` to `0.10.0`
+
 ## 11.0.4
 
 ### Patch Changes

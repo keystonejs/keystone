@@ -1,11 +1,13 @@
 import { list } from '@keystone-6/core'
 import { allowAll, unfiltered, allOperations } from '@keystone-6/core/access'
 import { checkbox, text } from '@keystone-6/core/fields'
-import type { Lists } from './generated/keystone/types'
+import type { Lists, Session } from './generated/keystone/types'
 
-export type Session = {
-  id: string
-  admin: boolean
+declare module './generated/keystone/types' {
+  interface Session {
+    id: string
+    admin: boolean
+  }
 }
 
 function hasSession({ session }: { session?: Session }) {
@@ -61,4 +63,4 @@ export const lists = {
       admin: checkbox(),
     },
   }),
-} satisfies Lists<Session>
+} satisfies Lists

@@ -2,8 +2,8 @@ import { PrismaBetterSqlite3 } from '@prisma/adapter-better-sqlite3'
 import { config } from '@keystone-6/core'
 import { statelessSessions } from '@keystone-6/core/session'
 import { createAuth } from '@keystone-6/auth'
-import { type Session, lists } from './schema'
-import type { Config, Context, TypeInfo } from './generated/keystone/types'
+import { lists } from './schema'
+import type { Config, Context, TypeInfo, Session } from './generated/keystone/types'
 
 // WARNING: this example is for demonstration purposes only
 //   as with each of our examples, it has not been vetted
@@ -23,7 +23,7 @@ const { withAuth } = createAuth({
   sessionData: 'passwordChangedAt',
 })
 
-function withSessionInvalidation(config: Config<Session>): Config<Session> {
+function withSessionInvalidation(config: Config): Config {
   const existingSessionStrategy = config.session!
 
   return {

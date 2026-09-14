@@ -50,3 +50,4 @@ minimumReleaseAgeExclude:
   - '@keystar/ui'
   - '@keystatic/core'
   - '@keystatic/next'
+verifyDepsBeforeRun: false

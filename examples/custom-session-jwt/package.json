@@ -14,14 +14,13 @@
     "@keystone-6/core": "workspace:^",
     "@prisma/adapter-better-sqlite3": "catalog:",
     "@prisma/client": "catalog:",
-    "jsonwebtoken": "^9.0.0",
+    "jose": "^6.2.10",
     "next": "catalog:",
     "react": "catalog:",
     "react-dom": "catalog:",
     "better-sqlite3": "catalog:"
   },
   "devDependencies": {
-    "@types/jsonwebtoken": "^9.0.2",
     "prisma": "catalog:",
     "typescript": "catalog:"
   }

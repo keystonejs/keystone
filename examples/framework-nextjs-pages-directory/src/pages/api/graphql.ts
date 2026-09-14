@@ -6,19 +6,13 @@ import { keystoneContext } from '../../keystone/context'
   An example of how to setup your own yoga graphql server
   using the generated Keystone GraphQL schema.
 */
-export const config = {
-  api: {
-    // Disable body parsing (required for file uploads)
-    bodyParser: false,
-  },
-}
-
 // Use Keystone API to create GraphQL handler
 export default createYoga<{
   req: NextApiRequest
   res: NextApiResponse
 }>({
   graphqlEndpoint: '/api/graphql',
+  multipart: false,
   schema: keystoneContext.graphql.schema,
   /*
     `keystoneContext` object doesn't have user's session information.

@@ -6,25 +6,65 @@ on:
       - main
   workflow_dispatch:
 
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
 jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 11.21.0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 26
+          cache: pnpm
+
+      - name: Set up GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Remove server-only routes
+        run: |
+          rm -rf docs/app/keystatic
+          rm -rf docs/app/api/keystatic
+
+      - name: Build static site
+        run: pnpm --dir docs build
+        env:
+          STATIC_EXPORT: 'true'
+          NEXT_PUBLIC_SITE_URL: 'https://keystonejs.com'
+
+      - name: Generate redirect pages
+        run: pnpm --dir docs generate-redirects
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: docs/out
+
   deploy:
     environment:
-      name: Website
-      url: ${{ steps.deploy.outputs.url }}
-    env:
-      VERCEL_ORG_ID: ${{ secrets.VERCEL_TEAM_ID }}
-      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    needs: build
     steps:
-      - uses: actions/checkout@main
-      - uses: ./.github/actions/ci-setup
-      - run: git checkout HEAD -- examples/document-field-customisation/keystone-server
-
-      - run: pnpm install -w vercel@canary --ignore-scripts
-      - run: pnpm vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
-      - run: pnpm vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
-      - id: deploy
-        run: |
-          url=$(pnpm vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }})
-          echo "url=$url" >> "$GITHUB_OUTPUT"
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

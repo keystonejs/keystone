@@ -18,6 +18,13 @@ import { text, select } from '@keystone-6/core/fields'
 // the generated types from '../../generated/keystone/types'
 import type { Lists } from '../../generated/keystone/types'
 
+declare module '../../generated/keystone/types' {
+  interface Session {
+    user: string
+    browser: string
+  }
+}
+
 export const lists = {
   Post: list({
     // WARNING

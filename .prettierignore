@@ -12,3 +12,4 @@ examples/custom-output-paths/my-types.ts
 CHANGELOG.md
 **/.next
 **/.keystone
+**/next-env.d.ts

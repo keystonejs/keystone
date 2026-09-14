@@ -3,7 +3,6 @@ import { config } from '@keystone-6/core'
 import { statelessSessions } from '@keystone-6/core/session'
 import { createAuth } from '@keystone-6/auth'
 import { lists } from './schema'
-import type { Session } from './schema'
 import type { TypeInfo } from './generated/keystone/types'
 
 // WARNING: this example is for TESTING purposes only
@@ -23,7 +22,7 @@ const { withAuth } = createAuth({
 })
 
 export default withAuth(
-  config<TypeInfo<Session>>({
+  config<TypeInfo>({
     db: {
       provider: 'sqlite',
       prismaClientOptions: () => ({

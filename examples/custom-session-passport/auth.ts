@@ -7,10 +7,11 @@ import type { VerifyCallback } from 'passport-oauth2'
 import { Strategy, type StrategyOptions, type Profile } from 'passport-github2'
 
 import type { Author } from './generated/prisma/client'
-import type { TypeInfo } from './generated/keystone/types'
+import type { Session, TypeInfo } from './generated/keystone/types'
 
-export type Session = Author
-
+declare module './generated/keystone/types' {
+  export interface Session extends Author {}
+}
 export const session = statelessSessions<Session>({
   maxAge: 60 * 60 * 24 * 30,
   secret: process.env.SESSION_SECRET!,
@@ -30,7 +31,7 @@ const options: StrategyOptions = {
   callbackURL: 'http://localhost:3000/auth/github/callback',
 }
 
-export function passportMiddleware(commonContext: KeystoneContext<TypeInfo<Session>>): Router {
+export function passportMiddleware(commonContext: KeystoneContext<TypeInfo>): Router {
   const router = Router()
   const instance = new Passport()
   const strategy = new Strategy(
@@ -73,10 +74,9 @@ export function passportMiddleware(commonContext: KeystoneContext<TypeInfo<Sessi
   //   WARNING: this is for demonstration purposes only, probably dont do this
   router.get('/auth/session', async (req, res) => {
     const context = await commonContext.withRequest(req, res)
-    const session = await context.sessionStrategy?.get({ context })
 
     res.setHeader('Content-Type', 'application/json')
-    res.send(JSON.stringify(session))
+    res.send(JSON.stringify(context.session))
     res.end()
   })
 
