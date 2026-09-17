@@ -71,10 +71,13 @@ export async function runSideEffectOnlyHook<
     // always run field hooks for delete operations
     shouldRunFieldLevelHook = () => true
   } else {
-    // only run field hooks on if the field was specified in the
-    //   original input for create and update operations.
+    // only run field hooks if the field was specified in the
+    //   original input, or resolved to a value (eg. a defaultValue)
+    //   for create and update operations.
     const inputDataKeys = new Set(Object.keys(args.inputData))
-    shouldRunFieldLevelHook = fieldKey => inputDataKeys.has(fieldKey)
+    const resolvedData = (args as { resolvedData?: Record<string, unknown> }).resolvedData
+    shouldRunFieldLevelHook = fieldKey =>
+      inputDataKeys.has(fieldKey) || resolvedData?.[fieldKey] !== undefined
   }
 
   // field hooks
