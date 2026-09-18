@@ -21,6 +21,8 @@ jobs:
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@main
+        with:
+          persist-credentials: false
       - uses: ./.github/actions/ci-setup
 
       - name: Preconstruct
@@ -44,6 +46,8 @@ jobs:
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@main
+        with:
+          persist-credentials: false
       - uses: ./.github/actions/ci-setup-examples
 
       - run: pnpm -r check
@@ -58,6 +62,8 @@ jobs:
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@main
+        with:
+          persist-credentials: false
       - uses: ./.github/actions/ci-setup
 
       - name: Unit tests
@@ -69,6 +75,8 @@ jobs:
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@main
+        with:
+          persist-credentials: false
       - uses: ./.github/actions/ci-setup
 
       - name: Unit tests
@@ -93,6 +101,8 @@ jobs:
         index: [1, 2, 3, 4]
     steps:
       - uses: actions/checkout@main
+        with:
+          persist-credentials: false
       - uses: ./.github/actions/ci-setup
 
       - name: Unit tests
@@ -110,6 +120,8 @@ jobs:
         index: [1, 2, 3, 4]
     steps:
       - uses: actions/checkout@main
+        with:
+          persist-credentials: false
       - uses: ./.github/actions/ci-setup
 
       - name: Unit tests
@@ -134,6 +146,8 @@ jobs:
         index: [1, 2, 3, 4]
     steps:
       - uses: actions/checkout@main
+        with:
+          persist-credentials: false
       - uses: ./.github/actions/ci-setup
 
       - name: Unit tests
@@ -156,6 +170,8 @@ jobs:
           - 5432:5432
     steps:
       - uses: actions/checkout@main
+        with:
+          persist-credentials: false
       - uses: ./.github/actions/ci-setup
 
       - name: Unit tests
@@ -169,6 +185,8 @@ jobs:
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@main
+        with:
+          persist-credentials: false
       - uses: ./.github/actions/ci-setup
 
       - name: Unit tests
@@ -189,6 +207,8 @@ jobs:
           - 3306:3306
     steps:
       - uses: actions/checkout@main
+        with:
+          persist-credentials: false
       - uses: ./.github/actions/ci-setup
 
       - name: Unit tests
@@ -211,6 +231,8 @@ jobs:
           - 5432:5432
     steps:
       - uses: actions/checkout@main
+        with:
+          persist-credentials: false
       - uses: ./.github/actions/ci-setup
 
       - name: node:test tests
@@ -224,6 +246,8 @@ jobs:
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@main
+        with:
+          persist-credentials: false
       - uses: ./.github/actions/ci-setup
 
       - name: node:test tests
@@ -244,6 +268,8 @@ jobs:
           - 3306:3306
     steps:
       - uses: actions/checkout@main
+        with:
+          persist-credentials: false
       - uses: ./.github/actions/ci-setup
 
       - name: node:test tests
@@ -257,6 +283,8 @@ jobs:
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@main
+        with:
+          persist-credentials: false
       - uses: ./.github/actions/ci-setup-examples
 
       - name: Example unit tests
@@ -268,6 +296,8 @@ jobs:
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@main
+        with:
+          persist-credentials: false
       - uses: ./.github/actions/ci-setup-examples
 
       - name: Example Next in app directory build
@@ -305,6 +335,8 @@ jobs:
       fail-fast: false
     steps:
       - uses: actions/checkout@main
+        with:
+          persist-credentials: false
       - uses: ./.github/actions/ci-setup-examples
 
       - name: Install Dependencies of Browsers
@@ -336,6 +368,8 @@ jobs:
       fail-fast: false
     steps:
       - uses: actions/checkout@main
+        with:
+          persist-credentials: false
       - uses: ./.github/actions/ci-setup-examples
 
       - name: Install Dependencies of Browsers

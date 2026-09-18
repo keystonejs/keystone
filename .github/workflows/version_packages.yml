@@ -20,6 +20,7 @@ jobs:
     steps:
       - uses: actions/checkout@main
         with:
+          persist-credentials: false
           fetch-depth: 0
 
       - uses: ./.github/actions/ci-setup
