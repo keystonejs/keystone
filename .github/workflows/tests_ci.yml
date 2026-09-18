@@ -11,6 +11,9 @@ concurrency:
   group: ci-tests-${{ github.ref }}
   cancel-in-progress: true
 
+permissions:
+  contents: read
+
 jobs:
   linting:
     name: Linting

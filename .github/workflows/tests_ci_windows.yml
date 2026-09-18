@@ -7,6 +7,9 @@ concurrency:
   group: ci-tests-windows-${{ github.ref }}
   cancel-in-progress: true
 
+permissions:
+  contents: read
+
 jobs:
   unit_tests:
     name: Package Unit Tests

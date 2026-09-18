@@ -3,6 +3,9 @@ on:
   workflow_dispatch:
   pull_request:
 
+permissions:
+  contents: read
+
 jobs:
   publish:
     runs-on: ubuntu-latest
