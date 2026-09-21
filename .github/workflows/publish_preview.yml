@@ -3,11 +3,16 @@ on:
   workflow_dispatch:
   pull_request:
 
+permissions:
+  contents: read
+
 jobs:
   publish:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@main
+        with:
+          persist-credentials: false
 
       - uses: ./.github/actions/ci-setup
 
