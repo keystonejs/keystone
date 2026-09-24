@@ -11,7 +11,7 @@ import {
 } from 'graphql/index.js'
 
 import { g } from '../../index.ts'
-import { expandVoidHooks } from '../../fields/resolve-hooks.ts'
+import { expandTransactionHooks, expandVoidHooks } from '../../fields/resolve-hooks.ts'
 import { humanize } from '../utils.ts'
 import type { GroupInfo } from '../../schema.ts'
 import type {
@@ -398,6 +398,7 @@ function parseListHooks(hooks: ListHooks<BaseListTypeInfo>): ResolvedListHooks<B
     validate: expandVoidHooks(hooks.validate),
     beforeOperation: expandVoidHooks(hooks.beforeOperation),
     afterOperation: expandVoidHooks(hooks.afterOperation),
+    transaction: expandTransactionHooks(hooks.transaction),
   }
 }
 
@@ -428,6 +429,7 @@ function parseFieldHooks(
     validate: expandVoidHooks(hooks.validate),
     beforeOperation: expandVoidHooks(hooks.beforeOperation),
     afterOperation: expandVoidHooks(hooks.afterOperation),
+    transaction: expandTransactionHooks(hooks.transaction),
   }
 }
 
@@ -1011,7 +1013,12 @@ function initialiseActionArgField(
   if (f.access !== undefined) {
     throw new Error(`${path} cannot define field access control`)
   }
-  if (f.hooks?.resolveInput || f.hooks?.beforeOperation || f.hooks?.afterOperation) {
+  if (
+    f.hooks?.resolveInput ||
+    f.hooks?.beforeOperation ||
+    f.hooks?.afterOperation ||
+    f.hooks?.transaction
+  ) {
     throw new Error(`${path} cannot define field hooks`)
   }
   if (f.ui?.createView?.fieldMode !== undefined) {

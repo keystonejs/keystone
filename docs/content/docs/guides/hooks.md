@@ -144,8 +144,9 @@ Don't confuse data **validation** with **access control**. If you want to check 
 
 When data is changed in our system we might want to trigger some external side-effect.
 For example, we might want to send a welcome email to a user when they first create their account.
-We can use the `beforeOperation` and `afterOperation` hooks to do this.
-Let's send an email after a user is created.
+If a write can be part of a transaction, send the email from `transaction.afterCommit`, not `afterOperation`.
+Keep related database consistency work in `afterOperation`, where it can still participate in the transaction.
+For example, create an audit record during signup and notify the user only after commit:
 
 ```typescript
 import { config, list } from '@keystone-6/core';
@@ -161,24 +162,61 @@ export default config({
         email: text(),
        },
       hooks: {
-        afterOperation: ({ operation, item }) => {
-          if (operation === 'create') {
-            sendWelcomeEmail(item.name, item.email);
-          }
-        }
+        afterOperation: {
+          create: async ({ context, item }) => {
+            await context.db.SignupAudit.createOne({ data: { userId: item.id } });
+          },
+        },
+        transaction: {
+          afterCommit: {
+            create: async ({ item }) => {
+              await sendWelcomeEmail(item.name, item.email);
+            },
+          },
+          afterRollback: ({ error }) => {
+            console.error('Signup transaction rolled back', error);
+          },
+        },
       },
+    }),
+    SignupAudit: list({
+      fields: { userId: text() },
     }),
   },
 });
 ```
 
+Use an explicit transaction for the signup:
+
+```typescript
+await context.transaction(async tx => {
+  await tx.db.User.createOne({ data: { name: 'Ada', email: 'ada@example.com' } });
+  // Any error thrown here rolls back both User and SignupAudit. No welcome email is sent.
+});
+```
+
+Transaction hooks do not run for ordinary mutations outside `context.transaction()`. There is no implicit transaction around bulk or nested operations.
+Raw `context.prisma` writes also bypass these item hooks.
+
 The `beforeOperation` and `afterOperation` hooks are very similar, but serve slightly different purposes.
 The `beforeOperation` hook receives an `item` argument, which contains the currently stored in the database before the operation.
 In the `afterOperation` hook, `item` represents the newly updated data in the database, and the original data from before the update is provided as `originalItem`.
-In a `create` operation, there won't be a pre-existing item, and for `delete` operations, the value of `item` in the `afterOperation` hook will be `null`.
+In a `create` operation, there won't be a pre-existing item, and for `delete` operations, the value of `item` in the `afterOperation` hook will be `undefined`.
 
 If the `beforeOperation` hook throws an exception then the operation will return an error, and the data will not be saved to the database.
-If the `afterOperation` hook throws an exception then the data will remain in the database. As such, `afterOperation` hooks should be used where a failure to execute isn't a critical problem.
+Outside an explicit transaction, an `afterOperation` failure cannot undo an already completed write.
+Inside a transaction, propagating that error rejects the transaction and rolls back its writes.
+Do not move database consistency work out of `afterOperation` just to delay notifications.
+
+Transaction callbacks receive operation snapshots, not necessarily the final state of an item that was changed again in the same transaction.
+Rollback snapshots describe attempted writes, not proof that an item exists after rollback.
+Their context preserves the originating operation's session and privileges but uses the root Prisma client, so it remains usable after settlement.
+
+All registered callbacks are attempted. A commit callback failure rejects the transaction call even though the database has already committed; it cannot undo the write or trigger rollback callbacks.
+Rollback callback failures are logged without replacing the original transaction error.
+Callbacks are per operation, without automatic deduplication, batching, or retries.
+They are in-process and can be lost if the process crashes after commit; use a transactional outbox for durable delivery.
+See the [transaction hook reference](../config/hooks#transaction-hooks) for ordering, field selection, snapshot limitations, and error details.
 
 ## List hooks vs field hooks
 

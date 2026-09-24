@@ -9,6 +9,41 @@ type CommonArgs<ListTypeInfo extends BaseListTypeInfo> = {
   listKey: ListTypeInfo['key']
 }
 
+type OperationHooks<CreateArgs, UpdateArgs, DeleteArgs> =
+  | ((args: CreateArgs | UpdateArgs | DeleteArgs) => MaybePromise<void>)
+  | {
+      create?: (args: CreateArgs) => MaybePromise<void>
+      update?: (args: UpdateArgs) => MaybePromise<void>
+      delete?: (args: DeleteArgs) => MaybePromise<void>
+    }
+
+export type TransactionHooks<CreateArgs, UpdateArgs, DeleteArgs> = {
+  /** Runs after context.transaction() commits. A failure cannot undo committed writes. */
+  afterCommit?: OperationHooks<CreateArgs, UpdateArgs, DeleteArgs>
+  /**
+   * Runs after context.transaction() rejects. `error` is the original transaction failure.
+   * Item/input arguments describe the attempted write, not the database after rollback.
+   */
+  afterRollback?: OperationHooks<
+    CreateArgs & { error: unknown },
+    UpdateArgs & { error: unknown },
+    DeleteArgs & { error: unknown }
+  >
+}
+
+type ResolvedTransactionHooks<CreateArgs, UpdateArgs, DeleteArgs> = {
+  afterCommit: {
+    create: (args: CreateArgs) => MaybePromise<void>
+    update: (args: UpdateArgs) => MaybePromise<void>
+    delete: (args: DeleteArgs) => MaybePromise<void>
+  }
+  afterRollback: {
+    create: (args: CreateArgs & { error: unknown }) => MaybePromise<void>
+    update: (args: UpdateArgs & { error: unknown }) => MaybePromise<void>
+    delete: (args: DeleteArgs & { error: unknown }) => MaybePromise<void>
+  }
+}
+
 type ResolveInputListHook<
   ListTypeInfo extends BaseListTypeInfo,
   Operation extends 'create' | 'update',
@@ -43,6 +78,17 @@ type ResolveInputListHook<
 ) => MaybePromise<ListTypeInfo['prisma'][Operation]>
 
 export type ListHooks<ListTypeInfo extends BaseListTypeInfo> = {
+  /**
+   * Per-write callbacks for explicit context.transaction() settlement only.
+   * Receive snapshots with afterOperation's create/update/delete argument shapes,
+   * and a non-transactional context preserving the originating session and privileges.
+   * Existing beforeOperation/afterOperation hooks still execute inside the transaction.
+   */
+  transaction?: TransactionHooks<
+    Parameters<AfterOperationListHook<ListTypeInfo, 'create'>>[0],
+    Parameters<AfterOperationListHook<ListTypeInfo, 'update'>>[0],
+    Parameters<AfterOperationListHook<ListTypeInfo, 'delete'>>[0]
+  >
   /**
    * Used to **modify the input** for create and update operations after default values and access control have been applied
    */
@@ -88,6 +134,11 @@ export type ListHooks<ListTypeInfo extends BaseListTypeInfo> = {
 }
 
 export type ResolvedListHooks<ListTypeInfo extends BaseListTypeInfo> = {
+  transaction?: ResolvedTransactionHooks<
+    Parameters<AfterOperationListHook<ListTypeInfo, 'create'>>[0],
+    Parameters<AfterOperationListHook<ListTypeInfo, 'update'>>[0],
+    Parameters<AfterOperationListHook<ListTypeInfo, 'delete'>>[0]
+  >
   resolveInput: {
     create: ResolveInputListHook<ListTypeInfo, 'create'>
     update: ResolveInputListHook<ListTypeInfo, 'update'>
@@ -113,6 +164,16 @@ export type FieldHooks<
   ListTypeInfo extends BaseListTypeInfo,
   FieldTypeInfo extends BaseFieldTypeInfo,
 > = {
+  /**
+   * Per-write callbacks for explicit context.transaction() settlement only.
+   * Receive snapshots with afterOperation's field argument shapes and a usable
+   * non-transactional context. Create/update run for submitted fields; delete runs all fields.
+   */
+  transaction?: TransactionHooks<
+    Parameters<AfterOperationFieldHook<ListTypeInfo, 'create', FieldTypeInfo>>[0],
+    Parameters<AfterOperationFieldHook<ListTypeInfo, 'update', FieldTypeInfo>>[0],
+    Parameters<AfterOperationFieldHook<ListTypeInfo, 'delete', FieldTypeInfo>>[0]
+  >
   /**
    * Used to **modify the input** for create and update operations after default values and access control have been applied
    */
@@ -161,6 +222,11 @@ export type ResolvedFieldHooks<
   ListTypeInfo extends BaseListTypeInfo,
   FieldTypeInfo extends BaseFieldTypeInfo,
 > = {
+  transaction?: ResolvedTransactionHooks<
+    Parameters<AfterOperationFieldHook<ListTypeInfo, 'create', FieldTypeInfo>>[0],
+    Parameters<AfterOperationFieldHook<ListTypeInfo, 'update', FieldTypeInfo>>[0],
+    Parameters<AfterOperationFieldHook<ListTypeInfo, 'delete', FieldTypeInfo>>[0]
+  >
   resolveInput: {
     create: ResolveInputFieldHook<ListTypeInfo, 'create', FieldTypeInfo>
     update: ResolveInputFieldHook<ListTypeInfo, 'update', FieldTypeInfo>
