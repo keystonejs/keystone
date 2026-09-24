@@ -5,6 +5,7 @@ import type { InitialisedList } from '../lib/core/initialise-lists.ts'
 import type { SessionStrategy } from './session.ts'
 import type { BaseKeystoneTypeInfo, BaseListTypeInfo } from './type-info.ts'
 import type { MaybePromise } from './utils.ts'
+import type { FieldSelection, SelectedItem } from './item-selection.ts'
 
 export type KeystoneContext<TypeInfo extends BaseKeystoneTypeInfo = BaseKeystoneTypeInfo> = {
   db: KeystoneDbAPI<TypeInfo['lists']>
@@ -113,8 +114,17 @@ type ResolveFields = {
   readonly query?: string
 }
 
+type DbSelection<Item> = FieldSelection<Item>
+type ExactDbSelection<Item, Selection> = Selection extends undefined
+  ? undefined
+  : Selection & { [Key in Exclude<keyof Selection, keyof Item & string>]: never }
+type SelectedDbColumns<Item, Selection> =
+  Selection extends DbSelection<Item> ? SelectedItem<Item, Selection> : Item
+
 type DbAPI<ListTypeInfo extends BaseListTypeInfo> = {
-  findMany(args?: {
+  findMany<
+    const Selection extends DbSelection<ListTypeInfo['item']> | undefined = undefined,
+  >(args?: {
     readonly where?: ListTypeInfo['inputs']['where']
     readonly take?: number
     readonly skip?: number
@@ -122,29 +132,51 @@ type DbAPI<ListTypeInfo extends BaseListTypeInfo> = {
       | ListTypeInfo['inputs']['orderBy']
       | readonly ListTypeInfo['inputs']['orderBy'][]
     readonly cursor?: ListTypeInfo['inputs']['uniqueWhere']
-  }): Promise<readonly ListTypeInfo['item'][]>
-  findOne(args: UniqueWhereInput<ListTypeInfo>): Promise<ListTypeInfo['item'] | null>
+    readonly select?: ExactDbSelection<ListTypeInfo['item'], Selection>
+  }): Promise<readonly SelectedDbColumns<ListTypeInfo['item'], Selection>[]>
+  findOne<const Selection extends DbSelection<ListTypeInfo['item']> | undefined = undefined>(
+    args: UniqueWhereInput<ListTypeInfo> & {
+      readonly select?: ExactDbSelection<ListTypeInfo['item'], Selection>
+    }
+  ): Promise<SelectedDbColumns<ListTypeInfo['item'], Selection> | null>
   count(args?: { readonly where?: ListTypeInfo['inputs']['where'] }): Promise<number>
-  updateOne(
+  updateOne<const Selection extends DbSelection<ListTypeInfo['item']> | undefined = undefined>(
     args: UniqueWhereInput<ListTypeInfo> & {
       readonly data: ListTypeInfo['inputs']['update']
+      readonly select?: ExactDbSelection<ListTypeInfo['item'], Selection>
     }
-  ): Promise<ListTypeInfo['item']>
-  updateMany(args: {
+  ): Promise<SelectedDbColumns<ListTypeInfo['item'], Selection>>
+  updateMany<
+    const Selection extends DbSelection<ListTypeInfo['item']> | undefined = undefined,
+  >(args: {
     readonly data: readonly (UniqueWhereInput<ListTypeInfo> & {
       readonly data: ListTypeInfo['inputs']['update']
     })[]
-  }): Promise<ListTypeInfo['item'][]>
-  createOne(args: {
+    readonly select?: ExactDbSelection<ListTypeInfo['item'], Selection>
+  }): Promise<SelectedDbColumns<ListTypeInfo['item'], Selection>[]>
+  createOne<
+    const Selection extends DbSelection<ListTypeInfo['item']> | undefined = undefined,
+  >(args: {
     readonly data: ListTypeInfo['inputs']['create']
-  }): Promise<ListTypeInfo['item']>
-  createMany(args: {
+    readonly select?: ExactDbSelection<ListTypeInfo['item'], Selection>
+  }): Promise<SelectedDbColumns<ListTypeInfo['item'], Selection>>
+  createMany<
+    const Selection extends DbSelection<ListTypeInfo['item']> | undefined = undefined,
+  >(args: {
     readonly data: readonly ListTypeInfo['inputs']['create'][]
-  }): Promise<ListTypeInfo['item'][]>
-  deleteOne(args: UniqueWhereInput<ListTypeInfo>): Promise<ListTypeInfo['item']>
-  deleteMany(args: {
+    readonly select?: ExactDbSelection<ListTypeInfo['item'], Selection>
+  }): Promise<SelectedDbColumns<ListTypeInfo['item'], Selection>[]>
+  deleteOne<const Selection extends DbSelection<ListTypeInfo['item']> | undefined = undefined>(
+    args: UniqueWhereInput<ListTypeInfo> & {
+      readonly select?: ExactDbSelection<ListTypeInfo['item'], Selection>
+    }
+  ): Promise<SelectedDbColumns<ListTypeInfo['item'], Selection>>
+  deleteMany<
+    const Selection extends DbSelection<ListTypeInfo['item']> | undefined = undefined,
+  >(args: {
     readonly where: readonly ListTypeInfo['inputs']['uniqueWhere'][]
-  }): Promise<ListTypeInfo['item'][]>
+    readonly select?: ExactDbSelection<ListTypeInfo['item'], Selection>
+  }): Promise<SelectedDbColumns<ListTypeInfo['item'], Selection>[]>
 }
 
 export type KeystoneDbAPI<ListsTypeInfo extends Record<string, BaseListTypeInfo>> = {

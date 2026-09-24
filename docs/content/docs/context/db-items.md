@@ -1,5 +1,5 @@
 ---
-title: "Database"
+title: 'Database'
 description: "Keystone's database API is a programmatic API for running CRUD operations against the internal GraphQL resolvers in your system. It bypasses the GraphQL Server itself, invoking resolver functions directly."
 ---
 
@@ -14,26 +14,60 @@ For each list in your system the following API is available at `context.db.<list
 
 ```
 {
-  findOne({ where: { id } }),
-  findMany({ where, take, skip, orderBy }),
+  findOne({ where: { id }, select }),
+  findMany({ where, take, skip, orderBy, select }),
   count({ where }),
-  createOne({ data }),
-  createMany({ data }),
-  updateOne({ where, data }),
-  updateMany({ data }),
-  deleteOne({ where }),
-  deleteMany({ where }),
+  createOne({ data, select }),
+  createMany({ data, select }),
+  updateOne({ where, data, select }),
+  updateMany({ data, select }),
+  deleteOne({ where, select }),
+  deleteMany({ where, select }),
 }
 ```
 
 The arguments to these functions approximate their equivalent [GraphQL APIs](../graphql/overview).
+
+### Selecting item fields
+
+All `context.db` methods beside `count` accept a `select` object to pick particular columns to fetch. `id` is always fetched. Without `select`, these methods return the full item. Keystone may fetch additional fields needed by hooks or etc. that aren't specified in `select`.
+
+```typescript
+const posts = await context.db.Post.findMany({
+  select: { title: true },
+})
+```
+
+For a custom GraphQL resolver that returns the GraphQL output type for a list, use `selectFromInfo` to include the columns needed by the requested GraphQL fields:
+
+```typescript
+import { selectFromInfo } from '@keystone-6/core'
+
+// Inside a resolver whose return type is Post or a list of Post items:
+// info is the fourth arg passed to resolvers
+return context.db.Post.findMany({
+  select: selectFromInfo(context, info, 'Post'),
+})
+```
+
+`selectFromInfo` returns `undefined` when resolve info is unavailable or a callback or resolver needs the full item. Pass that value through as `select` to preserve the full result.
+
+You can also combine a defined selection with columns that should always be loaded. Keep `undefined` unchanged to preserve the full-item fallback:
+
+```typescript
+const select = selectFromInfo(context, info, 'Post')
+const posts = await context.db.Post.findMany({
+  select: select === undefined ? undefined : { ...select, title: true },
+})
+// posts[0].title is required; other Post columns are optional.
+```
 
 ### findOne
 
 ```typescript
 const user = await context.db.User.findOne({
   where: { id: '...' },
-});
+})
 ```
 
 ### findMany
@@ -44,7 +78,7 @@ const users = await context.db.User.findMany({
   take: 10,
   skip: 20,
   orderBy: [{ name: 'asc' }],
-});
+})
 ```
 
 ### count
@@ -52,7 +86,7 @@ const users = await context.db.User.findMany({
 ```typescript
 const count = await context.db.User.count({
   where: { name: { startsWith: 'A' } },
-});
+})
 ```
 
 ### createOne
@@ -63,7 +97,7 @@ const user = await context.db.User.createOne({
     name: 'Alice',
     posts: { create: [{ title: 'My first post' }] },
   },
-});
+})
 ```
 
 ### createMany
@@ -80,7 +114,7 @@ const users = await context.db.User.createMany({
       posts: { create: [{ title: 'Bobs first post' }] },
     },
   ],
-});
+})
 ```
 
 ### updateOne
@@ -92,7 +126,7 @@ const user = await context.db.User.updateOne({
     name: 'Alice',
     posts: { create: [{ title: 'My first post' }] },
   },
-});
+})
 ```
 
 ### updateMany
@@ -115,7 +149,7 @@ const users = await context.db.User.updateMany({
       },
     },
   ],
-});
+})
 ```
 
 ### deleteOne
@@ -123,7 +157,7 @@ const users = await context.db.User.updateMany({
 ```typescript
 const user = await context.db.User.deleteOne({
   where: { id: '...' },
-});
+})
 ```
 
 ### deleteMany
@@ -131,7 +165,7 @@ const user = await context.db.User.deleteOne({
 ```typescript
 const users = await context.db.User.deleteMany({
   where: [{ id: '...' }, { id: '...' }],
-});
+})
 ```
 
 ## Related resources

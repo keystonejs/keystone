@@ -591,7 +591,10 @@ export async function checkUniqueItemExists(
 
   // Check whether the item exists (from this users POV).
   try {
-    const item = await context.db[foreignList.listKey].findOne({ where: uniqueInput })
+    const item = await context.db[foreignList.listKey].findOne({
+      where: uniqueInput,
+      select: { id: true },
+    })
     if (item !== null) return uniqueWhere
   } catch (err) {}
 

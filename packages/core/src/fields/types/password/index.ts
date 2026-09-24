@@ -215,8 +215,9 @@ export function password<ListTypeInfo extends BaseListTypeInfo>(
           },
         },
       }),
-      output: g.field({
+      output: g.fieldTypeOutput({
         type: PasswordState,
+        select: {},
         resolve(val) {
           return { isSet: val.value !== null }
         },
