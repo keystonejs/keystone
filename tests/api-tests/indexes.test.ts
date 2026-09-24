@@ -1,9 +1,13 @@
 import { expect, test } from 'vitest'
-import { list } from '@keystone-6/core'
+import { config, list } from '@keystone-6/core'
+import {
+  buildArtifacts,
+  createSystem,
+} from '@keystone-6/core/___internal-do-not-use-will-break-in-patch/artifacts'
 import { allowAll } from '@keystone-6/core/access'
-import { select, text } from '@keystone-6/core/fields'
+import { checkbox, relationship, select, text } from '@keystone-6/core/fields'
 import { setupTestEnv } from './test-runner.ts'
-import { dbProvider } from './utils.ts'
+import { dbProvider, getPrismaSchema } from './utils.ts'
 
 test('isIndexed: true and db.map on a text field generates a valid Prisma schema', async () => {
   const { artifacts, config } = await setupTestEnv({
@@ -93,3 +97,156 @@ enum TestEnumSelectIndexedType {
     )
   })
 }
+
+test('list indexes and unique constraints preserve field order and use Prisma field names', async () => {
+  const schema = await getPrismaSchema({
+    lists: {
+      Test: list({
+        access: allowAll,
+        db: {
+          map: 'test_table',
+          indexes: [
+            { fields: ['published'] },
+            { fields: ['slug', 'domain', 'published'] },
+            { fields: ['domain', 'slug'] },
+            { fields: ['slug', 'domain'] },
+            { fields: ['status', 'published'] },
+          ],
+          unique: [
+            { fields: ['slug', 'domain', 'status'] },
+            { fields: ['status', 'domain', 'slug'] },
+          ],
+        },
+        fields: {
+          slug: text({ isIndexed: true, db: { map: 'slug_column' } }),
+          domain: text({ db: { isNullable: true, map: 'domain_column' } }),
+          status: select({
+            type: 'enum',
+            options: ['draft', 'live'],
+            db: { map: 'status_column' },
+          }),
+          published: checkbox(),
+          code: text({ isIndexed: 'unique' }),
+        },
+      }),
+    },
+  })
+
+  expect(schema.match(/@@(?:index|unique)\([^\n]+/g)).toEqual([
+    '@@unique([slug, domain, status])',
+    '@@unique([status, domain, slug])',
+    '@@index([slug])',
+    '@@index([published])',
+    '@@index([slug, domain, published])',
+    '@@index([domain, slug])',
+    '@@index([slug, domain])',
+    '@@index([status, published])',
+  ])
+  expect(schema).toContain('@@map("test_table")')
+  expect(schema).toContain('@map("slug_column")')
+  expect(schema).toContain('@map("domain_column")')
+  expect(schema).toMatch(/code\s+String\s+@unique/)
+})
+
+test('empty list declarations leave the schema unchanged', async () => {
+  const fields = { slug: text({ isIndexed: true }), domain: text() }
+  const baseline = await getPrismaSchema({ lists: { Test: list({ access: allowAll, fields }) } })
+  expect(
+    await getPrismaSchema({
+      lists: { Test: list({ access: allowAll, fields, db: { indexes: [], unique: [] } }) },
+    })
+  ).toEqual(baseline)
+})
+
+test('invalid declarations fail during list initialization, before schema extensions', () => {
+  let called = false
+  expect(() =>
+    createSystem(
+      config({
+        db: { provider: dbProvider, prismaClientOptions: () => ({}) },
+        lists: {
+          Test: list({
+            access: allowAll,
+            fields: { slug: text({ db: { map: 'slug_column' } }) },
+            db: {
+              indexes: [{ fields: ['slug_column'] }],
+              extendPrismaSchema: schema => {
+                called = true
+                return schema
+              },
+            },
+          }),
+        },
+      })
+    )
+  ).toThrow(
+    'Test.db.indexes[0]: unknown field "slug_column"; use Keystone field keys, not database column names'
+  )
+  expect(called).toBe(false)
+})
+
+test.each([false, true])('relationship keys are not scalar index fields (many: %s)', many => {
+  expect(() =>
+    createSystem(
+      config({
+        db: { provider: dbProvider, prismaClientOptions: () => ({}) },
+        lists: {
+          Other: list({ access: allowAll, fields: { name: text() } }),
+          Test: list({
+            access: allowAll,
+            fields: { name: text(), owner: relationship({ ref: 'Other', many }) },
+            db: { unique: [{ fields: ['name', 'owner'] }] },
+          }),
+        },
+      })
+    )
+  ).toThrow('Test.db.unique[0]: field "owner" must store a single scalar or enum value')
+})
+
+test('declarations are visible to list and complete schema extensions, after field extensions', async () => {
+  const calls: string[] = []
+  const system = createSystem(
+    config({
+      db: {
+        provider: dbProvider,
+        prismaClientOptions: () => ({}),
+        extendPrismaSchema: schema => {
+          calls.push('complete')
+          expect(schema).toContain('@@index([slug, published])')
+          expect(schema).toContain('@@unique([slug, domain])')
+          expect(schema).toContain('// list extension')
+          return schema
+        },
+      },
+      lists: {
+        Test: list({
+          access: allowAll,
+          db: {
+            indexes: [{ fields: ['slug', 'published'] }],
+            unique: [{ fields: ['slug', 'domain'] }],
+            extendPrismaSchema: schema => {
+              calls.push('list')
+              expect(schema).toContain('@map("slug_column")')
+              expect(schema).toContain('@@index([slug, published])\n@@unique([slug, domain])\n}')
+              return `${schema}\n// list extension`
+            },
+          },
+          fields: {
+            slug: text({
+              db: {
+                extendPrismaSchema: schema => {
+                  calls.push('field')
+                  return `${schema} @map("slug_column")`
+                },
+              },
+            }),
+            domain: text(),
+            published: checkbox(),
+          },
+        }),
+      },
+    })
+  )
+  await buildArtifacts(process.cwd(), system)
+  expect(calls).toEqual(['field', 'list', 'complete'])
+})

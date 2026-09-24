@@ -574,7 +574,16 @@ export async function checkUniqueItemExists(
   // Check whether the item exists (from this users POV).
   try {
     const item = await context.db[foreignList.listKey].findOne({ where: uniqueInput })
-    if (item !== null) return uniqueWhere
+    if (item !== null) {
+      // One-to-one selectors are Keystone predicates, not Prisma unique keys.
+      // Use the already access-checked item's ID when such a predicate is present.
+      if (
+        Object.keys(uniqueInput).some(key => foreignList.fields[key]?.dbField.kind === 'relation')
+      ) {
+        return { id: item.id }
+      }
+      return uniqueWhere
+    }
   } catch (err) {}
 
   throw accessDeniedError(cannotForItem(operation, foreignList))

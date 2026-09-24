@@ -542,6 +542,14 @@ export type IdFieldConfig =
   | { kind: 'autoincrement'; type?: 'Int' | 'BigInt' }
   | { kind: 'number'; type: 'Int' | 'BigInt' }
 
+/**
+ * An ordered combination of stored scalar or enum field keys, not mapped column names.
+ * Relationships, virtual, multi-column, array and JSON fields are not supported.
+ */
+export type ListDBIndexConfig = {
+  fields: readonly string[]
+}
+
 export type ListDBConfig = {
   /**
    * The kind of id to use.
@@ -554,9 +562,21 @@ export type ListDBConfig = {
    */
   map?: string
   /**
+   * Ordinary database indexes. Each declaration must contain at least one field.
+   * Field order is preserved. Use extendPrismaSchema for custom names or index options.
+   */
+  indexes?: readonly ListDBIndexConfig[]
+  /**
+   * Compound database unique constraints, each containing at least two fields.
+   * Exposes a complete, non-null GraphQL/context selector named by joining field keys
+   * with underscores. Members need an exact-value input contract, not individual uniqueness.
+   * Tuples containing null may repeat; this does not implement null-equal uniqueness.
+   */
+  unique?: readonly ListDBIndexConfig[]
+  /**
    * Customise the Prisma Schema for this list. This function is passed the
-   * Prisma Model for this list and should return a string containing the valid
-   * Prisma Model definition.
+   * Prisma Model, including declarative indexes and unique constraints, and
+   * should return a string containing the valid Prisma Model definition.
    */
   extendPrismaSchema?: (schema: string) => string
 }

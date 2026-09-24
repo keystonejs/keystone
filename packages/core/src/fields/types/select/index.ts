@@ -144,6 +144,7 @@ export function select<ListTypeInfo extends BaseListTypeInfo>(
       })({
         ...commonConfig,
         input: {
+          uniqueWhereValue: { arg: g.arg({ type: g.Int }) },
           uniqueWhere: isIndexed === 'unique' ? { arg: g.arg({ type: g.Int }) } : undefined,
           where: {
             arg: g.arg({ type: filters[meta.provider].Int[mode] }),
@@ -183,6 +184,7 @@ export function select<ListTypeInfo extends BaseListTypeInfo>(
       )({
         ...commonConfig,
         input: {
+          uniqueWhereValue: { arg: g.arg({ type: graphQLType }) },
           uniqueWhere: isIndexed === 'unique' ? { arg: g.arg({ type: graphQLType }) } : undefined,
           where: {
             arg: g.arg({ type: filters[meta.provider].enum(graphQLType).optional }),
@@ -205,6 +207,7 @@ export function select<ListTypeInfo extends BaseListTypeInfo>(
     return fieldType({ kind: 'scalar', scalar: 'String', ...commonDbFieldConfig })({
       ...commonConfig,
       input: {
+        uniqueWhereValue: { arg: g.arg({ type: g.String }) },
         uniqueWhere: isIndexed === 'unique' ? { arg: g.arg({ type: g.String }) } : undefined,
         where: {
           arg: g.arg({ type: filters[meta.provider].String[mode] }),

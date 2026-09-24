@@ -236,6 +236,15 @@ type DBFieldUniqueWhere<TDBField extends DBField> =
       : any
     : any
 
+// fieldType erases concrete database kinds at its return boundary, as for other inputs.
+type DBFieldUniqueWhereValue<TDBField extends DBField> = DBField extends TDBField
+  ? any
+  : TDBField extends ScalarDBField<infer Scalar, 'optional' | 'required'>
+    ? ScalarPrismaTypes[Scalar]
+    : TDBField extends EnumDBField<infer Value, 'optional' | 'required'>
+      ? Value
+      : never
+
 type DBFieldToOutputValue<TDBField extends DBField> =
   TDBField extends ScalarDBField<infer Scalar, infer Mode>
     ? {
@@ -396,6 +405,14 @@ export type FieldTypeWithoutDBField<
 > = {
   input?: {
     uniqueWhere?: UniqueWhereFieldInputArg<DBFieldUniqueWhere<TDBField>, UniqueWhereArg>
+    /**
+     * An exact scalar/enum input for membership in a declared compound unique selector.
+     * Does not make the field individually unique. The argument must have a nullable
+     * scalar/enum type without a default; compound members are made non-null by Keystone.
+     * Resolve only the exact stored value, without mutation defaults or other side effects.
+     * Existing scalar/enum uniqueWhere inputs are used as a fallback when this is absent.
+     */
+    uniqueWhereValue?: UniqueWhereFieldInputArg<DBFieldUniqueWhereValue<TDBField>, UniqueWhereArg>
     where?: WhereFieldInputArg<TDBField, FilterArg>
     create?: CreateFieldInputArg<TDBField, CreateArg>
     update?: UpdateFieldInputArg<TDBField, UpdateArg>
