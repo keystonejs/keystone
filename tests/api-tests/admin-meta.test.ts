@@ -582,25 +582,34 @@ test(
         label: `${locale}:Title`,
         description: `${locale}:Title help`,
       }
-      expect(data.keystone.adminMeta.lists).toMatchObject([
-        {
-          key: 'Article',
-          label: `${locale}:Articles`,
-          singular: `${locale}:Article`,
-          plural: `${locale}:Articles`,
-          path: 'articles',
-          graphql: { names: { outputTypeName: 'Article', listQueryName: 'articles' } },
-          actions: [{ label: 'Rename' }],
-          fields: [expect.objectContaining({ key: 'id', label: 'Id', description: '' }), title],
-          groups: [
-            {
-              label: `${locale}:Content`,
-              description: `${locale}:Content help`,
-              fields: [{ key: 'title' }],
-            },
-          ],
+      expect(data).toMatchObject({
+        keystone: {
+          adminMeta: {
+            lists: [
+              {
+                key: 'Article',
+                label: `${locale}:Articles`,
+                singular: `${locale}:Article`,
+                plural: `${locale}:Articles`,
+                path: 'articles',
+                graphql: { names: { outputTypeName: 'Article', listQueryName: 'articles' } },
+                actions: [{ label: 'Rename' }],
+                fields: [
+                  expect.objectContaining({ key: 'id', label: 'Id', description: '' }),
+                  title,
+                ],
+                groups: [
+                  {
+                    label: `${locale}:Content`,
+                    description: `${locale}:Content help`,
+                    fields: [{ key: 'title' }],
+                  },
+                ],
+              },
+            ],
+          },
         },
-      ])
+      })
       expect(dynamicListLabel).toHaveBeenLastCalledWith({
         context: queryContext,
         session: queryContext.session,
