@@ -494,6 +494,41 @@ The data resolving steps are applied in the following order:
 5. Field hooks (user defined): A `resolveInput` field hook can return a new value for its field, which will the current field value on `resolvedData`.
 6. List hooks (user defined): A `resolveInput` list hook can return a new value for the entire `resolvedData` object.
 
+### Detecting supplied inputs
+
+On update, `resolvedData` is not a record of which fields the caller supplied.
+It contains entries for omitted fields, which can have `undefined` values or values produced by field resolvers and hooks.
+For example, an omitted multi-column field can resolve to an object whose column values are all `undefined`.
+Checking `Object.keys(resolvedData)` or whether a key exists therefore does not establish that the caller supplied that field.
+
+Use `inputData` to check whether an update includes a defined input for a field:
+
+```ts
+const hasTitleInput = inputData.title !== undefined
+```
+
+This preserves explicit `null`, `false`, `0`, empty strings, and empty arrays as supplied inputs.
+Within field hooks, `inputFieldData` provides the corresponding original field value.
+A supplied value may equal the stored value: detecting input is different from detecting a change.
+Use resolved values for normalized writes, and compare the effective value with the stored item when behavior depends on an actual change.
+
+Field-level stages do not all use the same rules for omitted update inputs:
+
+| Field-level stage | Runs when the field is omitted from an update? |
+| --- | --- |
+| Input resolver | Yes, if configured |
+| `resolveInput` | Yes |
+| `validate` | Yes |
+| `beforeOperation` / `afterOperation` | No |
+
+Field `beforeOperation` and `afterOperation` hooks are selected using keys in `inputData`, not keys added to `resolvedData` by earlier stages.
+List hooks are still eligible to run, subject to the normal validation and error handling of the mutation lifecycle.
+For delete operations, field `beforeOperation` and `afterOperation` hooks run for all fields.
+
+A `resolveInput` hook can intentionally change an omitted field, for example by incrementing an update counter.
+Do not assume that omission prevents hooks from running or that every defined value in `resolvedData` came from the caller.
+Custom field authors should also preserve omission when [transforming inputs](../guides/custom-fields#omitted-inputs-and-partial-updates).
+
 ## Related resources
 
 {% related-content %}
