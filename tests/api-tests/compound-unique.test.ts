@@ -157,7 +157,7 @@ test(
 )
 
 test(
-  'GraphQL keeps existing selectors and Prisma-error masking on create',
+  'GraphQL adds compound selectors while keeping existing selectors and Prisma-error masking',
   runner(async ({ context, gql }) => {
     const result = await gql({
       query: '{ __type(name: "InventoryWhereUniqueInput") { inputFields { name } } }',
@@ -165,7 +165,7 @@ test(
     expect(result.errors).toBeUndefined()
     expect(
       result.data.__type.inputFields.map((field: { name: string }) => field.name).sort()
-    ).toEqual(['barcode', 'id'])
+    ).toEqual(['barcode', 'id', 'sku_location'])
 
     const mutation = 'mutation { createInventory(data: { sku: "A", location: "north" }) { id } }'
     const created = await gql({ query: mutation })

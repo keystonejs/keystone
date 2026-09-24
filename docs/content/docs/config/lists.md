@@ -334,7 +334,8 @@ There is no built-in tenant, domain, or other application-specific scope; each d
 Database collation and comparison rules still apply.
 
 The declarations enforce uniqueness in the database, including concurrent writes; preflight queries and validation hooks are not a substitute for this enforcement.
-They do **not** add compound selectors to Keystone's GraphQL queries, mutations, relationships, or pagination cursors.
+Each `unique` declaration also exposes a [compound unique selector](../graphql/overview#compound-unique-selectors) in GraphQL queries, mutations, relationships, and pagination cursors, and in `context.db` and `context.query`.
+For this example, the selector is `{ sku_warehouse: { sku: 'ABC', warehouse: 'north' } }`.
 Existing selectors, such as `id` and individually unique fields, keep their current behavior, as does Prisma-error reporting through GraphQL.
 Resolve conflicting existing data before applying a new unique constraint to a populated database.
 
@@ -351,6 +352,22 @@ Generated foreign-key and multi-column component names cannot be used as field k
 On MySQL, Text/Blob native types (including the default Bytes type) require index lengths, which this API does not expose; use a suitable bounded native type or a schema extension.
 PostgreSQL's Xml native type does not support default indexes and is also rejected.
 Other database limits, such as maximum index size, remain subject to Prisma and database validation.
+
+Compound unique members must also provide an exact selector value input.
+Built-in `text`, `integer`, `float`, `bigInt`, `decimal`, `checkbox`, `timestamp`, `calendarDay`, `bytes`, and `select` fields support this, subject to their provider restrictions.
+Custom fields can supply `input.uniqueWhereValue` with a scalar/enum GraphQL argument and, if needed, a resolver to the exact stored value.
+Its argument must be nullable and have no default; Keystone makes it required within the compound input.
+This resolver must not apply mutation defaults, hashing, uploads, or other side effects.
+An existing scalar/enum `input.uniqueWhere` is used as a fallback; the field must still meet the existing standalone uniqueness requirements to expose that input.
+Fields such as `password` do not provide an exact-value contract and are rejected as compound members.
+Ordinary `indexes` do not require this contract.
+Generated tuple types use the field's GraphQL scalar/enum input type.
+For custom scalars unknown to Keystone's type generator, the member is `NonNullable<unknown>`: the scalar's runtime parser must validate its precise input representation.
+
+The selector name is the ordered field keys joined with underscores, matching Prisma's default compound key.
+For example, `['sku', 'warehouse']` produces `sku_warehouse`; column/table mappings do not change it.
+The generated input type is `<WhereUniqueInputName>_<selectorName>`, such as `InventoryWhereUniqueInput_sku_warehouse`.
+Names that collide with actual fields, other compound selectors, or generated GraphQL types are rejected, as are invalid GraphQL names.
 
 An omitted option or an empty declarations array (`indexes: []` or `unique: []`) adds nothing.
 Empty declarations, missing/empty field lists, unknown or repeated fields, unsupported options, and duplicate declarations of the same kind and field order fail during initialization.
@@ -369,11 +386,16 @@ However, standard unique constraints on [SQLite](https://www.sqlite.org/lang_cre
 For example, `unique: [{ fields: ['slug', 'domain'] }]` allows multiple rows with the same slug and a null domain.
 It does **not** enforce “same slug and same domain, including null” when null represents a meaningful application scope.
 This API does not introduce a null sentinel or offer null-equality options.
+Selectors require every member to be present and non-null, even when its database column is nullable.
+The compound selector object itself may be omitted, but explicitly passing `null` is rejected.
+Null-containing tuples cannot be addressed through compound selectors; use an ID or ordinary filtering instead.
 PostgreSQL supports `NULLS NOT DISTINCT`, but it is not part of these declarations.
 
 Keep using `db.extendPrismaSchema` for custom names and advanced features that Prisma can express, such as provider-specific index options.
 Features Prisma cannot express require separately managed database-specific migrations.
 Keystone does not parse or reconcile schema text returned by extension callbacks; keeping that text valid and avoiding duplicate declarations there remains the caller's responsibility.
+Constraints added only through schema extensions do not generate selectors.
+Do not remove, rename, or alter a declarative unique constraint in a schema extension while relying on its selector: the generated metadata must correspond to the actual database constraint.
 
 ## isSingleton
 

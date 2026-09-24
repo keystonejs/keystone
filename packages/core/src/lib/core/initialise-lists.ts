@@ -51,6 +51,7 @@ import {
 } from './access-control.ts'
 import { assertFieldsValid } from './field-assertions.ts'
 import { type DatabaseIndex, resolveDatabaseIndexes } from './database-indexes.ts'
+import { type CompoundUniqueSelector, resolveCompoundUniqueSelectors } from './compound-unique.ts'
 import { outputTypeField } from './queries/output-field.ts'
 import { type ResolvedDBField, resolveRelationships } from './resolve-relationships.ts'
 import { areArraysEqual } from './utils.ts'
@@ -215,6 +216,7 @@ export type InitialisedList = {
 
   /** This will include the opposites to one-sided relationships */
   resolvedDbFields: Record<string, ResolvedDBField>
+  compoundUnique: Record<string, CompoundUniqueSelector>
   lists: Record<string, InitialisedList>
 
   graphql: {
@@ -508,8 +510,15 @@ function getListsWithInitialisedFields(
     const uniqueWhere = g.inputObject({
       name: names.whereUniqueInputName,
       fields: () => {
-        const { fields } = listsRef[listKey]
+        const { fields, compoundUnique } = listsRef[listKey]
         return {
+          ...Object.fromEntries(
+            Object.values(compoundUnique)
+              .filter(selector =>
+                selector.fields.every(key => fields[key].graphql.isEnabled.filter)
+              )
+              .map(selector => [selector.graphqlName, g.arg({ type: selector.inputType })])
+          ),
           ...Object.fromEntries(
             Object.entries(fields).flatMap(([key, field]) => {
               if (!field.input?.uniqueWhere?.arg || !field.graphql.isEnabled.filter) {
@@ -897,6 +906,8 @@ function getListsWithInitialisedFields(
         extendPrismaSchema: listConfig.db.extendPrismaSchema,
       },
 
+      compoundUnique: {},
+
       ui: {
         labels: names.ui.labels,
         labelField,
@@ -1235,6 +1246,20 @@ export function initialiseLists(config: KeystoneConfig): Record<string, Initiali
       ...list,
       lists: listsRef,
     }
+  }
+
+  const typeNames = new Set(
+    Object.values(listsRef).flatMap(list =>
+      Object.entries(list.graphql.names)
+        .filter(
+          ([key]) =>
+            key === 'outputTypeName' || key === 'listOrderName' || key.endsWith('InputName')
+        )
+        .map(([, name]) => name)
+    )
+  )
+  for (const list of Object.values(listsRef)) {
+    list.compoundUnique = resolveCompoundUniqueSelectors(list, typeNames)
   }
 
   for (const list of Object.values(listsRef)) {

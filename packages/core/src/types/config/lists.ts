@@ -568,7 +568,8 @@ export type ListDBConfig = {
   indexes?: readonly ListDBIndexConfig[]
   /**
    * Compound database unique constraints, each containing at least two fields.
-   * These do not add Keystone GraphQL unique selectors or make members individually unique.
+   * Exposes a complete, non-null GraphQL/context selector named by joining field keys
+   * with underscores. Members need an exact-value input contract, not individual uniqueness.
    * Tuples containing null may repeat; this does not implement null-equal uniqueness.
    */
   unique?: readonly ListDBIndexConfig[]
