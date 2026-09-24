@@ -281,6 +281,9 @@ Options:
   The default across all lists can be changed at the root-level `db.idField` config.
   If you are using `autoincrement`, you can also specify `type: 'BigInt'` on PostgreSQL and MySQL to use BigInts.
 - `map`: Adds a [Prisma `@@map`](https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#map-1) attribute to the Prisma model for this list which specifies a custom database table name for the list, instead of using the list key
+- `indexes`: An array of `{ fields: [...] }` declarations for ordinary database indexes (`@@index`). Each must contain at least one field.
+- `unique`: An array of `{ fields: [...] }` declarations for compound database unique constraints (`@@unique`). Each must contain at least two fields. For single-field uniqueness, continue to use the field's `isIndexed: 'unique'` option.
+- `extendPrismaSchema`: A function that receives this list's generated Prisma model, including declarative indexes and constraints, and returns its replacement. It runs after field-level schema extensions and before the root-level `db.extendPrismaSchema` callback.
 
 ```typescript
 import { config, list } from '@keystone-6/core'
@@ -299,6 +302,78 @@ export default config({
   /* ... */
 })
 ```
+
+### Indexes and compound unique constraints
+
+Use ordered field combinations to describe the lookup patterns and uniqueness scope of your application:
+
+```typescript
+import { list } from '@keystone-6/core'
+import { allowAll } from '@keystone-6/core/access'
+import { integer, text } from '@keystone-6/core/fields'
+
+const Inventory = list({
+  access: allowAll,
+  db: {
+    indexes: [{ fields: ['quantity'] }, { fields: ['warehouse', 'quantity'] }],
+    unique: [{ fields: ['sku', 'warehouse'] }],
+  },
+  fields: {
+    sku: text(),
+    warehouse: text(),
+    quantity: integer(),
+  },
+})
+```
+
+This generates `@@index([quantity])`, `@@index([warehouse, quantity])` and `@@unique([sku, warehouse])`.
+The database rejects two items with the same SKU **and** warehouse, on both inserts and updates.
+Sharing just the SKU or just the warehouse is allowed: compound members are not made individually unique.
+Declarations can contain more than two fields, for example `unique: [{ fields: ['key', 'locale', 'channel'] }]` for translations scoped to both locale and channel.
+There is no built-in tenant, domain, or other application-specific scope; each declaration covers exactly its listed fields on one list's table.
+Database collation and comparison rules still apply.
+
+The declarations enforce uniqueness in the database, including concurrent writes; preflight queries and validation hooks are not a substitute for this enforcement.
+They do **not** add compound selectors to Keystone's GraphQL queries, mutations, relationships, or pagination cursors.
+Existing selectors, such as `id` and individually unique fields, keep their current behavior, as does Prisma-error reporting through GraphQL.
+Resolve conflicting existing data before applying a new unique constraint to a populated database.
+
+#### Supported fields and validation
+
+Use Keystone field keys, not database column names from `db.map`.
+Table and column mappings continue to work: Prisma applies those mappings when creating the indexes.
+Prisma generates index and constraint names; this API does not expose database `map` names or Prisma compound-selector `name` options.
+
+Fields must store a single scalar or enum value, for example text, numbers, booleans, timestamps, or selects.
+Required and nullable fields are supported, subject to the null behavior below.
+Relationships (including those owning foreign keys), virtual fields, multi-column fields such as files/images, arrays, and JSON fields are not supported by these declarations.
+Generated foreign-key and multi-column component names cannot be used as field keys.
+On MySQL, Text/Blob native types (including the default Bytes type) require index lengths, which this API does not expose; use a suitable bounded native type or a schema extension.
+PostgreSQL's Xml native type does not support default indexes and is also rejected.
+Other database limits, such as maximum index size, remain subject to Prisma and database validation.
+
+An omitted option or an empty declarations array (`indexes: []` or `unique: []`) adds nothing.
+Empty declarations, missing/empty field lists, unknown or repeated fields, unsupported options, and duplicate declarations of the same kind and field order fail during initialization.
+A single-field index must not repeat a primary key or an existing field-level `isIndexed` setting.
+Field-level indexes may still participate in compound declarations and otherwise remain unchanged.
+An ordinary index and a unique constraint on the same tuple are allowed, although the extra ordinary index is usually unnecessary.
+
+Declaration and field order are preserved.
+`['a', 'b']` and `['b', 'a']` are distinct declarations with different index order; neither is sorted or silently merged.
+Changing the order of a unique constraint changes its index order, not which complete tuples are considered duplicates.
+
+#### Nullable uniqueness and advanced indexes
+
+The Prisma version used by Keystone supports nullable fields in compound constraints.
+However, standard unique constraints on [SQLite](https://www.sqlite.org/lang_createtable.html#unique_constraints), [PostgreSQL](https://www.postgresql.org/docs/18/ddl-constraints.html#DDL-CONSTRAINTS-UNIQUE-CONSTRAINTS), and [MySQL](https://dev.mysql.com/doc/refman/8.4/en/create-index.html) treat nulls as distinct.
+For example, `unique: [{ fields: ['slug', 'domain'] }]` allows multiple rows with the same slug and a null domain.
+It does **not** enforce “same slug and same domain, including null” when null represents a meaningful application scope.
+This API does not introduce a null sentinel or offer null-equality options.
+PostgreSQL supports `NULLS NOT DISTINCT`, but it is not part of these declarations.
+
+Keep using `db.extendPrismaSchema` for custom names and advanced features that Prisma can express, such as provider-specific index options.
+Features Prisma cannot express require separately managed database-specific migrations.
+Keystone does not parse or reconcile schema text returned by extension callbacks; keeping that text valid and avoiding duplicate declarations there remains the caller's responsibility.
 
 ## isSingleton
 
