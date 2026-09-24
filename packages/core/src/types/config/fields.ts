@@ -59,8 +59,10 @@ export type CommonFieldConfig<
   access?: FieldAccessControl<ListTypeInfo>
   hooks?: FieldHooks<ListTypeInfo, FieldTypeInfo>
   ui?: {
-    label?: string
-    description?: string
+    /** Display label, or a synchronous/asynchronous function of the current request context. */
+    label?: MaybeSessionFunction<string, ListTypeInfo>
+    /** Help text, or a synchronous/asynchronous function of the current request context. */
+    description?: MaybeSessionFunction<string, ListTypeInfo>
     views?: string
     createView?: {
       fieldMode?: MaybeSessionFunctionWithFilter<'edit' | 'hidden', 'hidden', ListTypeInfo>

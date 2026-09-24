@@ -23,6 +23,8 @@ type EmptyResolver<Return> = (args: {}, context: KeystoneContext) => MaybePromis
 type FieldMetaSource_ = {
   listKey: string
   fieldKey: string
+  label: EmptyResolver<string>
+  description: EmptyResolver<string>
   isOrderable: EmptyResolver<boolean>
   isFilterable: EmptyResolver<boolean>
 
@@ -68,11 +70,14 @@ type ActionMetaSource_ = {
 export type ActionMetaSource = ActionMetaSource_ & Omit<ActionMeta, keyof ActionMetaSource_>
 
 type ListMetaSource_ = {
+  label: EmptyResolver<string>
+  singular: EmptyResolver<string>
+  plural: EmptyResolver<string>
   fields: FieldMetaSource[]
   fieldsByKey: Record<string, FieldMetaSource>
   groups: {
-    label: string
-    description: string
+    label: EmptyResolver<string>
+    description: EmptyResolver<string>
     fields: FieldMetaSource[]
   }[]
   actions: ActionMetaSource[]
@@ -153,9 +158,9 @@ export function createAdminMeta(
       key: listKey,
       path: list.ui.labels.path,
 
-      label: list.ui.labels.label,
-      singular: list.ui.labels.singular,
-      plural: list.ui.labels.plural,
+      label: normalizeMaybeSessionFunction(list.ui.labels.label),
+      singular: normalizeMaybeSessionFunction(list.ui.labels.singular),
+      plural: normalizeMaybeSessionFunction(list.ui.labels.plural),
 
       labelField: list.ui.labelField,
       fields: [],
@@ -218,8 +223,8 @@ export function createAdminMeta(
       return {
         // FieldMeta
         key: fieldKey,
-        label: field.ui.label,
-        description: field.ui.description,
+        label: normalizeMaybeSessionFunction(field.ui.label),
+        description: normalizeMaybeSessionFunction(field.ui.description),
         fieldMeta: null,
         viewsIndex: getViewId(field.views),
         customViewsIndex:
@@ -341,8 +346,8 @@ export function createAdminMeta(
     // populate .groups
     for (const group of list.groups) {
       listMeta.groups.push({
-        label: group.label,
-        description: group.description,
+        label: normalizeMaybeSessionFunction(group.label),
+        description: normalizeMaybeSessionFunction(group.description),
         fields: group.fields.map(
           fieldKey => adminMetaRoot.listsByKey[listKey].fieldsByKey[fieldKey]
         ),
