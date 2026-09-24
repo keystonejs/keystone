@@ -1,9 +1,10 @@
-import { expect, test } from 'vitest'
+import { expect, test, vi } from 'vitest'
 import { IncomingMessage } from 'node:http'
 import { Socket } from 'node:net'
-import { action, group, list } from '@keystone-6/core'
+import { action, g, group, list } from '@keystone-6/core'
+import type { KeystoneContext } from '@keystone-6/core/types'
 import { allowAll } from '@keystone-6/core/access'
-import { integer, select, text } from '@keystone-6/core/fields'
+import { integer, text } from '@keystone-6/core/fields'
 import { setupTestRunner } from '@keystone-6/api-tests/test-runner'
 import { adminMetaQuery } from '../../packages/core/src/admin-ui/admin-meta-graphql.ts'
 import { dbProvider } from './utils.ts'
@@ -491,198 +492,79 @@ test(
   })
 )
 
-let resolveAdminMetaCalls = 0
-let expectedResolveAdminMetaContext: object | undefined
+function metadataLocale(context: KeystoneContext) {
+  return (context.session as { locale?: string } | undefined)?.locale ?? 'en'
+}
 
-const hookRunner = setupTestRunner({
-  config: {
-    ui: {
-      hooks: {
-        resolveAdminMeta: ({ adminMeta, context }) => {
-          resolveAdminMetaCalls++
-          if (expectedResolveAdminMetaContext) {
-            expect(context).toBe(expectedResolveAdminMetaContext)
-          }
-
-          const locale = (context.session as { locale?: string } | undefined)?.locale
-          if (locale === 'error') throw new Error('resolveAdminMeta failed')
-          if (locale === 'mutate') {
-            adminMeta.lists[0].label = 'Mutated Articles'
-            return adminMeta
-          }
-
-          const headerLabel = context.req?.headers['x-admin-meta-label']
-          if (headerLabel) {
-            adminMeta.lists[0].label = Array.isArray(headerLabel) ? headerLabel[0] : headerLabel
-          } else if (locale === 'de') {
-            expect('listsByKey' in adminMeta).toBe(false)
-            expect('isAccessAllowed' in adminMeta).toBe(false)
-            expect(typeof adminMeta.lists[0].hideNavigation).toBe('boolean')
-            expect(typeof adminMeta.lists[0].fields[0].isFilterable).toBe('boolean')
-            adminMeta.lists[0].label = 'Artikel'
-          } else if (locale === 'async') {
-            return Promise.resolve({
-              ...adminMeta,
-              lists: adminMeta.lists.map(list => ({ ...list, label: 'Async Articles' })),
-            })
-          }
-
-          return adminMeta
-        },
-      },
-    },
-    lists: {
-      Article: list({
-        access: allowAll,
-        fields: { title: text() },
-        ui: {
-          label: 'Articles',
-          hideNavigation: ({ session }) =>
-            (session as { locale?: string } | undefined)?.locale === 'de',
-        },
-      }),
-    },
-  },
+const dynamicListLabel = vi.fn(({ context }: { context: KeystoneContext }) => {
+  if (metadataLocale(context) === 'error') throw new Error('Label resolution failed')
+  return `${context.req?.headers['x-admin-locale'] ?? metadataLocale(context)}:Articles`
 })
 
-const hookQuery = gql`
-  query {
-    keystone {
-      adminMeta {
-        lists {
-          key
-          label
-          hideNavigation
-        }
-      }
-    }
-  }
-`
-
-test(
-  'resolveAdminMeta supports synchronous hooks and receives resolved request context',
-  hookRunner(async ({ context }) => {
-    resolveAdminMetaCalls = 0
-    const requestContext = context.withSession({ locale: 'de' })
-    const queryContext = requestContext.sudo()
-    expectedResolveAdminMetaContext = queryContext
-
-    const data = (await queryContext.graphql.run({ query: hookQuery })) as any
-
-    expect(data.keystone.adminMeta.lists).toEqual([
-      { key: 'Article', label: 'Artikel', hideNavigation: true },
-    ])
-    expect(resolveAdminMetaCalls).toBe(1)
-    expectedResolveAdminMetaContext = undefined
-  })
-)
-
-test(
-  'resolveAdminMeta awaits asynchronous hooks',
-  hookRunner(async ({ context }) => {
-    resolveAdminMetaCalls = 0
-    const queryContext = context.withSession({ locale: 'async' }).sudo()
-    expectedResolveAdminMetaContext = queryContext
-
-    const data = (await queryContext.graphql.run({ query: hookQuery })) as any
-
-    expect(data.keystone.adminMeta.lists[0].label).toBe('Async Articles')
-    expect(resolveAdminMetaCalls).toBe(1)
-    expectedResolveAdminMetaContext = undefined
-  })
-)
-
-test(
-  'resolveAdminMeta can read request headers',
-  hookRunner(async ({ context }) => {
-    resolveAdminMetaCalls = 0
-    const req = new IncomingMessage(new Socket())
-    req.headers['x-admin-meta-label'] = 'Header Articles'
-    const queryContext = (await context.withRequest(req)).sudo()
-    expectedResolveAdminMetaContext = queryContext
-
-    const data = (await queryContext.graphql.run({ query: hookQuery })) as any
-
-    expect(data.keystone.adminMeta.lists[0].label).toBe('Header Articles')
-    expect(resolveAdminMetaCalls).toBe(1)
-    expectedResolveAdminMetaContext = undefined
-  })
-)
-
-test(
-  'resolveAdminMeta does not share transformed metadata between requests',
-  hookRunner(async ({ context }) => {
-    resolveAdminMetaCalls = 0
-    const first = (await context.withSession({ locale: 'mutate' }).sudo().graphql.run({
-      query: hookQuery,
-    })) as any
-    const second = (await context.withSession({ locale: 'en' }).sudo().graphql.run({
-      query: hookQuery,
-    })) as any
-
-    expect(first.keystone.adminMeta.lists[0].label).toBe('Mutated Articles')
-    expect(second.keystone.adminMeta.lists[0].label).toBe('Articles')
-    expect(resolveAdminMetaCalls).toBe(2)
-  })
-)
-
-test(
-  'resolveAdminMeta errors follow the GraphQL error path',
-  hookRunner(async ({ context }) => {
-    const result = await context.withSession({ locale: 'error' }).sudo().graphql.raw({
-      query: hookQuery,
-    })
-
-    expect(result.data).toBeNull()
-    expect(result.errors?.[0]?.message).toBe('resolveAdminMeta failed')
-  })
-)
-
-let cloneAdminMetaRequest = 0
-
-const cloneAdminMetaRunner = setupTestRunner({
+const dynamicTextRunner = setupTestRunner({
   config: {
-    ui: {
-      hooks: {
-        resolveAdminMeta: ({ adminMeta }) => {
-          cloneAdminMetaRequest++
-          if (cloneAdminMetaRequest === 1) {
-            const article = adminMeta.lists[0]
-            const title = article.fields.find(field => field.key === 'title')!
-            const category = article.fields.find(field => field.key === 'category')!
-
-            const titleFieldMeta = title.fieldMeta as any
-            titleFieldMeta.validation.length.min = 7
-
-            const categoryFieldMeta = category.fieldMeta as any
-            categoryFieldMeta.options[0].label = 'Mutated option'
-
-            const initialFilter = article.initialFilter as any
-            initialFilter.title.contains = 'mutated'
-
-            const initialSort = article.initialSort as any
-            initialSort.field = 'id'
-
-            const graphqlNames = article.graphql.names as any
-            graphqlNames.outputTypeName = 'MutatedArticle'
-          }
-
-          return adminMeta
-        },
-      },
-    },
+    ui: { isAccessAllowed: () => false },
     lists: {
       Article: list({
         access: allowAll,
+        ui: {
+          label: dynamicListLabel,
+          singular: ({ context }) => `${metadataLocale(context)}:Article`,
+          plural: async ({ context }) => `${metadataLocale(context)}:Articles`,
+        },
         fields: {
-          title: text(),
-          category: select({ options: ['one', 'two'] }),
+          ...group({
+            label: ({ context }) => `${metadataLocale(context)}:Content`,
+            description: async ({ context }) => `${metadataLocale(context)}:Content help`,
+            fields: {
+              title: text({
+                ui: {
+                  label: async ({ context }) => {
+                    if (metadataLocale(context) === 'async-error') {
+                      throw new Error('Async label resolution failed')
+                    }
+                    return `${metadataLocale(context)}:Title`
+                  },
+                  description: ({ context }) => `${metadataLocale(context)}:Title help`,
+                },
+              }),
+            },
+          }),
         },
-        ui: {
-          listView: {
-            initialFilter: { title: { contains: 'original' } },
-            initialSort: { field: 'title', direction: 'ASC' },
-          },
+        actions: {
+          rename: action({
+            access: allowAll,
+            args: {
+              title: {
+                graphql: g.arg({ type: g.String }),
+                ui: {
+                  source: {
+                    field: text({
+                      ui: {
+                        label: async ({ context }) => `${metadataLocale(context)}:New title`,
+                        description: ({ context }) => `${metadataLocale(context)}:Rename help`,
+                      },
+                    }),
+                  },
+                },
+              },
+              previousTitle: {
+                graphql: g.arg({ type: g.String }),
+                ui: { source: { itemField: 'title' } },
+              },
+              staticTitle: {
+                graphql: g.arg({ type: g.String }),
+                ui: {
+                  source: {
+                    field: text({ ui: { label: 'New title', description: 'Rename help' } }),
+                  },
+                },
+              },
+              apiOnly: { graphql: g.arg({ type: g.String }) },
+            },
+            resolve: async () => null,
+            ui: { label: 'Rename' },
+          }),
         },
       }),
     },
@@ -690,96 +572,152 @@ const cloneAdminMetaRunner = setupTestRunner({
 })
 
 test(
-  'cloneAdminMetaValue clones nested metadata values per request',
-  cloneAdminMetaRunner(async ({ context }) => {
-    cloneAdminMetaRequest = 0
-
-    const first = (await context.sudo().graphql.run({
-      query: gql`
-        query {
-          keystone {
-            adminMeta {
-              lists {
-                fields {
-                  key
-                  fieldMeta
-                }
-                graphql {
-                  names {
-                    outputTypeName
-                  }
-                }
-                initialFilter
-                initialSort {
-                  field
-                  direction
-                }
-              }
-            }
-          }
-        }
-      `,
-    })) as any
-
-    const second = (await context.sudo().graphql.run({
-      query: gql`
-        query {
-          keystone {
-            adminMeta {
-              lists {
-                fields {
-                  key
-                  fieldMeta
-                }
-                graphql {
-                  names {
-                    outputTypeName
-                  }
-                }
-                initialFilter
-                initialSort {
-                  field
-                  direction
-                }
-              }
-            }
-          }
-        }
-      `,
-    })) as any
-
-    const firstArticle = first.keystone.adminMeta.lists[0]
-    const secondArticle = second.keystone.adminMeta.lists[0]
-    const firstTitle = firstArticle.fields.find((field: any) => field.key === 'title')
-    const secondTitle = secondArticle.fields.find((field: any) => field.key === 'title')
-    const firstCategory = firstArticle.fields.find((field: any) => field.key === 'category')
-    const secondCategory = secondArticle.fields.find((field: any) => field.key === 'category')
-
-    expect(firstTitle.fieldMeta.validation.length.min).toBe(7)
-    expect(firstCategory.fieldMeta.options[0].label).toBe('Mutated option')
-    expect(firstArticle.initialFilter.title.contains).toBe('mutated')
-    expect(firstArticle.initialSort).toEqual({ field: 'id', direction: 'ASC' })
-    expect(firstArticle.graphql.names.outputTypeName).toBe('MutatedArticle')
-
-    expect(secondTitle.fieldMeta.validation.length.min).toBeNull()
-    expect(secondCategory.fieldMeta.options[0]).toEqual({ label: 'One', value: 'one' })
-    expect(secondArticle.initialFilter).toEqual({ title: { contains: 'original' } })
-    expect(secondArticle.initialSort).toEqual({ field: 'title', direction: 'ASC' })
-    expect(secondArticle.graphql.names.outputTypeName).toBe('Article')
-    expect(cloneAdminMetaRequest).toBe(2)
+  'presentation callbacks resolve per session across lists, groups and fields',
+  dynamicTextRunner(async ({ context }) => {
+    for (const locale of ['en', 'de', 'en']) {
+      const queryContext = context.withSession({ locale }).sudo()
+      const data = await queryContext.graphql.run({ query: adminMetaQuery })
+      const title = {
+        key: 'title',
+        label: `${locale}:Title`,
+        description: `${locale}:Title help`,
+      }
+      expect(data.keystone.adminMeta.lists).toMatchObject([
+        {
+          key: 'Article',
+          label: `${locale}:Articles`,
+          singular: `${locale}:Article`,
+          plural: `${locale}:Articles`,
+          path: 'articles',
+          graphql: { names: { outputTypeName: 'Article', listQueryName: 'articles' } },
+          actions: [{ label: 'Rename' }],
+          fields: [expect.objectContaining({ key: 'id', label: 'Id', description: '' }), title],
+          groups: [
+            {
+              label: `${locale}:Content`,
+              description: `${locale}:Content help`,
+              fields: [{ key: 'title' }],
+            },
+          ],
+        },
+      ])
+      expect(dynamicListLabel).toHaveBeenLastCalledWith({
+        context: queryContext,
+        session: queryContext.session,
+      })
+      const groupedFields = await queryContext.graphql.run({
+        query:
+          '{ keystone { adminMeta { lists { groups { fields { key label description } } } } } }',
+      })
+      expect(groupedFields).toEqual({
+        keystone: { adminMeta: { lists: [{ groups: [{ fields: [title] }] }] } },
+      })
+    }
   })
 )
 
-// Item-dependent resolvers must retain their behavior even with an identity metadata hook.
-for (const withHook of [false, true]) {
+for (const kind of ['static', 'dynamic']) {
+  test(
+    `action argument source JSON preserves ${kind} labels and descriptions across requests`,
+    dynamicTextRunner(async ({ context }) => {
+      for (const locale of ['en', 'de', 'en']) {
+        const queryContext = context.withSession({ locale }).sudo()
+        const data = await queryContext.graphql.run({
+          query: `{
+            keystone {
+              adminMeta {
+                list(key: "Article") {
+                  actions { key graphql { arguments { name source } } }
+                }
+              }
+            }
+          }`,
+        })
+        // A JSON scalar does not resolve nested functions; assert the wire representation.
+        const serialized = JSON.parse(JSON.stringify(data))
+        const prefix = kind === 'dynamic' ? `${locale}:` : ''
+        expect(serialized.keystone.adminMeta.list.actions).toEqual([
+          {
+            key: 'rename',
+            graphql: {
+              arguments: expect.arrayContaining([
+                {
+                  name: kind === 'dynamic' ? 'title' : 'staticTitle',
+                  source: {
+                    field: expect.objectContaining({
+                      label: `${prefix}New title`,
+                      description: `${prefix}Rename help`,
+                    }),
+                  },
+                },
+                { name: 'previousTitle', source: { itemField: 'title' } },
+                { name: 'apiOnly', source: null },
+              ]),
+            },
+          },
+        ])
+      }
+    })
+  )
+}
+
+test(
+  'presentation callbacks can read request headers',
+  dynamicTextRunner(async ({ context }) => {
+    const req = new IncomingMessage(new Socket())
+    req.headers['x-admin-locale'] = 'fr'
+    const queryContext = (await context.withRequest(req)).sudo()
+    const data = await queryContext.graphql.run({
+      query: '{ keystone { adminMeta { list(key: "Article") { label } } } }',
+    })
+    expect(data).toEqual({ keystone: { adminMeta: { list: { label: 'fr:Articles' } } } })
+  })
+)
+
+test(
+  'presentation callbacks are only evaluated for selected metadata after access checks',
+  dynamicTextRunner(async ({ context }) => {
+    dynamicListLabel.mockClear()
+    await context.graphql.run({ query: '{ articles { id } }' })
+    await context.sudo().graphql.run({
+      query: '{ keystone { adminMeta { lists { key } } } }',
+    })
+    const denied = await context.graphql.raw({ query: adminMetaQuery })
+    expect(denied.errors?.[0]?.message).toBe('Access denied')
+    expect(dynamicListLabel).not.toHaveBeenCalled()
+  })
+)
+
+for (const { locale, query, message } of [
+  {
+    locale: 'error',
+    query: '{ keystone { adminMeta { lists { label } } } }',
+    message: 'Label resolution failed',
+  },
+  {
+    locale: 'async-error',
+    query: '{ keystone { adminMeta { lists { fields { label } } } } }',
+    message: 'Async label resolution failed',
+  },
+]) {
+  test(
+    `presentation callbacks propagate ${locale} through GraphQL`,
+    dynamicTextRunner(async ({ context }) => {
+      const result = await context.withSession({ locale }).sudo().graphql.raw({ query })
+      expect(result.data).toBeNull()
+      expect(result.errors?.[0]?.message).toBe(message)
+    })
+  )
+}
+
+// Presentation callbacks must not change how item-dependent metadata is resolved.
+for (const withDynamicText of [false, true]) {
   const itemViewRunner = setupTestRunner({
     config: {
-      ui: {
-        hooks: withHook ? { resolveAdminMeta: ({ adminMeta }) => adminMeta } : undefined,
-      },
       lists: {
         Article: list({
           access: allowAll,
+          ui: { label: withDynamicText ? async () => 'Localized Articles' : 'Articles' },
           fields: {
             title: text({
               ui: {
@@ -814,7 +752,8 @@ for (const withHook of [false, true]) {
     },
   })
 
-  const hookDescription = withHook ? 'with resolveAdminMeta' : 'without resolveAdminMeta'
+  const textDescription = withDynamicText ? 'with dynamic text' : 'with static text'
+  const label = withDynamicText ? 'Localized Articles' : 'Articles'
 
   for (const { name, selection, draft, published } of [
     {
@@ -845,7 +784,7 @@ for (const withHook of [false, true]) {
     },
   ]) {
     test(
-      `itemView ${name} for different item IDs in one query ${hookDescription}`,
+      `itemView ${name} for different item IDs in one query ${textDescription}`,
       itemViewRunner(async ({ context }) => {
         const draftItem = await context.db.Article.createOne({ data: { title: 'Draft' } })
         const publishedItem = await context.db.Article.createOne({
@@ -857,8 +796,8 @@ for (const withHook of [false, true]) {
             query($draftId: ID!, $publishedId: ID!) {
               keystone {
                 adminMeta {
-                  draft: list(key: "Article", itemId: $draftId) { ${selection} }
-                  published: list(key: "Article", itemId: $publishedId) { ${selection} }
+                  draft: list(key: "Article", itemId: $draftId) { label ${selection} }
+                  published: list(key: "Article", itemId: $publishedId) { label ${selection} }
                 }
               }
             }
@@ -866,13 +805,17 @@ for (const withHook of [false, true]) {
           variables: { draftId: draftItem.id, publishedId: publishedItem.id },
         })
 
-        expect(data).toEqual({ keystone: { adminMeta: { draft, published } } })
+        expect(data).toEqual({
+          keystone: {
+            adminMeta: { draft: { label, ...draft }, published: { label, ...published } },
+          },
+        })
       })
     )
   }
 
   test(
-    `itemView handles omitted and unknown item IDs ${hookDescription}`,
+    `itemView handles omitted and unknown item IDs ${textDescription}`,
     itemViewRunner(async ({ context }) => {
       const data = await context.sudo().graphql.run({
         query: gql`
@@ -919,13 +862,8 @@ for (const withHook of [false, true]) {
   )
 }
 
-const resolveAdminMetaRunner = setupTestRunner({
+const asyncMetadataRunner = setupTestRunner({
   config: {
-    ui: {
-      hooks: {
-        resolveAdminMeta: ({ adminMeta }) => adminMeta,
-      },
-    },
     lists: {
       Article: list({
         access: allowAll,
@@ -962,8 +900,8 @@ const resolveAdminMetaRunner = setupTestRunner({
 })
 
 test(
-  'resolveAdminMetaValue resolves static and asynchronous metadata values',
-  resolveAdminMetaRunner(async ({ context }) => {
+  'admin metadata resolves static and asynchronous configuration values',
+  asyncMetadataRunner(async ({ context }) => {
     const data = (await context.sudo().graphql.run({
       query: gql`
         query {

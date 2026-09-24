@@ -1,7 +1,6 @@
 import { QueryMode } from '../types/index.ts'
 import { g } from '../types/schema/index.ts'
 import type { GraphQLNames } from '../types/utils.ts'
-import { resolveAdminMetaForRequest } from './admin-meta.ts'
 import type {
   ActionMetaSource,
   AdminMetaSource,
@@ -164,7 +163,26 @@ const KeystoneAdminUIActionMeta = g.object<ActionMetaSource>()({
                     fields: {
                       name: g.field({ type: g.nonNull(g.String) }),
                       type: g.field({ type: g.nonNull(g.String) }),
-                      source: g.field({ type: g.JSON }),
+                      source: g.field({
+                        type: g.JSON,
+                        async resolve({ source }, _, context) {
+                          if (!source || !('field' in source)) return source
+                          const {
+                            label,
+                            description,
+                          }: Pick<FieldMetaSource, 'label' | 'description'> = source.field
+                          // JSON scalars do not resolve nested metadata functions. Copy the
+                          // source so request-specific text never replaces shared resolvers.
+                          return {
+                            ...source,
+                            field: {
+                              ...source.field,
+                              label: await label({}, context),
+                              description: await description({}, context),
+                            },
+                          }
+                        },
+                      }),
                     },
                   })
                 )
@@ -245,11 +263,7 @@ const KeystoneAdminUIActionMeta = g.object<ActionMetaSource>()({
   },
 })
 
-const KeystoneAdminUIFieldGroupMeta = g.object<{
-  label: string
-  description: string | null
-  fields: FieldMetaSource[]
-}>()({
+const KeystoneAdminUIFieldGroupMeta = g.object<ListMetaSource['groups'][number]>()({
   name: 'KeystoneAdminUIFieldGroupMeta',
   fields: {
     label: g.field({ type: g.nonNull(g.String) }),
@@ -367,10 +381,9 @@ const adminMeta = g.object<AdminMetaSource>()({
         itemId: g.arg({ type: g.ID }),
       },
       async resolve(source, { key, itemId }, context) {
-        const list = source.listsByKey?.[key] ?? source.lists.find(list => list.key === key)
         if (itemId === null || itemId === undefined) {
           return {
-            ...list,
+            ...source.listsByKey[key],
             item: null,
           }
         }
@@ -378,12 +391,12 @@ const adminMeta = g.object<AdminMetaSource>()({
         const item = await context.db[key].findOne({ where: { id: itemId } })
         if (!item) {
           return {
-            ...list,
+            ...source.listsByKey[key],
             item: null,
           }
         }
         return {
-          ...list,
+          ...source.listsByKey[key],
           item,
         }
       },
@@ -397,21 +410,13 @@ export const KeystoneMeta = g.object<{ adminMeta: AdminMetaSource }>()({
     adminMeta: g.field({
       type: g.nonNull(adminMeta),
       async resolve({ adminMeta }, _, context) {
-        if (!context.__internal.sudo) {
-          const isAllowed = await adminMeta.isAccessAllowed(context)
-          if (!isAllowed) {
-            // TODO: we need better errors
-            throw new Error('Access denied')
-          }
-        }
+        if (context.__internal.sudo) return adminMeta
 
-        if (!adminMeta.resolveAdminMeta) return adminMeta
+        const isAllowed = await adminMeta.isAccessAllowed(context)
+        if (isAllowed) return adminMeta
 
-        const resolvedAdminMeta = await resolveAdminMetaForRequest(adminMeta, context)
-        return (await adminMeta.resolveAdminMeta({
-          adminMeta: resolvedAdminMeta,
-          context,
-        })) as unknown as AdminMetaSource
+        // TODO: we need better errors
+        throw new Error('Access denied')
       },
     }),
   },
