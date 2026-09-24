@@ -92,20 +92,24 @@ export default config<TypeInfo>({
   },
   lists: {
     Post: list({
-      fields: { /* ... */ },
+      fields: {
+        /* ... */
+      },
       graphql: {
         omit: false,
       },
     }),
     AuditLog: list({
-      fields: { /* ... */ },
+      fields: {
+        /* ... */
+      },
       graphql: {
         maxTake: Infinity,
       },
     }),
   },
   /* ... */
-});
+})
 ```
 
 Per-list configuration takes precedence. Boolean `omit` values replace the default
@@ -124,6 +128,7 @@ These database types are powered by their corresponding Prisma database provider
 - `prismaSchemaPath` (default: `schema.prisma`): The path where Keystone writes its generated Prisma schema.
 - `extendPrismaClient`: A function that receives the generated Prisma Client instance and returns a client extended with custom functionality.
 - `extendPrismaSchema`: A function that receives the generated Prisma schema and returns a customised schema.
+- `requireItemFieldSelection` (default: `false`): Require that all functions that accept an `item` use `selectFields`, `g.listItemField` or `g.keystoneOutputField` so that Keystone only has to fetch the particular columns required by a query rather than all columns
 - `onConnect`: which takes a [`KeystoneContext`](../context/overview) object, and lets perform any actions you might need at startup, such as data seeding
 - `idField` (default: `{ kind: "cuid" }`): The kind of id field to use, it can be one of: `cuid`, `uuid`, `nanoid`, `ulid`, or `autoincrement`.
   This can also be customised at the list level `db.idField`.

@@ -44,6 +44,7 @@ export type KeystoneContext<TypeInfo extends BaseKeystoneTypeInfo = BaseKeystone
   __internal: {
     sudo: boolean
     lists: Record<string, InitialisedList>
+    prismaModelSelections: Record<string, Record<string, true>>
     prisma: {
       DbNull: unknown
       JsonNull: unknown
@@ -113,38 +114,168 @@ type ResolveFields = {
   readonly query?: string
 }
 
+type DbSelection<Item> = { [Key in keyof Item & string]?: true }
+type ExactDbSelection<Item, Selection> = Selection & {
+  [Key in Exclude<keyof Selection, keyof Item & string>]: never
+}
+type RequiredDbColumns<Item, Selection> = {
+  [Key in keyof Item as Key extends 'id'
+    ? Key
+    : Key extends keyof Selection
+      ? Selection[Key] extends true
+        ? Key
+        : never
+      : never]: Item[Key]
+}
+type OptionalDbColumns<Item, Selection> = {
+  [Key in keyof Item as Key extends 'id'
+    ? never
+    : Key extends keyof Selection
+      ? true extends Selection[Key]
+        ? Selection[Key] extends true
+          ? never
+          : Key
+        : never
+      : never]?: Item[Key]
+}
+type SelectedDbColumns<Item, Selection> =
+  Selection extends DbSelection<Item>
+    ? RequiredDbColumns<Item, Selection> & OptionalDbColumns<Item, Selection>
+    : Item
+
+type DbFindManyArgs<ListTypeInfo extends BaseListTypeInfo> = {
+  readonly where?: ListTypeInfo['inputs']['where']
+  readonly take?: number
+  readonly skip?: number
+  readonly orderBy?:
+    | ListTypeInfo['inputs']['orderBy']
+    | readonly ListTypeInfo['inputs']['orderBy'][]
+  readonly cursor?: ListTypeInfo['inputs']['uniqueWhere']
+}
+type DbUpdateOneArgs<ListTypeInfo extends BaseListTypeInfo> = UniqueWhereInput<ListTypeInfo> & {
+  readonly data: ListTypeInfo['inputs']['update']
+}
+type DbUpdateManyArgs<ListTypeInfo extends BaseListTypeInfo> = {
+  readonly data: readonly (UniqueWhereInput<ListTypeInfo> & {
+    readonly data: ListTypeInfo['inputs']['update']
+  })[]
+}
+type DbCreateOneArgs<ListTypeInfo extends BaseListTypeInfo> = {
+  readonly data: ListTypeInfo['inputs']['create']
+}
+type DbCreateManyArgs<ListTypeInfo extends BaseListTypeInfo> = {
+  readonly data: readonly ListTypeInfo['inputs']['create'][]
+}
+type DbDeleteManyArgs<ListTypeInfo extends BaseListTypeInfo> = {
+  readonly where: readonly ListTypeInfo['inputs']['uniqueWhere'][]
+}
+
 type DbAPI<ListTypeInfo extends BaseListTypeInfo> = {
-  findMany(args?: {
-    readonly where?: ListTypeInfo['inputs']['where']
-    readonly take?: number
-    readonly skip?: number
-    readonly orderBy?:
-      | ListTypeInfo['inputs']['orderBy']
-      | readonly ListTypeInfo['inputs']['orderBy'][]
-    readonly cursor?: ListTypeInfo['inputs']['uniqueWhere']
-  }): Promise<readonly ListTypeInfo['item'][]>
-  findOne(args: UniqueWhereInput<ListTypeInfo>): Promise<ListTypeInfo['item'] | null>
+  findMany(
+    args?: DbFindManyArgs<ListTypeInfo> & { readonly select?: undefined }
+  ): Promise<readonly ListTypeInfo['item'][]>
+  findMany<const Selection extends DbSelection<ListTypeInfo['item']>>(
+    args: DbFindManyArgs<ListTypeInfo> & {
+      readonly select: ExactDbSelection<ListTypeInfo['item'], Selection>
+    }
+  ): Promise<readonly SelectedDbColumns<ListTypeInfo['item'], Selection>[]>
+  findMany(
+    args: DbFindManyArgs<ListTypeInfo> & {
+      readonly select?: DbSelection<ListTypeInfo['item']>
+    }
+  ): Promise<readonly SelectedDbColumns<ListTypeInfo['item'], DbSelection<ListTypeInfo['item']>>[]>
+  findOne(
+    args: UniqueWhereInput<ListTypeInfo> & { readonly select?: undefined }
+  ): Promise<ListTypeInfo['item'] | null>
+  findOne<const Selection extends DbSelection<ListTypeInfo['item']>>(
+    args: UniqueWhereInput<ListTypeInfo> & {
+      readonly select: ExactDbSelection<ListTypeInfo['item'], Selection>
+    }
+  ): Promise<SelectedDbColumns<ListTypeInfo['item'], Selection> | null>
+  findOne(
+    args: UniqueWhereInput<ListTypeInfo> & {
+      readonly select?: DbSelection<ListTypeInfo['item']>
+    }
+  ): Promise<SelectedDbColumns<ListTypeInfo['item'], DbSelection<ListTypeInfo['item']>> | null>
   count(args?: { readonly where?: ListTypeInfo['inputs']['where'] }): Promise<number>
   updateOne(
-    args: UniqueWhereInput<ListTypeInfo> & {
-      readonly data: ListTypeInfo['inputs']['update']
-    }
+    args: DbUpdateOneArgs<ListTypeInfo> & { readonly select?: undefined }
   ): Promise<ListTypeInfo['item']>
-  updateMany(args: {
-    readonly data: readonly (UniqueWhereInput<ListTypeInfo> & {
-      readonly data: ListTypeInfo['inputs']['update']
-    })[]
-  }): Promise<ListTypeInfo['item'][]>
-  createOne(args: {
-    readonly data: ListTypeInfo['inputs']['create']
-  }): Promise<ListTypeInfo['item']>
-  createMany(args: {
-    readonly data: readonly ListTypeInfo['inputs']['create'][]
-  }): Promise<ListTypeInfo['item'][]>
-  deleteOne(args: UniqueWhereInput<ListTypeInfo>): Promise<ListTypeInfo['item']>
-  deleteMany(args: {
-    readonly where: readonly ListTypeInfo['inputs']['uniqueWhere'][]
-  }): Promise<ListTypeInfo['item'][]>
+  updateOne<const Selection extends DbSelection<ListTypeInfo['item']>>(
+    args: DbUpdateOneArgs<ListTypeInfo> & {
+      readonly select: ExactDbSelection<ListTypeInfo['item'], Selection>
+    }
+  ): Promise<SelectedDbColumns<ListTypeInfo['item'], Selection>>
+  updateOne(
+    args: DbUpdateOneArgs<ListTypeInfo> & {
+      readonly select?: DbSelection<ListTypeInfo['item']>
+    }
+  ): Promise<SelectedDbColumns<ListTypeInfo['item'], DbSelection<ListTypeInfo['item']>>>
+  updateMany(
+    args: DbUpdateManyArgs<ListTypeInfo> & { readonly select?: undefined }
+  ): Promise<ListTypeInfo['item'][]>
+  updateMany<const Selection extends DbSelection<ListTypeInfo['item']>>(
+    args: DbUpdateManyArgs<ListTypeInfo> & {
+      readonly select: ExactDbSelection<ListTypeInfo['item'], Selection>
+    }
+  ): Promise<SelectedDbColumns<ListTypeInfo['item'], Selection>[]>
+  updateMany(
+    args: DbUpdateManyArgs<ListTypeInfo> & {
+      readonly select?: DbSelection<ListTypeInfo['item']>
+    }
+  ): Promise<SelectedDbColumns<ListTypeInfo['item'], DbSelection<ListTypeInfo['item']>>[]>
+  createOne(
+    args: DbCreateOneArgs<ListTypeInfo> & { readonly select?: undefined }
+  ): Promise<ListTypeInfo['item']>
+  createOne<const Selection extends DbSelection<ListTypeInfo['item']>>(
+    args: DbCreateOneArgs<ListTypeInfo> & {
+      readonly select: ExactDbSelection<ListTypeInfo['item'], Selection>
+    }
+  ): Promise<SelectedDbColumns<ListTypeInfo['item'], Selection>>
+  createOne(
+    args: DbCreateOneArgs<ListTypeInfo> & {
+      readonly select?: DbSelection<ListTypeInfo['item']>
+    }
+  ): Promise<SelectedDbColumns<ListTypeInfo['item'], DbSelection<ListTypeInfo['item']>>>
+  createMany(
+    args: DbCreateManyArgs<ListTypeInfo> & { readonly select?: undefined }
+  ): Promise<ListTypeInfo['item'][]>
+  createMany<const Selection extends DbSelection<ListTypeInfo['item']>>(
+    args: DbCreateManyArgs<ListTypeInfo> & {
+      readonly select: ExactDbSelection<ListTypeInfo['item'], Selection>
+    }
+  ): Promise<SelectedDbColumns<ListTypeInfo['item'], Selection>[]>
+  createMany(
+    args: DbCreateManyArgs<ListTypeInfo> & {
+      readonly select?: DbSelection<ListTypeInfo['item']>
+    }
+  ): Promise<SelectedDbColumns<ListTypeInfo['item'], DbSelection<ListTypeInfo['item']>>[]>
+  deleteOne(
+    args: UniqueWhereInput<ListTypeInfo> & { readonly select?: undefined }
+  ): Promise<ListTypeInfo['item']>
+  deleteOne<const Selection extends DbSelection<ListTypeInfo['item']>>(
+    args: UniqueWhereInput<ListTypeInfo> & {
+      readonly select: ExactDbSelection<ListTypeInfo['item'], Selection>
+    }
+  ): Promise<SelectedDbColumns<ListTypeInfo['item'], Selection>>
+  deleteOne(
+    args: UniqueWhereInput<ListTypeInfo> & {
+      readonly select?: DbSelection<ListTypeInfo['item']>
+    }
+  ): Promise<SelectedDbColumns<ListTypeInfo['item'], DbSelection<ListTypeInfo['item']>>>
+  deleteMany(
+    args: DbDeleteManyArgs<ListTypeInfo> & { readonly select?: undefined }
+  ): Promise<ListTypeInfo['item'][]>
+  deleteMany<const Selection extends DbSelection<ListTypeInfo['item']>>(
+    args: DbDeleteManyArgs<ListTypeInfo> & {
+      readonly select: ExactDbSelection<ListTypeInfo['item'], Selection>
+    }
+  ): Promise<SelectedDbColumns<ListTypeInfo['item'], Selection>[]>
+  deleteMany(
+    args: DbDeleteManyArgs<ListTypeInfo> & {
+      readonly select?: DbSelection<ListTypeInfo['item']>
+    }
+  ): Promise<SelectedDbColumns<ListTypeInfo['item'], DbSelection<ListTypeInfo['item']>>[]>
 }
 
 export type KeystoneDbAPI<ListsTypeInfo extends Record<string, BaseListTypeInfo>> = {

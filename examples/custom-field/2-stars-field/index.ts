@@ -6,7 +6,7 @@ import {
   fieldType,
   orderDirectionEnum,
 } from '@keystone-6/core/types'
-import { g } from '@keystone-6/core'
+import { g, wrapItemCallback } from '@keystone-6/core'
 import type { controller } from './views'
 
 // this field is based on the integer field
@@ -58,16 +58,24 @@ export function stars<ListTypeInfo extends BaseListTypeInfo>({
         // This hook is the key difference on the backend between the stars field type and the integer field type.
         validate: {
           ...config.hooks?.validate,
-          async create(args) {
-            const err = validate(args.resolvedData[meta.fieldKey])
-            if (err) args.addValidationError(err)
-            await validateCreate?.(args)
-          },
-          async update(args) {
-            const err = validate(args.resolvedData[meta.fieldKey])
-            if (err) args.addValidationError(err)
-            await validateUpdate?.(args)
-          },
+          create: wrapItemCallback(
+            next => async args => {
+              const err = validate(args.resolvedData[meta.fieldKey])
+              if (err) args.addValidationError(err)
+              await next?.(args)
+            },
+            {},
+            validateCreate
+          ),
+          update: wrapItemCallback(
+            next => async args => {
+              const err = validate(args.resolvedData[meta.fieldKey])
+              if (err) args.addValidationError(err)
+              await next?.(args)
+            },
+            {},
+            validateUpdate
+          ),
         },
       },
       // all of these inputs are optional if they don't make sense for a particular field type

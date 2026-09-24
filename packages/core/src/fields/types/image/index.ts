@@ -12,6 +12,7 @@ import { fieldType } from '../../../types/index.ts'
 import { g } from '../../../index.ts'
 import { SUPPORTED_IMAGE_EXTENSIONS } from './utils.ts'
 import { merge } from '../../resolve-hooks.ts'
+import { selectFields } from '../../../types/item-callback.ts'
 import type { InferValueFromArg, InferValueFromInputType } from '@graphql-ts/schema'
 import { toBase64Url } from '../../../lib/encoding.ts'
 import type { ImageExtension } from './internal-utils.ts'
@@ -183,6 +184,10 @@ export function image<ListTypeInfo extends BaseListTypeInfo>(
         }
       }
     }
+    const selectedAfterOperationResolver = selectFields(afterOperationResolver, {
+      [`${fieldKey}_id`]: true,
+      [`${fieldKey}_extension`]: true,
+    })
 
     return fieldType({
       kind: 'multi',
@@ -199,8 +204,8 @@ export function image<ListTypeInfo extends BaseListTypeInfo>(
       hooks: {
         ...config.hooks,
         afterOperation: merge(config.hooks?.afterOperation, {
-          update: afterOperationResolver,
-          delete: afterOperationResolver,
+          update: selectedAfterOperationResolver,
+          delete: selectedAfterOperationResolver,
         }),
       },
       input: {
@@ -213,9 +218,10 @@ export function image<ListTypeInfo extends BaseListTypeInfo>(
           resolve: (data, context) => inputResolver(config.storage, transformName, context, data),
         },
       },
-      output: g.field({
+      output: g.keystoneOutputField({
         type: ImageFieldOutput,
-        resolve({ value: { id, extension, filesize, width, height } }): ImageData | null {
+        select: {},
+        resolve: ({ value: { id, extension, filesize, width, height } }): ImageData | null => {
           if (id === null) return null
           if (extension === null) return null
           if (filesize === null) return null

@@ -1,4 +1,6 @@
 export { list, config, group, action } from './schema.ts'
+export { selectFields, wrapItemCallback } from './types/item-callback.ts'
+export { getSelectionFromInfo } from './lib/core/queries/select.ts'
 export type { ListConfig, BaseFields } from './types/index.ts'
 // this re-exports `g` and `graphql`
 // note the usage of export * over explicitly listing the exports

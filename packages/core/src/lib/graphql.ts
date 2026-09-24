@@ -1,11 +1,13 @@
 import type { GField, GOutputType } from '@graphql-ts/schema'
-import { type GraphQLNamedType, GraphQLSchema } from 'graphql/index.js'
+import { type GraphQLNamedType, GraphQLSchema, isObjectType } from 'graphql/index.js'
 
 import type { KeystoneConfig, KeystoneContext } from '../types/index.ts'
 import { g } from '../types/schema/index.ts'
 import type { AdminMetaSource } from './admin-meta.ts'
 import { KeystoneMeta } from './admin-meta-graphql.ts'
 import type { InitialisedList } from './core/initialise-lists.ts'
+import { addItemRequirements } from './core/queries/select.ts'
+import { fieldItemRequirements } from '../types/item-field.ts'
 import { getMutationsForList } from './core/mutations/index.ts'
 import { getQueriesForList } from './core/queries/index.ts'
 
@@ -79,5 +81,17 @@ export function createGraphQLSchema(
   )
 
   // merge in the user defined graphQL API
-  return config.graphql?.extendGraphqlSchema?.(graphQLSchema) ?? graphQLSchema
+  const schema = config.graphql?.extendGraphqlSchema?.(graphQLSchema) ?? graphQLSchema
+  for (const list of Object.values(lists)) {
+    if (!list.prisma.requireItemFieldSelection) continue
+    const outputType = schema.getType(list.graphql.types.output.name)
+    if (!isObjectType(outputType)) continue
+    for (const [fieldKey, field] of Object.entries(outputType.getFields())) {
+      if (addItemRequirements({}, fieldItemRequirements(field), list)) continue
+      throw new Error(
+        `${list.listKey}: db.requireItemFieldSelection needs declared item selections for GraphQL field ${outputType.name}.${fieldKey}`
+      )
+    }
+  }
+  return schema
 }

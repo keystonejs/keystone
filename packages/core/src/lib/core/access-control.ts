@@ -460,7 +460,10 @@ export function parseFieldAccessControl(
       order: access.read,
     }
   } else if (access.read !== undefined) {
-    read = access.read
+    read = {
+      ...access.read,
+      item: access.read.item,
+    }
   }
 
   return {
@@ -573,7 +576,10 @@ export async function checkUniqueItemExists(
 
   // Check whether the item exists (from this users POV).
   try {
-    const item = await context.db[foreignList.listKey].findOne({ where: uniqueInput })
+    const item = await context.db[foreignList.listKey].findOne({
+      where: uniqueInput,
+      select: { id: true },
+    })
     if (item !== null) return uniqueWhere
   } catch (err) {}
 

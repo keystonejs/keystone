@@ -63,7 +63,7 @@ export function getDbFactory(list: InitialisedList, schema: GraphQLSchema) {
   function f(operation: 'query' | 'mutation', fieldName: string) {
     const rootType = operation === 'query' ? queryType : mutationType
     const field = rootType.getFields()[fieldName]
-    if (field) return makeContextDbFn(field)
+    if (field) return makeContextDbFn(field, list)
 
     // if omitted
     return () => {
@@ -86,8 +86,8 @@ export function getDbFactory(list: InitialisedList, schema: GraphQLSchema) {
   return (context: KeystoneContext) => {
     return {
       findOne: (args: Record<string, any>) => fcache.findOne(args, context),
-      findMany: (args: Record<string, any>) => fcache.findMany(args, context),
-      count: (args: Record<string, any>) => fcache.count(args, context),
+      findMany: (args?: Record<string, any>) => fcache.findMany(args ?? {}, context),
+      count: (args?: Record<string, any>) => fcache.count(args ?? {}, context),
       createOne: (args: Record<string, any>) => fcache.createOne(args, context),
       createMany: (args: Record<string, any>) => fcache.createMany(args, context),
       updateOne: (args: Record<string, any>) => fcache.updateOne(args, context),

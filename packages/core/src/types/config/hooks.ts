@@ -1,5 +1,6 @@
 import type { BaseFieldTypeInfo, KeystoneContextFromListTypeInfo, MaybePromise } from '../index.ts'
 import type { BaseListTypeInfo } from '../type-info.ts'
+import type { ItemCallback } from '../item-callback.ts'
 
 type CommonArgs<ListTypeInfo extends BaseListTypeInfo> = {
   context: KeystoneContextFromListTypeInfo<ListTypeInfo>
@@ -49,8 +50,8 @@ export type ListHooks<ListTypeInfo extends BaseListTypeInfo> = {
   resolveInput?:
     | ResolveInputListHook<ListTypeInfo, 'create' | 'update'>
     | {
-        create?: ResolveInputListHook<ListTypeInfo, 'create'>
-        update?: ResolveInputListHook<ListTypeInfo, 'update'>
+        create?: ItemCallback<ResolveInputListHook<ListTypeInfo, 'create'>>
+        update?: ItemCallback<ResolveInputListHook<ListTypeInfo, 'update'>>
       }
 
   /**
@@ -59,9 +60,9 @@ export type ListHooks<ListTypeInfo extends BaseListTypeInfo> = {
   validate?:
     | ValidateHook<ListTypeInfo, 'create' | 'update' | 'delete'>
     | {
-        create?: ValidateHook<ListTypeInfo, 'create'>
-        update?: ValidateHook<ListTypeInfo, 'update'>
-        delete?: ValidateHook<ListTypeInfo, 'delete'>
+        create?: ItemCallback<ValidateHook<ListTypeInfo, 'create'>>
+        update?: ItemCallback<ValidateHook<ListTypeInfo, 'update'>>
+        delete?: ItemCallback<ValidateHook<ListTypeInfo, 'delete'>>
       }
 
   /**
@@ -70,9 +71,9 @@ export type ListHooks<ListTypeInfo extends BaseListTypeInfo> = {
   beforeOperation?:
     | BeforeOperationListHook<ListTypeInfo, 'create' | 'update' | 'delete'>
     | {
-        create?: BeforeOperationListHook<ListTypeInfo, 'create'>
-        update?: BeforeOperationListHook<ListTypeInfo, 'update'>
-        delete?: BeforeOperationListHook<ListTypeInfo, 'delete'>
+        create?: ItemCallback<BeforeOperationListHook<ListTypeInfo, 'create'>>
+        update?: ItemCallback<BeforeOperationListHook<ListTypeInfo, 'update'>>
+        delete?: ItemCallback<BeforeOperationListHook<ListTypeInfo, 'delete'>>
       }
 
   /**
@@ -81,9 +82,9 @@ export type ListHooks<ListTypeInfo extends BaseListTypeInfo> = {
   afterOperation?:
     | AfterOperationListHook<ListTypeInfo, 'create' | 'update' | 'delete'>
     | {
-        create?: AfterOperationListHook<ListTypeInfo, 'create'>
-        update?: AfterOperationListHook<ListTypeInfo, 'update'>
-        delete?: AfterOperationListHook<ListTypeInfo, 'delete'>
+        create?: ItemCallback<AfterOperationListHook<ListTypeInfo, 'create'>>
+        update?: ItemCallback<AfterOperationListHook<ListTypeInfo, 'update'>>
+        delete?: ItemCallback<AfterOperationListHook<ListTypeInfo, 'delete'>>
       }
 }
 
@@ -119,8 +120,8 @@ export type FieldHooks<
   resolveInput?:
     | ResolveInputFieldHook<ListTypeInfo, 'create' | 'update', FieldTypeInfo>
     | {
-        create?: ResolveInputFieldHook<ListTypeInfo, 'create', FieldTypeInfo>
-        update?: ResolveInputFieldHook<ListTypeInfo, 'update', FieldTypeInfo>
+        create?: ItemCallback<ResolveInputFieldHook<ListTypeInfo, 'create', FieldTypeInfo>>
+        update?: ItemCallback<ResolveInputFieldHook<ListTypeInfo, 'update', FieldTypeInfo>>
       }
 
   /**
@@ -129,9 +130,9 @@ export type FieldHooks<
   validate?:
     | ValidateFieldHook<ListTypeInfo, 'create' | 'update' | 'delete', FieldTypeInfo>
     | {
-        create?: ValidateFieldHook<ListTypeInfo, 'create', FieldTypeInfo>
-        update?: ValidateFieldHook<ListTypeInfo, 'update', FieldTypeInfo>
-        delete?: ValidateFieldHook<ListTypeInfo, 'delete', FieldTypeInfo>
+        create?: ItemCallback<ValidateFieldHook<ListTypeInfo, 'create', FieldTypeInfo>>
+        update?: ItemCallback<ValidateFieldHook<ListTypeInfo, 'update', FieldTypeInfo>>
+        delete?: ItemCallback<ValidateFieldHook<ListTypeInfo, 'delete', FieldTypeInfo>>
       }
 
   /**
@@ -140,9 +141,9 @@ export type FieldHooks<
   beforeOperation?:
     | BeforeOperationFieldHook<ListTypeInfo, 'create' | 'update' | 'delete', FieldTypeInfo>
     | {
-        create?: BeforeOperationFieldHook<ListTypeInfo, 'create', FieldTypeInfo>
-        update?: BeforeOperationFieldHook<ListTypeInfo, 'update', FieldTypeInfo>
-        delete?: BeforeOperationFieldHook<ListTypeInfo, 'delete', FieldTypeInfo>
+        create?: ItemCallback<BeforeOperationFieldHook<ListTypeInfo, 'create', FieldTypeInfo>>
+        update?: ItemCallback<BeforeOperationFieldHook<ListTypeInfo, 'update', FieldTypeInfo>>
+        delete?: ItemCallback<BeforeOperationFieldHook<ListTypeInfo, 'delete', FieldTypeInfo>>
       }
 
   /**
@@ -151,9 +152,9 @@ export type FieldHooks<
   afterOperation?:
     | AfterOperationFieldHook<ListTypeInfo, 'create' | 'update' | 'delete', FieldTypeInfo>
     | {
-        create?: AfterOperationFieldHook<ListTypeInfo, 'create', FieldTypeInfo>
-        update?: AfterOperationFieldHook<ListTypeInfo, 'update', FieldTypeInfo>
-        delete?: AfterOperationFieldHook<ListTypeInfo, 'delete', FieldTypeInfo>
+        create?: ItemCallback<AfterOperationFieldHook<ListTypeInfo, 'create', FieldTypeInfo>>
+        update?: ItemCallback<AfterOperationFieldHook<ListTypeInfo, 'update', FieldTypeInfo>>
+        delete?: ItemCallback<AfterOperationFieldHook<ListTypeInfo, 'delete', FieldTypeInfo>>
       }
 }
 

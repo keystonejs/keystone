@@ -11,6 +11,7 @@ import type {
 import { fieldType } from '../../../types/index.ts'
 import { g } from '../../../index.ts'
 import { merge } from '../../resolve-hooks.ts'
+import { selectFields } from '../../../types/item-callback.ts'
 import type { InferValueFromArg, InferValueFromInputType } from '@graphql-ts/schema'
 import { toBase64Url } from '../../../lib/encoding.ts'
 
@@ -49,11 +50,13 @@ const FileFieldInput = g.inputObject({
 
 const inputArg = g.arg({ type: FileFieldInput })
 
-const FileFieldOutput = g.object<{
+type FileData = {
   filename: string
   filesize: number
   url: (_args: {}, context: KeystoneContext) => Promise<string>
-}>()({
+}
+
+const FileFieldOutput = g.object<FileData>()({
   name: 'FileFieldOutput',
   fields: {
     filename: g.field({ type: g.nonNull(g.String) }),
@@ -109,6 +112,9 @@ export function file<ListTypeInfo extends BaseListTypeInfo>(
         }
       }
     }
+    const selectedAfterOperationResolver = selectFields(afterOperationResolver, {
+      [`${fieldKey}_filename`]: true,
+    })
 
     return fieldType({
       kind: 'multi',
@@ -122,8 +128,8 @@ export function file<ListTypeInfo extends BaseListTypeInfo>(
       hooks: {
         ...config.hooks,
         afterOperation: merge(config.hooks?.afterOperation, {
-          update: afterOperationResolver,
-          delete: afterOperationResolver,
+          update: selectedAfterOperationResolver,
+          delete: selectedAfterOperationResolver,
         }),
       },
       input: {
@@ -136,9 +142,10 @@ export function file<ListTypeInfo extends BaseListTypeInfo>(
           resolve: (data, context) => inputResolver(config.storage, transformName, context, data),
         },
       },
-      output: g.field({
+      output: g.keystoneOutputField({
         type: FileFieldOutput,
-        resolve({ value: { filesize, filename } }) {
+        select: {},
+        resolve: ({ value: { filesize, filename } }): FileData | null => {
           if (filename === null) return null
           if (filesize === null) return null
           return {

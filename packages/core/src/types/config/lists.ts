@@ -12,6 +12,7 @@ import type {
 } from './access-control.ts'
 import type { BaseFields, BaseFieldTypeInfo, FieldGraphQLOmit } from './fields.ts'
 import type { ListHooks } from './hooks.ts'
+import type { ItemCallback } from '../item-callback.ts'
 import type { FieldTypeFunc } from '../next-fields.ts'
 
 export type ActionArgumentsConfig = Record<string, GArg<any, any>>
@@ -389,14 +390,16 @@ export type MaybeBooleanItemFunctionWithFilter<
   FieldTypeInfo extends BaseFieldTypeInfo,
 > =
   | ConditionalFilterCase<ListTypeInfo>
-  | ((args: {
-      context: KeystoneContext<ListTypeInfo['all']>
-      listKey: ListTypeInfo['key']
-      fieldKey: ListTypeInfo['fields']
-      item: ListTypeInfo['item'] | null
-      itemField: FieldTypeInfo['item'] | null
-      session?: ListTypeInfo['all']['session'] // TODO: use context.session, remove in breaking change
-    }) => MaybePromise<ConditionalFilterCase<ListTypeInfo>>)
+  | ItemCallback<
+      (args: {
+        context: KeystoneContext<ListTypeInfo['all']>
+        listKey: ListTypeInfo['key']
+        fieldKey: ListTypeInfo['fields']
+        item: ListTypeInfo['item'] | null
+        itemField: FieldTypeInfo['item'] | null
+        session?: ListTypeInfo['all']['session'] // TODO: use context.session, remove in breaking change
+      }) => MaybePromise<ConditionalFilterCase<ListTypeInfo>>
+    >
 
 export type MaybeItemFieldFunctionWithFilter<
   StaticState extends string,
@@ -405,14 +408,16 @@ export type MaybeItemFieldFunctionWithFilter<
   FieldTypeInfo extends BaseFieldTypeInfo,
 > =
   | ConditionalFilter<StaticState, Filterable, ListTypeInfo>
-  | ((args: {
-      context: KeystoneContext<ListTypeInfo['all']>
-      session?: ListTypeInfo['all']['session'] // TODO: use context.session, remove in breaking change
-      listKey: ListTypeInfo['key']
-      fieldKey: ListTypeInfo['fields']
-      item: ListTypeInfo['item'] | null
-      itemField: FieldTypeInfo['item'] | null
-    }) => MaybePromise<ConditionalFilter<StaticState, Filterable, ListTypeInfo>>)
+  | ItemCallback<
+      (args: {
+        context: KeystoneContext<ListTypeInfo['all']>
+        session?: ListTypeInfo['all']['session'] // TODO: use context.session, remove in breaking change
+        listKey: ListTypeInfo['key']
+        fieldKey: ListTypeInfo['fields']
+        item: ListTypeInfo['item'] | null
+        itemField: FieldTypeInfo['item'] | null
+      }) => MaybePromise<ConditionalFilter<StaticState, Filterable, ListTypeInfo>>
+    >
 
 export type MaybeItemFieldFunction<
   T,
@@ -420,14 +425,16 @@ export type MaybeItemFieldFunction<
   FieldTypeInfo extends BaseFieldTypeInfo,
 > =
   | T
-  | ((args: {
-      context: KeystoneContext<ListTypeInfo['all']>
-      session?: ListTypeInfo['all']['session'] // TODO: use context.session, remove in breaking change
-      listKey: ListTypeInfo['key']
-      fieldKey: ListTypeInfo['fields']
-      item: ListTypeInfo['item'] | null
-      itemField: FieldTypeInfo['item'] | null
-    }) => MaybePromise<T>)
+  | ItemCallback<
+      (args: {
+        context: KeystoneContext<ListTypeInfo['all']>
+        session?: ListTypeInfo['all']['session'] // TODO: use context.session, remove in breaking change
+        listKey: ListTypeInfo['key']
+        fieldKey: ListTypeInfo['fields']
+        item: ListTypeInfo['item'] | null
+        itemField: FieldTypeInfo['item'] | null
+      }) => MaybePromise<T>
+    >
 
 export type MaybeItemFunctionWithFilter<
   StaticState extends string,
@@ -435,23 +442,27 @@ export type MaybeItemFunctionWithFilter<
   ListTypeInfo extends BaseListTypeInfo,
 > =
   | ConditionalFilter<StaticState, Filterable, ListTypeInfo>
-  | ((args: {
-      context: KeystoneContext<ListTypeInfo['all']>
-      session?: ListTypeInfo['all']['session'] // TODO: use context.session, remove in breaking change
-      listKey: ListTypeInfo['key']
-      item: ListTypeInfo['item'] | null
-    }) => MaybePromise<ConditionalFilter<StaticState, Filterable, ListTypeInfo>>)
+  | ItemCallback<
+      (args: {
+        context: KeystoneContext<ListTypeInfo['all']>
+        session?: ListTypeInfo['all']['session'] // TODO: use context.session, remove in breaking change
+        listKey: ListTypeInfo['key']
+        item: ListTypeInfo['item'] | null
+      }) => MaybePromise<ConditionalFilter<StaticState, Filterable, ListTypeInfo>>
+    >
 
 export type MaybeItemActionFunction<
   T extends string,
   ListTypeInfo extends BaseListTypeInfo,
-> = (args: {
-  context: KeystoneContext<ListTypeInfo['all']>
-  session?: ListTypeInfo['all']['session'] // TODO: use context.session, remove in breaking change
-  listKey: ListTypeInfo['key']
-  actionKey: ListTypeInfo['actions']
-  item: ListTypeInfo['item'] | null
-}) => MaybePromise<T>
+> = ItemCallback<
+  (args: {
+    context: KeystoneContext<ListTypeInfo['all']>
+    session?: ListTypeInfo['all']['session'] // TODO: use context.session, remove in breaking change
+    listKey: ListTypeInfo['key']
+    actionKey: ListTypeInfo['actions']
+    item: ListTypeInfo['item'] | null
+  }) => MaybePromise<T>
+>
 
 export type MaybeItemActionFunctionWithFilter<
   StaticState extends string,
@@ -459,13 +470,15 @@ export type MaybeItemActionFunctionWithFilter<
   ListTypeInfo extends BaseListTypeInfo,
 > =
   | ConditionalFilter<StaticState, Filterable, ListTypeInfo>
-  | ((args: {
-      context: KeystoneContext<ListTypeInfo['all']>
-      session?: ListTypeInfo['all']['session'] // TODO: use context.session, remove in breaking change
-      listKey: ListTypeInfo['key']
-      actionKey: ListTypeInfo['actions']
-      item: ListTypeInfo['item'] | null
-    }) => MaybePromise<ConditionalFilter<StaticState, Filterable, ListTypeInfo>>)
+  | ItemCallback<
+      (args: {
+        context: KeystoneContext<ListTypeInfo['all']>
+        session?: ListTypeInfo['all']['session'] // TODO: use context.session, remove in breaking change
+        listKey: ListTypeInfo['key']
+        actionKey: ListTypeInfo['actions']
+        item: ListTypeInfo['item'] | null
+      }) => MaybePromise<ConditionalFilter<StaticState, Filterable, ListTypeInfo>>
+    >
 
 export type ListGraphQLConfig<ListTypeInfo extends BaseListTypeInfo> = {
   /**
@@ -485,7 +498,7 @@ export type ListGraphQLConfig<ListTypeInfo extends BaseListTypeInfo> = {
    * The maximum value for the take parameter when querying this list
    */
   maxTake?: number
-  cacheHint?: ((args: CacheHintArgs<ListTypeInfo>) => CacheHint) | CacheHint
+  cacheHint?: ItemCallback<(args: CacheHintArgs<ListTypeInfo>) => CacheHint> | CacheHint
   // Setting any of these values will remove the corresponding operations from the GraphQL schema.
   // Queries:
   //   'query.one':   Does item() exist, including singular relationships?
@@ -543,6 +556,8 @@ export type IdFieldConfig =
   | { kind: 'number'; type: 'Int' | 'BigInt' }
 
 export type ListDBConfig = {
+  /** Override the global `db.requireItemFieldSelection` setting for this list. */
+  requireItemFieldSelection?: boolean
   /**
    * The kind of id to use.
    * @default { kind: "cuid" }

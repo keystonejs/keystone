@@ -1,6 +1,7 @@
 import type { KeystoneContext } from '../context.ts'
 import type { BaseListTypeInfo } from '../type-info.ts'
 import type { MaybePromise } from '../utils.ts'
+import type { ItemCallback } from '../item-callback.ts'
 
 export type BaseAccessArgs<ListTypeInfo extends BaseListTypeInfo> = {
   context: KeystoneContext<ListTypeInfo['all']>
@@ -123,8 +124,8 @@ type ListAccessControlObject<ListTypeInfo extends BaseListTypeInfo> = {
   item?: {
     // read?: not supported // TODO: why not
     create?: ListItemAccessControl<'create', ListTypeInfo>
-    update?: ListItemAccessControl<'update', ListTypeInfo>
-    delete?: ListItemAccessControl<'delete', ListTypeInfo>
+    update?: ItemCallback<ListItemAccessControl<'update', ListTypeInfo>>
+    delete?: ItemCallback<ListItemAccessControl<'delete', ListTypeInfo>>
   }
 }
 
@@ -219,12 +220,12 @@ export type FieldAccessControl<ListTypeInfo extends BaseListTypeInfo> =
             | FieldOrderItemAccessArgs<ListTypeInfo>
           >
         | {
-            item: FieldAccessControlFunction<FieldReadItemAccessArgs<ListTypeInfo>>
+            item: ItemCallback<FieldAccessControlFunction<FieldReadItemAccessArgs<ListTypeInfo>>>
             filter: FieldAccessControlFunction<FieldFilterItemAccessArgs<ListTypeInfo>>
             order: FieldAccessControlFunction<FieldOrderItemAccessArgs<ListTypeInfo>>
           }
       create?: FieldAccessControlFunction<FieldCreateItemAccessArgs<ListTypeInfo>>
-      update?: FieldAccessControlFunction<FieldUpdateItemAccessArgs<ListTypeInfo>>
+      update?: ItemCallback<FieldAccessControlFunction<FieldUpdateItemAccessArgs<ListTypeInfo>>>
       // delete: not supported
     }
 

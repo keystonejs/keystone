@@ -17,6 +17,7 @@ import type {
 import type { ActionMeta, FieldMeta, ListMeta } from '../types/admin-meta.ts'
 import type { GraphQLNames, JSONValue } from '../types/utils.ts'
 import type { InitialisedList } from './core/initialise-lists.ts'
+import { addCallbackFields, addItemField } from './core/queries/select.ts'
 
 type EmptyResolver<Return> = (args: {}, context: KeystoneContext) => MaybePromise<Return>
 
@@ -68,6 +69,7 @@ type ActionMetaSource_ = {
 export type ActionMetaSource = ActionMetaSource_ & Omit<ActionMeta, keyof ActionMetaSource_>
 
 type ListMetaSource_ = {
+  itemSelection: Record<string, true> | undefined
   fields: FieldMetaSource[]
   fieldsByKey: Record<string, FieldMetaSource>
   groups: {
@@ -160,6 +162,7 @@ export function createAdminMeta(
       labelField: list.ui.labelField,
       fields: [],
       fieldsByKey: {},
+      itemSelection: undefined,
       groups: [],
       actions: [],
 
@@ -330,6 +333,7 @@ export function createAdminMeta(
         listKey,
         itemView: {
           ...action.ui.itemView,
+          actionMode: action.ui.itemView.actionMode,
         },
         listView: {
           actionMode: normalizeMaybeSessionFunction(action.ui.listView.actionMode),
@@ -348,6 +352,30 @@ export function createAdminMeta(
         ),
       })
     }
+
+    const selection: Record<string, true> = { id: true }
+    const missing: string[] = []
+    for (const field of listMeta.fields) {
+      for (const key of ['fieldMode', 'fieldPosition', 'isRequired'] as const) {
+        const callback = field.itemView[key]
+        if (typeof callback !== 'function') continue
+        if (!addCallbackFields(selection, callback, list))
+          missing.push(`fields.${field.key}.ui.itemView.${key}`)
+        if (!addItemField(selection, field.key, list)) missing.push(`fields.${field.key}.itemField`)
+      }
+    }
+    for (const action of listMeta.actions) {
+      const callback = action.itemView.actionMode
+      if (typeof callback === 'function' && !addCallbackFields(selection, callback, list)) {
+        missing.push(`actions.${action.key}.ui.itemView.actionMode`)
+      }
+    }
+    if (missing.length && list.prisma.requireItemFieldSelection) {
+      throw new Error(
+        `${listKey}: db.requireItemFieldSelection needs declared item selections for ${missing.join(', ')}`
+      )
+    }
+    listMeta.itemSelection = missing.length ? undefined : selection
   }
 
   // we do this seperately to the above so that fields can check other fields to validate their config or etc.

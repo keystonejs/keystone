@@ -20,6 +20,13 @@ import { limitsExceededError, userInputError } from '../graphql-errors.ts'
 import type { InitialisedList } from '../initialise-lists.ts'
 import { getDBFieldKeyForFieldOnMultiField } from '../utils.ts'
 import { checkFilterOrderAccess } from '../access-control.ts'
+import { addSelection, selectFromInfo } from './select.ts'
+
+function selectForQuery(list: InitialisedList, info: GraphQLResolveInfo) {
+  const select = selectFromInfo(list, info)
+  if (!select || !addSelection(select, list.cacheHintSelection)) return undefined
+  return select
+}
 
 // we want to put the value we get back from the field's unique where resolver into an equals
 // rather than directly passing the value as the filter (even though Prisma supports that), we use equals
@@ -102,7 +109,10 @@ export async function findOne(
 
   // apply access control
   const filter = await accessControlledFilter(list, context, resolvedWhere, accessFilters)
-  const result = await context.prisma[list.listKey].findFirst({ where: filter })
+  const result = await context.prisma[list.listKey].findFirst({
+    where: filter,
+    select: selectForQuery(list, info),
+  })
 
   if (list.cacheHint) {
     maybeCacheControlFromInfo(info)?.setCacheHint(
@@ -158,6 +168,7 @@ export async function findMany(
     take: take ?? undefined,
     skip,
     cursor: cursor ?? undefined,
+    select: selectForQuery(list, info),
   })
 
   if (list.cacheHint) {

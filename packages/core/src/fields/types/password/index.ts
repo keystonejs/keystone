@@ -215,9 +215,10 @@ export function password<ListTypeInfo extends BaseListTypeInfo>(
           },
         },
       }),
-      output: g.field({
+      output: g.keystoneOutputField({
         type: PasswordState,
-        resolve(val) {
+        select: {},
+        resolve: val => {
           return { isSet: val.value !== null }
         },
         extensions: {
