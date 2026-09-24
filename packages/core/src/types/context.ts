@@ -14,6 +14,12 @@ export type KeystoneContext<TypeInfo extends BaseKeystoneTypeInfo = BaseKeystone
   // note this using the method syntax is important because we want TypeInfo['dbProvider'] to be bivariant, not contravariant
   // essentially so you don't get errors when assigning between contexts, this is technically unsound in the same way arrays in TS are unsound,
   // but not doing this would make things much harder to use
+  /**
+   * Run operations in an explicit transaction, then await transaction.afterCommit hooks.
+   * On rejection, transaction.afterRollback hooks run before the original error is rethrown.
+   * Commit-hook errors reject this promise but cannot undo the committed data.
+   * Nested transactions/savepoints are not supported; await all operations within `f`.
+   */
   transaction<T>(
     f: (context: KeystoneContext<TypeInfo>) => MaybePromise<T>,
     options?: {

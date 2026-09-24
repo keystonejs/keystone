@@ -1,4 +1,5 @@
 import type { MaybePromise } from '../types/index.ts'
+import type { TransactionHooks } from '../types/config/hooks.ts'
 
 function mergeVoidFn<
   Args,
@@ -57,5 +58,16 @@ export function expandVoidHooks<CreateArgs, UpdateArgs, DeleteArgs>(
     create: expanded.create ?? emptyFn,
     update: expanded.update ?? emptyFn,
     delete: expanded.delete ?? emptyFn,
+  }
+}
+
+export function expandTransactionHooks<CreateArgs, UpdateArgs, DeleteArgs>(
+  hooks: TransactionHooks<CreateArgs, UpdateArgs, DeleteArgs> | undefined
+) {
+  if (hooks === undefined) return undefined
+
+  return {
+    afterCommit: expandVoidHooks(hooks.afterCommit),
+    afterRollback: expandVoidHooks(hooks.afterRollback),
   }
 }

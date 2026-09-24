@@ -115,6 +115,30 @@ The `Context` object exposes the underlying database driver directly via `contex
 
 `transaction(fn, options)`: Runs `fn` inside a Prisma transaction and passes it a new `Context` object backed by the transaction client. The optional `options` argument is forwarded to Prisma's `$transaction` call.
 
+Existing `beforeOperation` and `afterOperation` hooks run inside this transaction, including any related database work they perform using the supplied context.
+For effects that must wait for settlement, configure [transaction hooks](../config/hooks#transaction-hooks):
+
+```typescript
+await context.transaction(async tx => {
+  await tx.db.User.createOne({ data: { name: 'Ada' } });
+  // Throwing here rolls back the write and runs transaction.afterRollback, not transaction.afterCommit.
+});
+// On success, the database has committed and transaction.afterCommit callbacks have completed.
+```
+
+Each successful Keystone write registers a separate operation snapshot.
+Commit callbacks run after Prisma confirms commit; rollback callbacks run after rejection.
+Derived contexts (`sudo`, `internal`, `withSession`, `withRequest`) share the lifecycle, but each callback receives a usable non-transactional context with its originating session and privileges.
+
+A commit callback error rejects this call **after the data has committed** and never triggers rollback callbacks.
+Rollback callback errors are logged without replacing the original transaction failure.
+All registered callbacks are attempted; these callbacks are not durable or automatically retried.
+
+Neither transaction hook runs outside an explicit transaction, and raw Prisma writes never generate Keystone item callbacks.
+Bulk and nested writes are not automatically wrapped in a transaction.
+Await every operation inside `fn`; nested transactions/savepoints are not supported.
+Remember that `graphql.raw()` returns GraphQL errors without necessarily throwing: use `graphql.run()` or throw explicitly if those errors should abort the transaction.
+
 ## Related resources
 
 {% related-content %}
