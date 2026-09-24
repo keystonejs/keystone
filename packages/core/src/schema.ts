@@ -155,6 +155,7 @@ export function config<TypeInfo extends BaseKeystoneTypeInfo>(
       prismaClientPath: config.db?.prismaClientPath ?? 'generated/prisma',
       prismaSchemaPath: config.db?.prismaSchemaPath ?? 'schema.prisma',
       idField: config.db?.idField ?? defaultIdField,
+      requireItemSelection: config.db.requireItemSelection ?? false,
     },
     graphql: {
       ...config.graphql,

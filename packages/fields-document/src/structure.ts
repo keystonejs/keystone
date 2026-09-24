@@ -1,4 +1,4 @@
-import { g } from '@keystone-6/core'
+import { g, selectItem } from '@keystone-6/core'
 import type { BaseFieldTypeInfo } from '@keystone-6/core/types'
 import {
   type BaseListTypeInfo,
@@ -49,6 +49,21 @@ export function structure<ListTypeInfo extends BaseListTypeInfo>({
       typeof config.hooks?.resolveInput === 'function'
         ? config.hooks.resolveInput
         : config.hooks?.resolveInput?.update
+    const resolveUpdate = selectItem.wrap(
+      next => async args => {
+        let val = args.resolvedData[meta.fieldKey]
+        const prevVal = args.item[meta.fieldKey]
+        val = await getValueForUpdate(schema, val, prevVal, args.context, [])
+        return next
+          ? next({
+              ...args,
+              resolvedData: { ...args.resolvedData, [meta.fieldKey]: val },
+            })
+          : val
+      },
+      { [meta.fieldKey]: true } as Partial<Record<keyof ListTypeInfo['item'] & string, true>>,
+      innerUpdate
+    )
     return fieldType({
       kind: 'scalar',
       scalar: 'Json',
@@ -72,17 +87,7 @@ export function structure<ListTypeInfo extends BaseListTypeInfo>({
             typeof config.hooks?.resolveInput === 'function'
               ? config.hooks.resolveInput
               : config.hooks?.resolveInput?.create,
-          update: async args => {
-            let val = args.resolvedData[meta.fieldKey]
-            let prevVal = args.item[meta.fieldKey]
-            val = await getValueForUpdate(schema, val, prevVal, args.context, [])
-            return innerUpdate
-              ? innerUpdate({
-                  ...args,
-                  resolvedData: { ...args.resolvedData, [meta.fieldKey]: val },
-                })
-              : val
-          },
+          update: resolveUpdate,
         },
       },
       input: {

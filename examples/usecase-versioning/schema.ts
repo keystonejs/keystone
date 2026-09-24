@@ -1,4 +1,4 @@
-import { action, g, list } from '@keystone-6/core'
+import { action, g, list, selectItem } from '@keystone-6/core'
 import { allowAll } from '@keystone-6/core/access'
 import { integer, text } from '@keystone-6/core/fields'
 
@@ -34,11 +34,14 @@ export const lists = {
         },
         hooks: {
           resolveInput: {
-            update: async ({ resolvedData, item }) => {
-              if (resolvedData.version !== item.version) throw new Error('Out of sync')
+            update: selectItem(
+              async ({ resolvedData, item }) => {
+                if (resolvedData.version !== item.version) throw new Error('Out of sync')
 
-              return item.version + 1
-            },
+                return item.version + 1
+              },
+              { version: true }
+            ),
           },
         },
       }),

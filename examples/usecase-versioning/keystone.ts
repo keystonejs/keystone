@@ -11,6 +11,7 @@ export default config<TypeInfo>({
         url: process.env.DATABASE_URL || 'file:./keystone-example.db',
       }),
     }),
+    requireItemSelection: true,
   },
   lists,
 })
