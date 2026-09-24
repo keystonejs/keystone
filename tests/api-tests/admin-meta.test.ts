@@ -1,7 +1,7 @@
 import { expect, test } from 'vitest'
 import { IncomingMessage } from 'node:http'
 import { Socket } from 'node:net'
-import { group, list } from '@keystone-6/core'
+import { action, group, list } from '@keystone-6/core'
 import { allowAll } from '@keystone-6/core/access'
 import { integer, select, text } from '@keystone-6/core/fields'
 import { setupTestRunner } from '@keystone-6/api-tests/test-runner'
@@ -769,6 +769,155 @@ test(
     expect(cloneAdminMetaRequest).toBe(2)
   })
 )
+
+// Item-dependent resolvers must retain their behavior even with an identity metadata hook.
+for (const withHook of [false, true]) {
+  const itemViewRunner = setupTestRunner({
+    config: {
+      ui: {
+        hooks: withHook ? { resolveAdminMeta: ({ adminMeta }) => adminMeta } : undefined,
+      },
+      lists: {
+        Article: list({
+          access: allowAll,
+          fields: {
+            title: text({
+              ui: {
+                itemView: {
+                  fieldMode: ({ item }) => {
+                    if (item === null) return 'hidden'
+                    return item.title === 'Published' ? 'read' : 'edit'
+                  },
+                  fieldPosition: async ({ itemField }): Promise<'form' | 'sidebar'> =>
+                    itemField === 'Published' ? 'sidebar' : 'form',
+                },
+              },
+            }),
+          },
+          actions: {
+            publish: action({
+              access: allowAll,
+              resolve: async () => null,
+              ui: {
+                label: 'Publish',
+                itemView: {
+                  actionMode: async ({ item }): Promise<'hidden' | 'disabled' | 'enabled'> => {
+                    if (item === null) return 'hidden'
+                    return item.title === 'Published' ? 'disabled' : 'enabled'
+                  },
+                },
+              },
+            }),
+          },
+        }),
+      },
+    },
+  })
+
+  const hookDescription = withHook ? 'with resolveAdminMeta' : 'without resolveAdminMeta'
+
+  for (const { name, selection, draft, published } of [
+    {
+      name: 'fieldMode receives the requested item',
+      selection: 'fields { key itemView { fieldMode } }',
+      draft: {
+        fields: expect.arrayContaining([{ key: 'title', itemView: { fieldMode: 'edit' } }]),
+      },
+      published: {
+        fields: expect.arrayContaining([{ key: 'title', itemView: { fieldMode: 'read' } }]),
+      },
+    },
+    {
+      name: 'fieldPosition receives the requested itemField',
+      selection: 'fields { key itemView { fieldPosition } }',
+      draft: {
+        fields: expect.arrayContaining([{ key: 'title', itemView: { fieldPosition: 'form' } }]),
+      },
+      published: {
+        fields: expect.arrayContaining([{ key: 'title', itemView: { fieldPosition: 'sidebar' } }]),
+      },
+    },
+    {
+      name: 'actionMode receives the requested item',
+      selection: 'actions { key itemView { actionMode } }',
+      draft: { actions: [{ key: 'publish', itemView: { actionMode: 'enabled' } }] },
+      published: { actions: [{ key: 'publish', itemView: { actionMode: 'disabled' } }] },
+    },
+  ]) {
+    test(
+      `itemView ${name} for different item IDs in one query ${hookDescription}`,
+      itemViewRunner(async ({ context }) => {
+        const draftItem = await context.db.Article.createOne({ data: { title: 'Draft' } })
+        const publishedItem = await context.db.Article.createOne({
+          data: { title: 'Published' },
+        })
+
+        const data = await context.sudo().graphql.run({
+          query: `
+            query($draftId: ID!, $publishedId: ID!) {
+              keystone {
+                adminMeta {
+                  draft: list(key: "Article", itemId: $draftId) { ${selection} }
+                  published: list(key: "Article", itemId: $publishedId) { ${selection} }
+                }
+              }
+            }
+          `,
+          variables: { draftId: draftItem.id, publishedId: publishedItem.id },
+        })
+
+        expect(data).toEqual({ keystone: { adminMeta: { draft, published } } })
+      })
+    )
+  }
+
+  test(
+    `itemView handles omitted and unknown item IDs ${hookDescription}`,
+    itemViewRunner(async ({ context }) => {
+      const data = await context.sudo().graphql.run({
+        query: gql`
+          query {
+            keystone {
+              adminMeta {
+                omitted: list(key: "Article") {
+                  ...ItemViewMeta
+                }
+                unknown: list(key: "Article", itemId: "missing") {
+                  ...ItemViewMeta
+                }
+              }
+            }
+          }
+          fragment ItemViewMeta on KeystoneAdminUIListMeta {
+            fields {
+              key
+              itemView {
+                fieldMode
+                fieldPosition
+              }
+            }
+            actions {
+              key
+              itemView {
+                actionMode
+              }
+            }
+          }
+        `,
+      })
+
+      const withoutItem = {
+        fields: expect.arrayContaining([
+          { key: 'title', itemView: { fieldMode: 'hidden', fieldPosition: 'form' } },
+        ]),
+        actions: [{ key: 'publish', itemView: { actionMode: 'hidden' } }],
+      }
+      expect(data).toEqual({
+        keystone: { adminMeta: { omitted: withoutItem, unknown: withoutItem } },
+      })
+    })
+  )
+}
 
 const resolveAdminMetaRunner = setupTestRunner({
   config: {
