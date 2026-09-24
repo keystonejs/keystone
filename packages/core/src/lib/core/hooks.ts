@@ -32,13 +32,13 @@ export async function validate({
           resolvedFieldData: hookArgs.resolvedData?.[fieldKey],
         } as never) // TODO: FIXME
       } catch (error: any) {
-        fieldsErrors.push({ error, tag: `${list.listKey}.${fieldKey}.hooks.validateInput` })
+        fieldsErrors.push({ error, tag: `${list.listKey}.${fieldKey}.hooks.validate` })
       }
     })
   )
 
   if (fieldsErrors.length) {
-    throw extensionError('validateInput', fieldsErrors)
+    throw extensionError('validate', fieldsErrors)
   }
 
   // list validation hooks
@@ -46,65 +46,47 @@ export async function validate({
     const addValidationError = (msg: string) => void messages.push(`${list.listKey}: ${msg}`)
     const hook = list.hooks.validate[operation]
 
+    let listHookError: any
     try {
       await hook({ ...hookArgs, addValidationError } as never) // TODO: FIXME
     } catch (error: any) {
-      throw extensionError('validateInput', [{ error, tag: `${list.listKey}.hooks.validateInput` }])
+      listHookError = error
     }
 
     if (messages.length) {
       throw validationFailureError(messages)
     }
+
+    if (listHookError) {
+      throw extensionError('validate', [{ error: listHookError, tag: `${list.listKey}.hooks.validate` }])
+    }
   }
 }
 
-export async function runSideEffectOnlyHook<
-  HookName extends 'beforeOperation' | 'afterOperation',
-  Args extends Parameters<
-    NonNullable<InitialisedList['hooks'][HookName]['create' | 'update' | 'delete']>
-  >[0],
->(list: InitialisedList, hookName: HookName, args: Args) {
-  const { operation } = args
-
-  let shouldRunFieldLevelHook: (fieldKey: string) => boolean
-  if (operation === 'delete') {
-    // always run field hooks for delete operations
-    shouldRunFieldLevelHook = () => true
-  } else {
-    // only run field hooks on if the field was specified in the
-    //   original input for create and update operations.
-    const inputDataKeys = new Set(Object.keys(args.inputData))
-    shouldRunFieldLevelHook = fieldKey => inputDataKeys.has(fieldKey)
-  }
-
-  // field hooks
-  const fieldsErrors: { error: Error; tag: string }[] = []
+export async function runSideEffectAndHandleErrors(
+  hookName: 'beforeOperation' | 'afterOperation',
+  list: InitialisedList,
+  operation: 'create' | 'update' | 'delete',
+  args: any
+) {
+  const fieldErrors: { error: Error; tag: string }[] = []
   await Promise.all(
     Object.entries(list.fields).map(async ([fieldKey, field]) => {
-      if (shouldRunFieldLevelHook(fieldKey)) {
-        try {
-          await field.hooks[hookName][operation]({
-            ...args,
-            fieldKey,
-            itemField: args.item?.[fieldKey],
-            inputFieldData: args.inputData?.[fieldKey],
-            resolvedFieldData: args.resolvedData?.[fieldKey],
-            originalItemField: (args as any).originalItem?.[fieldKey],
-          } as any) // TODO: FIXME any
-        } catch (error: any) {
-          fieldsErrors.push({ error, tag: `${list.listKey}.${fieldKey}.hooks.${hookName}` })
-        }
+      const hook = field.hooks[hookName][operation]
+      try {
+        await (hook as any)({ ...args, fieldKey })
+      } catch (error: any) {
+        fieldErrors.push({ error, tag: `${list.listKey}.${fieldKey}.hooks.${hookName}` })
       }
     })
   )
 
-  if (fieldsErrors.length) {
-    throw extensionError(hookName, fieldsErrors)
+  if (fieldErrors.length) {
+    throw extensionError(hookName, fieldErrors)
   }
 
-  // list hooks
   try {
-    await list.hooks[hookName][operation](args as any) // TODO: FIXME any
+    await (list.hooks[hookName][operation] as any)(args)
   } catch (error: any) {
     throw extensionError(hookName, [{ error, tag: `${list.listKey}.hooks.${hookName}` }])
   }
