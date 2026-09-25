@@ -200,11 +200,10 @@ export function idFieldType(config: IdFieldConfig): FieldTypeFunc<BaseListTypeIn
         uniqueWhere: { arg: g.arg({ type: g.ID }), resolve: parse },
         orderBy: { arg: g.arg({ type: orderDirectionEnum }) },
       },
-      output: g.field({
+      output: g.keystoneOutputField({
+        select: {},
         type: g.nonNull(g.ID),
-        resolve({ value }) {
-          return value.toString()
-        },
+        resolve: ({ value }) => value.toString(),
       }),
       views: '@keystone-6/core/___internal-do-not-use-will-break-in-patch/admin-ui/id-field-view',
       getAdminMeta: () => ({ kind, type: dbFieldOptions.scalar }),

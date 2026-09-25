@@ -1,6 +1,6 @@
 ---
-title: "Custom Fields"
-description: "Learn how to expand Keystone with your own custom fields. Guidance on backend setup, and frontend implementation in Keystone‘s Admin UI."
+title: 'Custom Fields'
+description: 'Learn how to expand Keystone with your own custom fields. Guidance on backend setup, and frontend implementation in Keystone‘s Admin UI.'
 ---
 
 Keystone provides a collection of [field types](../fields/overview) which you can use to build your system.
@@ -38,7 +38,7 @@ export type MyIntFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
     isIndexed?: boolean | 'unique'
   }
 
-export function myInt <ListTypeInfo extends BaseListTypeInfo>({
+export function myInt<ListTypeInfo extends BaseListTypeInfo>({
   isIndexed,
   ...config
 }: MyIntFieldConfig<ListTypeInfo> = {}): FieldTypeFunc<ListTypeInfo> {
@@ -99,13 +99,16 @@ output: g.field({ type: g.Int })
 A resolver can also be provided:
 
 ```ts
-output: g.field({
+output: g.keystoneOutputField({
+  select: {},
   type: g.Int,
   resolve({ value, item }, args, context, info) {
     return value
   }
 })
 ```
+
+You should use `g.keystoneOutputField` whenever a resolver is defined and include in `select` any other columns that your resolver reads from the `item` (usually none) so that Keystone doesn't have to load the full item. Note the value of your field is always available in `value`.
 
 ## Frontend
 
@@ -148,7 +151,7 @@ The `Field` export is a React component which is used in the **item view** and t
 
 import { TextField } from '@keystar/ui/text-field'
 
-export function Field ({ field, value, onChange, autoFocus }: FieldProps<typeof controller>) {
+export function Field({ field, value, onChange, autoFocus }: FieldProps<typeof controller>) {
   const disabled = onChange === undefined
 
   return (

@@ -11,6 +11,7 @@ export function createContext({
   graphQLSchemas,
   prismaClient,
   prismaTypes,
+  prismaModelSelections,
 }: {
   config: KeystoneConfig
   lists: Record<string, InitialisedList>
@@ -23,6 +24,7 @@ export function createContext({
     DbNull: unknown
     JsonNull: unknown
   }
+  prismaModelSelections: Record<string, Record<string, true>>
 }) {
   const dbFactories: Record<string, ReturnType<typeof getDbFactory>> = {}
   for (const [listKey, list] of Object.entries(lists)) {
@@ -127,6 +129,7 @@ export function createContext({
       __internal: {
         sudo,
         lists,
+        prismaModelSelections,
         prisma: {
           ...prismaTypes,
         },

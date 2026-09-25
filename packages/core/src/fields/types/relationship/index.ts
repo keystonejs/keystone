@@ -328,7 +328,8 @@ export function relationship<
             },
           },
         },
-        output: g.field({
+        output: g.keystoneOutputField({
+          select: {},
           args: foreignListTypes.findManyArgs,
           type: g.list(g.nonNull(foreignListTypes.output)),
           resolve({ value }, args) {
@@ -336,7 +337,8 @@ export function relationship<
           },
         }),
         extraOutputFields: {
-          [`${fieldKey}Count`]: g.field({
+          [`${fieldKey}Count`]: g.keystoneOutputField({
+            select: {},
             type: g.Int,
             args: {
               where: g.arg({
@@ -388,7 +390,8 @@ export function relationship<
           },
         },
       },
-      output: g.field({
+      output: g.keystoneOutputField({
+        select: {},
         type: foreignListTypes.output,
         resolve({ value }) {
           return value()

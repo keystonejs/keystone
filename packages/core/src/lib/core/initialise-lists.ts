@@ -30,6 +30,7 @@ import type {
   NextFieldType,
 } from '../../types/index.ts'
 import { QueryMode } from '../../types/index.ts'
+import { callbackWithoutItem } from '../../types/item-callback.ts'
 import type { FieldHooks, ResolvedFieldHooks, ResolvedListHooks } from '../../types/config/hooks.ts'
 import type {
   BaseActions,
@@ -51,6 +52,13 @@ import {
 } from './access-control.ts'
 import { assertFieldsValid } from './field-assertions.ts'
 import { outputTypeField } from './queries/output-field.ts'
+import {
+  addCallbackFields,
+  addItemRequirements,
+  getOutputFieldRequirements,
+  itemFieldColumns,
+} from './queries/select.ts'
+import { mutationSelections, type MutationSelections } from './mutations/select.ts'
 import { type ResolvedDBField, resolveRelationships } from './resolve-relationships.ts'
 import { areArraysEqual } from './utils.ts'
 
@@ -207,6 +215,9 @@ export type InitialisedList = {
   access: ResolvedListAccessControl
 
   fields: Record<string, InitialisedField>
+  itemFieldColumns: Map<string, string[]>
+  cacheHintSelection: Record<string, true> | undefined
+  mutationSelections: MutationSelections
   actions: InitialisedAction[]
   groups: GroupInfo<BaseListTypeInfo>[]
 
@@ -233,6 +244,7 @@ export type InitialisedList = {
   }
 
   prisma: {
+    requireItemFieldSelection: boolean
     types: GraphQLNames // TODO: not completely appropriate, but what is used for now
     listKey: string
     mapping: string | undefined
@@ -254,7 +266,10 @@ export type InitialisedList = {
 type ListConfigType = KeystoneConfig['lists'][string]
 type FieldConfigType = ReturnType<FieldTypeFunc<any>>
 type PartiallyInitialisedList1 = { graphql: { isEnabled: InitialisedList['graphql']['isEnabled'] } }
-type PartiallyInitialisedList2 = Omit<InitialisedList, 'lists' | 'resolvedDbFields'>
+type PartiallyInitialisedList2 = Omit<
+  InitialisedList,
+  'lists' | 'resolvedDbFields' | 'itemFieldColumns' | 'cacheHintSelection' | 'mutationSelections'
+>
 type FieldOmit = NonNullable<NonNullable<FieldConfigType['graphql']>['omit']>
 type ResolvedFieldOmit = {
   type: boolean
@@ -379,9 +394,11 @@ function getIsEnabledField(
   }
 }
 
-function defaultListHooksResolveInput({ resolvedData }: { resolvedData: any }) {
-  return resolvedData
-}
+const defaultListHooksResolveInput = callbackWithoutItem(
+  ({ resolvedData }: { resolvedData: any }) => {
+    return resolvedData
+  }
+)
 
 function parseListHooks(hooks: ListHooks<BaseListTypeInfo>): ResolvedListHooks<BaseListTypeInfo> {
   return {
@@ -401,15 +418,11 @@ function parseListHooks(hooks: ListHooks<BaseListTypeInfo>): ResolvedListHooks<B
   }
 }
 
-function defaultFieldHooksResolveInput({
-  resolvedData,
-  fieldKey,
-}: {
-  resolvedData: any
-  fieldKey: string
-}) {
-  return resolvedData[fieldKey]
-}
+const defaultFieldHooksResolveInput = callbackWithoutItem(
+  ({ resolvedData, fieldKey }: { resolvedData: any; fieldKey: string }) => {
+    return resolvedData[fieldKey]
+  }
+)
 
 function parseFieldHooks(
   hooks: FieldHooks<BaseListTypeInfo, BaseFieldTypeInfo>
@@ -886,6 +899,8 @@ function getListsWithInitialisedFields(
       },
 
       prisma: {
+        requireItemFieldSelection:
+          listConfig.db.requireItemFieldSelection ?? config.db.requireItemFieldSelection,
         types: {
           ...names.graphql.names,
         },
@@ -906,7 +921,7 @@ function getListsWithInitialisedFields(
       cacheHint: (() => {
         const cacheHint = listConfig.graphql.cacheHint
         if (typeof cacheHint === 'function') return cacheHint
-        if (cacheHint !== undefined) return () => cacheHint
+        if (cacheHint !== undefined) return callbackWithoutItem(() => cacheHint)
         return undefined
       })(),
 
@@ -1222,7 +1237,12 @@ export function initialiseLists(config: KeystoneConfig): Record<string, Initiali
     listsRef[list.listKey] = {
       ...list,
       lists: listsRef,
-    }
+    } as InitialisedList
+  }
+
+  for (const list of Object.values(listsRef)) {
+    initialiseListSelections(list)
+    if (list.prisma.requireItemFieldSelection) assertItemSelections(list)
   }
 
   for (const list of Object.values(listsRef)) {
@@ -1313,4 +1333,53 @@ export function initialiseLists(config: KeystoneConfig): Record<string, Initiali
   introspectGraphQLTypes(listsRef)
 
   return listsRef
+}
+
+function initialiseListSelections(list: InitialisedList) {
+  list.itemFieldColumns = itemFieldColumns(list.resolvedDbFields)
+  const cacheHintSelection: Record<string, true> = {}
+  list.cacheHintSelection =
+    list.cacheHint && !addCallbackFields(cacheHintSelection, list.cacheHint, list)
+      ? undefined
+      : cacheHintSelection
+  list.mutationSelections = mutationSelections(list)
+}
+
+function assertItemSelections(list: InitialisedList) {
+  const missing: string[] = []
+  if (!list.cacheHintSelection) missing.push('graphql.cacheHint')
+  for (const [key, field] of Object.entries(list.fields)) {
+    if (!field.graphql.isEnabled.read || !field.output) continue
+    if (!addItemRequirements({}, getOutputFieldRequirements(list, key, field.output), list))
+      missing.push(`fields.${key}.output`)
+    for (const [extraKey, output] of Object.entries(field.extraOutputFields ?? {})) {
+      if (!addItemRequirements({}, getOutputFieldRequirements(list, key, output), list))
+        missing.push(`fields.${key}.${extraKey}`)
+    }
+  }
+  const { existing, result } = list.mutationSelections
+  if (list.graphql.isEnabled.update) {
+    if (!existing.update.base) missing.push('update original item')
+    if (!result.update.base) missing.push('update result')
+    for (const [key, fields] of existing.update.byField) {
+      if (!fields) missing.push(`fields.${key} update original item`)
+    }
+    for (const [key, fields] of result.update.byField) {
+      if (!fields) missing.push(`fields.${key} update result`)
+    }
+  }
+  if (list.graphql.isEnabled.delete && !existing.delete.base) {
+    missing.push('delete original item')
+  }
+  if (list.graphql.isEnabled.create) {
+    if (!result.create.base) missing.push('create result')
+    for (const [key, fields] of result.create.byField) {
+      if (!fields) missing.push(`fields.${key} create result`)
+    }
+  }
+  if (missing.length) {
+    throw new Error(
+      `${list.listKey}: db.requireItemFieldSelection needs declared item selections for ${missing.join(', ')}`
+    )
+  }
 }

@@ -39,6 +39,8 @@ export type KeystoneConfigPre<TypeInfo extends BaseKeystoneTypeInfo = BaseKeysto
     prismaClientOptions: () => NonNullable<TypeInfo['prismaClientOptions']>
     onConnect?: (context: KeystoneContext<TypeInfo>) => Promise<void>
     idField?: IdFieldConfig
+    /** Require declared item field selections for generated operations and Admin UI item view callbacks. */
+    requireItemFieldSelection?: boolean
     prismaClientPath?: string
     /** Path for Keystone's generated Prisma schema. @default 'schema.prisma' */
     prismaSchemaPath?: string

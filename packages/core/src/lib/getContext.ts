@@ -90,6 +90,18 @@ export function createContextSystem(config: KeystoneConfig) {
     adminMeta,
     lists,
     getKeystone: (PM: any, existingPrismaClient?: any) => {
+      const prismaModelSelections: Record<string, Record<string, true>> = {}
+      for (const listKey of Object.keys(lists)) {
+        const scalarFields = PM.Prisma[`${listKey}ScalarFieldEnum`] as
+          | Record<string, string>
+          | undefined
+        if (!scalarFields) {
+          throw new Error(`Prisma scalar fields are unavailable for ${listKey}`)
+        }
+        prismaModelSelections[listKey] = Object.freeze(
+          Object.fromEntries(Object.values(scalarFields).map(field => [field, true] as const))
+        )
+      }
       const prismaClient =
         existingPrismaClient ??
         config.db.extendPrismaClient(
@@ -100,6 +112,7 @@ export function createContextSystem(config: KeystoneConfig) {
         lists,
         graphQLSchemas,
         prismaClient,
+        prismaModelSelections,
         prismaTypes: {
           DbNull: PM.Prisma.DbNull,
           JsonNull: PM.Prisma.JsonNull,

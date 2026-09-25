@@ -1,6 +1,6 @@
 ---
-title: "Virtual Fields"
-description: "Learn how to extend your GraphQL API in powerful ways with the Virtual Fields feature."
+title: 'Virtual Fields'
+description: 'Learn how to extend your GraphQL API in powerful ways with the Virtual Fields feature.'
 ---
 
 Keystone lets you define your data model in terms of `lists`, which have `fields`.
@@ -17,25 +17,26 @@ In this guide we'll introduce the syntax for adding virtual fields, and show how
 We'll start with a list called `Example` and create a virtual field called `hello`.
 
 ```typescript
-import { config, createSchema, g, list } from '@keystone-6/core';
-import { virtual } from '@keystone-6/core/fields';
+import { config, createSchema, g, list } from '@keystone-6/core'
+import { virtual } from '@keystone-6/core/fields'
 
 export default config({
   lists: {
     Example: list({
       fields: {
         hello: virtual({
-          field: g.field({
+          field: g.listItemField({
+            select: {},
             type: g.String,
             resolve() {
-              return "Hello, world!";
+              return 'Hello, world!'
             },
           }),
         }),
       },
     }),
   },
-});
+})
 ```
 
 We can now run a GraphQL query and request the `hello` field on one of our `Example` items,
@@ -63,10 +64,9 @@ The `virtual` field is configured using functions from the `g` export from `@key
 This API provides the interface required to create type-safe extensions to the Keystone GraphQL schema.
 The `g` API is based on the [`@graphql-ts/schema`](https://github.com/Thinkmill/graphql-ts) package.
 
-The `virtual` field accepts a configuration option called `field`, which is a `g.field()` object.
+The `virtual` field accepts a configuration option called `field`, which is a `g.listItemField()` object.
 
-In our example we passed in two required options to `g.field()`.
-The option `type: g.String` specifies the GraphQL type of our virtual field, and `resolve() { ... }` defines the [GraphQL resolver](https://graphql.org/learn/execution/#root-fields-resolvers) to be executed when this field is queried.
+In our example, `select: {}` declares that the resolver reads no item columns beyond `id`. The option `type: g.String` specifies the GraphQL type of our virtual field, and `resolve() { ... }` defines the [GraphQL resolver](https://graphql.org/learn/execution/#root-fields-resolvers) to be executed when this field is queried.
 
 The `g` API provides support for the built in GraphQL scalar types `Int`, `Float`, `String`, `Boolean`, and `ID`, as well as the Keystone custom scalars `Upload` and `JSON`.
 
@@ -78,6 +78,25 @@ The `item` argument is the **internal item** representing the list item being qu
 The `args` argument represents the arguments passed to the field itself in the query.
 The `context` argument is a [`KeystoneContext`](../context/overview) object.
 The `info` argument holds field-specific information relevant to the current query as well as the schema details.
+
+When a virtual resolver reads item fields, declare them with `select` on `g.listItemField`:
+
+```typescript
+import { gWithContext } from '@keystone-6/core'
+import type { Context } from './generated/keystone/types'
+
+const g = gWithContext<Context>()
+
+virtual({
+  field: g.listItemField({
+    select: { title: true },
+    type: g.String,
+    resolve: item => item.title,
+  }),
+})
+```
+
+The `select` keys are Prisma item keys, including columns such as `authorId` or `file_filename` rather than relationship or file field names. Keystone uses these to only fetch the fields that are actually used.
 
 We can use the `item` and `context` arguments to query data in our Keystone system.
 For example, if we have a blog with `Author` and `Post` lists, it might be convenient to have an `authorName` field on the `Post` list.
@@ -91,14 +110,15 @@ export default config({
         content: text(),
         author: relationship({ ref: 'Author', many: false }),
         authorName: virtual({
-          field: g.field({
+          field: g.listItemField({
+            select: {},
             type: g.String,
             async resolve(item, args, context) {
               const { author } = await context.query.Post.findOne({
                 where: { id: item.id.toString() },
                 query: 'author { name }',
-              });
-              return author && author.name;
+              })
+              return author && author.name
             },
           }),
         }),
@@ -110,7 +130,7 @@ export default config({
       },
     }),
   },
-});
+})
 ```
 
 ## GraphQL arguments
@@ -129,23 +149,24 @@ export default config({
       fields: {
         content: text(),
         excerpt: virtual({
-          field: g.field({
+          field: g.listItemField({
+            select: { content: true },
             type: g.String,
             args: {
               length: g.arg({
                 type: g.nonNull(g.Int),
-                defaultValue: 200
+                defaultValue: 200,
               }),
             },
             resolve(item, { length }) {
               if (!item.content) {
-                return null;
+                return null
               }
-              const content = item.content as string;
+              const content = item.content as string
               if (content.length <= length) {
-                return content;
+                return content
               } else {
-                return content.slice(0, length - 3) + '...';
+                return content.slice(0, length - 3) + '...'
               }
             },
           }),
@@ -154,7 +175,7 @@ export default config({
       },
     }),
   },
-});
+})
 ```
 
 This will generate the following GraphQL type:
@@ -196,11 +217,12 @@ export default config({
       fields: {
         content: text(),
         counts: virtual({
-          field: g.field({
+          field: g.listItemField({
+            select: { content: true },
             type: g.object<{
-              words: number;
-              sentences: number;
-              paragraphs: number;
+              words: number
+              sentences: number
+              paragraphs: number
             }>()({
               name: 'PostCounts',
               fields: {
@@ -209,13 +231,13 @@ export default config({
                 paragraphs: g.field({ type: g.Int }),
               },
             }),
-            resolve(item: any) {
-              const content = item.content || '';
+            resolve(item) {
+              const content = item.content || ''
               return {
                 words: content.split(' ').length,
                 sentences: content.split('.').length,
                 paragraphs: content.split('\n\n').length,
-              };
+              }
             },
           }),
           ui: { query: '{ words sentences paragraphs }' },
@@ -223,7 +245,7 @@ export default config({
       },
     }),
   },
-});
+})
 ```
 
 This example is written in TypeScript, so we need to specify the type expected by the `PostCounts` type.
@@ -241,15 +263,15 @@ This information is specifically for TypeScript users of the `g.object()` functi
 GraphQL types will often contain references to themselves and to make TypeScript allow that, you need have an explicit type annotation of `g.ObjectType<Source>` along with making `fields` a function that returns the object.
 
 ```ts
-type PersonSource = { name: string; friends: PersonSource[] };
+type PersonSource = { name: string; friends: PersonSource[] }
 
 const Person: g<typeof g.object<PersonSource>> = g.object<PersonSource>()({
-  name: "Person",
+  name: 'Person',
   fields: () => ({
     name: g.field({ type: g.String }),
     friends: g.field({ type: g.list(Person) }),
   }),
-});
+})
 ```
 
 ## Keystone types
@@ -257,7 +279,7 @@ const Person: g<typeof g.object<PersonSource>> = g.object<PersonSource>()({
 Rather than returning a custom GraphQL object, we might want to have a virtual field which returns one of the GraphQL types generated by Keystone itself.
 For example, for each `Author` we might want to return their `latestPost` as a `Post` object.
 
-To achieve this, rather than passing in `g.field({ ... })` as the `field` option, we pass in a function `lists => g.field({ ... })`.
+To achieve this, we pass a function `lists => g.listItemField({ ... })` as the `field` option.
 The argument `lists` contains the type information for all of the Keystone lists.
 In our case, we want the output type of the `Post` list, so we specify `type: lists.Post.types.output`.
 
@@ -278,7 +300,8 @@ export const lists = {
       posts: relationship({ ref: 'Post.author', many: true }),
       latestPost: virtual({
         field: lists =>
-          g.field({
+          g.listItemField({
+            select: {},
             type: lists.Post.types.output,
             async resolve(item, args, context) {
               const { posts } = await context.query.Author.findOne({
@@ -287,11 +310,11 @@ export const lists = {
                     orderBy: { publishDate: desc }
                     take: 1
                   ) { id }`,
-              });
+              })
               if (posts.length > 0) {
                 return context.db.Post.findOne({
-                  where: { id: posts[0].id }
-                });
+                  where: { id: posts[0].id },
+                })
               }
             },
           }),
@@ -299,7 +322,7 @@ export const lists = {
       }),
     },
   }),
-};
+}
 ```
 
 Once again we need to specify `ui.query` on this virtual field to specify which fields of the `Post` to display in the Admin UI.

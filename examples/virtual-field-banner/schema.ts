@@ -12,7 +12,8 @@ export const lists = {
     access: allowAll, // WARNING: public
     fields: {
       banner: virtual({
-        field: g.field({
+        field: g.listItemField({
+          select: { content: true, archived: true },
           type: g.object<{
             messages: string[]
           }>()({

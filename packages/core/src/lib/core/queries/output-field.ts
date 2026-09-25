@@ -3,6 +3,7 @@ import DataLoader from 'dataloader'
 import type { GraphQLResolveInfo } from 'graphql/index.js'
 
 import { g } from '../../../index.ts'
+import { itemFieldsExtension } from '../../../types/item-field.ts'
 import type {
   BaseItem,
   BaseListTypeInfo,
@@ -22,6 +23,7 @@ import type { ResolvedDBField, ResolvedRelationDBField } from '../resolve-relati
 import { type IdType, getDBFieldKeyForFieldOnMultiField, weakMemoize } from '../utils.ts'
 import * as queries from './resolvers.ts'
 import { accessControlledFilter } from './resolvers.ts'
+import { getOutputFieldRequirements, selectFromInfo } from './select.ts'
 
 function getRelationVal(
   dbField: ResolvedRelationDBField,
@@ -56,39 +58,65 @@ function getRelationVal(
       // for the a one-to-one relationship though, the id might be on the related item
       // so we need to fetch the related item by the id of the current item on the foreign key field
       const currentItemOwnsForeignKey = fk !== undefined
-      return fetchRelatedItem(context)(foreignList)(
-        currentItemOwnsForeignKey ? 'id' : `${dbField.field}Id`
-      )(currentItemOwnsForeignKey ? fk : id)
+      const selection = getRelatedSelection(foreignList)(info.fragments)(info.returnType)(info)
+      return fetchRelatedItem(context)(foreignList)(selection)(dbField)(
+        currentItemOwnsForeignKey,
+        currentItemOwnsForeignKey ? fk : id
+      )
     }
   }
 }
 
-function memoize<Arg, Return>(cb: (arg: Arg) => Return) {
-  const cache = new Map<Arg, Return>()
-  return (arg: Arg) => {
-    if (!cache.has(arg)) {
-      const result = cb(arg)
-      cache.set(arg, result)
-    }
-    return cache.get(arg)!
-  }
-}
+type RelatedSelection = { select: Record<string, true> | null }
+
+// GraphQL.js shares fieldNodes across sibling items, so they receive the same selection key.
+const getRelatedSelection = weakMemoize((foreignList: InitialisedList) =>
+  weakMemoize((_fragments: GraphQLResolveInfo['fragments']) =>
+    weakMemoize((_returnType: GraphQLResolveInfo['returnType']) => {
+      const selections = new WeakMap<GraphQLResolveInfo['fieldNodes'], RelatedSelection>()
+      return (info: GraphQLResolveInfo) => {
+        let selection = selections.get(info.fieldNodes)
+        if (!selection) {
+          selection = { select: selectFromInfo(foreignList, info) ?? null }
+          selections.set(info.fieldNodes, selection)
+        }
+        return selection
+      }
+    })
+  )
+)
 
 const fetchRelatedItem = weakMemoize((context: KeystoneContext) =>
   weakMemoize((foreignList: InitialisedList) =>
-    memoize((idFieldKey: string) => {
-      const relatedItemLoader = new DataLoader(
-        (keys: readonly IdType[]) => fetchRelatedItems(context, foreignList, idFieldKey, keys),
-        { cache: false }
-      )
-      return (id: IdType) => relatedItemLoader.load(id)
-    })
+    weakMemoize((selection: RelatedSelection) =>
+      weakMemoize((dbField: ResolvedRelationDBField) => {
+        const loaders: {
+          byId?: DataLoader<IdType, any>
+          byForeignKey?: DataLoader<IdType, any>
+        } = {}
+        return (ownsForeignKey: boolean, id: IdType) => {
+          const slot = ownsForeignKey ? 'byId' : 'byForeignKey'
+          let loader = loaders[slot]
+          if (!loader) {
+            const idFieldKey = ownsForeignKey ? 'id' : `${dbField.field}Id`
+            loader = new DataLoader(
+              (keys: readonly IdType[]) =>
+                fetchRelatedItems(context, foreignList, selection.select, idFieldKey, keys),
+              { cache: false }
+            )
+            loaders[slot] = loader
+          }
+          return loader.load(id)
+        }
+      })
+    )
   )
 )
 
 async function fetchRelatedItems(
   context: KeystoneContext,
   foreignList: InitialisedList,
+  select: Record<string, true> | null,
   idFieldKey: string,
   toFetch: readonly IdType[]
 ) {
@@ -110,7 +138,10 @@ async function fetchRelatedItems(
     accessFilters
   )
 
-  const results = await context.prisma[foreignList.listKey].findMany({ where: resolvedWhere })
+  const results = await context.prisma[foreignList.listKey].findMany({
+    where: resolvedWhere,
+    select: select && { ...select, [idFieldKey]: true },
+  })
   const resultsById = new Map(results.map((x: any) => [x[idFieldKey], x]))
   return toFetch.map(id => resultsById.get(id))
 }
@@ -160,7 +191,10 @@ export function outputTypeField(
     deprecationReason: output.deprecationReason,
     description: output.description,
     args: output.args,
-    extensions: output.extensions,
+    extensions: {
+      ...output.extensions,
+      [itemFieldsExtension]: getOutputFieldRequirements(list, fieldKey, output) ?? null,
+    },
     async resolve(item: BaseItem, args, context, info) {
       const id = item.id as IdType
       const fieldAccess = await getOperationFieldAccess(item, list, fieldKey, context, 'read')

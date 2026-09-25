@@ -2,7 +2,10 @@ import type { BaseFieldTypeInfo, CommonFieldConfig } from '../types/index.ts'
 import type { BaseListTypeInfo, FieldData } from '../types/index.ts'
 import type { FieldHooks } from '../types/config/hooks.ts'
 import type { ValidateFieldHook } from '../types/config/hooks.ts'
+import { callbackWithoutItem } from '../types/item-callback.ts'
 import { merge } from './resolve-hooks.ts'
+
+type WithoutItem<Args> = Args extends unknown ? Omit<Args, 'item' | 'itemField'> : never
 
 export function resolveDbNullable(
   validation: undefined | { isRequired?: boolean },
@@ -37,7 +40,13 @@ export function makeValidateHook<ListTypeInfo extends BaseListTypeInfo>(
       validate?: FieldHooks<ListTypeInfo, any>['validate']
     }
   },
-  f?: ValidateFieldHook<ListTypeInfo, 'create' | 'update' | 'delete', BaseFieldTypeInfo>,
+  f?: (
+    args: WithoutItem<
+      Parameters<
+        ValidateFieldHook<ListTypeInfo, 'create' | 'update' | 'delete', BaseFieldTypeInfo>
+      >[0]
+    >
+  ) => void | Promise<void>,
   hasPrismaDefaultValue: boolean = false
 ) {
   const dbNullable = resolveDbNullable(config.validation, config.db)
@@ -65,13 +74,13 @@ export function makeValidateHook<ListTypeInfo extends BaseListTypeInfo>(
 
     return {
       mode,
-      validate: merge(validate, config.hooks?.validate),
+      validate: merge(callbackWithoutItem(validate), config.hooks?.validate),
     }
   }
 
   return {
     mode,
-    validate: merge(f, config.hooks?.validate),
+    validate: merge(f && callbackWithoutItem(f), config.hooks?.validate),
   }
 }
 

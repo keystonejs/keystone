@@ -157,9 +157,10 @@ export function decimal<ListTypeInfo extends BaseListTypeInfo>(
         update: { arg: g.arg({ type: g.Decimal }) },
         orderBy: { arg: g.arg({ type: orderDirectionEnum }) },
       },
-      output: g.field({
+      output: g.keystoneOutputField({
         type: g.Decimal,
-        resolve({ value }) {
+        select: {},
+        resolve: ({ value }) => {
           if (value === null) return null
           const val: Decimal & { scaleToPrint?: number } = new Decimal(value)
           val.scaleToPrint = scale

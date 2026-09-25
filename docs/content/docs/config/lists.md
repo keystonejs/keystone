@@ -171,20 +171,24 @@ Options:
     Option `field` is the name of the field to sort by, and `direction` is either `'ASC'` or `'DESC'` for ascending and descending sorting respectively.
     If undefined then data will be unsorted.
   - `pageSize` (default: lower of `50` or [`graphql.maxTake`](#graphql)): Sets the number of items to show per page in the list view.
-  - `initialFilter` (default: `undefined`): Sets a default column filter to apply to the list view. Accepts a where input object (excluding `AND`, `OR`, `NOT`), or an async function with an argument `{ session, context }` that returns a where input object. 
+  - `initialFilter` (default: `undefined`): Sets a default column filter to apply to the list view. Accepts a where input object (excluding `AND`, `OR`, `NOT`), or an async function with an argument `{ session, context }` that returns a where input object.
 - `label`: The label used to identify the list in navigation etc.
 - `singular`: The singular form of the list key. It is used in sentences like `Are you sure you want to delete this {singular}?`
 - `plural`: The plural form of the list key. It is used in sentences like `Are you sure you want to delete these {plural}?`
 - `path`: A path segment to identify the list in URLs. It must match the pattern `/^[a-z-_][a-z0-9-_]*$/`.
 
 ```typescript
-import { config, list } from '@keystone-6/core';
-import { text } from '@keystone-6/core/fields';
+import { config, list } from '@keystone-6/core'
+import { text } from '@keystone-6/core/fields'
 
 export default config({
   lists: {
     SomeListName: list({
-      fields: { name: text({ /* ... */ }) },
+      fields: {
+        name: text({
+          /* ... */
+        }),
+      },
       ui: {
         label: 'Some List',
 
@@ -198,7 +202,7 @@ export default config({
         hideCreate: ({ session, context }) => false,
         hideDelete: ({ session, context }) => false,
         listView: {
-          initialColumns: ['name', /* ... */],
+          initialColumns: ['name' /* ... */],
           initialSort: { field: 'name', direction: 'ASC' },
           initialFilter: { isPublished: { equals: true } },
           pageSize: 50,
@@ -215,7 +219,7 @@ export default config({
     /* ... */
   },
   /* ... */
-});
+})
 ```
 
 ## hooks
@@ -281,6 +285,7 @@ Options:
   The default across all lists can be changed at the root-level `db.idField` config.
   If you are using `autoincrement`, you can also specify `type: 'BigInt'` on PostgreSQL and MySQL to use BigInts.
 - `map`: Adds a [Prisma `@@map`](https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#map-1) attribute to the Prisma model for this list which specifies a custom database table name for the list, instead of using the list key
+- `requireItemFieldSelection` (default: the global `db.requireItemFieldSelection` value, or `false`): Require that all functions that accept an `item` use the appropriate API to select the particular fields like `selectFields`, `g.listItemField` or `g.keystoneOutputField`.
 
 ```typescript
 import { config, list } from '@keystone-6/core'

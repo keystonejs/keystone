@@ -1,22 +1,33 @@
 import type { MaybePromise } from '../types/index.ts'
+import {
+  callbackWithoutItem,
+  combineCallbackFields,
+  type ItemCallback,
+} from '../types/item-callback.ts'
 
 function mergeVoidFn<
   Args,
-  A extends ((args: Args) => MaybePromise<void>) | undefined,
-  B extends ((args: Args) => MaybePromise<void>) | undefined,
+  A extends ItemCallback<(args: Args) => MaybePromise<void>> | undefined,
+  B extends ItemCallback<(args: Args) => MaybePromise<void>> | undefined,
 >(a: A, b: B) {
   if (!a) return b
   if (!b) return a
-  return async (args: Args) => {
-    await a?.(args)
-    await b?.(args)
-  }
+  const first = a
+  const second = b
+  return combineCallbackFields(
+    async (args: Args) => {
+      await first(args)
+      await second(args)
+    },
+    first,
+    second
+  )
 }
 
 type ExpandedHooks<CreateArgs, UpdateArgs, DeleteArgs> = {
-  create?: (args: CreateArgs) => MaybePromise<void>
-  update?: (args: UpdateArgs) => MaybePromise<void>
-  delete?: (args: DeleteArgs) => MaybePromise<void>
+  create?: ItemCallback<(args: CreateArgs) => MaybePromise<void>>
+  update?: ItemCallback<(args: UpdateArgs) => MaybePromise<void>>
+  delete?: ItemCallback<(args: DeleteArgs) => MaybePromise<void>>
 }
 
 type Hooks<CreateArgs, UpdateArgs, DeleteArgs> =
@@ -47,11 +58,15 @@ function expandHooks<CreateArgs, UpdateArgs, DeleteArgs>(
   return typeof fn === 'function' ? { create: fn, update: fn, delete: fn } : fn
 }
 
-const emptyFn = () => {}
+const emptyFn = callbackWithoutItem(() => {})
 
 export function expandVoidHooks<CreateArgs, UpdateArgs, DeleteArgs>(
   hooks: Hooks<CreateArgs, UpdateArgs, DeleteArgs> | undefined
-): Required<ExpandedHooks<CreateArgs, UpdateArgs, DeleteArgs>> {
+): {
+  create: (args: CreateArgs) => MaybePromise<void>
+  update: (args: UpdateArgs) => MaybePromise<void>
+  delete: (args: DeleteArgs) => MaybePromise<void>
+} {
   const expanded = hooks ? expandHooks(hooks) : {}
   return {
     create: expanded.create ?? emptyFn,
