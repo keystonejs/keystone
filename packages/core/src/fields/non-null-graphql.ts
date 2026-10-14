@@ -42,7 +42,7 @@ export function makeValidateHook<ListTypeInfo extends BaseListTypeInfo>(
 ) {
   const dbNullable = resolveDbNullable(config.validation, config.db)
   const mode = dbNullable ? ('optional' as const) : ('required' as const)
-  const valueRequired = (config.validation?.isRequired || !dbNullable) && !hasPrismaDefaultValue
+  const valueRequired = config.validation?.isRequired || !dbNullable
 
   assertReadIsNonNullAllowed(meta, config, dbNullable)
   const addValidation = config.db?.isNullable === false || config.validation?.isRequired
@@ -53,7 +53,7 @@ export function makeValidateHook<ListTypeInfo extends BaseListTypeInfo>(
       if (valueRequired) {
         const value = resolvedData?.[meta.fieldKey]
         if (
-          (operation === 'create' && value === undefined) ||
+          (operation === 'create' && value === undefined && !hasPrismaDefaultValue) ||
           ((operation === 'create' || operation === 'update') && value === null)
         ) {
           addValidationError(`missing value`)
