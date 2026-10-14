@@ -1,5 +1,9 @@
-import { describe } from 'vitest'
+import { describe, expect, test } from 'vitest'
+import { list } from '@keystone-6/core'
+import { allowAll } from '@keystone-6/core/access'
 import { bigInt } from '@keystone-6/core/fields'
+import { setupTestRunner } from '../../test-runner.ts'
+import { dbProvider } from '../../utils.ts'
 import { orderableFilterTests, filterTests, uniqueEqualityFilterTest } from './utils.ts'
 
 for (const isNullable of [true, false]) {
@@ -20,4 +24,29 @@ for (const isNullable of [true, false]) {
       isNullable
     )
   })
+}
+
+if (dbProvider === 'postgresql') {
+  test(
+    'bigInt with defaultValue: { kind: autoincrement } assigns values when omitted',
+    setupTestRunner({
+      config: {
+        lists: {
+          Test: list({
+            access: allowAll,
+            fields: {
+              value: bigInt({ defaultValue: { kind: 'autoincrement' }, db: { isNullable: false } }),
+            },
+          }),
+        },
+      },
+    })(async ({ context }) => {
+      expect(await context.query.Test.createOne({ data: {}, query: 'value' })).toEqual({
+        value: '1',
+      })
+      expect(await context.query.Test.createOne({ data: {}, query: 'value' })).toEqual({
+        value: '2',
+      })
+    })
+  )
 }
