@@ -12,11 +12,7 @@ import type {
   KeystoneContext,
   NextFieldType,
 } from '../../../types/index.ts'
-import {
-  getAccessFilters,
-  getOperationFieldAccess,
-  getOperationQueryAccess,
-} from '../access-control.ts'
+import { getAccessFilters, getReadFieldAccess, getOperationQueryAccess } from '../access-control.ts'
 import type { InitialisedList } from '../initialise-lists.ts'
 import type { ResolvedDBField, ResolvedRelationDBField } from '../resolve-relationships.ts'
 import { type IdType, getDBFieldKeyForFieldOnMultiField, weakMemoize } from '../utils.ts'
@@ -155,28 +151,40 @@ export function outputTypeField(
 ) {
   const list = lists[listKey]
 
+  const resolveValue = (
+    item: BaseItem,
+    args: any,
+    context: KeystoneContext,
+    info: GraphQLResolveInfo
+  ) => {
+    if (cacheHint && info) {
+      maybeCacheControlFromInfo(info)?.setCacheHint(cacheHint)
+    }
+
+    const value = getValueForDBField(
+      item,
+      dbField,
+      item.id as IdType,
+      fieldKey,
+      context,
+      lists,
+      info
+    )
+    return output.resolve ? output.resolve({ value, item }, args, context, info) : value
+  }
+
   return g.field({
     type: output.type,
     deprecationReason: output.deprecationReason,
     description: output.description,
     args: output.args,
     extensions: output.extensions,
-    async resolve(item: BaseItem, args, context, info) {
-      const id = item.id as IdType
-      const fieldAccess = await getOperationFieldAccess(item, list, fieldKey, context, 'read')
-      if (!fieldAccess) return null
-
-      // only static cache hints are supported at the field level until a use-case makes it clear what parameters a dynamic hint would take
-      if (cacheHint && info) {
-        maybeCacheControlFromInfo(info)?.setCacheHint(cacheHint)
+    resolve(item: BaseItem, args, context, info) {
+      const fieldAccess = getReadFieldAccess(item, list, fieldKey, context)
+      if (typeof fieldAccess === 'boolean') {
+        return fieldAccess ? resolveValue(item, args, context, info) : null
       }
-
-      const value = getValueForDBField(item, dbField, id, fieldKey, context, lists, info)
-      if (output.resolve) {
-        return output.resolve({ value, item: item }, args, context, info)
-      } else {
-        return value
-      }
+      return fieldAccess.then(allowed => (allowed ? resolveValue(item, args, context, info) : null))
     },
   })
 }
