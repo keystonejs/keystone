@@ -1,5 +1,15 @@
 # @keystone-6/core
 
+## 8.1.1
+
+### Patch Changes
+
+- [#10051](https://github.com/keystonejs/keystone/pull/10051) [`1ae5cb8`](https://github.com/keystonejs/keystone/commit/1ae5cb88687bf8b0f5ff5c411459b306843fb7ec) Thanks [@kerdofficial](https://github.com/kerdofficial)! - Fixes `bigInt` validation bounds rejecting valid bigint configuration values at startup and not being enforced on create or update.
+
+- [#10052](https://github.com/keystonejs/keystone/pull/10052) [`d5848ce`](https://github.com/keystonejs/keystone/commit/d5848ce084d03dd60266d7a85dac2d21bcfdc79f) Thanks [@emmatown](https://github.com/emmatown)! - Fixes item form briefly being replaced with a loading spinner when saving an item
+
+- [#10054](https://github.com/keystonejs/keystone/pull/10054) [`987c2bc`](https://github.com/keystonejs/keystone/commit/987c2bc887877c3042411a8c5fd7141bd3e9867b) Thanks [@emmatown](https://github.com/emmatown)! - Avoids allocating promises for synchronous field read access and output resolution
+
 ## 8.1.0
 
 ### Minor Changes
