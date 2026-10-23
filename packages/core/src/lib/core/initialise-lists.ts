@@ -169,8 +169,8 @@ export type InitialisedField = {
     cacheHint: CacheHint | undefined
   }
   ui: {
-    label: string
-    description: string
+    label: MaybeSessionFunction<string, BaseListTypeInfo>
+    description: MaybeSessionFunction<string, BaseListTypeInfo>
     views: string | null
     createView: {
       fieldMode: MaybeSessionFunctionWithFilter<'edit' | 'hidden', 'hidden', BaseListTypeInfo>
@@ -240,7 +240,12 @@ export type InitialisedList = {
   }
 
   ui: {
-    labels: { label: string; singular: string; plural: string; path: string }
+    labels: {
+      label: MaybeSessionFunction<string, BaseListTypeInfo>
+      singular: MaybeSessionFunction<string, BaseListTypeInfo>
+      plural: MaybeSessionFunction<string, BaseListTypeInfo>
+      path: string
+    }
     labelField: string
     searchFields: Set<string>
     searchableFields: Map<string, 'default' | 'insensitive' | null>
@@ -745,8 +750,10 @@ function getListsWithInitialisedFields(
         if (
           typeof group__ === 'object' &&
           group__ !== null &&
-          typeof group__.label === 'string' &&
-          (group__.description === null || typeof group__.description === 'string') &&
+          (typeof group__.label === 'string' || typeof group__.label === 'function') &&
+          (group__.description === null ||
+            typeof group__.description === 'string' ||
+            typeof group__.description === 'function') &&
           Array.isArray(group__.fields) &&
           areArraysEqual(group__.fields, fieldKeys.slice(idx + 1, idx + 1 + group__.fields.length))
         ) {
