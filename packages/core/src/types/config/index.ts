@@ -8,7 +8,6 @@ import type express from 'express'
 import type { GraphQLSchema } from 'graphql/index.js'
 
 import type { BaseKeystoneTypeInfo, DatabaseProvider, KeystoneContext } from '../index.ts'
-import type { SessionStrategy } from '../session.ts'
 import type { MaybePromise } from '../utils.ts'
 import type { FieldAccessControl, ListAccessControl } from './access-control.ts'
 import type { BaseFields } from './fields.ts'
@@ -142,7 +141,9 @@ export type KeystoneConfigPre<TypeInfo extends BaseKeystoneTypeInfo = BaseKeysto
       }
   )
 
-  session?: SessionStrategy<TypeInfo['session'], TypeInfo>
+  getSession?: (args: {
+    context: KeystoneContext<TypeInfo>
+  }) => Promise<(TypeInfo['session'] & object) | undefined>
 
   /** Telemetry boolean to disable telemetry for this project */
   telemetry?: boolean
@@ -189,7 +190,7 @@ export type KeystoneConfig<TypeInfo extends BaseKeystoneTypeInfo = BaseKeystoneT
     cors: CorsOptions | null
     options: ListenOptions
   }
-  session: KeystoneConfigPre<TypeInfo>['session']
+  getSession: KeystoneConfigPre<TypeInfo>['getSession']
   telemetry: boolean
   ui: NonNullable<Required<KeystoneConfigPre<TypeInfo>['ui']>>
 }

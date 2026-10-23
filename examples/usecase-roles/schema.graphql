@@ -311,17 +311,17 @@ type Mutation {
   deleteRole(where: RoleWhereUniqueInput!): Role
   deleteRoles(where: [RoleWhereUniqueInput!]!): [Role]
   endSession: Boolean!
-  authenticateUserWithPassword(name: String!, password: String!): UserAuthenticationWithPasswordResult
+  authenticateWithPassword(identity: String!, password: String!): AuthenticationWithPasswordResult
 }
 
-union UserAuthenticationWithPasswordResult = UserAuthenticationWithPasswordSuccess | UserAuthenticationWithPasswordFailure
+union AuthenticationWithPasswordResult = AuthenticationWithPasswordSuccess | AuthenticationWithPasswordFailure
 
-type UserAuthenticationWithPasswordSuccess {
+type AuthenticationWithPasswordSuccess {
   sessionToken: String!
   item: User!
 }
 
-type UserAuthenticationWithPasswordFailure {
+type AuthenticationWithPasswordFailure {
   message: String!
 }
 

@@ -1,7 +1,6 @@
 import type { DocumentNode, ExecutionResult, GraphQLSchema } from 'graphql/index.js'
 import type { TypedDocumentNode } from '@graphql-typed-document-node/core'
 import type { InitialisedList } from '../lib/core/initialise-lists.ts'
-import type { SessionStrategy } from './session.ts'
 import type { BaseKeystoneTypeInfo, BaseListTypeInfo } from './type-info.ts'
 import type { MaybePromise } from './utils.ts'
 
@@ -28,7 +27,6 @@ export type KeystoneContext<TypeInfo extends BaseKeystoneTypeInfo = BaseKeystone
 
   req?: Headers
   res?: Headers
-  sessionStrategy?: SessionStrategy<TypeInfo['session'], TypeInfo>
   session?: TypeInfo['session']
   withHeaders: (req: Headers, res?: Headers) => Promise<KeystoneContext<TypeInfo>>
   withSession: (session?: TypeInfo['session']) => KeystoneContext<TypeInfo>

@@ -8,10 +8,7 @@ import { checkbox, password, text } from '@keystone-6/core/fields'
 //   or tested for any particular usage
 declare module './generated/keystone/types' {
   interface Session {
-    itemId: string
-    data: {
-      isAdmin: boolean
-    }
+    user: Lists.User.Item
   }
 }
 
@@ -24,13 +21,13 @@ function isAdminOrSameUser({ session, item }: { session?: Session; item: Lists.U
   if (!session) return false
 
   // admins can do anything
-  if (session.data.isAdmin) return true
+  if (session.user.isAdmin) return true
 
   // no item? then no
   if (!item) return false
 
   // the authenticated user needs to be equal to the user we are updating
-  return session.itemId === item.id
+  return session.user.id === item.id
 }
 
 function isAdminOrSameUserFilter({ session }: { session?: Session }) {
@@ -38,12 +35,12 @@ function isAdminOrSameUserFilter({ session }: { session?: Session }) {
   if (!session) return false
 
   // admins can see everything
-  if (session.data?.isAdmin) return {}
+  if (session.user.isAdmin) return {}
 
   // only yourself
   return {
     id: {
-      equals: session.itemId,
+      equals: session.user.id,
     },
   }
 }
@@ -53,7 +50,7 @@ function isAdmin({ session }: { session?: Session }) {
   if (!session) return false
 
   // admins can do anything
-  if (session.data.isAdmin) return true
+  if (session.user.isAdmin) return true
 
   // otherwise, no
   return false
@@ -111,7 +108,7 @@ export const lists = {
         },
       }),
 
-      // the user's password, used as the secret field for authentication
+      // the user's password, used for authentication
       password: password({
         access: {
           read: {

@@ -26,7 +26,6 @@ const context = {
 
   // Session API
   session,
-  sessionStrategy,
 
   // GraphQL helpers
   graphql: {
@@ -85,11 +84,9 @@ See the [schema extension guide](../guides/schema-extension) for examples of usi
 ### Session API
 
 If you configure your Keystone system with session management then you will have access to the following properties.
-See the [session API](../config/session#session-context) for more details.
+See the [`getSession` API](../config/session) for more details.
 
 `session`: The current session data object.
-
-`sessionStrategy`: an object containing functions (`get`, `start` and `end`) that manipulate a session. See the [session API](../config/session#session-context) for more details.
 
 ### New context creators
 

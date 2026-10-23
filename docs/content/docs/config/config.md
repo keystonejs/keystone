@@ -32,7 +32,7 @@ export default config({
   server: {
     /* ... */
   },
-  session: {
+  getSession: async () => {
     /* ... */
   },
   graphql: {
@@ -92,20 +92,24 @@ export default config<TypeInfo>({
   },
   lists: {
     Post: list({
-      fields: { /* ... */ },
+      fields: {
+        /* ... */
+      },
       graphql: {
         omit: false,
       },
     }),
     AuditLog: list({
-      fields: { /* ... */ },
+      fields: {
+        /* ... */
+      },
       graphql: {
         maxTake: Infinity,
       },
     }),
   },
   /* ... */
-});
+})
 ```
 
 Per-list configuration takes precedence. Boolean `omit` values replace the default
@@ -332,7 +336,16 @@ export default config<TypeInfo>({
   server: {
     extendExpressApp: (app, commonContext) => {
       app.get('/api/users', async (req, res) => {
-        const context = await commonContext.withRequest(req, res)
+        const requestHeaders = new Headers(
+          Object.entries(req.headers).flatMap(([name, value]): [string, string][] =>
+            value === undefined
+              ? []
+              : Array.isArray(value)
+                ? value.map(value => [name, value])
+                : [[name, value]]
+          )
+        )
+        const context = await commonContext.withHeaders(requestHeaders)
         const users = await context.query.User.findMany()
         res.json(users)
       })
@@ -376,24 +389,21 @@ export default config<TypeInfo>({
 
 _Note_: when using `keystone dev`, `extendHttpServer` is only called once on startup - you will need to restart your process for any updates
 
-## session
+## getSession
 
-The `session` config option allows you to configure session management of your Keystone system.
-
-In general you will use `SessionStrategy` objects from the `@keystone-6/core/session` package, rather than writing this yourself.
+The `getSession` option receives a context containing `req` and optional `res` WHATWG `Headers`, and returns a non-null session object or `undefined`.
 
 ```typescript
-import { statelessSessions } from '@keystone-6/core/session'
-
 export default config<TypeInfo>({
-  session: statelessSessions({
-    /* ... */
-  }),
+  async getSession({ context }) {
+    const token = context.req?.get('authorization')
+    return token ? { token } : undefined
+  },
   /* ... */
 })
 ```
 
-See the [Session API](./session) for more details on how to configure session management in Keystone.
+See the [Session API](./session) for more about `getSession`, the [Authentication API](./auth#sessions) for built-in session strategies, and [`withHeaders`](../context/overview#new-context-creators) for creating request contexts.
 
 ## graphql
 
