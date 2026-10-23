@@ -54,19 +54,20 @@ export function cannotForItemFields(
   return `You cannot ${operation} that ${list.graphql.names.outputTypeName} - you cannot ${operation} the fields ${formatKeys(fieldsDenied)}`
 }
 
-export async function getOperationFieldAccess(
+export function getReadFieldAccess(
   item: BaseItem,
   list: InitialisedList,
   fieldKey: string,
-  context: KeystoneContext,
-  operation: 'read'
-): Promise<boolean> {
+  context: KeystoneContext
+): boolean | Promise<boolean> {
   if (context.__internal.sudo) return true
+  const access = list.fields[fieldKey].access.read.item
 
   const { listKey } = list
   let result
+  let pending: Promise<boolean> | undefined
   try {
-    result = await list.fields[fieldKey].access.read.item({
+    result = access({
       operation: 'read',
       kind: 'item',
       session: context.session,
@@ -75,15 +76,32 @@ export async function getOperationFieldAccess(
       context,
       item,
     })
+    if (typeof result !== 'boolean' && result && typeof result.then === 'function') {
+      pending = Promise.resolve(result)
+    }
   } catch (error: any) {
     throw extensionError('Access control', [
-      { error, tag: `${list.listKey}.${fieldKey}.access.${operation}.item` },
+      { error, tag: `${listKey}.${fieldKey}.access.read.item` },
     ])
   }
 
+  if (pending) {
+    return pending.then(
+      result => validateFieldReadAccess(result, listKey, fieldKey),
+      error => {
+        throw extensionError('Access control', [
+          { error, tag: `${listKey}.${fieldKey}.access.read.item` },
+        ])
+      }
+    )
+  }
+  return validateFieldReadAccess(result, listKey, fieldKey)
+}
+
+function validateFieldReadAccess(result: unknown, listKey: string, fieldKey: string): boolean {
   if (typeof result !== 'boolean') {
     throw accessReturnError([
-      { tag: `${listKey}.${fieldKey}.access.${operation}.item`, returned: typeof result },
+      { tag: `${listKey}.${fieldKey}.access.read.item`, returned: typeof result },
     ])
   }
 
