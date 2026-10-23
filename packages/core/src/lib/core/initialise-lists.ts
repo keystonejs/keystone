@@ -50,6 +50,7 @@ import {
   parseListAccessControl,
 } from './access-control.ts'
 import { assertFieldsValid } from './field-assertions.ts'
+import { type DatabaseIndex, resolveDatabaseIndexes } from './database-indexes.ts'
 import { outputTypeField } from './queries/output-field.ts'
 import { type ResolvedDBField, resolveRelationships } from './resolve-relationships.ts'
 import { areArraysEqual } from './utils.ts'
@@ -236,6 +237,7 @@ export type InitialisedList = {
     types: GraphQLNames // TODO: not completely appropriate, but what is used for now
     listKey: string
     mapping: string | undefined
+    indexes: DatabaseIndex[]
     extendPrismaSchema: ((schema: string) => string) | undefined
   }
 
@@ -891,6 +893,7 @@ function getListsWithInitialisedFields(
         },
         listKey: listKey[0].toLowerCase() + listKey.slice(1),
         mapping: listConfig.db.map,
+        indexes: [],
         extendPrismaSchema: listConfig.db.extendPrismaSchema,
       },
 
@@ -1197,6 +1200,15 @@ export function initialiseLists(config: KeystoneConfig): Record<string, Initiali
       {
         ...list,
         resolvedDbFields: resolvedDBFieldsForLists[list.listKey],
+        prisma: {
+          ...list.prisma,
+          indexes: resolveDatabaseIndexes(
+            list.listKey,
+            config.db.provider,
+            config.lists[list.listKey].db,
+            resolvedDBFieldsForLists[list.listKey]
+          ),
+        },
       },
     ])
   )
