@@ -98,6 +98,7 @@ export function float<ListTypeInfo extends BaseListTypeInfo>(
         validate,
       },
       input: {
+        uniqueWhereValue: { arg: g.arg({ type: g.Float }) },
         uniqueWhere: isIndexed === 'unique' ? { arg: g.arg({ type: g.Float }) } : undefined,
         where: {
           arg: g.arg({ type: filters[meta.provider].Float[mode] }),
