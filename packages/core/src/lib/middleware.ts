@@ -4,6 +4,7 @@ import type express from 'express'
 import { pkgDir } from '../pkg-dir.ts'
 import type { KeystoneConfig, KeystoneContext } from '../types/index.ts'
 import type { NextServer } from '../next.ts'
+import { addHeadersToResponse, headersFromRequest } from './context/node-headers.ts'
 
 const adminErrorHTMLFilepath = path.join(pkgDir, 'static', 'admin-error.html')
 
@@ -30,13 +31,15 @@ export function createAdminUIMiddlewareWithNextApp(
     try {
       // do nothing if this is a public page
       const isPublicPage = publicPages.includes(path)
-      const context = await commonContext.withRequest(req, res)
+      const responseHeaders = new Headers()
+      const context = await commonContext.withHeaders(headersFromRequest(req), responseHeaders)
       const wasAccessAllowed = isPublicPage ? true : await isAccessAllowed(context)
       const shouldRedirect = await pageMiddleware?.({
         context,
         wasAccessAllowed,
         basePath,
       })
+      addHeadersToResponse(responseHeaders, res)
 
       if (shouldRedirect) {
         res.header('Cache-Control', 'no-cache, max-age=0')

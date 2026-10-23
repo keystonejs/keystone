@@ -1,5 +1,4 @@
-import { getServerSession } from 'next-auth/next'
-import type { DefaultJWT } from 'next-auth/jwt'
+import { getToken, type DefaultJWT } from 'next-auth/jwt'
 import type { DefaultSession } from 'next-auth'
 import GithubProvider from 'next-auth/providers/github'
 import type { Context } from './generated/keystone/types'
@@ -48,25 +47,12 @@ declare module './generated/keystone/types' {
 
 export const nextAuthSessionStrategy = {
   async get({ context }: { context: Context }) {
-    const { req, res } = context
-    const { headers } = req ?? {}
-    if (!headers?.cookie || !res) return
-
-    // next-auth needs a different cookies structure
-    const cookies: Record<string, string> = {}
-    for (const part of headers.cookie.split(';')) {
-      const [key, value] = part.trim().split('=')
-      cookies[key] = decodeURIComponent(value)
-    }
-
-    const nextAuthSession = await getServerSession(
-      { headers, cookies } as any,
-      res,
-      nextAuthOptions
-    )
-    if (!nextAuthSession) return
-
-    const { authId } = nextAuthSession.keystone
+    if (!context.req) return
+    const token = await getToken({
+      req: { headers: Object.fromEntries(context.req) } as any,
+      secret: sessionSecret,
+    })
+    const authId = token?.sub
     if (!authId) return
 
     const author = await context.sudo().db.Author.findOne({

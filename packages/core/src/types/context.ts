@@ -1,4 +1,3 @@
-import type { IncomingMessage, ServerResponse } from 'http'
 import type { DocumentNode, ExecutionResult, GraphQLSchema } from 'graphql/index.js'
 import type { TypedDocumentNode } from '@graphql-typed-document-node/core'
 import type { InitialisedList } from '../lib/core/initialise-lists.ts'
@@ -27,11 +26,11 @@ export type KeystoneContext<TypeInfo extends BaseKeystoneTypeInfo = BaseKeystone
     }
   ): Promise<T>
 
-  req?: IncomingMessage
-  res?: ServerResponse
+  req?: Headers
+  res?: Headers
   sessionStrategy?: SessionStrategy<TypeInfo['session'], TypeInfo>
   session?: TypeInfo['session']
-  withRequest: (req: IncomingMessage, res?: ServerResponse) => Promise<KeystoneContext<TypeInfo>>
+  withHeaders: (req: Headers, res?: Headers) => Promise<KeystoneContext<TypeInfo>>
   withSession: (session?: TypeInfo['session']) => KeystoneContext<TypeInfo>
 
   // privilege escalation
