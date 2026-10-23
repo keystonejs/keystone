@@ -1,5 +1,5 @@
 import { extensionError, validationFailureError } from './graphql-errors.ts'
-import type { InitialisedList } from './initialise-lists.ts'
+import type { InitialisedField, InitialisedList } from './initialise-lists.ts'
 
 export async function validate({
   list,
@@ -58,13 +58,30 @@ export async function validate({
   }
 }
 
+type SideEffectHooks = {
+  beforeOperation: InitialisedList['hooks']['beforeOperation']
+  afterOperation: InitialisedList['hooks']['afterOperation']
+  'transaction.afterCommit': NonNullable<InitialisedList['hooks']['transaction']>['afterCommit']
+  'transaction.afterRollback': NonNullable<InitialisedList['hooks']['transaction']>['afterRollback']
+}
+
+function getSideEffectHook(
+  hooks: InitialisedList['hooks'] | InitialisedField['hooks'],
+  name: keyof SideEffectHooks,
+  operation: 'create' | 'update' | 'delete'
+) {
+  if (name === 'transaction.afterCommit') return hooks.transaction?.afterCommit[operation]
+  if (name === 'transaction.afterRollback') return hooks.transaction?.afterRollback[operation]
+  return hooks[name][operation]
+}
+
 export async function runSideEffectOnlyHook<
-  HookName extends 'beforeOperation' | 'afterOperation',
-  Args extends Parameters<
-    NonNullable<InitialisedList['hooks'][HookName]['create' | 'update' | 'delete']>
-  >[0],
+  HookName extends keyof SideEffectHooks,
+  Args extends Parameters<SideEffectHooks[HookName]['create' | 'update' | 'delete']>[0],
 >(list: InitialisedList, hookName: HookName, args: Args) {
   const { operation } = args
+  const isTransactionHook =
+    hookName === 'transaction.afterCommit' || hookName === 'transaction.afterRollback'
 
   let shouldRunFieldLevelHook: (fieldKey: string) => boolean
   if (operation === 'delete') {
@@ -78,12 +95,13 @@ export async function runSideEffectOnlyHook<
   }
 
   // field hooks
-  const fieldsErrors: { error: Error; tag: string }[] = []
+  const hookErrors: { error: Error; tag: string }[] = []
   await Promise.all(
     Object.entries(list.fields).map(async ([fieldKey, field]) => {
       if (shouldRunFieldLevelHook(fieldKey)) {
         try {
-          await field.hooks[hookName][operation]({
+          const hook = getSideEffectHook(field.hooks, hookName, operation)
+          await hook?.({
             ...args,
             fieldKey,
             itemField: args.item?.[fieldKey],
@@ -92,20 +110,32 @@ export async function runSideEffectOnlyHook<
             originalItemField: (args as any).originalItem?.[fieldKey],
           } as any) // TODO: FIXME any
         } catch (error: any) {
-          fieldsErrors.push({ error, tag: `${list.listKey}.${fieldKey}.hooks.${hookName}` })
+          if (isTransactionHook && !(error instanceof Error)) {
+            error = new Error(String(error))
+          }
+          hookErrors.push({ error, tag: `${list.listKey}.${fieldKey}.hooks.${hookName}` })
         }
       }
     })
   )
 
-  if (fieldsErrors.length) {
-    throw extensionError(hookName, fieldsErrors)
+  // Settlement callbacks are all attempted, including the list hook after field failures.
+  // Keep the existing short-circuit behavior for beforeOperation and afterOperation.
+  if (hookErrors.length && !isTransactionHook) {
+    throw extensionError(hookName, hookErrors)
   }
 
   // list hooks
   try {
-    await list.hooks[hookName][operation](args as any) // TODO: FIXME any
+    await getSideEffectHook(list.hooks, hookName, operation)?.(args as any) // TODO: FIXME any
   } catch (error: any) {
-    throw extensionError(hookName, [{ error, tag: `${list.listKey}.hooks.${hookName}` }])
+    if (isTransactionHook && !(error instanceof Error)) {
+      error = new Error(String(error))
+    }
+    hookErrors.push({ error, tag: `${list.listKey}.hooks.${hookName}` })
+  }
+
+  if (hookErrors.length) {
+    throw extensionError(hookName, hookErrors)
   }
 }

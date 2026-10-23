@@ -13,6 +13,8 @@ Hook functions support `async` and, with the exception of `resolveInput`, do not
 
 When operating on multiple values the hooks are called individually for each item being updated, created or deleted.
 
+For writes inside `context.transaction()`, [transaction hooks](#transaction-hooks) provide additional callbacks after commit or rollback, without changing the timing of the existing operation hooks.
+
 For examples of how to use hooks in your system please see the [hooks guide](../guides/hooks).
 
 ```typescript
@@ -41,6 +43,10 @@ export default config({
           create: async args => { /* ... */ },
           update: async args => { /* ... */ },
           delete: async args => { /* ... */ },
+        },
+        transaction: {
+          afterCommit: async args => { /* ... */ },
+          afterRollback: async args => { /* ... */ },
         }
       },
       fields: {
@@ -64,6 +70,10 @@ export default config({
               create: async args => { /* ... */ },
               update: async args => { /* ... */ },
               delete: async args => { /* ... */ },
+            },
+            transaction: {
+              afterCommit: async args => { /* ... */ },
+              afterRollback: async args => { /* ... */ },
             }
           },
         }),
@@ -377,6 +387,9 @@ export default config({
 
 The `afterOperation` hook is used to perform side effects after the data has been saved to the database (for a `create` or `update` operation), or deleted from the database (for `delete` operations).
 
+When called through `context.transaction()`, this hook still runs **inside** the transaction.
+Keep related database work here. For external side effects that must wait for a successful commit, use [`transaction.afterCommit`](#transaction-hooks).
+
 | Argument       | Description                                                                                                                                                                                                        |
 | :------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `listKey`              | The key of the list being operated on.                                                                                                                                                                             |
@@ -472,6 +485,86 @@ export default config({
   },
 });
 ```
+
+### Transaction hooks
+
+Lists and fields support `hooks.transaction.afterCommit` and `hooks.transaction.afterRollback` for writes made through an explicit [`context.transaction()`](../context/overview#transactions).
+Each accepts either one callback for all operations or an object with `create`, `update`, and `delete` callbacks, just like `afterOperation`.
+
+```typescript
+hooks: {
+  afterOperation: {
+    create: async ({ context, item }) => {
+      // Related database writes belong here, using this same context.
+      await context.db.Audit.createOne({ data: { message: `Created ${item.id}` } });
+    },
+  },
+  transaction: {
+    afterCommit: {
+      create: async ({ item }) => {
+        await notifyExternalService(item.id);
+      },
+    },
+    afterRollback: ({ operation, error }) => {
+      console.error(`Transaction containing ${operation} failed`, error);
+    },
+  },
+}
+```
+
+#### Timing and ordering
+
+Keystone registers one event immediately after each successful create, update, or delete write, before `afterOperation` runs.
+Failed validation and failed database writes do not register an event for that item.
+Successful nested creates do register, even if a later parent operation or `afterOperation` fails.
+Existing `beforeOperation` and `afterOperation` behavior is unchanged: they are awaited inside the transaction and may perform database consistency work there.
+
+`afterCommit` callbacks run only after Prisma's transaction promise fulfills, not merely when an individual mutation or the transaction's user callback finishes.
+`afterRollback` callbacks run after that promise rejects, with the original rejection value as `error` (`unknown` in TypeScript).
+Both phases are awaited before `context.transaction()` settles with its caller.
+
+Events run sequentially in registration order: the order in which successful writes finish.
+Concurrent mutations do not have a guaranteed registration order.
+For each event, eligible field hooks run in parallel before the list hook.
+Create/update field hooks run only for fields present in the submitted input; delete runs all field hooks.
+All registered callbacks are attempted, including the list hook when a field callback fails and later events when an earlier event fails.
+This differs intentionally from the existing operation hooks' field-error short circuit.
+
+Repeated updates to the same item produce separate events; there is no automatic deduplication or batching.
+A create followed by a delete in the same transaction still produces both events.
+
+#### Arguments and callback context
+
+The argument shapes match `afterOperation`, including `fieldKey`, `itemField`, `originalItemField`, `inputFieldData`, and `resolvedFieldData` for field hooks.
+Rollback callbacks additionally receive `error`.
+
+| Operation | `item` | `originalItem` | `inputData` / `resolvedData` |
+| :-- | :-- | :-- | :-- |
+| Create | Snapshot returned by the write | `undefined` | Operation input / resolved input snapshots |
+| Update | Snapshot returned by the write | Pre-update item snapshot | Operation input / resolved input snapshots |
+| Delete | `undefined` | Deleted item snapshot | `undefined` |
+
+Snapshots are captured at registration, before later hooks or operations can mutate the data.
+They are not a fresh query of the final database state: an item may have been changed or deleted again before commit.
+On rollback, they describe attempted writes, not items that necessarily exist after rollback.
+Treat snapshots as read-only. Plain objects, arrays and database scalar values (including dates, bytes, big integers and decimals) are copied without converting them to JSON.
+Opaque custom scalar instances, functions, and upload promises/streams retain their identity; they are not replayable snapshots and must not be mutated after registration.
+
+Each operation's callbacks receive a new, non-transactional context backed by the root Prisma client, so database queries work after settlement.
+It preserves the originating operation's request/response references, session data, and `internal()`/`sudo()` privileges—not those of whichever context opened the transaction.
+Derived contexts made with `sudo()`, `internal()`, `withSession()`, and `withRequest()` share the transaction's registration queue.
+Arbitrary properties added to a context are not copied to callback contexts.
+Callback queries observe the database at callback time, and callback writes are new, independent writes.
+
+#### Errors and limitations
+
+- Commit callback failures are aggregated as `KS_EXTENSION_ERROR` tagged `transaction.afterCommit`. The transaction call rejects, but its data is **already committed**; rollback callbacks do not run. Do not blindly retry the entire transaction on this error.
+- Rollback callback failures are aggregated as `transaction.afterRollback` extension errors and logged to the server console. The original transaction rejection is rethrown unchanged.
+- Outside an explicit `context.transaction()`, neither transaction hook runs. Ordinary mutations retain their existing hooks and behavior; Keystone does not introduce implicit transactions or make bulk/nested operations atomic. Applications must explicitly wrap writes that need this lifecycle.
+- Raw `context.prisma` writes do not generate Keystone item-hook events, even inside `context.transaction()`.
+- `context.graphql.raw()` can return errors without throwing. If the transaction callback returns normally and Prisma commits, registered events run their commit callbacks. Use `context.graphql.run()` or explicitly throw on returned errors when rollback is required.
+- Nested `context.transaction()` calls are unsupported; this API does not add savepoints. Await all operations before returning from the transaction callback.
+- These are in-process callbacks, not durable delivery. A process crash after commit can prevent callbacks from completing. There are no automatic retries or delivery guarantees; use an application-managed transactional outbox when durable delivery is required.
 
 ## Resolved data stages
 

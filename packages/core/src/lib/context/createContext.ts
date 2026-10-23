@@ -4,6 +4,11 @@ import type { KeystoneContext, KeystoneGraphQLAPI, KeystoneConfig } from '../../
 
 import type { InitialisedList } from '../core/initialise-lists.ts'
 import { getDbFactory, getQueryFactory } from './api.ts'
+import {
+  bindTransactionContext,
+  snapshotTransactionValue,
+  TransactionLifecycle,
+} from './transaction-hooks.ts'
 
 export function createContext({
   config,
@@ -51,6 +56,7 @@ export function createContext({
     session,
     internal,
     sudo,
+    transactionLifecycle,
   }: {
     prisma: any
     req?: IncomingMessage
@@ -58,6 +64,7 @@ export function createContext({
     session?: unknown
     internal: boolean
     sudo: boolean
+    transactionLifecycle?: TransactionLifecycle
   }) => {
     const schema = internal ? graphQLSchemas.internal : graphQLSchemas.public
     const rawGraphQL: KeystoneGraphQLAPI['raw'] = async ({ query, variables }) => {
@@ -83,18 +90,39 @@ export function createContext({
       graphql: { raw: rawGraphQL, run: runGraphQL, schema },
 
       transaction: async (f, opts) => {
-        return await prisma.$transaction(async (prisma_: any) => {
-          const newContext = construct({
-            prisma: prisma_,
-            req,
-            res,
-            session,
-            internal,
-            sudo,
-          })
+        if (transactionLifecycle) {
+          throw new Error('Nested context.transaction() calls are not supported')
+        }
 
-          return await f(newContext)
-        }, opts)
+        const lifecycle = new TransactionLifecycle()
+        let result
+        try {
+          result = await prisma.$transaction(async (prisma_: any) => {
+            const newContext = construct({
+              prisma: prisma_,
+              req,
+              res,
+              session,
+              internal,
+              sudo,
+              transactionLifecycle: lifecycle,
+            })
+
+            return await f(newContext)
+          }, opts)
+        } catch (error) {
+          try {
+            await lifecycle.settle('afterRollback', error)
+          } catch (hookError) {
+            // Rollback callback failures must not replace the original transaction failure.
+            console.error(hookError)
+          }
+          throw error
+        }
+
+        // Keep this outside the catch: a callback failure cannot roll back committed data.
+        await lifecycle.settle('afterCommit')
+        return result
       },
 
       req,
@@ -110,6 +138,7 @@ export function createContext({
           session,
           internal,
           sudo,
+          transactionLifecycle,
         })
         return newContext.withSession(
           (await config.session?.get({ context: newContext })) ?? undefined
@@ -117,12 +146,14 @@ export function createContext({
       },
 
       withSession: session => {
-        return construct({ prisma, req, res, session, internal, sudo })
+        return construct({ prisma, req, res, session, internal, sudo, transactionLifecycle })
       },
 
       // privilege escalation
-      internal: () => construct({ prisma, req, res, session, internal: true, sudo }),
-      sudo: () => construct({ prisma, req, res, session, internal: true, sudo: true }),
+      internal: () =>
+        construct({ prisma, req, res, session, internal: true, sudo, transactionLifecycle }),
+      sudo: () =>
+        construct({ prisma, req, res, session, internal: true, sudo: true, transactionLifecycle }),
 
       __internal: {
         sudo,
@@ -131,6 +162,19 @@ export function createContext({
           ...prismaTypes,
         },
       },
+    }
+
+    if (transactionLifecycle) {
+      bindTransactionContext(context, transactionLifecycle, () =>
+        construct({
+          prisma: prismaClient,
+          req,
+          res,
+          session: snapshotTransactionValue(context.session),
+          internal,
+          sudo,
+        })
+      )
     }
 
     const _dbFactories = internal ? dbFactoriesInternal : dbFactories

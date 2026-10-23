@@ -59,6 +59,35 @@ export const extendGraphqlSchema = g.extend(base => {
 export const lists = {
   Order: list<Lists.Order.TypeInfo>({
     access: allowAll,
+    hooks: {
+      afterOperation: {
+        create: async ({ context, item }) => {
+          // Database consistency work stays inside submitOrder's transaction.
+          await context.db.Order.updateOne({
+            where: { id: item.id },
+            data: { createdAt: new Date().toISOString() },
+          })
+        },
+      },
+      transaction: {
+        afterCommit: {
+          create: async ({ item }) => {
+            // Optional external notification: never sent when submitOrder rolls back.
+            const url = process.env.ORDER_NOTIFICATION_URL
+            if (!url) return
+            const response = await fetch(url, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ orderId: item.id }),
+            })
+            if (!response.ok) throw new Error('Order committed, but notification failed')
+          },
+        },
+        afterRollback: ({ error }) => {
+          console.error('Order transaction rolled back', error)
+        },
+      },
+    },
     fields: {
       items: relationship({ ref: 'Item.assignment', many: true }),
       createdAt: timestamp(),
