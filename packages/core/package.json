@@ -85,7 +85,6 @@
     "conf": "^15.1.0",
     "cookie": "^1.0.0",
     "cors": "^2.8.5",
-    "dataloader": "^2.1.0",
     "decimal.js": "^10.4.1",
     "dumb-passwords": "^0.2.1",
     "esbuild": "^0.28.0",

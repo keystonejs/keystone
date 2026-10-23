@@ -2,6 +2,7 @@ import { g } from '../../../index.ts'
 import type { InitialisedList } from '../initialise-lists.ts'
 import { withSpan } from '../../otel.ts'
 import * as queries from './resolvers.ts'
+import { selectFromInfoForList } from './select.ts'
 
 export function getQueriesForList(list: InitialisedList) {
   const { query } = list.graphql.isEnabled
@@ -33,7 +34,7 @@ export function getQueriesForList(list: InitialisedList) {
       return await withSpan(
         `query ${info.fieldName}`,
         async () => {
-          return queries.findMany(args, list, context, info)
+          return queries.findMany(args, list, context, info, selectFromInfoForList(list, info))
         },
         { 'keystone.list': list.listKey }
       )

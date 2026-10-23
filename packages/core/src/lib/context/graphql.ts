@@ -31,6 +31,8 @@ import {
 } from 'graphql/index.js'
 
 import type { KeystoneContext } from '../../types/index.ts'
+import type { InitialisedList } from '../core/initialise-lists.ts'
+import { contextDbSelection } from '../core/queries/select.ts'
 
 function getNamedOrListTypeNodeForType(
   type:
@@ -159,7 +161,39 @@ function getSourceGivenOutputType(originalType: OutputType, value: any): any {
   return value[rawField]
 }
 
-export function makeContextDbFn(field: GraphQLField<any, unknown>) {
+function validateDbSelection(select: unknown, list: InitialisedList, context: KeystoneContext) {
+  if (select === undefined) return undefined
+  if (
+    select === null ||
+    typeof select !== 'object' ||
+    Array.isArray(select) ||
+    ![Object.prototype, null].includes(Object.getPrototypeOf(select))
+  ) {
+    throw new TypeError(
+      `${list.listKey}.select must be an object of Prisma item columns set to true`
+    )
+  }
+
+  const validated: Record<string, true> = Object.create(null)
+  for (const key of Reflect.ownKeys(select)) {
+    if (
+      typeof key !== 'string' ||
+      context.__internal.prismaModelSelections[list.listKey]?.[key] !== true
+    ) {
+      throw new TypeError(
+        `${list.listKey}.select has an unknown Prisma item column: ${String(key)}`
+      )
+    }
+    const descriptor = Object.getOwnPropertyDescriptor(select, key)!
+    if (!('value' in descriptor) || descriptor.value !== true) {
+      throw new TypeError(`${list.listKey}.select.${key} must be true`)
+    }
+    validated[key] = descriptor.value
+  }
+  return validated
+}
+
+export function makeContextDbFn(field: GraphQLField<any, unknown>, list: InitialisedList) {
   const { argumentNodes, variableDefinitions } = getVariablesForGraphQLField(field)
   const document: DocumentNode = {
     kind: Kind.DOCUMENT,
@@ -193,7 +227,15 @@ export function makeContextDbFn(field: GraphQLField<any, unknown>) {
     deprecationReason: field.deprecationReason,
     description: field.description,
     extensions: field.extensions,
-    resolve: field.resolve,
+    resolve: field.resolve
+      ? (source, args, context, info) =>
+          field.resolve!(source, args, context, {
+            ...info,
+            [contextDbSelection]: (source as Record<typeof contextDbSelection, unknown>)[
+              contextDbSelection
+            ],
+          } as typeof info)
+      : undefined,
     subscribe: field.subscribe,
     type,
   }
@@ -214,12 +256,14 @@ export function makeContextDbFn(field: GraphQLField<any, unknown>) {
     context: KeystoneContext,
     rootValue: Record<string, string> = {}
   ) => {
+    const { select, ...graphqlArgs } = args
+    const validatedSelect = validateDbSelection(select, list, context)
     const result = await execute({
       schema,
       document,
       contextValue: context,
-      variableValues: args,
-      rootValue,
+      variableValues: graphqlArgs,
+      rootValue: { ...rootValue, [contextDbSelection]: validatedSelect },
     })
     if (result.errors?.length) {
       throw result.errors[0]

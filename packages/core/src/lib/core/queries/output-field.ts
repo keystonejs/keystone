@@ -1,8 +1,8 @@
 import { type CacheHint, maybeCacheControlFromInfo } from '@apollo/cache-control-types'
-import DataLoader from 'dataloader'
 import type { GraphQLResolveInfo } from 'graphql/index.js'
 
 import { g } from '../../../index.ts'
+import { itemFieldsExtension } from '../../../types/item-field.ts'
 import type {
   BaseItem,
   BaseListTypeInfo,
@@ -22,6 +22,20 @@ import type { ResolvedDBField, ResolvedRelationDBField } from '../resolve-relati
 import { type IdType, getDBFieldKeyForFieldOnMultiField, weakMemoize } from '../utils.ts'
 import * as queries from './resolvers.ts'
 import { accessControlledFilter } from './resolvers.ts'
+import { getOutputFieldRequirements } from './select.ts'
+
+// On Node, include promise continuations before dispatching. Other runtimes
+// can dispatch in an immediate or timer when they don't provide nextTick.
+const scheduleBatch: (callback: () => void) => void =
+  typeof process === 'object' && typeof process.nextTick === 'function'
+    ? callback => {
+        Promise.resolve().then(() => process.nextTick(callback))
+      }
+    : typeof setImmediate === 'function'
+      ? setImmediate
+      : callback => {
+          setTimeout(callback)
+        }
 
 function getRelationVal(
   dbField: ResolvedRelationDBField,
@@ -39,13 +53,15 @@ function getRelationVal(
       [dbField.field]: oppositeDbField.mode === 'many' ? { some: { id } } : { id },
     }
     return {
-      findMany: async (args: FindManyArgsValue) =>
-        queries.findMany(args, foreignList, context, info, relationFilter),
+      findMany: async (
+        args: FindManyArgsValue,
+        select?: Readonly<Record<string, true | undefined>>
+      ) => queries.findMany(args, foreignList, context, info, select, relationFilter),
       count: async ({ where }: { where: Record<string, unknown> }) =>
         queries.count({ where }, foreignList, context, info, relationFilter),
     }
   } else {
-    return async () => {
+    return async (select?: Readonly<Record<string, true | undefined>>) => {
       if (fk === null) {
         // If the foreign key is explicitly null, there's no need to anything else,
         // since we know the related item doesn't exist.
@@ -56,39 +72,59 @@ function getRelationVal(
       // for the a one-to-one relationship though, the id might be on the related item
       // so we need to fetch the related item by the id of the current item on the foreign key field
       const currentItemOwnsForeignKey = fk !== undefined
+      const idFieldKey = currentItemOwnsForeignKey ? 'id' : `${dbField.field}Id`
       return fetchRelatedItem(context)(foreignList)(
-        currentItemOwnsForeignKey ? 'id' : `${dbField.field}Id`
-      )(currentItemOwnsForeignKey ? fk : id)
-    }
-  }
-}
-
-function memoize<Arg, Return>(cb: (arg: Arg) => Return) {
-  const cache = new Map<Arg, Return>()
-  return (arg: Arg) => {
-    if (!cache.has(arg)) {
-      const result = cb(arg)
-      cache.set(arg, result)
-    }
-    return cache.get(arg)!
-  }
-}
-
-const fetchRelatedItem = weakMemoize((context: KeystoneContext) =>
-  weakMemoize((foreignList: InitialisedList) =>
-    memoize((idFieldKey: string) => {
-      const relatedItemLoader = new DataLoader(
-        (keys: readonly IdType[]) => fetchRelatedItems(context, foreignList, idFieldKey, keys),
-        { cache: false }
+        idFieldKey,
+        select,
+        currentItemOwnsForeignKey ? fk : id
       )
-      return (id: IdType) => relatedItemLoader.load(id)
-    })
-  )
+    }
+  }
+}
+
+type RelatedItemBatch = {
+  ids: IdType[]
+  result: Promise<(BaseItem | undefined)[]>
+}
+
+// Share queued batches by columns and lookup key, including across aliases and fields.
+const fetchRelatedItem = weakMemoize((context: KeystoneContext) =>
+  weakMemoize((foreignList: InitialisedList) => {
+    const batches = new Map<string, RelatedItemBatch>()
+    return (
+      idFieldKey: string,
+      requested: Readonly<Record<string, true | undefined>> | undefined,
+      id: IdType
+    ) => {
+      let select: Record<string, true> | undefined
+      if (requested) {
+        select = { id: true, [idFieldKey]: true }
+        for (const [column, enabled] of Object.entries(requested)) {
+          if (enabled) select[column] = true
+        }
+      }
+      const key = JSON.stringify([idFieldKey, select ? Object.keys(select).sort() : null])
+      let batch = batches.get(key)
+      if (!batch) {
+        const ids: IdType[] = []
+        const result = new Promise<void>(scheduleBatch).then(() => {
+          // Later loads need a new batch once this one's keys have been captured.
+          batches.delete(key)
+          return fetchRelatedItems(context, foreignList, select, idFieldKey, ids)
+        })
+        batch = { ids, result }
+        batches.set(key, batch)
+      }
+      const index = batch.ids.push(id) - 1
+      return batch.result.then(items => items[index])
+    }
+  })
 )
 
 async function fetchRelatedItems(
   context: KeystoneContext,
   foreignList: InitialisedList,
+  select: Record<string, true> | undefined,
   idFieldKey: string,
   toFetch: readonly IdType[]
 ) {
@@ -110,8 +146,11 @@ async function fetchRelatedItems(
     accessFilters
   )
 
-  const results = await context.prisma[foreignList.listKey].findMany({ where: resolvedWhere })
-  const resultsById = new Map(results.map((x: any) => [x[idFieldKey], x]))
+  const results = await context.prisma[foreignList.listKey].findMany({
+    where: resolvedWhere,
+    select,
+  })
+  const resultsById = new Map<IdType, BaseItem>(results.map((x: any) => [x[idFieldKey], x]))
   return toFetch.map(id => resultsById.get(id))
 }
 
@@ -160,7 +199,10 @@ export function outputTypeField(
     deprecationReason: output.deprecationReason,
     description: output.description,
     args: output.args,
-    extensions: output.extensions,
+    extensions: {
+      ...output.extensions,
+      [itemFieldsExtension]: getOutputFieldRequirements(list, fieldKey, output) ?? null,
+    },
     async resolve(item: BaseItem, args, context, info) {
       const id = item.id as IdType
       const fieldAccess = await getOperationFieldAccess(item, list, fieldKey, context, 'read')
