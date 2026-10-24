@@ -1,4 +1,7 @@
-import { describe, test } from 'vitest'
+import { describe, expect, test } from 'vitest'
+import { config, list } from '@keystone-6/core'
+import { createSystem } from '@keystone-6/core/___internal-do-not-use-will-break-in-patch/artifacts'
+import { allowAll } from '@keystone-6/core/access'
 import { decimal } from '@keystone-6/core/fields'
 import { dbProvider } from '../../utils.ts'
 import { orderableFilterTests, filterTests, uniqueEqualityFilterTest } from './utils.ts'
@@ -20,3 +23,39 @@ if (dbProvider === 'sqlite') {
     })
   }
 }
+
+describe('decimal validation.min and validation.max', () => {
+  function getSystem(validation: { min: string; max: string }) {
+    return createSystem(
+      config({
+        db: { prismaClientOptions: () => ({}), provider: 'postgresql' },
+        lists: {
+          Test: list({ access: allowAll, fields: { value: decimal({ validation }) } }),
+        },
+      })
+    )
+  }
+
+  for (const [min, max] of [
+    ['2', '10'],
+    ['-10', '-2'],
+    ['9.5', '10'],
+    ['5', '5'],
+  ] as const) {
+    test(`accepts min: ${min} and max: ${max}`, () => {
+      expect(() => getSystem({ min, max })).not.toThrow()
+    })
+  }
+
+  for (const [min, max] of [
+    ['10', '2'],
+    ['-2', '-10'],
+    ['10', '9.5'],
+  ] as const) {
+    test(`rejects min: ${min} and max: ${max}`, () => {
+      expect(() => getSystem({ min, max })).toThrow(
+        'Test.value specifies a validation.max that is less than the validation.min, and therefore has no valid options'
+      )
+    })
+  }
+})

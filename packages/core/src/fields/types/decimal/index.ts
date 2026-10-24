@@ -93,7 +93,7 @@ export function decimal<ListTypeInfo extends BaseListTypeInfo>(
         `${meta.listKey}.${meta.fieldKey} specifies validation.max: ${max} but it must be a valid finite number`
       )
     }
-    if (min !== undefined && max !== undefined && parsedMin && parsedMax && parsedMin > parsedMax) {
+    if (parsedMin && parsedMax && parsedMin.greaterThan(parsedMax)) {
       throw new Error(
         `${meta.listKey}.${meta.fieldKey} specifies a validation.max that is less than the validation.min, and therefore has no valid options`
       )
