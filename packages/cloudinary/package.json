@@ -28,7 +28,6 @@
     "@types/react": "catalog:",
     "graphql": "catalog:",
     "graphql-upload": "^15.0.2",
-    "next": "catalog:",
     "react": "catalog:",
     "react-dom": "catalog:"
   },
