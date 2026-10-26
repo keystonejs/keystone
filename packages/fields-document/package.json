@@ -75,7 +75,6 @@
     "@types/is-hotkey": "^0.1.7",
     "@types/react": "catalog:",
     "jest-diff": "^29.0.0",
-    "next": "catalog:",
     "pretty-format": "^29.0.0",
     "react": "catalog:",
     "react-dom": "catalog:",
