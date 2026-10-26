@@ -67,7 +67,7 @@ export async function accessControlledFilter(
   list: InitialisedList,
   context: KeystoneContext,
   resolvedWhere: PrismaFilter,
-  accessFilters: boolean | InputFilter
+  accessFilters: true | InputFilter
 ) {
   // Merge the filter access control
   if (typeof accessFilters === 'object') {
