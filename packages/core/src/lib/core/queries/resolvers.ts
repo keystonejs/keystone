@@ -14,6 +14,9 @@ import {
   type InputFilter,
   resolveUniqueWhereInput,
   resolveWhereInput,
+  getRelationshipFilterAccess,
+  applyRelationshipFilterAccess,
+  type RelationshipFilterAccessCache,
 } from '../where-inputs.ts'
 
 import { limitsExceededError, userInputError } from '../graphql-errors.ts'
@@ -37,10 +40,16 @@ export async function resolveUniqueWhereWithAccess(
   inputWhere: UniqueInputFilter,
   list: InitialisedList,
   context: KeystoneContext
-): Promise<PrismaFilter> {
+): Promise<PrismaFilter | false> {
   await checkFilterOrderAccess([...traverseUniqueWhere(list, inputWhere)], context, 'filter')
-  const uniqueWhere = await resolveUniqueWhereInput(inputWhere, list, context)
-  return mapUniqueWhereToWhere(uniqueWhere, list)
+  const relationshipAccessCache: RelationshipFilterAccessCache = new Map()
+  const uniqueWhere = await resolveUniqueWhereInput(
+    inputWhere,
+    list,
+    context,
+    relationshipAccessCache
+  )
+  return mapUniqueWhereToWhereWithAccess(uniqueWhere, list, context, relationshipAccessCache)
 }
 
 function* traverseUniqueWhere(
@@ -60,12 +69,34 @@ function* traverseUniqueWhere(
 }
 
 // Wrap scalar values in equals so a unique resolver's result is used as a value.
-function mapUniqueWhereToWhere(uniqueWhere: UniquePrismaFilter, list: InitialisedList) {
+// Return false when a relationship in the selector is inaccessible.
+async function mapUniqueWhereToWhereWithAccess(
+  uniqueWhere: UniquePrismaFilter,
+  list: InitialisedList,
+  context: KeystoneContext,
+  relationshipAccessCache: RelationshipFilterAccessCache
+): Promise<PrismaFilter | false> {
   const where: PrismaFilter = {}
   for (const key in uniqueWhere) {
     if (list.fields[key].dbField.kind === 'relation') {
       const foreignList = list.lists[list.fields[key].dbField.list]
-      where[key] = mapUniqueWhereToWhere(uniqueWhere[key], foreignList)
+      const access = await getRelationshipFilterAccess(
+        foreignList,
+        context,
+        'one',
+        relationshipAccessCache
+      )
+      // the keys of a unique selector are combined with AND, so one inaccessible relationship
+      // means the whole selector matches nothing
+      if (access === false) return false
+      const foreignWhere = await mapUniqueWhereToWhereWithAccess(
+        uniqueWhere[key],
+        foreignList,
+        context,
+        relationshipAccessCache
+      )
+      if (foreignWhere === false) return false
+      where[key] = { is: applyRelationshipFilterAccess(foreignWhere, access) }
       continue
     }
     where[key] = { equals: uniqueWhere[key] }
@@ -120,6 +151,7 @@ export async function findOne(
 
   // validate and resolve the input filter
   const resolvedWhere = await resolveUniqueWhereWithAccess(args.where, list, context)
+  if (resolvedWhere === false) return null
 
   // apply access control
   const filter = accessControlledFilter(resolvedWhere, accessFilters)
@@ -175,7 +207,7 @@ export async function findMany(
     resolvedCursor = await resolveUniqueWhereInput(cursor, list, context)
   }
 
-  const resolvedWhere = await resolveWhereInput(where, list, context)
+  const resolvedWhere = await resolveWhereInput(where, list, context, 'many')
 
   // WARNING: this checks .isOrderable
   const orderBy = await resolveOrderBy(rawOrderBy, list, context)
@@ -286,8 +318,9 @@ export async function count(
   const accessFilters = await getQueryOperationAndFilterAccess(list, context, 'count')
   if (accessFilters === false) return 0
 
+  // Check access to the user-supplied filters before invoking their resolvers.
   await checkFilterOrderAccess([...traverse(list, where)], context, 'filter')
-  const resolvedWhere = await resolveWhereInput(where, list, context)
+  const resolvedWhere = await resolveWhereInput(where, list, context, 'count')
 
   const filter = accessControlledFilter(resolvedWhere, accessFilters)
 
