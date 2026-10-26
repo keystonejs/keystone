@@ -19,6 +19,7 @@ import type {
   ListFilterAccessControl,
   ListOperationAccessControl,
   ListQueryAccessControl,
+  ListQueryFilterAccessControl,
   QueryOperationKind,
   UpdateListItemAccessControl,
 } from '../../types/index.ts'
@@ -155,10 +156,10 @@ export async function getOperationAccess(
   return result
 }
 
-export async function getOperationQueryAccess(
+export async function getOperationQueryAccess<Kind extends QueryOperationKind>(
   list: InitialisedList,
   context: KeystoneContext,
-  kind: QueryOperationKind
+  kind: Kind
 ) {
   if (context.__internal.sudo) return true
 
@@ -171,13 +172,7 @@ export async function getOperationQueryAccess(
       listKey,
       context,
     }
-    if (kind === 'one') {
-      result = await list.access.operation.query.one({ ...args, kind })
-    } else if (kind === 'many') {
-      result = await list.access.operation.query.many({ ...args, kind })
-    } else {
-      result = await list.access.operation.query.count({ ...args, kind })
-    }
+    result = await list.access.operation.query[kind]({ ...args, kind })
   } catch (error: any) {
     throw extensionError('Access control', [
       { error, tag: `${listKey}.access.operation.query.${kind}` },
@@ -193,22 +188,23 @@ export async function getOperationQueryAccess(
   return result
 }
 
-export async function getAccessFilters(
+export async function getAccessFilters<Kind extends QueryOperationKind>(
   list: InitialisedList,
   context: KeystoneContext,
-  operation: keyof typeof list.access.filter
+  ...[operation, kind]: ['query', Kind] | ['update' | 'delete']
 ): Promise<boolean | InputFilter> {
   if (context.__internal.sudo) return true
 
   try {
     let filters
     if (operation === 'query') {
-      filters = await list.access.filter.query({
+      const args = {
         operation,
         session: context.session,
         listKey: list.listKey,
         context,
-      })
+      }
+      filters = await list.access.filter.query[kind]({ ...args, kind })
     } else if (operation === 'update') {
       filters = await list.access.filter.update({
         operation,
@@ -235,7 +231,7 @@ export async function getAccessFilters(
     throw result.error
   } catch (error: any) {
     throw extensionError('Access control', [
-      { error, tag: `${list.listKey}.access.filter.${operation}` },
+      { error, tag: `${list.listKey}.access.filter.${operation}${kind ? `.${kind}` : ''}` },
     ])
   }
 }
@@ -493,16 +489,16 @@ export type ResolvedActionAccessControl = ActionAccessControlFunction<BaseListTy
 export type ResolvedListAccessControl = {
   operation: {
     query: {
-      one: ListQueryAccessControl<'one', BaseListTypeInfo>
-      many: ListQueryAccessControl<'many', BaseListTypeInfo>
-      count: ListQueryAccessControl<'count', BaseListTypeInfo>
+      [Kind in QueryOperationKind]: ListQueryAccessControl<Kind, BaseListTypeInfo>
     }
     create: ListOperationAccessControl<'create', BaseListTypeInfo>
     update: ListOperationAccessControl<'update', BaseListTypeInfo>
     delete: ListOperationAccessControl<'delete', BaseListTypeInfo>
   }
   filter: {
-    query: ListFilterAccessControl<'query', BaseListTypeInfo>
+    query: {
+      [Kind in QueryOperationKind]: ListQueryFilterAccessControl<Kind, BaseListTypeInfo>
+    }
     // create: not supported
     update: ListFilterAccessControl<'update', BaseListTypeInfo>
     delete: ListFilterAccessControl<'delete', BaseListTypeInfo>
@@ -531,7 +527,7 @@ export function parseListAccessControl(
         delete: access,
       },
       filter: {
-        query: allowAll,
+        query: { one: allowAll, many: allowAll, count: allowAll },
         update: allowAll,
         delete: allowAll,
       },
@@ -558,6 +554,8 @@ export function parseListAccessControl(
       ? { one: operation.query, many: operation.query, count: operation.query }
       : operation.query
 
+  const queryFilter = filter?.query ?? allowAll
+
   return {
     operation: {
       query,
@@ -566,7 +564,10 @@ export function parseListAccessControl(
       delete: operation.delete,
     },
     filter: {
-      query: filter?.query ?? allowAll,
+      query:
+        typeof queryFilter === 'function'
+          ? { one: queryFilter, many: queryFilter, count: queryFilter }
+          : queryFilter,
       // create: not supported
       update: filter?.update ?? allowAll,
       delete: filter?.delete ?? allowAll,
