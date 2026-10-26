@@ -1,6 +1,7 @@
 import type { DBField, KeystoneContext } from '../../types/index.ts'
 import type { PrismaFilter, UniquePrismaFilter } from '../../types/prisma.ts'
-import { userInputError } from './graphql-errors.ts'
+import { getAccessFilters, getOperationQueryAccess } from './access-control.ts'
+import { accessDeniedError, userInputError } from './graphql-errors.ts'
 import type { InitialisedList } from './initialise-lists.ts'
 import { getDBFieldKeyForFieldOnMultiField } from './utils.ts'
 
@@ -33,6 +34,31 @@ export async function resolveUniqueWhereInput(
   return where
 }
 
+// Access filters are trusted configuration: resolve them with sudo so relationships in
+// the access filter do not recursively invoke relationship filter access control.
+export async function getRelationshipFilterAccess(
+  list: InitialisedList,
+  context: KeystoneContext
+): Promise<true | PrismaFilter> {
+  if (!(await getOperationQueryAccess(list, context, 'byRelationshipFilter'))) {
+    throw accessDeniedError(
+      `You cannot filter by relationships to ${list.graphql.names.outputTypeName}`
+    )
+  }
+  const access = await getAccessFilters(list, context, 'query', 'byRelationshipFilter')
+  if (access === true) return true
+  if (access === false) return { id: { in: [] } }
+  return resolveWhereInput(access, list, context.sudo())
+}
+
+export function applyRelationshipFilterAccess(
+  where: PrismaFilter,
+  access: true | PrismaFilter
+): PrismaFilter {
+  if (access === true) return where
+  return { AND: [access, where] }
+}
+
 export async function resolveWhereInput(
   inputFilter: InputFilter,
   list: InitialisedList,
@@ -63,33 +89,47 @@ export async function resolveWhereInput(
                 if (dbField.kind !== 'relation') {
                   return undefined as any
                 }
-                const foreignList = dbField.list
+                const foreignList = list.lists[dbField.list]
                 const whereResolver = (filter: InputFilter) =>
-                  resolveWhereInput(filter, list.lists[foreignList], context)
+                  resolveWhereInput(filter, foreignList, context)
 
                 if (dbField.mode === 'many') {
                   return async () => {
                     if (value === null) {
                       throw userInputError('A many relation filter cannot be set to null')
                     }
-                    return Object.fromEntries(
-                      await Promise.all(
+                    const access = await getRelationshipFilterAccess(foreignList, context)
+                    return {
+                      AND: await Promise.all(
                         Object.entries(value).map(async ([key, val]) => {
                           if (val === null) {
                             throw userInputError(
                               `The key "${key}" in a many relation filter cannot be set to null`
                             )
                           }
-                          return [key, await whereResolver(val as any)]
+                          const where = await whereResolver(val as any)
+                          if (key === 'every' && access !== true) {
+                            // Every visible item matches iff no visible item fails.
+                            // Keep an explicit tautology: Prisma drops empty objects
+                            // inside NOT, which would make every: {} reject items.
+                            return {
+                              none: applyRelationshipFilterAccess(
+                                { NOT: { AND: [{ id: { notIn: [] } }, where] } },
+                                access
+                              ),
+                            }
+                          }
+                          return { [key]: applyRelationshipFilterAccess(where, access) }
                         })
-                      )
-                    )
+                      ),
+                    }
                   }
                 }
 
-                return (value: any) => {
-                  if (value === null) return null
-                  return whereResolver(value)
+                return async (value: any) => {
+                  const access = await getRelationshipFilterAccess(foreignList, context)
+                  if (value === null) return access === true ? null : { isNot: access }
+                  return { is: applyRelationshipFilterAccess(await whereResolver(value), access) }
                 }
               })()
             )
