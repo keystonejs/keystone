@@ -149,7 +149,7 @@ export default config({
 ```
 
 {% hint kind="warn" %}
-The `query` access control is applied only when running GraphQL query operations.
+The `query` access control applies to GraphQL query operations, filtering by relationships, and lookups for items in `connect`, `disconnect` and `set` relationship inputs.
 It can be a shared function receiving `kind: 'one' | 'many' | 'count'`, or an object with required `one`, `many`, and `count` functions.
 A user can still **read** fields as part of a return query when using a mutation `operation` (`create`, `update` or `delete`).
 If you want to limit access to fields, use [field access control](https://keystonejs.com/docs/config/access-control#field-access-control).
@@ -159,8 +159,8 @@ If you want to limit access to fields, use [field access control](https://keysto
 
 Filter-level access control lets you restrict which items can be operated on by providing a function which returns a [GraphQL filter](../graphql/filters).
 
-- For **mutations**, the access control filter will be combined with the unique identifier provided to the operation, and access will be denied if no item is found with this combined filter.
-- For **queries**, the access control filter will be combined with the query filter and only items which match both filters will be returned.
+- For **update and delete mutations**, the operation's access control filter is combined with its unique where input and the mutation is denied if the combined filter finds no item.
+- For **queries**, the access control filter will be combined with the where input and only items which match both filters will be returned.
 
 In general, the filter access control functions will return GraphQL filters.
 They can also return boolean values `true` or `false` to match or exclude all items.
@@ -216,6 +216,25 @@ export default config({
 Filter based access control cannot be used for `create` operations.
 If you want to limit `create` operations, use either `access.operation.create` or `access.item.create`.
 {% /hint %}
+
+### Filtering through relationships
+
+When filtering `posts(where: { author: { name: { equals: "Alice" } } })`, Keystone applies `Author.access.{operation,filter}.query.many` to the matching authors.
+
+For a unique filter, such as `post(where: { author: { name: "Alice" } })` with a one-to-one `Post.author` relationship and unique `Author.name`, Keystone instead applies `Author.access.{operation,filter}.query.one`
+
+The outer operation determines the query kind used for relationships. `findOne` and the `where` inputs of update and delete mutations use `one`, `findMany` uses `many`, and count queries use `count`. Shared query access functions receive that value as `kind`.
+
+In a mutation that creates/updates a relationship field, Keystone looks up each item in `connect`, `disconnect`, or `set` using `findOne`. These lookups apply `access.{operation,filter}.query.one` on the related list, even when the unique where input only supplies an `id`.
+
+Relationship filters operate over accessible related items:
+
+- `some` matches if an accessible related item matches the filter.
+- `none` matches if no accessible related item matches the filter.
+- `every` matches if all accessible related items match the filter or there are no accessible items.
+- A to-one relationship filtered with `null` matches when there is no accessible related item, including when the related item exists but is inaccessible.
+
+Access-control filters are trusted configuration and are resolved without recursively applying relationship filter access. `context.sudo()` bypasses these controls.
 
 ### Item (mutations only)
 

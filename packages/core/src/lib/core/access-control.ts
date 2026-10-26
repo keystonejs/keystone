@@ -32,7 +32,13 @@ import {
   formatKeys,
 } from './graphql-errors.ts'
 import type { InitialisedAction, InitialisedList } from './initialise-lists.ts'
-import { type InputFilter, type UniqueInputFilter, resolveWhereInput } from './where-inputs.ts'
+import {
+  type GetRelationshipFilterAccess,
+  type InputFilter,
+  type RelationshipFilterAccess,
+  type UniqueInputFilter,
+  resolveAccessFilterWhereInput,
+} from './where-inputs.ts'
 
 export function cannotForItem(operation: string, list: InitialisedList) {
   if (operation === 'create')
@@ -198,6 +204,26 @@ export async function getQueryOperationAndFilterAccess<Kind extends QueryOperati
   return result ? getAccessFilters(list, context, 'query', kind) : false
 }
 
+// Returns relationship filter access for resolving a single filter, which uses the same query
+// kind throughout. Results are cached by list key, so a related list's access functions run
+// once rather than once per occurrence in the filter.
+export function relationshipFilterAccess(
+  context: KeystoneContext,
+  kind: QueryOperationKind
+): GetRelationshipFilterAccess {
+  const cache = new Map<string, Promise<RelationshipFilterAccess>>()
+  return list => {
+    let access = cache.get(list.listKey)
+    if (!access) {
+      access = getQueryOperationAndFilterAccess(list, context, kind).then(access =>
+        access === false ? { id: { in: [] } } : access
+      )
+      cache.set(list.listKey, access)
+    }
+    return access
+  }
+}
+
 async function getAccessFilters<Kind extends QueryOperationKind>(
   list: InitialisedList,
   context: KeystoneContext,
@@ -246,7 +272,7 @@ async function getAccessFilters<Kind extends QueryOperationKind>(
     ])
   }
 
-  return resolveWhereInput(input, list, context)
+  return resolveAccessFilterWhereInput(input, list, context)
 }
 
 export async function enforceListLevelAccessControl(
