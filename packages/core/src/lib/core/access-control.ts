@@ -551,7 +551,11 @@ export function parseListAccessControl(
 
   const query =
     typeof operation.query === 'function'
-      ? { one: operation.query, many: operation.query, count: operation.query }
+      ? {
+          one: operation.query,
+          many: operation.query,
+          count: operation.query,
+        }
       : operation.query
 
   const queryFilter = filter?.query ?? allowAll
@@ -566,7 +570,11 @@ export function parseListAccessControl(
     filter: {
       query:
         typeof queryFilter === 'function'
-          ? { one: queryFilter, many: queryFilter, count: queryFilter }
+          ? {
+              one: queryFilter,
+              many: queryFilter,
+              count: queryFilter,
+            }
           : queryFilter,
       // create: not supported
       update: filter?.update ?? allowAll,
