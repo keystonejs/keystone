@@ -24,7 +24,6 @@ import {
   gql,
   useQuery,
 } from './apollo.ts'
-import { useNextPagesRouter } from './next-pages-router.ts'
 import {
   getConditionalFilterCaseFieldKeys,
   getConditionalFilterFieldKeys,
@@ -66,12 +65,11 @@ type KeystoneProviderProps = {
   adminConfig: AdminConfig
   apiPath: string
   fieldViews: FieldViews
-  router?: KeystoneRouter
+  router: KeystoneRouter
   children: ReactNode
 }
 
 type InternalKeystoneProviderProps = Omit<KeystoneProviderProps, 'router'>
-type KeystoneProviderWithRouterProps = InternalKeystoneProviderProps & { router: KeystoneRouter }
 
 const requiredExports = new Set(['Field', 'controller'])
 const overridableExports = new Set([...requiredExports, 'Cell'])
@@ -229,7 +227,7 @@ function InternalKeystoneProvider({
   )
 }
 
-function KeystoneProviderWithRouter({ router, ...props }: KeystoneProviderWithRouterProps) {
+export function KeystoneProvider({ router, ...props }: KeystoneProviderProps) {
   router.useNavigationBlocker({
     hasUnsavedChanges,
     shouldBlockNavigation: checkForPreventedNavigation,
@@ -254,18 +252,6 @@ function KeystoneProviderWithRouter({ router, ...props }: KeystoneProviderWithRo
       </ApolloProvider>
     </KeystarProvider>
   )
-}
-
-function PagesRouterKeystoneProvider(props: InternalKeystoneProviderProps) {
-  const router = useNextPagesRouter()
-  if (!router) return null
-
-  return <KeystoneProviderWithRouter {...props} router={router} />
-}
-
-export function KeystoneProvider({ router, ...props }: KeystoneProviderProps) {
-  if (router === undefined) return <PagesRouterKeystoneProvider {...props} />
-  return <KeystoneProviderWithRouter {...props} router={router} />
 }
 
 export function useKeystone() {
