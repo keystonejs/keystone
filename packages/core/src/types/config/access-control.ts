@@ -9,7 +9,7 @@ export type BaseAccessArgs<ListTypeInfo extends BaseListTypeInfo> = {
 }
 
 export type AccessOperation = 'create' | 'query' | 'update' | 'delete'
-export type QueryOperationKind = 'one' | 'many' | 'count'
+export type QueryOperationKind = 'one' | 'many' | 'count' | 'byRelationshipFilter'
 export type FilterOperation = 'query' | 'update' | 'delete'
 export type ItemOperation = 'create' | 'update' | 'delete'
 
@@ -111,6 +111,7 @@ type ListAccessControlObject<ListTypeInfo extends BaseListTypeInfo> = {
               one: ListQueryAccessControl<'one', ListTypeInfo>
               many: ListQueryAccessControl<'many', ListTypeInfo>
               count: ListQueryAccessControl<'count', ListTypeInfo>
+              byRelationshipFilter: ListQueryAccessControl<'byRelationshipFilter', ListTypeInfo>
             }
         create: ListOperationAccessControl<'create', ListTypeInfo>
         update: ListOperationAccessControl<'update', ListTypeInfo>
@@ -128,6 +129,7 @@ type ListAccessControlObject<ListTypeInfo extends BaseListTypeInfo> = {
           one: ListQueryFilterAccessControl<'one', ListTypeInfo>
           many: ListQueryFilterAccessControl<'many', ListTypeInfo>
           count: ListQueryFilterAccessControl<'count', ListTypeInfo>
+          byRelationshipFilter: ListQueryFilterAccessControl<'byRelationshipFilter', ListTypeInfo>
         }
     // create?: not supported
     update?: ListFilterAccessControl<'update', ListTypeInfo>

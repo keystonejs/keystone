@@ -12,6 +12,7 @@ const config = {
       access: {
         operation: {
           query: {
+            byRelationshipFilter: allowAll,
             one: args => {
               assert.equal(args.kind, 'one')
               return false
@@ -60,6 +61,7 @@ const config = {
         operation: allowAll,
         filter: {
           query: {
+            byRelationshipFilter: allowAll,
             one: async ({ kind, operation, listKey, session }) => {
               assert.equal(kind, 'one')
               assert.equal(operation, 'query')

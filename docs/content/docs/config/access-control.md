@@ -99,6 +99,7 @@ export default config({
             one: ({ session, context, listKey, operation, kind }) => true,
             many: ({ session, context, listKey, operation, kind }) => true,
             count: ({ session, context, listKey, operation, kind }) => true,
+            byRelationshipFilter: ({ session, context, listKey, operation, kind }) => true,
           },
           create: ({ session, context, listKey, operation }) => true,
           update: ({ session, context, listKey, operation }) => true,
@@ -149,8 +150,8 @@ export default config({
 ```
 
 {% hint kind="warn" %}
-The `query` access control is applied only when running GraphQL query operations.
-It can be a shared function receiving `kind: 'one' | 'many' | 'count'`, or an object with required `one`, `many`, and `count` functions.
+The `one`, `many`, and `count` kinds control querying items. The `byRelationshipFilter` kind controls filtering through relationships, including unique filters in mutations.
+It can be a shared function receiving `kind: 'one' | 'many' | 'count' | 'byRelationshipFilter'`, or an object with required `one`, `many`, `count`, and `byRelationshipFilter` functions.
 A user can still **read** fields as part of a return query when using a mutation `operation` (`create`, `update` or `delete`).
 If you want to limit access to fields, use [field access control](https://keystonejs.com/docs/config/access-control#field-access-control).
 {% /hint %}
@@ -165,8 +166,8 @@ Filter-level access control lets you restrict which items can be operated on by 
 In general, the filter access control functions will return GraphQL filters.
 They can also return boolean values `true` or `false` to match or exclude all items.
 
-`access.filter.query` can be a shared function receiving `kind: 'one' | 'many' | 'count'`, or an object with required `one`, `many`, and `count` functions.
-These kinds apply to both root queries and relationship queries.
+`access.filter.query` can be a shared function receiving `kind: 'one' | 'many' | 'count' | 'byRelationshipFilter'`, or an object with required `one`, `many`, `count`, and `byRelationshipFilter` functions.
+The `one`, `many`, and `count` kinds apply to both root queries and relationship queries.
 
 ```typescript
 filter: {
@@ -174,6 +175,7 @@ filter: {
     one: ({ kind }) => ({ isReadable: { equals: true } }),
     many: ({ kind }) => ({ isReadable: { equals: true } }),
     count: ({ kind }) => ({ isReadable: { equals: true } }),
+    byRelationshipFilter: ({ kind }) => ({ isReadable: { equals: true } }),
   },
 }
 ```
@@ -216,6 +218,21 @@ export default config({
 Filter based access control cannot be used for `create` operations.
 If you want to limit `create` operations, use either `access.operation.create` or `access.item.create`.
 {% /hint %}
+
+### Filtering through relationships
+
+When filtering `posts(where: { author: { name: { equals: "Alice" } } })`, Keystone checks `Author.access.operation.query.byRelationshipFilter` and applies `Author.access.filter.query.byRelationshipFilter` to the matching authors. Returning `false` from operation access rejects the filter with an access-denied error. Returning `false` from filter access makes every author inaccessible through relationship filters.
+
+This applies recursively to single and many relationships in user-supplied filters, including unique filters used to query, update, delete, or connect items. Shared query access functions receive `kind: 'byRelationshipFilter'` for these checks. Direct author queries continue to use their own `one`, `many`, or `count` access rules.
+
+Relationship filters operate over accessible related items:
+
+- `some` matches if an accessible related item matches the filter.
+- `none` matches if no accessible related item matches the filter.
+- `every` matches if all accessible related items match the filter. Inaccessible items are ignored; an empty accessible set matches.
+- A single relationship filtered with `null` matches when there is no accessible related item, including when the related item exists but is inaccessible.
+
+Access-control filters are trusted configuration and are resolved without recursively applying relationship filter access. Sudo bypasses these controls.
 
 ### Item (mutations only)
 
@@ -267,7 +284,7 @@ List-level access control functions are passed a collection of arguments which c
 | `context`   | The [`KeystoneContext`](../context/overview) object of the originating GraphQL operation.                     |
 | `listKey`   | The key of the list being operated on.                                                                        |
 | `operation` | The operation being performed (`'query'`, `'create'`, `'update'`, `'delete'`).                                |
-| `kind`      | For operation access on `query`, the query kind (`'one'`, `'many'`, or `'count'`).                            |
+| `kind`      | For operation access on `query`, the query kind (`'one'`, `'many'`, `'count'`, or `'byRelationshipFilter'`).  |
 | `inputData` | For `create` and `update` operations, this is the value of `data` passed into the mutation. (Item level only) |
 | `item`      | The existing item being updated/deleted in `update` and `delete` operations. (Item level only)                |
 

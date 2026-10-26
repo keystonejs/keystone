@@ -60,12 +60,16 @@ async function getFilteredItem(
   }
 
   // merge the filter access control and try to get the item
-  let where = mapUniqueWhereToWhere(uniqueWhere, list)
+  let where = await mapUniqueWhereToWhere(uniqueWhere, list, context)
 
-  await checkFilterOrderAccess([...traverse(list, where as any)], context, 'filter')
+  await checkFilterOrderAccess(
+    [...traverse(list, uniqueWhere as UniqueInputFilter)],
+    context,
+    'filter'
+  )
 
   if (typeof accessFilters === 'object') {
-    where = { AND: [where, await resolveWhereInput(accessFilters, list, context)] }
+    where = { AND: [where, await resolveWhereInput(accessFilters, list, context.sudo())] }
   }
 
   const item = await context.prisma[list.listKey].findFirst({
