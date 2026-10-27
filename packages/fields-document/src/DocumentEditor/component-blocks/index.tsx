@@ -18,7 +18,7 @@ import { ComponentBlockRender } from './component-block-render.tsx'
 import { ChromefulComponentBlockElement } from './chromeful-element.tsx'
 import { ChromelessComponentBlockElement } from './chromeless-element.tsx'
 
-export { withComponentBlocks } from './with-component-blocks.tsx'
+export { withComponentBlocks } from './with-component-blocks.ts'
 
 export const ComponentBlockContext = createContext<Record<string, ComponentBlock>>({})
 

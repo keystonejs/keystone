@@ -2,7 +2,7 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 import { describe, expect, test } from 'vitest'
-import { allMarkdownShortcuts } from './marks.tsx'
+import { allMarkdownShortcuts } from './marks.ts'
 import { jsx, makeEditor } from './tests/utils.tsx'
 
 describe.each(

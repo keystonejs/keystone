@@ -154,8 +154,9 @@ export function multiselect<ListTypeInfo extends BaseListTypeInfo>(
         create: { arg: g.arg({ type }), resolve: resolveCreate },
         update: { arg: g.arg({ type }), resolve: resolveUpdate },
       },
-      output: g.field({
+      output: g.fieldTypeOutput({
         type: type,
+        select: {},
         resolve({ value }) {
           return value as any
         },

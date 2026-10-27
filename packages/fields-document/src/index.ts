@@ -152,7 +152,8 @@ export function document<ListTypeInfo extends BaseListTypeInfo>({
         },
         update: { arg: g.arg({ type: g.JSON }), resolve: inputResolver },
       },
-      output: g.field({
+      output: g.fieldTypeOutput({
+        select: {},
         type: g.object<{ document: JSONValue }>()({
           name: `${meta.listKey}_${meta.fieldKey}_Document`,
           fields: {

@@ -200,7 +200,8 @@ export function idFieldType(config: IdFieldConfig): FieldTypeFunc<BaseListTypeIn
         uniqueWhere: { arg: g.arg({ type: g.ID }), resolve: parse },
         orderBy: { arg: g.arg({ type: orderDirectionEnum }) },
       },
-      output: g.field({
+      output: g.fieldTypeOutput({
+        select: {},
         type: g.nonNull(g.ID),
         resolve({ value }) {
           return value.toString()

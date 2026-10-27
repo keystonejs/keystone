@@ -1,5 +1,11 @@
 # @keystone-6/fields-document
 
+## 11.0.6
+
+### Patch Changes
+
+- [#10044](https://github.com/keystonejs/keystone/pull/10044) [`0a5a8f9`](https://github.com/keystonejs/keystone/commit/0a5a8f99c806d03a2fbe1883fe04322520be3e20) Thanks [@emmatown](https://github.com/emmatown)! - Optimises database queries to fetch only required columns. Adds `selectItem`, `g.itemField` and `g.fieldTypeOutput` to declare field selections, and `db.requireItemSelection` to enforce them.
+
 ## 11.0.5
 
 ### Patch Changes
