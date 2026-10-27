@@ -1,7 +1,7 @@
 {
   "name": "@keystone-6/fields-document",
   "description": "KeystoneJS Document Field Type",
-  "version": "11.0.5",
+  "version": "11.0.6",
   "license": "MIT",
   "type": "module",
   "exports": {
@@ -75,14 +75,13 @@
     "@types/is-hotkey": "^0.1.7",
     "@types/react": "catalog:",
     "jest-diff": "^29.0.0",
-    "next": "catalog:",
     "pretty-format": "^29.0.0",
     "react": "catalog:",
     "react-dom": "catalog:",
     "slate-hyperscript": "^0.100.0"
   },
   "peerDependencies": {
-    "@keystone-6/core": "^8.0.0",
+    "@keystone-6/core": "^8.2.0",
     "graphql": "catalog:",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
