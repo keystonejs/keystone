@@ -172,7 +172,6 @@ export function config<TypeInfo extends BaseKeystoneTypeInfo>(
     },
     server: {
       ...config.server,
-      maxFileSize: config.server?.maxFileSize ?? 200 * 1024 * 1024, // 200 MiB
       extendExpressApp: config.server?.extendExpressApp ?? noop,
       extendHttpServer: config.server?.extendHttpServer ?? noop,
       cors,

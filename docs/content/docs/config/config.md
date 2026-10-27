@@ -271,7 +271,6 @@ Options:
   If left undefined `cors` will not be used.
 - `port` (default: `3000` ): The port your Express server will listen on.
 - `options` (default: `undefined`): The [`http.createServer`](https://nodejs.org/api/http.html#httpcreateserveroptions-requestlistener) options used by Node.
-- `maxFileSize` (default: `200 * 1024 * 1024`): The maximum file size allowed for uploads. If left undefined, defaults to `200 MiB`
 - `extendExpressApp` (default: `undefined`): Allows you to extend the express app that Keystone creates.
 - `extendHttpServer` (default: `undefined`): Allows you to extend the node `http` server that runs Keystone.
 
@@ -280,7 +279,6 @@ export default config<TypeInfo>({
   server: {
     cors: { origin: ['http://localhost:7777'], credentials: true },
     port: 3000,
-    maxFileSize: 200 * 1024 * 1024,
     extendExpressApp: async (app, commonContext) => {
       /* ... */
     },

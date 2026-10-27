@@ -30,7 +30,7 @@ import { css } from '@keystar/ui/style'
 import { Text } from '@keystar/ui/typography'
 
 import type { controller } from './index.tsx'
-import type { FieldProps } from '../../../../types/index.ts'
+import type { FieldProps } from '@keystone-6/core/types'
 import type { FileValue } from './index.tsx'
 
 export function Field(props: FieldProps<typeof controller>) {

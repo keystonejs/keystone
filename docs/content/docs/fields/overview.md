@@ -36,11 +36,10 @@ import {
 
   // Virtual type
   virtual,
-
-  // File types
-  file,
-  image,
 } from '@keystone-6/core/fields'
+
+// File types
+import { file, image } from '@keystone-6/fields-media-multipart'
 
 // Complex types
 import { document } from '@keystone-6/fields-document'
