@@ -3,6 +3,7 @@ import { test } from 'node:test'
 
 import { cloudinaryImage } from '../packages/cloudinary/src/index.ts'
 import { document, structure } from '../packages/fields-document/src/index.ts'
+import { file, image } from '../packages/fields-media-multipart/src/index.ts'
 import { action, g, selectFromInfo, list, selectItem } from '@keystone-6/core'
 import { fieldType, type BaseItem, type FieldTypeFunc } from '@keystone-6/core/types'
 import { allowAll, denyAll } from '@keystone-6/core/access'
@@ -12,9 +13,7 @@ import {
   calendarDay,
   checkbox,
   decimal,
-  file,
   float,
-  image,
   integer,
   json,
   multiselect,

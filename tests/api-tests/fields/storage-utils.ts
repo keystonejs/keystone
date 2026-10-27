@@ -4,7 +4,7 @@ import path from 'node:path'
 import fs from 'node:fs'
 import fsp from 'node:fs/promises'
 // @ts-expect-error
-import Upload from 'graphql-upload/Upload.js'
+import Upload from 'graphql-upload/Upload.mjs'
 import mime from 'mime'
 
 export async function collectStream(stream: Readable) {
