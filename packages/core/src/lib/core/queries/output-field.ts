@@ -93,7 +93,7 @@ async function fetchRelatedItems(
     return toFetch.map(() => undefined)
   }
 
-  const accessFilters = await getAccessFilters(foreignList, context, 'query')
+  const accessFilters = await getAccessFilters(foreignList, context, 'query', 'one')
   if (accessFilters === false) {
     return toFetch.map(() => undefined)
   }

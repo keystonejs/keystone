@@ -1,6 +1,6 @@
 ---
-title: "Access Control"
-description: "Complete reference docs for Keystone’s Access Control API. Configure who can read, create, update, and delete items in your Keystone system."
+title: 'Access Control'
+description: 'Complete reference docs for Keystone’s Access Control API. Configure who can read, create, update, and delete items in your Keystone system.'
 ---
 
 {% hint kind="warn" %}
@@ -11,19 +11,25 @@ The `access` property of the [list configuration](./lists) object configures who
 The `access` property of the [field configuration](../fields/overview) object configures who can read, create, and update specific field values of an item.
 
 ```typescript
-import { config, list } from '@keystone-6/core';
-import { text } from '@keystone-6/core/fields';
+import { config, list } from '@keystone-6/core'
+import { text } from '@keystone-6/core/fields'
 
 export default config({
   lists: {
     ListKey: list({
       fields: {
-        fieldName: text({ access: { /* ... */ }, }),
+        fieldName: text({
+          access: {
+            /* ... */
+          },
+        }),
       },
-      access: { /* ... */ },
+      access: {
+        /* ... */
+      },
     }),
   },
-});
+})
 ```
 
 ## List Access Control
@@ -45,8 +51,8 @@ Please note that Keystone does not automatically configure nor leverage database
 If you are happy to allow all parts of a list to be accessible you can use:
 
 ```typescript
-import { config, list } from '@keystone-6/core';
-import { allowAll } from '@keystone-6/core/access';
+import { config, list } from '@keystone-6/core'
+import { allowAll } from '@keystone-6/core/access'
 
 export default config({
   lists: {
@@ -54,7 +60,7 @@ export default config({
       access: allowAll,
     }),
   },
-});
+})
 ```
 
 {% hint kind="tip" %}
@@ -82,7 +88,7 @@ These functions must return `true` if the operation is allowed, or `false` if it
 {% /hint %}
 
 ```typescript
-import { config, list } from '@keystone-6/core';
+import { config, list } from '@keystone-6/core'
 
 export default config({
   lists: {
@@ -97,35 +103,35 @@ export default config({
           create: ({ session, context, listKey, operation }) => true,
           update: ({ session, context, listKey, operation }) => true,
           delete: ({ session, context, listKey, operation }) => true,
-        }
+        },
       },
     }),
   },
-});
+})
 ```
 
 If you are happy setting all of them to true, you can set it for all operations with:
 
 ```typescript
-import { config, list } from '@keystone-6/core';
-import { allowAll } from '@keystone-6/core/access';
+import { config, list } from '@keystone-6/core'
+import { allowAll } from '@keystone-6/core/access'
 
 export default config({
   lists: {
     ListKey: list({
       access: {
-        operation: allowAll
+        operation: allowAll,
       },
     }),
   },
-});
+})
 ```
 
 If you want to set all but one operation to true, you can do so using `allOperations` and `denyAll` from `@keystone-6/core/access` such as:
 
 ```typescript
-import { config, list } from '@keystone-6/core';
-import { denyAll, allOperations } from '@keystone-6/core/access';
+import { config, list } from '@keystone-6/core'
+import { denyAll, allOperations } from '@keystone-6/core/access'
 
 export default config({
   lists: {
@@ -135,11 +141,11 @@ export default config({
           ...allOperations(denyAll),
           // hint: unconditionally returning `true` is equivalent to using allowAll for this operation
           query: ({ session, context, listKey, operation, kind }) => true,
-        }
+        },
       },
     }),
   },
-});
+})
 ```
 
 {% hint kind="warn" %}
@@ -159,6 +165,19 @@ Filter-level access control lets you restrict which items can be operated on by 
 In general, the filter access control functions will return GraphQL filters.
 They can also return boolean values `true` or `false` to match or exclude all items.
 
+`access.filter.query` can be a shared function receiving `kind: 'one' | 'many' | 'count'`, or an object with required `one`, `many`, and `count` functions.
+These kinds apply to both root queries and relationship queries.
+
+```typescript
+filter: {
+  query: {
+    one: ({ kind }) => ({ isReadable: { equals: true } }),
+    many: ({ kind }) => ({ isReadable: { equals: true } }),
+    count: ({ kind }) => ({ isReadable: { equals: true } }),
+  },
+}
+```
+
 {% hint kind="warn" %}
 Each `filter` type _defaults to an empty filter_, unless configured.
 {% /hint %}
@@ -177,7 +196,7 @@ export default config({
       }
       access: {
         filter: {
-          query: ({ session, context, listKey, operation }) => {
+          query: ({ session, context, listKey, operation, kind }) => {
             return { isReadable: { equals: true } };
           },
           update: ({ session, context, listKey, operation }) => {
@@ -215,8 +234,8 @@ These functions must return `true` if the operation is allowed, or `false` if it
 {% /hint %}
 
 ```typescript
-import { config, list } from '@keystone-6/core';
-import { checkbox } from '@keystone-6/core/fields';
+import { config, list } from '@keystone-6/core'
+import { checkbox } from '@keystone-6/core/fields'
 
 export default config({
   lists: {
@@ -226,11 +245,11 @@ export default config({
           create: ({ session, context, listKey, operation, inputData }) => true,
           update: ({ session, context, listKey, operation, inputData, item }) => true,
           delete: ({ session, context, listKey, operation, item }) => true,
-        }
+        },
       },
     }),
   },
-});
+})
 ```
 
 {% hint kind="warn" %}
@@ -291,8 +310,8 @@ If a mutation returns an item type that has field access control defined, field 
 {% /hint %}
 
 ```typescript
-import { config, list } from '@keystone-6/core';
-import { text } from '@keystone-6/core/fields';
+import { config, list } from '@keystone-6/core'
+import { text } from '@keystone-6/core/fields'
 
 export default config({
   lists: {
@@ -312,7 +331,7 @@ export default config({
       },
     }),
   },
-});
+})
 ```
 
 {% hint kind="tip" %}

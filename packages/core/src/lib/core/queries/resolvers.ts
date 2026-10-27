@@ -87,7 +87,7 @@ export async function findOne(
   const operationAccess = await getOperationQueryAccess(list, context, 'one')
   if (!operationAccess) return null
 
-  const accessFilters = await getAccessFilters(list, context, 'query')
+  const accessFilters = await getAccessFilters(list, context, 'query', 'one')
   if (accessFilters === false) return null
 
   // validate and resolve the input filter
@@ -133,7 +133,7 @@ export async function findMany(
   const operationAccess = await getOperationQueryAccess(list, context, 'many')
   if (!operationAccess) return []
 
-  const accessFilters = await getAccessFilters(list, context, 'query')
+  const accessFilters = await getAccessFilters(list, context, 'query', 'many')
   if (accessFilters === false) return []
 
   // validate and resolve the input filter
@@ -236,7 +236,7 @@ export async function count(
   const operationAccess = await getOperationQueryAccess(list, context, 'count')
   if (!operationAccess) return 0
 
-  const accessFilters = await getAccessFilters(list, context, 'query')
+  const accessFilters = await getAccessFilters(list, context, 'query', 'count')
   if (accessFilters === false) return 0
 
   const resolvedWhere = await resolveWhereInput(where, list, context)
