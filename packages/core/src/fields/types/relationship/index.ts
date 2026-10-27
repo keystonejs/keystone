@@ -1,4 +1,4 @@
-import { g } from '../../../index.ts'
+import { g, selectFromInfo } from '../../../index.ts'
 import { type ListMetaSource, getAdminMetaForRelationshipField } from '../../../lib/admin-meta.ts'
 import {
   type BaseListTypeInfo,
@@ -328,15 +328,17 @@ export function relationship<
             },
           },
         },
-        output: g.field({
+        output: g.fieldTypeOutput({
+          select: {},
           args: foreignListTypes.findManyArgs,
           type: g.list(g.nonNull(foreignListTypes.output)),
-          resolve({ value }, args) {
-            return value.findMany(args)
+          resolve({ value }, args, context, info) {
+            return value.findMany(args, selectFromInfo(context, info, foreignListKey))
           },
         }),
         extraOutputFields: {
-          [`${fieldKey}Count`]: g.field({
+          [`${fieldKey}Count`]: g.fieldTypeOutput({
+            select: {},
             type: g.Int,
             args: {
               where: g.arg({
@@ -388,10 +390,11 @@ export function relationship<
           },
         },
       },
-      output: g.field({
+      output: g.fieldTypeOutput({
+        select: {},
         type: foreignListTypes.output,
-        resolve({ value }) {
-          return value()
+        resolve({ value }, _args, context, info) {
+          return value(selectFromInfo(context, info, foreignListKey))
         },
       }),
     })

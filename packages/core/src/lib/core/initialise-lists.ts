@@ -30,6 +30,8 @@ import type {
   NextFieldType,
 } from '../../types/index.ts'
 import { QueryMode } from '../../types/index.ts'
+import { callbackWithoutItem, getCallbackSelection } from '../../types/item-callback.ts'
+import { fieldItemRequirements } from '../../types/item-field.ts'
 import type { FieldHooks, ResolvedFieldHooks, ResolvedListHooks } from '../../types/config/hooks.ts'
 import type {
   BaseActions,
@@ -53,6 +55,8 @@ import { assertFieldsValid } from './field-assertions.ts'
 import { type DatabaseIndex, resolveDatabaseIndexes } from './database-indexes.ts'
 import { type CompoundUniqueSelector, resolveCompoundUniqueSelectors } from './compound-unique.ts'
 import { outputTypeField } from './queries/output-field.ts'
+import { addCallbackFields, itemFieldColumns } from './queries/select.ts'
+import { mutationSelections, type MutationSelections } from './mutations/select.ts'
 import { type ResolvedDBField, resolveRelationships } from './resolve-relationships.ts'
 import { areArraysEqual } from './utils.ts'
 
@@ -209,6 +213,10 @@ export type InitialisedList = {
   access: ResolvedListAccessControl
 
   fields: Record<string, InitialisedField>
+  itemFieldColumns: Map<string, string[]>
+  itemSelectionColumns: Set<string>
+  cacheHintSelection: Record<string, true> | undefined
+  mutationSelections: MutationSelections
   actions: InitialisedAction[]
   groups: GroupInfo<BaseListTypeInfo>[]
 
@@ -236,6 +244,7 @@ export type InitialisedList = {
   }
 
   prisma: {
+    requireItemSelection: boolean
     types: GraphQLNames // TODO: not completely appropriate, but what is used for now
     listKey: string
     mapping: string | undefined
@@ -258,7 +267,15 @@ export type InitialisedList = {
 type ListConfigType = KeystoneConfig['lists'][string]
 type FieldConfigType = ReturnType<FieldTypeFunc<any>>
 type PartiallyInitialisedList1 = { graphql: { isEnabled: InitialisedList['graphql']['isEnabled'] } }
-type PartiallyInitialisedList2 = Omit<InitialisedList, 'lists' | 'resolvedDbFields'>
+type PartiallyInitialisedList2 = Omit<
+  InitialisedList,
+  | 'lists'
+  | 'resolvedDbFields'
+  | 'itemFieldColumns'
+  | 'itemSelectionColumns'
+  | 'cacheHintSelection'
+  | 'mutationSelections'
+>
 type FieldOmit = NonNullable<NonNullable<FieldConfigType['graphql']>['omit']>
 type ResolvedFieldOmit = {
   type: boolean
@@ -383,9 +400,11 @@ function getIsEnabledField(
   }
 }
 
-function defaultListHooksResolveInput({ resolvedData }: { resolvedData: any }) {
-  return resolvedData
-}
+const defaultListHooksResolveInput = callbackWithoutItem(
+  ({ resolvedData }: { resolvedData: any }) => {
+    return resolvedData
+  }
+)
 
 function parseListHooks(hooks: ListHooks<BaseListTypeInfo>): ResolvedListHooks<BaseListTypeInfo> {
   return {
@@ -405,15 +424,11 @@ function parseListHooks(hooks: ListHooks<BaseListTypeInfo>): ResolvedListHooks<B
   }
 }
 
-function defaultFieldHooksResolveInput({
-  resolvedData,
-  fieldKey,
-}: {
-  resolvedData: any
-  fieldKey: string
-}) {
-  return resolvedData[fieldKey]
-}
+const defaultFieldHooksResolveInput = callbackWithoutItem(
+  ({ resolvedData, fieldKey }: { resolvedData: any; fieldKey: string }) => {
+    return resolvedData[fieldKey]
+  }
+)
 
 function parseFieldHooks(
   hooks: FieldHooks<BaseListTypeInfo, BaseFieldTypeInfo>
@@ -494,7 +509,6 @@ function getListsWithInitialisedFields(
                     outputField,
                     field.dbField,
                     field.graphql?.cacheHint,
-                    field.access.read.item,
                     listKey,
                     fieldPath,
                     listsRef
@@ -897,6 +911,7 @@ function getListsWithInitialisedFields(
       },
 
       prisma: {
+        requireItemSelection: listConfig.db.requireItemSelection ?? config.db.requireItemSelection,
         types: {
           ...names.graphql.names,
         },
@@ -920,7 +935,7 @@ function getListsWithInitialisedFields(
       cacheHint: (() => {
         const cacheHint = listConfig.graphql.cacheHint
         if (typeof cacheHint === 'function') return cacheHint
-        if (cacheHint !== undefined) return () => cacheHint
+        if (cacheHint !== undefined) return callbackWithoutItem(() => cacheHint)
         return undefined
       })(),
 
@@ -1245,7 +1260,12 @@ export function initialiseLists(config: KeystoneConfig): Record<string, Initiali
     listsRef[list.listKey] = {
       ...list,
       lists: listsRef,
-    }
+    } as InitialisedList
+  }
+
+  for (const list of Object.values(listsRef)) {
+    initialiseListSelections(list)
+    if (list.prisma.requireItemSelection) assertItemSelections(list)
   }
 
   const typeNames = new Set(
@@ -1350,4 +1370,45 @@ export function initialiseLists(config: KeystoneConfig): Record<string, Initiali
   introspectGraphQLTypes(listsRef)
 
   return listsRef
+}
+
+function initialiseListSelections(list: InitialisedList) {
+  list.itemFieldColumns = itemFieldColumns(list.resolvedDbFields)
+  list.itemSelectionColumns = new Set()
+  const cacheHintSelection: Record<string, true> = {}
+  list.cacheHintSelection =
+    list.cacheHint && !addCallbackFields(cacheHintSelection, list.cacheHint, list)
+      ? undefined
+      : cacheHintSelection
+  list.mutationSelections = mutationSelections(list)
+}
+
+function assertItemSelections(list: InitialisedList) {
+  const missing: string[] = []
+  if (!list.cacheHintSelection) missing.push('graphql.cacheHint')
+  for (const [key, field] of Object.entries(list.fields)) {
+    if (!field.graphql.isEnabled.read || !field.output) continue
+    if (getCallbackSelection(field.access.read.item) === 'all') {
+      missing.push(`fields.${key}.access.read.item`)
+    }
+    for (const [fieldKey, output] of [
+      [key, field.output] as const,
+      ...Object.entries(field.extraOutputFields ?? {}),
+    ]) {
+      if (output.resolve && !fieldItemRequirements(output)) {
+        missing.push(`fields.${fieldKey}.output`)
+      }
+    }
+  }
+  const { existing, result } = list.mutationSelections
+  if (list.graphql.isEnabled.update) {
+    missing.push(...existing.update.missing, ...result.update.missing)
+  }
+  if (list.graphql.isEnabled.delete) missing.push(...existing.delete.missing)
+  if (list.graphql.isEnabled.create) missing.push(...result.create.missing)
+  if (missing.length) {
+    throw new Error(
+      `${list.listKey}: db.requireItemSelection needs declared item selections for ${[...new Set(missing)].join(', ')}`
+    )
+  }
 }

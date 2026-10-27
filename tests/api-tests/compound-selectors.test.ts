@@ -128,7 +128,17 @@ const runner = setupTestRunner({
         },
       }),
       Profile: list({
-        access: allowAll,
+        access: {
+          operation: allowAll,
+          filter: {
+            query: {
+              one: ({ session }) => !session?.denyProfileLookup,
+              many: ({ session }) =>
+                session?.queryProfileName ? { name: { equals: session.queryProfileName } } : true,
+              count: allowAll,
+            },
+          },
+        },
         fields: {
           name: text(),
           page: relationship({ ref: 'Page.profile', db: { foreignKey: true } }),
@@ -153,7 +163,13 @@ const runner = setupTestRunner({
         },
       }),
       Converted: list({
-        access: allowAll,
+        access: {
+          operation: allowAll,
+          filter: {
+            query: ({ session }) =>
+              session?.queryScope ? { scope: { equals: session.queryScope } } : true,
+          },
+        },
         db: { unique: [{ fields: ['key', 'scope'] }] },
         fields: { key: encodedText, scope: text(), order: integer() },
       }),
@@ -426,6 +442,51 @@ test.each(['db', 'query'] as const)('%s cursor pagination resolves complete comp
   })()
 )
 
+test.each(['db', 'query'] as const)('%s compound cursors respect query access filters', api =>
+  runner(async ({ context }) => {
+    const items = await createPages(context)
+    const scoped = context.withSession({ queryDomain: 'a.example' })
+    for (const cursor of [where('/about', 'b.example'), where('/missing', 'a.example')]) {
+      expect(
+        await scoped[api].Page.findMany({ cursor, orderBy: { order: 'asc' }, skip: 1 })
+      ).toEqual([])
+    }
+    expect(
+      await scoped[api].Page.findMany({
+        cursor: where('/about', 'a.example'),
+        orderBy: { order: 'asc' },
+        skip: 1,
+      })
+    ).toMatchObject([{ id: items[2].id }])
+  })()
+)
+
+test.each(['db', 'query'] as const)(
+  '%s relationship cursors use the many-query access filter',
+  api =>
+    runner(async ({ context }) => {
+      await createPages(context)
+      const visible = await context.query.Profile.createOne({
+        data: { name: 'visible', page: { connect: where('/about', 'a.example') } },
+      })
+      await context.query.Profile.createOne({
+        data: { name: 'hidden', page: { connect: where('/about', 'b.example') } },
+      })
+      const scoped = context.withSession({ denyProfileLookup: true, queryProfileName: 'visible' })
+      const cursor = { page: where('/about', 'a.example') }
+      expect(await scoped[api].Profile.findOne({ where: cursor })).toBeNull()
+      expect(
+        await scoped[api].Profile.findMany({
+          cursor: { page: where('/about', 'b.example') },
+          take: 1,
+        })
+      ).toEqual([])
+      expect(await scoped[api].Profile.findMany({ cursor, take: 1 })).toMatchObject([
+        { id: visible.id },
+      ])
+    })()
+)
+
 test(
   'GraphQL and relationship cursor arguments use the same compound inputs',
   runner(async ({ context, gql }) => {
@@ -463,7 +524,9 @@ test(
     })
     expect(holder.converted).toEqual([{ id: item.id }])
     expect(
-      await context.db.Converted.findMany({ cursor: selector, orderBy: { order: 'asc' }, skip: 1 })
+      await context
+        .withSession({ queryScope: 'scope' })
+        .db.Converted.findMany({ cursor: selector, orderBy: { order: 'asc' }, skip: 1 })
     ).toMatchObject([{ id: second.id }])
     expect(mutationCalls).toBe(0)
     await context.db.Converted.deleteOne({ where: selector })

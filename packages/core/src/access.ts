@@ -1,5 +1,6 @@
 import type { MaybePromise } from './types/utils.ts'
 import type { BaseListTypeInfo } from './types/index.ts'
+import { callbackWithoutItem } from './types/item-callback.ts'
 
 export function allowAll() {
   return true
@@ -14,6 +15,10 @@ export function unfiltered<ListTypeInfo extends BaseListTypeInfo>(): MaybePromis
 > {
   return true
 }
+
+callbackWithoutItem(allowAll)
+callbackWithoutItem(denyAll)
+callbackWithoutItem(unfiltered)
 
 export function allOperations<F>(f: F) {
   return {

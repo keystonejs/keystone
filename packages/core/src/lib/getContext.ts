@@ -38,7 +38,7 @@ function getInternalGraphQLSchema(config: KeystoneConfig) {
 
   const lists = initialiseLists(withoutOmit)
   const adminMeta = createAdminMeta(withoutOmit, lists)
-  return createGraphQLSchema(withoutOmit, lists, adminMeta, 'internal')
+  return { schema: createGraphQLSchema(withoutOmit, lists, adminMeta, 'internal'), lists }
 }
 
 function injectNewDefaults(prismaClient: unknown, lists: Record<string, InitialisedList>) {
@@ -77,9 +77,11 @@ function injectNewDefaults(prismaClient: unknown, lists: Record<string, Initiali
 export function createContextSystem(config: KeystoneConfig) {
   const lists = initialiseLists(config)
   const adminMeta = createAdminMeta(config, lists)
+  const publicSchema = createGraphQLSchema(config, lists, adminMeta, 'public')
+  const internal = getInternalGraphQLSchema(config)
   const graphQLSchemas = {
-    public: createGraphQLSchema(config, lists, adminMeta, 'public'),
-    internal: getInternalGraphQLSchema(config),
+    public: publicSchema,
+    internal: internal.schema,
   }
 
   return {
@@ -90,6 +92,26 @@ export function createContextSystem(config: KeystoneConfig) {
     adminMeta,
     lists,
     getKeystone: (PM: any, existingPrismaClient?: any) => {
+      const prismaModelSelections: Record<string, Record<string, true>> = {}
+      for (const listKey of Object.keys(lists)) {
+        const scalarFields = PM.Prisma[`${listKey}ScalarFieldEnum`] as
+          | Record<string, string>
+          | undefined
+        if (!scalarFields) {
+          throw new Error(`Prisma scalar fields are unavailable for ${listKey}`)
+        }
+        prismaModelSelections[listKey] = Object.freeze(
+          Object.fromEntries(Object.values(scalarFields).map(field => [field, true] as const))
+        )
+        for (const list of [lists[listKey], internal.lists[listKey]]) {
+          for (const column of list.itemSelectionColumns) {
+            if (prismaModelSelections[listKey][column] === true) continue
+            throw new Error(
+              `${listKey}: item selection has an unknown Prisma item column: ${column}`
+            )
+          }
+        }
+      }
       const prismaClient =
         existingPrismaClient ??
         config.db.extendPrismaClient(
@@ -100,6 +122,7 @@ export function createContextSystem(config: KeystoneConfig) {
         lists,
         graphQLSchemas,
         prismaClient,
+        prismaModelSelections,
         prismaTypes: {
           DbNull: PM.Prisma.DbNull,
           JsonNull: PM.Prisma.JsonNull,

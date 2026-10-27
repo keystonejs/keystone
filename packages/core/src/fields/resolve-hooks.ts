@@ -1,4 +1,5 @@
 import type { MaybePromise } from '../types/index.ts'
+import { callbackWithoutItem, combineCallbackFields } from '../types/item-callback.ts'
 
 function mergeVoidFn<
   Args,
@@ -7,10 +8,14 @@ function mergeVoidFn<
 >(a: A, b: B) {
   if (!a) return b
   if (!b) return a
-  return async (args: Args) => {
-    await a?.(args)
-    await b?.(args)
-  }
+  return combineCallbackFields(
+    async (args: Args) => {
+      await a?.(args)
+      await b?.(args)
+    },
+    a,
+    b
+  )
 }
 
 type ExpandedHooks<CreateArgs, UpdateArgs, DeleteArgs> = {
@@ -47,11 +52,15 @@ function expandHooks<CreateArgs, UpdateArgs, DeleteArgs>(
   return typeof fn === 'function' ? { create: fn, update: fn, delete: fn } : fn
 }
 
-const emptyFn = () => {}
+const emptyFn = callbackWithoutItem(() => {})
 
 export function expandVoidHooks<CreateArgs, UpdateArgs, DeleteArgs>(
   hooks: Hooks<CreateArgs, UpdateArgs, DeleteArgs> | undefined
-): Required<ExpandedHooks<CreateArgs, UpdateArgs, DeleteArgs>> {
+): {
+  create: (args: CreateArgs) => MaybePromise<void>
+  update: (args: UpdateArgs) => MaybePromise<void>
+  delete: (args: DeleteArgs) => MaybePromise<void>
+} {
   const expanded = hooks ? expandHooks(hooks) : {}
   return {
     create: expanded.create ?? emptyFn,

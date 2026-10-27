@@ -254,9 +254,12 @@ type DBFieldToOutputValue<TDBField extends DBField> =
       }[Mode]
     : TDBField extends RelationDBField<infer Mode>
       ? {
-          one: () => Promise<BaseItem>
+          one: (select?: Readonly<Record<string, true | undefined>>) => Promise<BaseItem>
           many: {
-            findMany(args: FindManyArgsValue): Promise<BaseItem[]>
+            findMany(
+              args: FindManyArgsValue,
+              select?: Readonly<Record<string, true | undefined>>
+            ): Promise<BaseItem[]>
             count(args: { where: FindManyArgsValue['where'] }): Promise<number>
           }
         }[Mode]

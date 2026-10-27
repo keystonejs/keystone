@@ -1,5 +1,25 @@
 # @keystone-6/core
 
+## 8.2.0
+
+### Minor Changes
+
+- [#10044](https://github.com/keystonejs/keystone/pull/10044) [`0a5a8f9`](https://github.com/keystonejs/keystone/commit/0a5a8f99c806d03a2fbe1883fe04322520be3e20) Thanks [@emmatown](https://github.com/emmatown)! - Optimises database queries to fetch only required columns. Adds `selectItem`, `g.itemField` and `g.fieldTypeOutput` to declare field selections, and `db.requireItemSelection` to enforce them.
+
+- [#10057](https://github.com/keystonejs/keystone/pull/10057) [`9a60c39`](https://github.com/keystonejs/keystone/commit/9a60c394942baed146bc3b1349be7a5fb784c0bb) Thanks [@emmatown](https://github.com/emmatown)! - Add `access.filter.query.{one,many,count}` to filter each kind of query separately. Shared `access.filter.query` callbacks now receive `kind: 'one' | 'many' | 'count'`. This matches `access.operation.query.{one,many,count}`
+
+### Patch Changes
+
+- [#10067](https://github.com/keystonejs/keystone/pull/10067) [`6656bd1`](https://github.com/keystonejs/keystone/commit/6656bd19bf135652dbb437123b502620545260da) Thanks [@emmatown](https://github.com/emmatown)! - Fixes cursor pagination revealing the existence of items hidden by list query access filters
+
+- [#10051](https://github.com/keystonejs/keystone/pull/10051) [`1ae5cb8`](https://github.com/keystonejs/keystone/commit/1ae5cb88687bf8b0f5ff5c411459b306843fb7ec) Thanks [@kerdofficial](https://github.com/kerdofficial)! - Fixes `bigInt` validation bounds rejecting valid bigint configuration values at startup and not being enforced on create or update.
+
+- [#10056](https://github.com/keystonejs/keystone/pull/10056) [`6a5f06d`](https://github.com/keystonejs/keystone/commit/6a5f06dd9062f62183d21bdc2cf37af8e89c1e1c) Thanks [@RaphaelFakhri](https://github.com/RaphaelFakhri)! - Fixes `decimal` fields comparing `validation.min` and `validation.max` as strings at startup, which rejected valid bounds like `min: '2', max: '10'` and accepted a `max` smaller than `min`
+
+- [#10052](https://github.com/keystonejs/keystone/pull/10052) [`d5848ce`](https://github.com/keystonejs/keystone/commit/d5848ce084d03dd60266d7a85dac2d21bcfdc79f) Thanks [@emmatown](https://github.com/emmatown)! - Fixes item form briefly being replaced with a loading spinner when saving an item
+
+- [#10054](https://github.com/keystonejs/keystone/pull/10054) [`987c2bc`](https://github.com/keystonejs/keystone/commit/987c2bc887877c3042411a8c5fd7141bd3e9867b) Thanks [@emmatown](https://github.com/emmatown)! - Avoids allocating promises for synchronous field read access and output resolution
+
 ## 8.1.0
 
 ### Minor Changes
