@@ -1,7 +1,7 @@
 import { createReadStream } from 'node:fs'
 import { resolve, basename } from 'node:path'
 // @ts-expect-error
-import Upload from 'graphql-upload/Upload.js'
+import Upload from 'graphql-upload/Upload.mjs'
 import cloudinary from 'cloudinary'
 import { cloudinaryImage } from './index.ts'
 

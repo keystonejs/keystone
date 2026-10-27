@@ -1,5 +1,6 @@
 import { expect, test, vi } from 'vitest'
-import { text, image } from '@keystone-6/core/fields'
+import { text } from '@keystone-6/core/fields'
+import { image } from '@keystone-6/fields-media-multipart'
 import { list } from '@keystone-6/core'
 import { setupTestRunner } from '@keystone-6/api-tests/test-runner'
 import { allowAll } from '@keystone-6/core/access'
@@ -12,7 +13,7 @@ import {
   readTestFile,
 } from './storage-utils.ts'
 // @ts-expect-error
-import Upload from 'graphql-upload/Upload.js'
+import Upload from 'graphql-upload/Upload.mjs'
 import { Readable } from 'stream'
 import { randomBytes } from 'crypto'
 import type { BaseKeystoneTypeInfo, StorageStrategy } from '@keystone-6/core/types'

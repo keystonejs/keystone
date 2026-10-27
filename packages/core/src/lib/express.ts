@@ -7,8 +7,6 @@ import { GraphQLError, type GraphQLFormattedError } from 'graphql/index.js'
 import { type ApolloServerOptions, ApolloServer } from '@apollo/server'
 import { ApolloServerPluginLandingPageDisabled } from '@apollo/server/plugin/disabled'
 import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin/landingPage/default'
-// @ts-expect-error
-import graphqlUploadExpress from 'graphql-upload/graphqlUploadExpress.js'
 import type { KeystoneContext, KeystoneConfig } from '../types/index.ts'
 
 /*
@@ -86,9 +84,6 @@ export async function createExpressServer(
   } as ApolloServerOptions<KeystoneContext> // TODO: satisfies
 
   const apolloServer = new ApolloServer({ ...serverConfig })
-  const maxFileSize = config.server.maxFileSize
-
-  expressServer.use(graphqlUploadExpress({ maxFileSize }))
   await apolloServer.start()
   expressServer.use(
     config.graphql.path,
