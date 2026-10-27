@@ -1,4 +1,4 @@
-import { image } from '@keystone-6/core/fields'
+import { image } from '@keystone-6/fields-media-multipart'
 import { inMemoryStorageStrategy, prepareTestFile } from '../../../storage-utils.ts'
 
 export const fieldConfig = () => ({ storage: inMemoryStorageStrategy().storage })

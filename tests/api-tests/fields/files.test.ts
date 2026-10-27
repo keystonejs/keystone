@@ -1,5 +1,6 @@
 import { expect, test, vi } from 'vitest'
-import { file, text } from '@keystone-6/core/fields'
+import { text } from '@keystone-6/core/fields'
+import { file } from '@keystone-6/fields-media-multipart'
 import { list } from '@keystone-6/core'
 import { setupTestRunner } from '@keystone-6/api-tests/test-runner'
 import { allowAll } from '@keystone-6/core/access'

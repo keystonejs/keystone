@@ -1,0 +1,51 @@
+{
+  "name": "@keystone-6/fields-media-multipart",
+  "version": "0.0.0",
+  "description": "Keystone image and file fields with GraphQL multipart uploads",
+  "license": "MIT",
+  "type": "module",
+  "exports": {
+    ".": "./dist/keystone-6-fields-media-multipart.js",
+    "./image/utils": "./dist/keystone-6-fields-media-multipart-image-utils.js",
+    "./file/views": "./dist/keystone-6-fields-media-multipart-file-views.js",
+    "./image/views": "./dist/keystone-6-fields-media-multipart-image-views.js",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist"
+  ],
+  "dependencies": {
+    "@babel/runtime": "^7.24.7",
+    "@keystar/ui": "catalog:",
+    "bytes": "^3.1.1",
+    "graphql-upload": "^15.0.2",
+    "image-size": "^2.0.0",
+    "react-aria": "catalog:"
+  },
+  "peerDependencies": {
+    "@keystone-6/core": "^8.2.0",
+    "@keystar/ui": "catalog:",
+    "graphql": "catalog:",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-aria": "catalog:"
+  },
+  "devDependencies": {
+    "@keystone-6/core": "workspace:^",
+    "@types/bytes": "^3.1.1",
+    "@types/express": "catalog:",
+    "@types/react": "catalog:",
+    "graphql": "catalog:",
+    "react": "catalog:",
+    "react-dom": "catalog:"
+  },
+  "preconstruct": {
+    "entrypoints": [
+      "index.ts",
+      "image/utils.ts",
+      "image/views/index.tsx",
+      "file/views/index.tsx"
+    ]
+  },
+  "repository": "https://github.com/keystonejs/keystone/tree/main/packages/fields-media-multipart"
+}

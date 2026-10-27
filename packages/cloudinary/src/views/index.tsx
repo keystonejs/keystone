@@ -1,7 +1,7 @@
 import type { CellComponent, FieldControllerConfig } from '@keystone-6/core/types'
-import { type ImageValue, validateImage } from '@keystone-6/core/fields/types/image/views'
+import { type ImageValue, validateImage } from '@keystone-6/fields-media-multipart/image/views'
 
-export { Field } from '@keystone-6/core/fields/types/image/views'
+export { Field } from '@keystone-6/fields-media-multipart/image/views'
 
 export const Cell: CellComponent<typeof controller> = ({ value }) => {
   if (!value) return null

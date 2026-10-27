@@ -14,7 +14,9 @@
   "dependencies": {
     "@babel/runtime": "^7.24.7",
     "@keystar/ui": "catalog:",
-    "cloudinary": "^2.0.0"
+    "cloudinary": "^2.0.0",
+    "@keystone-6/fields-media-multipart": "workspace:^",
+    "graphql-upload": "^15.0.2"
   },
   "peerDependencies": {
     "@keystone-6/core": "^8.2.0",
@@ -27,7 +29,6 @@
     "@types/express": "catalog:",
     "@types/react": "catalog:",
     "graphql": "catalog:",
-    "graphql-upload": "^15.0.2",
     "react": "catalog:",
     "react-dom": "catalog:"
   },
