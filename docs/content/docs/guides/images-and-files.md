@@ -3,9 +3,35 @@ title: "Images and Files"
 description: "Learn how to add Images and Files to your project using Keystone’s Storage configuration"
 ---
 
-Keystone [fields](../fields/overview) include the `image` and `file` types.
+The `@keystone-6/fields-media-multipart` package provides Keystone’s `image` and `file` [fields](../fields/overview).
 You can use them to manage images and/or files from within Keystone.
 This guide will show you how to configure images and files in your Keystone schema backed with [Amazon S3 Storage](https://aws.amazon.com/s3/), and thereby guide you on how you could setup a similar setup with a different storage provider.
+
+## Enable multipart uploads
+
+Install `@keystone-6/fields-media-multipart` and `graphql-upload` alongside `@keystone-6/core`.
+Import `image` and `file` from this package and register the multipart middleware in your `keystone.ts`:
+
+```typescript
+import { config } from '@keystone-6/core'
+// @ts-expect-error graphql-upload does not provide TypeScript declarations
+import graphqlUploadExpress from 'graphql-upload/graphqlUploadExpress.js'
+import { lists } from './schema'
+
+export default config({
+  // ...your database configuration
+  lists,
+  server: {
+    extendExpressApp(app) {
+      app.use(graphqlUploadExpress({ maxFileSize: 10 * 1024 * 1024, maxFiles: 10 }))
+    },
+  },
+})
+```
+
+`extendExpressApp` runs before Keystone registers its GraphQL endpoint.
+This example allows up to 10 files per request, with a maximum size of 10 MiB per file.
+You can also configure `maxFieldSize` to limit the size of each non-file multipart field, such as the GraphQL operations payload.
 
 ## Storage with Amazon S3
 
@@ -15,7 +41,8 @@ This example shows an example of how you could store public images in a public S
 ```typescript
 import { list } from '@keystone-6/core'
 import { allowAll } from '@keystone-6/core/access'
-import { text, image, file } from '@keystone-6/core/fields'
+import { text } from '@keystone-6/core/fields'
+import { image, file } from '@keystone-6/fields-media-multipart'
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
 import { S3, GetObjectCommand } from '@aws-sdk/client-s3'
 import { Upload } from '@aws-sdk/lib-storage'

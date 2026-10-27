@@ -7,13 +7,14 @@ import type {
   KeystoneContext,
   MaybePromise,
   StorageStrategy,
-} from '../../../types/index.ts'
-import { fieldType } from '../../../types/index.ts'
-import { g } from '../../../index.ts'
-import { merge } from '../../resolve-hooks.ts'
-import { selectItem } from '../../../types/item-callback.ts'
-import type { InferValueFromArg, InferValueFromInputType } from '@graphql-ts/schema'
-import { toBase64Url } from '../../../lib/encoding.ts'
+} from '@keystone-6/core/types'
+import { fieldType } from '@keystone-6/core/types'
+import { g } from '@keystone-6/core'
+import { merge } from '../resolve-hooks.ts'
+import { selectItem } from '@keystone-6/core'
+import type { InferValueFromArg, InferValueFromInputType } from '@keystone-6/core/graphql-ts'
+import { randomBytes } from 'node:crypto'
+import { Upload } from '../upload.ts'
 
 export type FieldTypeInfo = {
   item: undefined
@@ -44,7 +45,7 @@ export type FileFieldConfig<ListTypeInfo extends BaseListTypeInfo> = CommonField
 const FileFieldInput = g.inputObject({
   name: 'FileFieldInput',
   fields: {
-    upload: g.arg({ type: g.nonNull(g.Upload) }),
+    upload: g.arg({ type: g.nonNull(Upload) }),
   },
 })
 
@@ -156,7 +157,7 @@ export function file<ListTypeInfo extends BaseListTypeInfo>(
         },
       }),
       __ksTelemetryFieldTypeName: '@keystone-6/file',
-      views: '@keystone-6/core/fields/types/file/views',
+      views: '@keystone-6/fields-media-multipart/file/views',
     })
   }
 }
@@ -168,7 +169,7 @@ function defaultTransformName(path: string) {
   // followed by any alphanumerical character before the end of the string
   const [, name, ext] = path.match(/^([^:\n].*?)(\.[A-Za-z0-9]{0,10})?$/) as RegExpMatchArray
 
-  const id = toBase64Url(crypto.getRandomValues(new Uint8Array(16)))
+  const id = randomBytes(16).toString('base64url')
   const urlSafeName = name.replace(/[^A-Za-z0-9]/g, '-')
   if (ext) return `${urlSafeName}-${id}${ext}`
   return `${urlSafeName}-${id}`
