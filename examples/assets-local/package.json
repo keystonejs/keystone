@@ -18,7 +18,9 @@
     "next": "catalog:",
     "react": "catalog:",
     "react-dom": "catalog:",
-    "better-sqlite3": "catalog:"
+    "better-sqlite3": "catalog:",
+    "@keystone-6/fields-media-multipart": "workspace:^",
+    "graphql-upload": "^15.0.2"
   },
   "devDependencies": {
     "@types/bytes": "^3.1.1",

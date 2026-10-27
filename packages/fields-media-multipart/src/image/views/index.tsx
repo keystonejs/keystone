@@ -1,4 +1,4 @@
-import type { CellComponent, FieldControllerConfig } from '../../../../types/index.ts'
+import type { CellComponent, FieldControllerConfig } from '@keystone-6/core/types'
 import { SUPPORTED_IMAGE_EXTENSIONS } from '../utils.ts'
 
 export { Field } from './Field.tsx'

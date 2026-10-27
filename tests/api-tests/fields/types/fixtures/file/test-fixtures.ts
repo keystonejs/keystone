@@ -1,4 +1,4 @@
-import { file } from '@keystone-6/core/fields'
+import { file } from '@keystone-6/fields-media-multipart'
 import { inMemoryStorageStrategy, prepareTestFile } from '../../../storage-utils.ts'
 
 export const name = 'File'

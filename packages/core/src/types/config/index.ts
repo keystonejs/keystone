@@ -122,9 +122,6 @@ export type KeystoneConfigPre<TypeInfo extends BaseKeystoneTypeInfo = BaseKeysto
     /** Configuration options for the cors middleware. Set to `true` to use Keystone's defaults */
     cors?: boolean | CorsOptions
 
-    /** Maximum upload file size allowed (in bytes) */
-    maxFileSize?: number
-
     /** extend the Express application used by Keystone */
     extendExpressApp?: (
       app: express.Express,

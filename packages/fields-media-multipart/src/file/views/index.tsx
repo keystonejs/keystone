@@ -1,8 +1,4 @@
-import type {
-  CellComponent,
-  FieldController,
-  FieldControllerConfig,
-} from '../../../../types/index.ts'
+import type { CellComponent, FieldController, FieldControllerConfig } from '@keystone-6/core/types'
 
 import { validateFile } from './Field.tsx'
 

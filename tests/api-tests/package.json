@@ -44,6 +44,7 @@
     "mariadb": "catalog:"
   },
   "dependencies": {
-    "express": "catalog:"
+    "express": "catalog:",
+    "@keystone-6/fields-media-multipart": "workspace:^"
   }
 }
