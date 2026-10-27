@@ -292,7 +292,7 @@ async function generateGitHubReleaseText(previousTag, releaseTag) {
         `#### :rotating_light: Security Updates`,
         `We have identified and fixed ${cves.length}${
           cves.some(x => x.upstream) ? ' upstream' : ''
-        } security vulnerabilities`,
+        } security ${cves.length === 1 ? 'vulnerability' : 'vulnerabilities'}`,
         ...cves.map(formatCVE),
         ``,
       ]
