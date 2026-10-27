@@ -7,6 +7,7 @@
     ".": "./dist/keystone-6-auth.js",
     "./pages/SigninPage": "./dist/keystone-6-auth-pages-SigninPage.js",
     "./components/Navigation": "./dist/keystone-6-auth-components-Navigation.js",
+    "./fields/password/views": "./dist/keystone-6-auth-fields-password-views.js",
     "./package.json": "./package.json"
   },
   "files": [
@@ -18,7 +19,8 @@
     "cookie": "^1.0.0",
     "graphql": "catalog:",
     "jose": "^6.0.0",
-    "react-aria": "catalog:"
+    "react-aria": "catalog:",
+    "bcryptjs": "^3.0.0"
   },
   "devDependencies": {
     "@keystone-6/core": "workspace:^",
@@ -37,7 +39,8 @@
     "entrypoints": [
       "index.ts",
       "components/Navigation.tsx",
-      "pages/*.tsx"
+      "pages/*.tsx",
+      "fields/password/views/index.tsx"
     ]
   },
   "repository": "https://github.com/keystonejs/keystone/tree/main/packages/auth"

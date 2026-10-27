@@ -1,5 +1,3 @@
-// @ts-expect-error
-import dumbPasswords from 'dumb-passwords'
 import { useEffect, useId, useRef, useState } from 'react'
 import { useSlotId } from 'react-aria/private/utils/useId'
 
@@ -19,7 +17,7 @@ import type {
   FieldController,
   FieldControllerConfig,
   FieldProps,
-} from '../../../../types/index.ts'
+} from '@keystone-6/core/types'
 
 function validate(
   value: Value,
@@ -49,9 +47,6 @@ function validate(
     }
     if (validation.match && !validation.match.regex.test(val)) {
       return validation.match.explanation
-    }
-    if (validation.rejectCommon && dumbPasswords.check(val)) {
-      return `${fieldLabel} is too common and is not allowed`
     }
   }
   return undefined
@@ -216,7 +211,6 @@ export const Cell: CellComponent<typeof controller> = ({ value }) => {
 }
 
 type Validation = {
-  rejectCommon: boolean
   match: {
     regex: RegExp
     explanation: string
@@ -230,7 +224,6 @@ type Validation = {
 export type PasswordFieldMeta = {
   isNullable: boolean
   validation: {
-    rejectCommon: boolean
     match: {
       regex: { source: string; flags: string }
       explanation: string
