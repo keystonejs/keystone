@@ -180,8 +180,9 @@ export function cloudinaryImage<ListTypeInfo extends BaseListTypeInfo>({
         create: { arg: inputArg, resolve: resolveInput },
         update: { arg: inputArg, resolve: resolveInput },
       },
-      output: g.field({
+      output: g.fieldTypeOutput({
         type: outputType,
+        select: {},
         resolve({ value }) {
           if (value === null) return null
           const val = value as any

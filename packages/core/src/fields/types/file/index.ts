@@ -11,6 +11,7 @@ import type {
 import { fieldType } from '../../../types/index.ts'
 import { g } from '../../../index.ts'
 import { merge } from '../../resolve-hooks.ts'
+import { selectItem } from '../../../types/item-callback.ts'
 import type { InferValueFromArg, InferValueFromInputType } from '@graphql-ts/schema'
 import { toBase64Url } from '../../../lib/encoding.ts'
 
@@ -95,20 +96,25 @@ export function file<ListTypeInfo extends BaseListTypeInfo>(
     const afterOperationResolver: Extract<
       FieldHooks<BaseListTypeInfo, FieldTypeInfo>['afterOperation'],
       (args: any) => any
-    > = async function afterOperationResolver(args) {
-      if (args.operation === 'update' || args.operation === 'delete') {
-        const filenameKey = `${fieldKey}_filename`
-        const oldFilename = args.originalItem[filenameKey] as string | null | undefined
-        const newFilename = args.item?.[filenameKey] as string | null | undefined
+    > = selectItem(
+      async function afterOperationResolver(args) {
+        if (args.operation === 'update' || args.operation === 'delete') {
+          const filenameKey = `${fieldKey}_filename`
+          const oldFilename = args.originalItem[filenameKey] as string | null | undefined
+          const newFilename = args.item?.[filenameKey] as string | null | undefined
 
-        // this will occur on an update where a file already existed but has been
-        // changed, or on a delete, where there is no longer an item
-        // but not when the old and new filenames are the same (in that case, presumably the file has been overwritten)
-        if (typeof oldFilename === 'string' && oldFilename !== newFilename) {
-          await config.storage.delete(oldFilename, args.context)
+          // this will occur on an update where a file already existed but has been
+          // changed, or on a delete, where there is no longer an item
+          // but not when the old and new filenames are the same (in that case, presumably the file has been overwritten)
+          if (typeof oldFilename === 'string' && oldFilename !== newFilename) {
+            await config.storage.delete(oldFilename, args.context)
+          }
         }
+      },
+      {
+        [`${fieldKey}_filename`]: true,
       }
-    }
+    )
 
     return fieldType({
       kind: 'multi',
@@ -136,8 +142,9 @@ export function file<ListTypeInfo extends BaseListTypeInfo>(
           resolve: (data, context) => inputResolver(config.storage, transformName, context, data),
         },
       },
-      output: g.field({
+      output: g.fieldTypeOutput({
         type: FileFieldOutput,
+        select: {},
         resolve({ value: { filesize, filename } }) {
           if (filename === null) return null
           if (filesize === null) return null
