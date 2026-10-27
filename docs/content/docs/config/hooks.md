@@ -1,6 +1,6 @@
 ---
-title: "Hooks"
-description: "Hooks let you to execute code at different stages of the mutation lifecycle when performing create, update, and delete operations."
+title: 'Hooks'
+description: 'Hooks let you to execute code at different stages of the mutation lifecycle when performing create, update, and delete operations.'
 ---
 
 Hooks allow you to execute code at different stages of the mutation lifecycle when performing create, update, and delete operations.
@@ -18,26 +18,42 @@ For writes inside `context.transaction()`, [transaction hooks](#transaction-hook
 For examples of how to use hooks in your system please see the [hooks guide](../guides/hooks).
 
 ```typescript
-import { config, list } from '@keystone-6/core';
-import { text } from '@keystone-6/core/fields';
+import { config, list } from '@keystone-6/core'
+import { text } from '@keystone-6/core/fields'
 
 export default config({
   lists: {
     SomeListName: list({
       hooks: {
         resolveInput: {
-          create: async args => { /* ... */ },
-          update: async args => { /* ... */ },
+          create: async args => {
+            /* ... */
+          },
+          update: async args => {
+            /* ... */
+          },
         },
         validate: {
-          create: async args => { /* ... */ },
-          update: async args => { /* ... */ },
-          delete: async args => { /* ... */ },
+          create: async args => {
+            /* ... */
+          },
+          update: async args => {
+            /* ... */
+          },
+          delete: async args => {
+            /* ... */
+          },
         },
         beforeOperation: {
-          create: async args => { /* ... */ },
-          update: async args => { /* ... */ },
-          delete: async args => { /* ... */ },
+          create: async args => {
+            /* ... */
+          },
+          update: async args => {
+            /* ... */
+          },
+          delete: async args => {
+            /* ... */
+          },
         },
         afterOperation: {
           create: async args => { /* ... */ },
@@ -53,18 +69,34 @@ export default config({
         someFieldName: text({
           hooks: {
             resolveInput: {
-              create: async args => { /* ... */ },
-              update: async args => { /* ... */ },
+              create: async args => {
+                /* ... */
+              },
+              update: async args => {
+                /* ... */
+              },
             },
             validate: {
-              create: async args => { /* ... */ },
-              update: async args => { /* ... */ },
-              delete: async args => { /* ... */ },
+              create: async args => {
+                /* ... */
+              },
+              update: async args => {
+                /* ... */
+              },
+              delete: async args => {
+                /* ... */
+              },
             },
             beforeOperation: {
-              create: async args => { /* ... */ },
-              update: async args => { /* ... */ },
-              delete: async args => { /* ... */ },
+              create: async args => {
+                /* ... */
+              },
+              update: async args => {
+                /* ... */
+              },
+              delete: async args => {
+                /* ... */
+              },
             },
             afterOperation: {
               create: async args => { /* ... */ },
@@ -80,7 +112,47 @@ export default config({
       },
     }),
   },
-});
+})
+```
+
+### Selecting item fields
+
+Use `selectItem` to select the particular fields that your hook on uses on `item` or `originalItem`. Keystone uses this to only fetch exactly the columns that are required rather than the whole item. The callback is typed so that unselected item properties are unavailable. `id` is always included.
+
+```typescript
+import { list, selectItem } from '@keystone-6/core'
+import { text } from '@keystone-6/core/fields'
+
+list({
+  hooks: {
+    validate: {
+      update: selectItem(
+        ({ item, addValidationError }) => {
+          if (item.status === 'locked') addValidationError('This item is locked')
+        },
+        { status: true }
+      ),
+    },
+  },
+  fields: { status: text() },
+})
+```
+
+The selection uses properties of the generated Prisma item, including foreign key properties such as `authorId`. The same helper works with field hooks, item access control callbacks, field read access callbacks, and list cache hint callbacks. Plain functions receive full items.
+
+Use `selectItem.wrap` when adding behavior around existing callbacks. Its first argument is a function that receives the source callbacks and returns the wrapped callback. The second argument selects the item columns read by the wrapper. All other arguments are the source callbacks. Keystone combines their selections. If a source callback has no selection, the wrapped callback receives the full item. The wrapper can only read the item columns it selects, but it can pass its arguments to the source callbacks.
+
+```typescript
+import { selectItem } from '@keystone-6/core'
+
+const wrappedValidate = selectItem.wrap(
+  next => async args => {
+    if (args.item.status === 'locked') args.addValidationError('This item is locked')
+    await next?.(args)
+  },
+  { status: true },
+  existingValidate
+)
 ```
 
 ### resolveInput
@@ -93,9 +165,9 @@ For field hooks, the return value should be an updated value for that specific f
 For list hooks, the return value should be a [`resolved data`](#resolved-data-stages) object.
 The result of `resolveInput` hooks is accessible as the argument `resolvedData` in the hooks that follow, for the remainder of the operation.
 
-| Argument       | Description                                                                                                                                                                           |
-| :------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `listKey`      | The key of the list being operated on.                                                                                                                                                |
+| Argument            | Description                                                                                                                                                                           |
+| :------------------ | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `listKey`           | The key of the list being operated on.                                                                                                                                                |
 | `fieldKey`          | The key of the field being operated on (field hooks only).                                                                                                                            |
 | `operation`         | The operation being performed (`'create'` or `'update'`).                                                                                                                             |
 | `inputData`         | The value of `data` passed into the mutation.                                                                                                                                         |
@@ -107,8 +179,8 @@ The result of `resolveInput` hooks is accessible as the argument `resolvedData` 
 | `context`           | The [`KeystoneContext`](../context/overview) object of the originating GraphQL operation.                                                                                             |
 
 ```typescript
-import { config, list } from '@keystone-6/core';
-import { text } from '@keystone-6/core/fields';
+import { config, list } from '@keystone-6/core'
+import { text } from '@keystone-6/core/fields'
 
 export default config({
   lists: {
@@ -124,7 +196,7 @@ export default config({
             context,
           }) => {
             /* ... */
-            return resolvedData;
+            return resolvedData
           },
           update: async ({
             listKey,
@@ -135,7 +207,7 @@ export default config({
             context,
           }) => {
             /* ... */
-            return resolvedData;
+            return resolvedData
           },
         },
       },
@@ -156,7 +228,7 @@ export default config({
                 context,
               }) => {
                 /* ... */
-                return resolvedData[fieldKey];
+                return resolvedData[fieldKey]
               },
               update: async ({
                 listKey,
@@ -171,7 +243,7 @@ export default config({
                 context,
               }) => {
                 /* ... */
-                return resolvedData[fieldKey];
+                return resolvedData[fieldKey]
               },
             },
           },
@@ -179,7 +251,7 @@ export default config({
       },
     }),
   },
-});
+})
 ```
 
 ### validate
@@ -209,8 +281,8 @@ These error messages will be returned as a `ValidationFailureError` from the Gra
 | `addValidationError(msg)` | Used to set a validation error.                                                                                                                                                                         |
 
 ```typescript
-import { config, list } from '@keystone-6/core';
-import { text } from '@keystone-6/core/fields';
+import { config, list } from '@keystone-6/core'
+import { text } from '@keystone-6/core/fields'
 
 export default config({
   lists: {
@@ -224,7 +296,9 @@ export default config({
             resolvedData,
             context,
             addValidationError,
-          }) => { /* ... */ },
+          }) => {
+            /* ... */
+          },
           update: async ({
             listKey,
             operation,
@@ -233,14 +307,12 @@ export default config({
             resolvedData,
             context,
             addValidationError,
-          }) => { /* ... */ },
-          delete: async ({
-            listKey,
-            operation,
-            item,
-            context,
-            addValidationError,
-          }) => { /* ... */ },
+          }) => {
+            /* ... */
+          },
+          delete: async ({ listKey, operation, item, context, addValidationError }) => {
+            /* ... */
+          },
         },
       },
       fields: {
@@ -257,7 +329,9 @@ export default config({
                 resolvedFieldData,
                 context,
                 addValidationError,
-              }) => { /* ... */ },
+              }) => {
+                /* ... */
+              },
               update: async ({
                 listKey,
                 fieldKey,
@@ -270,7 +344,9 @@ export default config({
                 resolvedFieldData,
                 context,
                 addValidationError,
-              }) => { /* ... */ },
+              }) => {
+                /* ... */
+              },
               delete: async ({
                 listKey,
                 fieldKey,
@@ -279,14 +355,16 @@ export default config({
                 itemField,
                 context,
                 addValidationError,
-              }) => { /* ... */ },
+              }) => {
+                /* ... */
+              },
             },
           },
         }),
       },
     }),
   },
-});
+})
 ```
 
 ### beforeOperation
@@ -295,8 +373,8 @@ The `beforeOperation` hook is used to perform side effects just before the data 
 
 It is invoked after the `resolveInput` and `validate` hooks, but before the database is updated by Prisma.
 
-| Argument       | Description                                                                                                                                                                                            |
-| :------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Argument            | Description                                                                                                                                                                                            |
+| :------------------ | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `listKey`           | The key of the list being operated on.                                                                                                                                                                 |
 | `fieldKey`          | The key of the field being operated on (field hooks only).                                                                                                                                             |
 | `operation`         | The operation being performed (`'create'`, `'update'`, or `'delete'`).                                                                                                                                 |
@@ -309,35 +387,23 @@ It is invoked after the `resolveInput` and `validate` hooks, but before the data
 | `context`           | The [`KeystoneContext`](../context/overview) object of the originating GraphQL operation.                                                                                                              |
 
 ```typescript
-import { config, list } from '@keystone-6/core';
-import { text } from '@keystone-6/core/fields';
+import { config, list } from '@keystone-6/core'
+import { text } from '@keystone-6/core/fields'
 
 export default config({
   lists: {
     SomeListName: list({
       hooks: {
         beforeOperation: {
-          create: async ({
-            listKey,
-            operation,
-            inputData,
-            resolvedData,
-            context,
-          }) => { /* ... */ },
-          update: async ({
-            listKey,
-            operation,
-            inputData,
-            item,
-            resolvedData,
-            context,
-          }) => { /* ... */ },
-          delete: async ({
-            listKey,
-            operation,
-            item,
-            context,
-          }) => { /* ... */ },
+          create: async ({ listKey, operation, inputData, resolvedData, context }) => {
+            /* ... */
+          },
+          update: async ({ listKey, operation, inputData, item, resolvedData, context }) => {
+            /* ... */
+          },
+          delete: async ({ listKey, operation, item, context }) => {
+            /* ... */
+          },
         },
       },
       fields: {
@@ -353,7 +419,9 @@ export default config({
                 resolvedData,
                 resolvedFieldData,
                 context,
-              }) => { /* ... */ },
+              }) => {
+                /* ... */
+              },
               update: async ({
                 listKey,
                 fieldKey,
@@ -365,22 +433,19 @@ export default config({
                 resolvedData,
                 resolvedFieldData,
                 context,
-              }) => { /* ... */ },
-              delete: async ({
-                listKey,
-                fieldKey,
-                operation,
-                item,
-                itemField,
-                context,
-              }) => { /* ... */ },
+              }) => {
+                /* ... */
+              },
+              delete: async ({ listKey, fieldKey, operation, item, itemField, context }) => {
+                /* ... */
+              },
             },
           },
         }),
       },
     }),
   },
-});
+})
 ```
 
 ### afterOperation
@@ -406,22 +471,17 @@ Keep related database work here. For external side effects that must wait for a 
 | `context`              | The [`KeystoneContext`](../context/overview) object of the originating GraphQL operation.                                                                                                                          |
 
 ```typescript
-import { config, list } from '@keystone-6/core';
-import { text } from '@keystone-6/core/fields';
+import { config, list } from '@keystone-6/core'
+import { text } from '@keystone-6/core/fields'
 
 export default config({
   lists: {
     SomeListName: list({
       hooks: {
         afterOperation: {
-          create: async ({
-            listKey,
-            operation,
-            inputData,
-            item,
-            resolvedData,
-            context,
-          }) => { /* ... */ },
+          create: async ({ listKey, operation, inputData, item, resolvedData, context }) => {
+            /* ... */
+          },
           update: async ({
             listKey,
             operation,
@@ -430,13 +490,12 @@ export default config({
             item,
             resolvedData,
             context,
-          }) => { /* ... */ },
-          delete: async ({
-            listKey,
-            operation,
-            originalItem,
-            context,
-          }) => { /* ... */ },
+          }) => {
+            /* ... */
+          },
+          delete: async ({ listKey, operation, originalItem, context }) => {
+            /* ... */
+          },
         },
       },
       fields: {
@@ -454,7 +513,9 @@ export default config({
                 resolvedData,
                 resolvedFieldData,
                 context,
-              }) => { /* ... */ },
+              }) => {
+                /* ... */
+              },
               update: async ({
                 listKey,
                 fieldKey,
@@ -468,7 +529,9 @@ export default config({
                 resolvedData,
                 resolvedFieldData,
                 context,
-              }) => { /* ... */ },
+              }) => {
+                /* ... */
+              },
               delete: async ({
                 listKey,
                 fieldKey,
@@ -476,14 +539,16 @@ export default config({
                 originalItem,
                 originalItemField,
                 context,
-              }) => { /* ... */ },
+              }) => {
+                /* ... */
+              },
             },
           },
         }),
       },
     }),
   },
-});
+})
 ```
 
 ### Transaction hooks

@@ -1,5 +1,11 @@
 # @keystone-6/auth
 
+## 10.0.6
+
+### Patch Changes
+
+- [#10061](https://github.com/keystonejs/keystone/pull/10061) [`27694a1`](https://github.com/keystonejs/keystone/commit/27694a1eb19d839924c33ed1b4d6456b2b46dd09) Thanks [@emmatown](https://github.com/emmatown)! - Removes unnecessary `next` peer dependency
+
 ## 10.0.5
 
 ### Patch Changes

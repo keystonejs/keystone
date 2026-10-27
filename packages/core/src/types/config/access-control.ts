@@ -34,7 +34,17 @@ export type ListFilterAccessControl<
   Operation extends FilterOperation,
   ListTypeInfo extends BaseListTypeInfo,
 > = (
-  args: BaseAccessArgs<ListTypeInfo> & { operation: Operation }
+  args: BaseAccessArgs<ListTypeInfo> &
+    (Operation extends 'query'
+      ? { operation: 'query'; kind: QueryOperationKind }
+      : { operation: Operation })
+) => MaybePromise<boolean | ListTypeInfo['inputs']['where']>
+
+export type ListQueryFilterAccessControl<
+  Kind extends QueryOperationKind,
+  ListTypeInfo extends BaseListTypeInfo,
+> = (
+  args: BaseAccessArgs<ListTypeInfo> & { operation: 'query'; kind: Kind }
 ) => MaybePromise<boolean | ListTypeInfo['inputs']['where']>
 
 export type ListItemAccessControl<
@@ -112,7 +122,13 @@ type ListAccessControlObject<ListTypeInfo extends BaseListTypeInfo> = {
   //   which may make it appear that some of the items don't exist.
   // - boolean true/false. If false, treated as a filter that never matches.
   filter?: {
-    query?: ListFilterAccessControl<'query', ListTypeInfo>
+    query?:
+      | ListQueryFilterAccessControl<QueryOperationKind, ListTypeInfo>
+      | {
+          one: ListQueryFilterAccessControl<'one', ListTypeInfo>
+          many: ListQueryFilterAccessControl<'many', ListTypeInfo>
+          count: ListQueryFilterAccessControl<'count', ListTypeInfo>
+        }
     // create?: not supported
     update?: ListFilterAccessControl<'update', ListTypeInfo>
     delete?: ListFilterAccessControl<'delete', ListTypeInfo>

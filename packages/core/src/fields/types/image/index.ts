@@ -12,6 +12,7 @@ import { fieldType } from '../../../types/index.ts'
 import { g } from '../../../index.ts'
 import { SUPPORTED_IMAGE_EXTENSIONS } from './utils.ts'
 import { merge } from '../../resolve-hooks.ts'
+import { selectItem } from '../../../types/item-callback.ts'
 import type { InferValueFromArg, InferValueFromInputType } from '@graphql-ts/schema'
 import { toBase64Url } from '../../../lib/encoding.ts'
 import type { ImageExtension } from './internal-utils.ts'
@@ -163,26 +164,32 @@ export function image<ListTypeInfo extends BaseListTypeInfo>(
     const afterOperationResolver: Extract<
       FieldHooks<BaseListTypeInfo, FieldTypeInfo>['afterOperation'],
       (args: any) => any
-    > = async function afterOperationResolver(args) {
-      if (args.operation === 'update' || args.operation === 'delete') {
-        const idKey = `${fieldKey}_id`
-        const oldId = args.originalItem?.[idKey] as string | null | undefined
-        const newId = args.item?.[idKey] as string | null | undefined
-        const extensionKey = `${fieldKey}_extension`
-        const oldExtension = args.originalItem?.[extensionKey] as string | null | undefined
-        const newExtension = args.item?.[extensionKey] as string | null | undefined
-        // this will occur on an update where an image already existed but has been
-        // changed, or on a delete, where there is no longer an item
-        if (
-          typeof oldId === 'string' &&
-          typeof oldExtension === 'string' &&
-          isValidImageExtension(oldExtension) &&
-          (oldId !== newId || oldExtension !== newExtension)
-        ) {
-          await config.storage.delete(`${oldId}.${oldExtension}`, args.context)
+    > = selectItem(
+      async function afterOperationResolver(args) {
+        if (args.operation === 'update' || args.operation === 'delete') {
+          const idKey = `${fieldKey}_id`
+          const oldId = args.originalItem?.[idKey] as string | null | undefined
+          const newId = args.item?.[idKey] as string | null | undefined
+          const extensionKey = `${fieldKey}_extension`
+          const oldExtension = args.originalItem?.[extensionKey] as string | null | undefined
+          const newExtension = args.item?.[extensionKey] as string | null | undefined
+          // this will occur on an update where an image already existed but has been
+          // changed, or on a delete, where there is no longer an item
+          if (
+            typeof oldId === 'string' &&
+            typeof oldExtension === 'string' &&
+            isValidImageExtension(oldExtension) &&
+            (oldId !== newId || oldExtension !== newExtension)
+          ) {
+            await config.storage.delete(`${oldId}.${oldExtension}`, args.context)
+          }
         }
+      },
+      {
+        [`${fieldKey}_id`]: true,
+        [`${fieldKey}_extension`]: true,
       }
-    }
+    )
 
     return fieldType({
       kind: 'multi',
@@ -213,8 +220,9 @@ export function image<ListTypeInfo extends BaseListTypeInfo>(
           resolve: (data, context) => inputResolver(config.storage, transformName, context, data),
         },
       },
-      output: g.field({
+      output: g.fieldTypeOutput({
         type: ImageFieldOutput,
+        select: {},
         resolve({ value: { id, extension, filesize, width, height } }): ImageData | null {
           if (id === null) return null
           if (extension === null) return null

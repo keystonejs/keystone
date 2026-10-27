@@ -115,8 +115,9 @@ export function calendarDay<ListTypeInfo extends BaseListTypeInfo>(
         update: { arg: g.arg({ type: g.CalendarDay }), resolve: resolveInput },
         orderBy: { arg: g.arg({ type: orderDirectionEnum }) },
       },
-      output: g.field({
+      output: g.fieldTypeOutput({
         type: g.CalendarDay,
+        select: {},
         resolve({ value }) {
           if (value instanceof Date) {
             return value.toISOString().slice(0, 10)

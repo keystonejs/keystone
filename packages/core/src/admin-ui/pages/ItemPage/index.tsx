@@ -7,7 +7,9 @@ import {
   useMemo,
   useRef,
   useState,
+  useTransition,
 } from 'react'
+import isDeepEqual from 'fast-deep-equal'
 
 import { Button } from '@keystar/ui/button'
 import { AlertDialog, DialogContainer, DialogTrigger } from '@keystar/ui/dialog'
@@ -49,6 +51,23 @@ import { BaseToolbar, ColumnLayout, ItemPageHeader, StickySidebar } from './comm
 
 type ItemPageProps = {
   listKey: string
+}
+
+function reconcileValue(
+  value: Record<string, unknown> | null,
+  previousValue: Record<string, unknown> | null,
+  initialValue: Record<string, unknown> | null
+) {
+  if (!value || !previousValue || !initialValue || value.id !== initialValue.id) {
+    return initialValue
+  }
+
+  return Object.fromEntries(
+    Object.entries(initialValue).map(([key, serverValue]) => [
+      key,
+      isDeepEqual(value[key], previousValue[key]) ? serverValue : value[key],
+    ])
+  )
 }
 
 function useEventCallback<Func extends (...args: any[]) => unknown>(callback: Func): Func {
@@ -180,7 +199,7 @@ function ItemForm({
   value: Record<string, unknown>
   onChange: (value: Record<string, unknown>) => void
   itemLabel: string
-  onSaveSuccess: () => void
+  onSaveSuccess: (savedValue: Record<string, unknown>) => Promise<void>
   fieldModes: Record<
     string,
     ConditionalFilter<'edit' | 'read' | 'hidden', 'read' | 'hidden', BaseListTypeInfo>
@@ -191,7 +210,8 @@ function ItemForm({
   const list = useList(listKey)
   const itemId = initialValue.id as string
   const [updateError, setUpdateError] = useState<Error | null>(null)
-  const [update, { loading, error }] = useMutation(
+  const [isSaving, startSaving] = useTransition()
+  const [update, { error }] = useMutation(
     gql`mutation ($id: ID!, $data: ${list.graphql.names.updateInputName}!) {
       item: ${list.graphql.names.updateMutationName}(where: { id: $id }, data: $data) {
         id
@@ -206,37 +226,41 @@ function ItemForm({
 
   const invalidFields = useInvalidFields(list.fields, value, isRequireds)
   const [forceValidation, setForceValidation] = useState(false)
-  const onSave = useEventCallback(async (e: FormEvent<HTMLFormElement>) => {
+  const onSave = useEventCallback((e: FormEvent<HTMLFormElement>) => {
     if (e.target !== e.currentTarget) return
     e.preventDefault()
+    if (isSaving) return
     const newForceValidation = invalidFields.size !== 0
     setForceValidation(newForceValidation)
     if (newForceValidation) return
 
-    const { error: _error } = await update({
-      variables: {
-        id: itemId,
-        data: serializeValueToOperationItem('update', list.fields, value, initialValue),
-      },
+    startSaving(async () => {
+      try {
+        const { error: _error } = await update({
+          variables: {
+            id: itemId,
+            data: serializeValueToOperationItem('update', list.fields, value, initialValue),
+          },
+        })
+
+        const error = CombinedGraphQLErrors.is(_error)
+          ? _error.errors.find(x => x.path === undefined || x.path?.length === 1)
+          : _error
+        if (error) throw new Error(error.message)
+
+        toastQueue.positive(`Saved changes to ${list.singular.toLocaleLowerCase()}.`, {
+          timeout: 5000,
+        })
+
+        await onSaveSuccess(value)
+      } catch (error) {
+        toastQueue.critical('Unable to save item', {
+          actionLabel: 'Details',
+          onAction: () => setUpdateError(error instanceof Error ? error : new Error(String(error))),
+          shouldCloseOnAction: true,
+        })
+      }
     })
-
-    const error = CombinedGraphQLErrors.is(_error)
-      ? _error.errors.find(x => x.path === undefined || x.path?.length === 1)
-      : _error
-    if (error) {
-      toastQueue.critical('Unable to save item', {
-        actionLabel: 'Details',
-        onAction: () => setUpdateError(new Error(error.message)),
-        shouldCloseOnAction: true,
-      })
-      return
-    }
-
-    toastQueue.positive(`Saved changes to ${list.singular.toLocaleLowerCase()}.`, {
-      timeout: 5000,
-    })
-
-    onSaveSuccess()
   })
 
   const hasChangedFields = useHasChanges('update', list.fields, value, initialValue)
@@ -292,7 +316,7 @@ function ItemForm({
         <BaseToolbar>
           <Button
             isDisabled={!hasChangedFields}
-            isPending={loading}
+            isPending={isSaving}
             prominence="high"
             type="submit"
           >
@@ -326,7 +350,7 @@ export function ItemPage({ listKey }: ItemPageProps) {
   const itemLabel_ = item?.[list.labelField] ?? item?.id
   const itemLabel = typeof itemLabel_ === 'string' ? itemLabel_ : (itemId ?? '')
 
-  const pageLoading = loading || itemId === undefined
+  const pageLoading = (loading && !data) || itemId === undefined
   const pageLabel = itemLabel || itemId
   const pageTitle = list.isSingleton || typeof pageLabel !== 'string' ? list.label : pageLabel
   const initialValue = useMemo(() => {
@@ -334,9 +358,30 @@ export function ItemPage({ listKey }: ItemPageProps) {
     return deserializeItemToValue(list.fields, item)
   }, [list.fields, data?.item])
   const [value, setValue] = useState<Record<string, unknown> | null>(null)
+  const valueToReset = useRef(initialValue)
   useEffect(() => {
-    setValue(initialValue)
+    const previousValue = valueToReset.current
+    valueToReset.current = initialValue
+    setValue(value => reconcileValue(value, previousValue, initialValue))
   }, [initialValue])
+
+  async function onSaveSuccess(savedValue: Record<string, unknown>) {
+    const previousValue = valueToReset.current
+    valueToReset.current = savedValue
+    try {
+      const { data } = await refetch()
+      if (!data?.item) return
+      const refreshedValue = deserializeItemToValue(list.fields, data.item)
+      valueToReset.current = refreshedValue
+      // Reconcile explicitly even when the server returned unchanged data and
+      // the initialValue effect did not run.
+      setValue(value =>
+        value?.id === savedValue.id ? reconcileValue(value, savedValue, refreshedValue) : value
+      )
+    } finally {
+      if (valueToReset.current === savedValue) valueToReset.current = previousValue
+    }
+  }
 
   const { actionModes, fieldModes, fieldPositions, isRequireds } = useMemo(() => {
     type ActionMode = (typeof list.actions)[number]['itemView']['actionMode']
@@ -406,11 +451,11 @@ export function ItemPage({ listKey }: ItemPageProps) {
       .filter(action => isActionAvailable(action, action.itemView))
   }, [actionModes, list.actions, list.fields, value])
 
-  function onAction(action: ActionMeta, resultId: string | null) {
+  async function onAction(action: ActionMeta, resultId: string | null) {
     const { navigation } = action.itemView
 
     if ((navigation === 'follow' && resultId === itemId) || navigation === 'refetch') {
-      refetch()
+      await refetch()
     } else if (navigation === 'follow' && resultId) {
       navigate(`/${list.path}/${resultId}`)
     } else {
@@ -475,7 +520,7 @@ export function ItemPage({ listKey }: ItemPageProps) {
               initialValue={initialValue}
               value={value}
               onChange={setValue}
-              onSaveSuccess={refetch}
+              onSaveSuccess={onSaveSuccess}
             />
           )}
         </ColumnLayout>

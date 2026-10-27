@@ -74,14 +74,14 @@ export function bigInt<ListTypeInfo extends BaseListTypeInfo>(
         `${meta.listKey}.${meta.fieldKey} specifies a default value of: ${defaultValue} but it must be a valid finite number`
       )
     }
-    if (min !== undefined && !Number.isInteger(min)) {
+    if (min !== undefined && typeof min !== 'bigint') {
       throw new Error(
-        `${meta.listKey}.${meta.fieldKey} specifies validation.min: ${min} but it must be an integer`
+        `${meta.listKey}.${meta.fieldKey} specifies validation.min: ${min} but it must be a bigint`
       )
     }
-    if (max !== undefined && !Number.isInteger(max)) {
+    if (max !== undefined && typeof max !== 'bigint') {
       throw new Error(
-        `${meta.listKey}.${meta.fieldKey} specifies validation.max: ${max} but it must be an integer`
+        `${meta.listKey}.${meta.fieldKey} specifies validation.max: ${max} but it must be a bigint`
       )
     }
     if (min !== undefined && (min > MAX_INT || min < MIN_INT)) {
@@ -109,7 +109,7 @@ export function bigInt<ListTypeInfo extends BaseListTypeInfo>(
             if (operation === 'delete') return
 
             const value = resolvedData[meta.fieldKey]
-            if (typeof value === 'number') {
+            if (typeof value === 'bigint') {
               if (min !== undefined && value < min) {
                 addValidationError(`value must be greater than or equal to ${min}`)
               }

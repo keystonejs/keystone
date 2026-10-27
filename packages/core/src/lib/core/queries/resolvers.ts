@@ -20,6 +20,19 @@ import { limitsExceededError, userInputError } from '../graphql-errors.ts'
 import type { InitialisedList } from '../initialise-lists.ts'
 import { getDBFieldKeyForFieldOnMultiField } from '../utils.ts'
 import { checkFilterOrderAccess } from '../access-control.ts'
+import { selectFromInfoForList } from './select.ts'
+import { addSelection } from '../../../types/item-selection.ts'
+
+function selectForQuery(
+  list: InitialisedList,
+  requested: Readonly<Record<string, true | undefined>> | undefined
+) {
+  if (!requested) return undefined
+  const select: Record<string, true> = { id: true }
+  addSelection(select, requested)
+  if (!addSelection(select, list.cacheHintSelection)) return undefined
+  return select
+}
 
 // we want to put the value we get back from the field's unique where resolver into an equals
 // rather than directly passing the value as the filter (even though Prisma supports that), we use equals
@@ -67,7 +80,7 @@ export async function accessControlledFilter(
   list: InitialisedList,
   context: KeystoneContext,
   resolvedWhere: PrismaFilter,
-  accessFilters: boolean | InputFilter
+  accessFilters: true | InputFilter
 ) {
   // Merge the filter access control
   if (typeof accessFilters === 'object') {
@@ -87,7 +100,7 @@ export async function findOne(
   const operationAccess = await getOperationQueryAccess(list, context, 'one')
   if (!operationAccess) return null
 
-  const accessFilters = await getAccessFilters(list, context, 'query')
+  const accessFilters = await getAccessFilters(list, context, 'query', 'one')
   if (accessFilters === false) return null
 
   // validate and resolve the input filter
@@ -102,7 +115,10 @@ export async function findOne(
 
   // apply access control
   const filter = await accessControlledFilter(list, context, resolvedWhere, accessFilters)
-  const result = await context.prisma[list.listKey].findFirst({ where: filter })
+  const result = await context.prisma[list.listKey].findFirst({
+    where: filter,
+    select: selectForQuery(list, selectFromInfoForList(list, info)),
+  })
 
   if (list.cacheHint) {
     maybeCacheControlFromInfo(info)?.setCacheHint(
@@ -122,6 +138,7 @@ export async function findMany(
   list: InitialisedList,
   context: KeystoneContext,
   info: GraphQLResolveInfo,
+  select: Readonly<Record<string, true | undefined>> | undefined,
   extraFilter?: PrismaFilter
 ): Promise<BaseItem[]> {
   const maxTake = (list.graphql.types.findManyArgs.take.defaultValue ?? Infinity) as number
@@ -133,7 +150,7 @@ export async function findMany(
   const operationAccess = await getOperationQueryAccess(list, context, 'many')
   if (!operationAccess) return []
 
-  const accessFilters = await getAccessFilters(list, context, 'query')
+  const accessFilters = await getAccessFilters(list, context, 'query', 'many')
   if (accessFilters === false) return []
 
   // validate and resolve the input filter
@@ -151,14 +168,35 @@ export async function findMany(
   const orderBy = await resolveOrderBy(rawOrderBy, list, context)
 
   // apply access control
-  const filter = await accessControlledFilter(list, context, resolvedWhere, accessFilters)
-  const results = await context.prisma[list.listKey].findMany({
+  const resolvedAccessFilter =
+    accessFilters === true ? undefined : await resolveWhereInput(accessFilters, list, context)
+  const filter =
+    resolvedAccessFilter === undefined
+      ? resolvedWhere
+      : { AND: [resolvedWhere, resolvedAccessFilter] }
+  const query = context.prisma[list.listKey].findMany({
     where: extraFilter === undefined ? filter : { AND: [filter, extraFilter] },
     orderBy,
     take: take ?? undefined,
     skip,
     cursor: cursor ?? undefined,
+    select: selectForQuery(list, select),
   })
+  let results: BaseItem[]
+  if (cursor && resolvedAccessFilter !== undefined) {
+    // Prisma locates the cursor without the list's access filter. Check its visibility
+    // concurrently with fetching the page, and discard the page if the cursor is hidden.
+    const [cursorItem, items] = await Promise.all([
+      context.prisma[list.listKey].findFirst({
+        where: { AND: [mapUniqueWhereToWhere(cursor, list), resolvedAccessFilter] },
+        select: { id: true },
+      }),
+      query,
+    ])
+    results = cursorItem === null ? [] : items
+  } else {
+    results = await query
+  }
 
   if (list.cacheHint) {
     maybeCacheControlFromInfo(info)?.setCacheHint(
@@ -236,7 +274,7 @@ export async function count(
   const operationAccess = await getOperationQueryAccess(list, context, 'count')
   if (!operationAccess) return 0
 
-  const accessFilters = await getAccessFilters(list, context, 'query')
+  const accessFilters = await getAccessFilters(list, context, 'query', 'count')
   if (accessFilters === false) return 0
 
   const resolvedWhere = await resolveWhereInput(where, list, context)
