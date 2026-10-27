@@ -65,7 +65,7 @@ type SideEffectHooks = {
   'transaction.afterRollback': NonNullable<InitialisedList['hooks']['transaction']>['afterRollback']
 }
 
-function getSideEffectHook(
+export function getSideEffectHook(
   hooks: InitialisedList['hooks'] | InitialisedField['hooks'],
   name: keyof SideEffectHooks,
   operation: 'create' | 'update' | 'delete'

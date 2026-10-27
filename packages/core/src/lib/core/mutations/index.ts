@@ -238,7 +238,7 @@ async function deleteSingle__(
         where: { id: item.id },
         select: selectMutationResult(list, 'delete', {}, info),
       })
-      
+
       registerTransactionHooks(list, {
         ...hookArgs,
         item: undefined,

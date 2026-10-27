@@ -633,6 +633,8 @@ test.each(['commit', 'rollback'] as const)(
       else await run
 
       expect(callbacks(phase).map(args => args.operation)).toEqual(['update'])
+      expect(callbacks(phase)[0].originalItem.name).toBe('created')
+      expect(callbacks(phase)[0].item.name).toBe('updated')
       const fieldPhase = phase === 'commit' ? 'fieldCommit' : 'fieldRollback'
       expect(callbacks(fieldPhase).map(args => args.operation)).toEqual(['create', 'delete'])
       expect(callbacks(fieldPhase)[0].itemField).toBe('created')
