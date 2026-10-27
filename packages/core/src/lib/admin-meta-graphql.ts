@@ -171,14 +171,16 @@ const KeystoneAdminUIActionMeta = g.object<ActionMetaSource>()({
                             label,
                             description,
                           }: Pick<FieldMetaSource, 'label' | 'description'> = source.field
-                          // JSON scalars do not resolve nested metadata functions. Copy the
-                          // source so request-specific text never replaces shared resolvers.
+                          const [resolvedLabel, resolvedDescription] = await Promise.all([
+                            label({}, context),
+                            description({}, context),
+                          ])
                           return {
                             ...source,
                             field: {
                               ...source.field,
-                              label: await label({}, context),
-                              description: await description({}, context),
+                              label: resolvedLabel,
+                              description: resolvedDescription,
                             },
                           }
                         },
