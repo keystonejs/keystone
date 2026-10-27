@@ -1,3 +1,4 @@
+export { password, type PasswordFieldConfig } from './fields/password/index.ts'
 import type {
   AdminFileToWrite,
   BaseListTypeInfo,

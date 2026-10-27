@@ -19,5 +19,8 @@
     "graphql": "catalog:",
     "pg": "catalog:",
     "mariadb": "catalog:"
+  },
+  "dependencies": {
+    "@keystone-6/auth": "workspace:^"
   }
 }
