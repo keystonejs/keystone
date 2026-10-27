@@ -1,6 +1,6 @@
 import type { BaseItem, KeystoneContext } from '@keystone-6/core/types'
 import { g } from '@keystone-6/core'
-import { getPasswordFieldKDF } from '@keystone-6/core/fields/types/password'
+import { getPasswordFieldKDF } from '../fields/password/index.ts'
 import type { AuthConfig } from '../types.ts'
 import type { BaseSchemaMeta } from '@keystone-6/core/graphql-ts'
 

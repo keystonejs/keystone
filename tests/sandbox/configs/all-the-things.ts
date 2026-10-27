@@ -11,13 +11,13 @@ import {
   integer,
   json,
   multiselect,
-  password,
   relationship,
   select,
   text,
   timestamp,
   virtual,
 } from '@keystone-6/core/fields'
+import { password } from '@keystone-6/auth'
 import { document, structure } from '@keystone-6/fields-document'
 import { schema as structureSchema } from '../structure'
 import { schema as structureNestedSchema } from '../structure-nested'

@@ -452,7 +452,8 @@ export default function PageClient() {
                 <WindowL>
                   <SourceCode>
                     {`import { list } from '@keystone-6/core';
-import { document, text, timestamp, password, relationship } from '@keystone-6/core/fields';
+import { document, text, timestamp, relationship } from '@keystone-6/core/fields'
+import { password } from '@keystone-6/auth';
 
 export const lists = {
   Post: list({

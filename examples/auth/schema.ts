@@ -1,7 +1,10 @@
+// @ts-expect-error dumb-passwords does not provide TypeScript declarations
+import dumbPasswords from 'dumb-passwords'
 import type { Lists, Session } from './generated/keystone/types'
 import { list } from '@keystone-6/core'
 import { allowAll, denyAll } from '@keystone-6/core/access'
-import { checkbox, password, text } from '@keystone-6/core/fields'
+import { checkbox, text } from '@keystone-6/core/fields'
+import { password } from '@keystone-6/auth'
 
 // WARNING: this example is for demonstration purposes only
 //   as with each of our examples, it has not been vetted
@@ -110,6 +113,16 @@ export const lists = {
 
       // the user's password, used for authentication
       password: password({
+        hooks: {
+          validate: ({ operation, inputData, addValidationError }) => {
+            if (operation === 'delete') return
+            // Use inputData because resolvedData contains the hashed password.
+            const value = inputData.password
+            if (value != null && dumbPasswords.check(value)) {
+              addValidationError('value is too common and is not allowed')
+            }
+          },
+        },
         access: {
           read: {
             item: denyAll, // passed into the session, using sudo

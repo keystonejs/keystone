@@ -13,7 +13,8 @@ We have a working backend for a collection of interconnected posts and authors (
 //keystone.ts
 import { list, config } from '@keystone-6/core'
 import { PrismaBetterSqlite3 } from '@prisma/adapter-better-sqlite3'
-import { password, text, timestamp, select, relationship } from '@keystone-6/core/fields'
+import { text, timestamp, select, relationship } from '@keystone-6/core/fields'
+import { password } from '@keystone-6/auth'
 import { withAuth, sessionStrategy } from './auth'
 
 const lists = {
@@ -82,7 +83,8 @@ Next, we add the document field to our `post` list:
 // keystone.ts
 import { list, config } from '@keystone-6/core';
 import { PrismaBetterSqlite3 } from '@prisma/adapter-better-sqlite3';
-import { password, text, timestamp, select, relationship } from '@keystone-6/core/fields';
+import { text, timestamp, select, relationship } from '@keystone-6/core/fields';
+import { password } from '@keystone-6/auth';
 import { document } from '@keystone-6/fields-document';
 import { withAuth, sessionStrategy } from './auth';
 
@@ -152,7 +154,8 @@ Let’s start by adding four [formatting](/docs/guides/document-fields#formattin
 // keystone.ts
 import { list, config } from '@keystone-6/core';
 import { PrismaBetterSqlite3 } from '@prisma/adapter-better-sqlite3';
-import { password, text, timestamp, select, relationship } from '@keystone-6/core/fields';
+import { text, timestamp, select, relationship } from '@keystone-6/core/fields';
+import { password } from '@keystone-6/auth';
 import { document } from '@keystone-6/fields-document';
 import { withAuth, sessionStrategy } from './auth';
 
@@ -225,7 +228,8 @@ For a full guide on using the document field, including rendering this in your o
 // keystone.ts
 import { list, config } from '@keystone-6/core'
 import { PrismaBetterSqlite3 } from '@prisma/adapter-better-sqlite3'
-import { password, text, timestamp, select, relationship } from '@keystone-6/core/fields'
+import { text, timestamp, select, relationship } from '@keystone-6/core/fields'
+import { password } from '@keystone-6/auth'
 import { document } from '@keystone-6/fields-document'
 import { withAuth, sessionStrategy } from './auth'
 

@@ -390,6 +390,9 @@ importers:
       better-sqlite3:
         specifier: 'catalog:'
         version: 12.11.1
+      dumb-passwords:
+        specifier: ^0.2.1
+        version: 0.2.1
       next:
         specifier: 'catalog:'
         version: 16.2.10(@babel/core@7.29.0(supports-color@7.2.0))(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
@@ -2689,6 +2692,9 @@ importers:
       '@keystar/ui':
         specifier: 'catalog:'
         version: 0.10.0(next@16.2.10(@babel/core@7.29.0(supports-color@7.2.0))(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react-aria@3.50.0(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react-dom@19.2.5(react@19.2.5))(react-stately@3.48.0(react@19.2.5))(react@19.2.5)
+      bcryptjs:
+        specifier: ^3.0.0
+        version: 3.0.3
       cookie:
         specifier: ^1.0.0
         version: 1.1.1
@@ -2790,9 +2796,6 @@ importers:
       apollo-upload-client:
         specifier: ^19.0.0
         version: 19.0.0(@apollo/client@4.1.9(graphql-ws@6.0.8(graphql@16.14.2)(ws@8.20.0))(graphql@16.14.2)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(rxjs@7.8.2))(graphql@16.14.2)(rxjs@7.8.2)
-      bcryptjs:
-        specifier: ^3.0.0
-        version: 3.0.3
       better-sqlite3:
         specifier: ^12.6.0
         version: 12.11.1
@@ -2814,9 +2817,6 @@ importers:
       decimal.js:
         specifier: ^10.4.1
         version: 10.6.0
-      dumb-passwords:
-        specifier: ^0.2.1
-        version: 0.2.1
       esbuild:
         specifier: ^0.28.0
         version: 0.28.0
@@ -3376,6 +3376,10 @@ importers:
         version: 6.0.3
 
   tests2:
+    dependencies:
+      '@keystone-6/auth':
+        specifier: workspace:^
+        version: link:../packages/auth
     devDependencies:
       '@keystone-6/core':
         specifier: workspace:^

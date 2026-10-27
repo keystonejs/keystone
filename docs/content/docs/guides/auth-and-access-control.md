@@ -121,7 +121,8 @@ Your Keystone config should now look like this:
 ```ts
 import { config, list } from '@keystone-6/core'
 import { allowAll } from '@keystone-6/core/access'
-import { checkbox, password, text } from '@keystone-6/core/fields'
+import { checkbox, text } from '@keystone-6/core/fields'
+import { password } from '@keystone-6/auth'
 import { jwtSessions } from '@keystone-6/auth'
 import { createAuth } from '@keystone-6/auth'
 import { PrismaBetterSqlite3 } from '@prisma/adapter-better-sqlite3'

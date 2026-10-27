@@ -24,7 +24,6 @@ import {
   json,
   float,
   decimal,
-  password,
   select,
   multiselect,
   text,
@@ -41,6 +40,7 @@ import {
   file,
   image,
 } from '@keystone-6/core/fields'
+import { password } from '@keystone-6/auth'
 
 // Complex types
 import { document } from '@keystone-6/fields-document'
@@ -216,6 +216,7 @@ Fields can be grouped together in the Admin UI using the `group` function, with 
 ```typescript
 import { config, list, group } from '@keystone-6/core'
 import { text } from '@keystone-6/core/fields'
+import { password } from '@keystone-6/auth'
 
 export default config({
   lists: {

@@ -18,13 +18,13 @@ import {
   integer,
   json,
   multiselect,
-  password,
   relationship,
   select,
   text,
   timestamp,
   virtual,
 } from '@keystone-6/core/fields'
+import { password } from '@keystone-6/auth'
 import { dbProvider, setupTestEnv, setupTestSuite } from './utils.ts'
 
 const selfSelections: (Readonly<Partial<Record<string, true>>> | undefined)[] = []
