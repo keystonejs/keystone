@@ -168,8 +168,13 @@ export async function findMany(
   const orderBy = await resolveOrderBy(rawOrderBy, list, context)
 
   // apply access control
-  const filter = await accessControlledFilter(list, context, resolvedWhere, accessFilters)
-  const results = await context.prisma[list.listKey].findMany({
+  const resolvedAccessFilter =
+    accessFilters === true ? undefined : await resolveWhereInput(accessFilters, list, context)
+  const filter =
+    resolvedAccessFilter === undefined
+      ? resolvedWhere
+      : { AND: [resolvedWhere, resolvedAccessFilter] }
+  const query = context.prisma[list.listKey].findMany({
     where: extraFilter === undefined ? filter : { AND: [filter, extraFilter] },
     orderBy,
     take: take ?? undefined,
@@ -177,6 +182,21 @@ export async function findMany(
     cursor: cursor ?? undefined,
     select: selectForQuery(list, select),
   })
+  let results: BaseItem[]
+  if (cursor && resolvedAccessFilter !== undefined) {
+    // Prisma locates the cursor without the list's access filter. Check its visibility
+    // concurrently with fetching the page, and discard the page if the cursor is hidden.
+    const [cursorItem, items] = await Promise.all([
+      context.prisma[list.listKey].findFirst({
+        where: { AND: [mapUniqueWhereToWhere(cursor, list), resolvedAccessFilter] },
+        select: { id: true },
+      }),
+      query,
+    ])
+    results = cursorItem === null ? [] : items
+  } else {
+    results = await query
+  }
 
   if (list.cacheHint) {
     maybeCacheControlFromInfo(info)?.setCacheHint(
