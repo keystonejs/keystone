@@ -1,5 +1,6 @@
 import { list } from '@keystone-6/core'
-import { checkbox, password, relationship, text, timestamp } from '@keystone-6/core/fields'
+import { checkbox, relationship, text, timestamp } from '@keystone-6/core/fields'
+import { password } from '@keystone-6/auth'
 import { select } from '@keystone-6/core/fields'
 import { allowAll } from '@keystone-6/core/access'
 import type { Lists, Session } from './generated/keystone/types'

@@ -24,7 +24,6 @@ import {
   json,
   float,
   decimal,
-  password,
   select,
   multiselect,
   text,
@@ -41,6 +40,7 @@ import {
   file,
   image,
 } from '@keystone-6/core/fields'
+import { password } from '@keystone-6/auth'
 
 // Complex types
 import { document } from '@keystone-6/fields-document'
