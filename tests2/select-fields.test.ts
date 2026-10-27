@@ -17,13 +17,13 @@ import {
   integer,
   json,
   multiselect,
-  password,
   relationship,
   select,
   text,
   timestamp,
   virtual,
 } from '@keystone-6/core/fields'
+import { password } from '@keystone-6/auth'
 import { dbProvider, setupTestEnv, setupTestSuite } from './utils.ts'
 
 const selfSelections: (Readonly<Partial<Record<string, true>>> | undefined)[] = []
@@ -1721,7 +1721,7 @@ test('merged field hooks select both custom and built-in item fields', async () 
       aText: true,
       aFile_filename: true,
       aFile_filesize: true,
-      ...(call.operation === 'findFirst' ? { aStructure: true } : {}),
+      ...(call.operation === 'findFirst' ? { aStructure: true, aPassword: true } : {}),
     })
   }
 })

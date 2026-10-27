@@ -58,12 +58,19 @@ While Keystone has very granular permissions controls, which you can read about 
 
 Keystone's [password](/docs/fields/password) field adheres to typical password security recommendations like hashing the password in the database, and masking the password for Admin UI input fields.
 
+The password field and authentication helpers are provided by Keystone’s [auth package](https://github.com/keystonejs/keystone/tree/main/packages/auth). Install it before adding the field:
+
+```sh
+npm install @keystone-6/auth
+```
+
 Let's add a password field to our `User` list so users can authenticate with Keystone:
 
-```ts{3,11}[14-28,30-500]
+```ts{4,12}[15-29,31-500]
 import { list, config } from '@keystone-6/core';
 import { PrismaBetterSqlite3 } from '@prisma/adapter-better-sqlite3';
-import { password, text, timestamp, select, relationship } from '@keystone-6/core/fields';
+import { text, timestamp, select, relationship } from '@keystone-6/core/fields';
+import { password } from '@keystone-6/auth';
 
 const lists = {
   User: list({
@@ -106,15 +113,7 @@ That's all we need to store secure passwords in our database!
 
 ## Add Authentication
 
-### Install the `auth` package
-
-Authentication isn't built directly in to Keystone - it's an enhancement you can add on top. To use it in our app we need to add Keystone’s [auth package](https://github.com/keystonejs/keystone/tree/main/packages/auth):
-
-```sh
-npm install @keystone-6/auth
-```
-
-Now that we have the package, let’s create a new file in the root of our project to write our auth config in:
+Create a new file in the root of our project to write our auth config in:
 
 ```sh
 touch auth.ts
@@ -161,11 +160,12 @@ Back over in our keystone file, we want to import our `withAuth` function and `s
 
 Finally, we need to add an `isAccessAllowed` function to our export so that only users with a valid session can see Admin UI:
 
-```ts{5,33-34,42-50}[8-30]
+```ts{6,34-35,43-51}[9-31]
 //keystone.ts
 import { list, config } from '@keystone-6/core';
 import { PrismaBetterSqlite3 } from '@prisma/adapter-better-sqlite3';
-import { password, text, timestamp, select, relationship } from '@keystone-6/core/fields';
+import { text, timestamp, select, relationship } from '@keystone-6/core/fields';
+import { password } from '@keystone-6/auth';
 import { withAuth, sessionStrategy } from './auth';
 
 const lists = {
@@ -253,7 +253,8 @@ export { withAuth, sessionStrategy }
 //keystone.ts
 import { list, config } from '@keystone-6/core'
 import { PrismaBetterSqlite3 } from '@prisma/adapter-better-sqlite3'
-import { password, text, timestamp, select, relationship } from '@keystone-6/core/fields'
+import { text, timestamp, select, relationship } from '@keystone-6/core/fields'
+import { password } from '@keystone-6/auth'
 import { withAuth, sessionStrategy } from './auth'
 
 const lists = {
