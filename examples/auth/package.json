@@ -17,7 +17,8 @@
     "next": "catalog:",
     "react": "catalog:",
     "react-dom": "catalog:",
-    "better-sqlite3": "catalog:"
+    "better-sqlite3": "catalog:",
+    "dumb-passwords": "^0.2.1"
   },
   "devDependencies": {
     "prisma": "catalog:",
