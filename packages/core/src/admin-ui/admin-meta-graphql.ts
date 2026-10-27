@@ -24,8 +24,8 @@ export const adminMetaQuery = gql`
             fieldMeta
             isOrderable
             isFilterable
-            viewsIndex
-            customViewsIndex
+            views
+            customViews
 
             search
             isNonNull
@@ -144,7 +144,10 @@ export type AdminMetaQuery = {
   keystone: {
     adminMeta: {
       lists: (ListMeta & {
-        fields: ListMeta['fields'][string][]
+        fields: (Omit<ListMeta['fields'][string], 'views'> & {
+          views: string
+          customViews: string | null
+        })[]
         actions: ListMeta['actions']
         groups: (FieldGroupMeta & {
           fields: FieldMeta[]

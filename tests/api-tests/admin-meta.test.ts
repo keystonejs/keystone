@@ -68,7 +68,7 @@ test(
                   label: 'Id',
                   description: '',
                   search: null,
-                  viewsIndex: 0,
+                  views: '472cab590460d9aab9ab2b250ffe34d5fcc1530a88bf20db9e2da035c449f666',
                   createView: {
                     fieldMode: 'hidden',
                     isRequired: false,
@@ -78,7 +78,7 @@ test(
                   listView: {
                     fieldMode: 'hidden',
                   },
-                  customViewsIndex: null,
+                  customViews: null,
                   fieldMeta: {
                     kind: 'cuid',
                     type: 'String',
@@ -103,7 +103,7 @@ test(
                   listView: {
                     fieldMode: 'read',
                   },
-                  customViewsIndex: null,
+                  customViews: null,
                   fieldMeta: {
                     defaultValue: '',
                     displayMode: 'input',
@@ -124,14 +124,14 @@ test(
                     isRequired: false,
                   },
                   search: dbProvider === 'postgresql' ? 'insensitive' : 'default',
-                  viewsIndex: 1,
+                  views: '91de783a04fbf4c5191380fe69d6b7ae911bbbc94f3389b5e36319d4f1c8b39f',
                 },
                 {
                   key: 'something',
                   label: 'Something',
                   description: '',
                   search: null,
-                  viewsIndex: 2,
+                  views: '788536f5869e3304072f0ddbbacc03a411ed4c745d8f4cc9420be139edac854f',
                   createView: {
                     fieldMode: 'hidden',
                     isRequired: false,
@@ -141,7 +141,7 @@ test(
                   listView: {
                     fieldMode: 'hidden',
                   },
-                  customViewsIndex: null,
+                  customViews: null,
                   fieldMeta: {
                     defaultValue: null,
                     validation: {
