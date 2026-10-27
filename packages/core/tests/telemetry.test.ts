@@ -18,6 +18,7 @@ const mockPackageVersions = Object.fromEntries(
     '@keystone-6/auth',
     '@keystone-6/fields-document',
     '@keystone-6/cloudinary',
+    '@keystone-6/fields-media-multipart',
   ].map(packageName => [packageName, requireFromTest(`${packageName}/package.json`).version])
 )
 
