@@ -1,5 +1,5 @@
 import type { HTMLAttributes, ReactNode } from 'react'
-import { Fragment, useMemo, useState } from 'react'
+import { Fragment, useMemo, useState, useTransition } from 'react'
 import isDeepEqual from 'fast-deep-equal'
 
 import { ActionGroup } from '@keystar/ui/action-group'
@@ -7,7 +7,8 @@ import { Breadcrumbs, Item } from '@keystar/ui/breadcrumbs'
 import { AlertDialog, DialogContainer } from '@keystar/ui/dialog'
 import { Icon } from '@keystar/ui/icon'
 import { allIcons as KeystarIcons } from '@keystar/ui/icon/all'
-import { Grid, HStack } from '@keystar/ui/layout'
+import { Box, Grid, HStack } from '@keystar/ui/layout'
+import { ProgressCircle } from '@keystar/ui/progress'
 import { usePathname, useSearch } from '@keystar/ui/router'
 import { breakpointQueries, css, tokenSchema } from '@keystar/ui/style'
 import { toastQueue } from '@keystar/ui/toast'
@@ -40,7 +41,7 @@ export function ItemPageHeader({
   initialValue: Record<string, unknown> | null
   label: string
   title: string
-  onAction: ((action: ActionMeta, resultId: string | null) => void) | null
+  onAction: ((action: ActionMeta, resultId: string | null) => Promise<void>) | null
 }) {
   const pathname = usePathname()
   const search = useSearch()
@@ -127,7 +128,7 @@ function ItemActions({
   value: Record<string, unknown> | null
   initialValue: Record<string, unknown> | null
   actions: ActionMeta[]
-  onAction: (action: ActionMeta, resultId: string | null) => void
+  onAction: (action: ActionMeta, resultId: string | null) => Promise<void>
 }) {
   const apolloClient = useApolloClient()
   const actionItems = useMemo(
@@ -142,6 +143,7 @@ function ItemActions({
   const [actionError, setActionError] = useState<ActionError | null>(null)
   const [activeAction, setActiveAction] = useState<ActionMeta | null>(null)
   const [blockedAction, setBlockedAction] = useState<ActionMeta | null>(null)
+  const [isRunning, startAction] = useTransition()
   const itemLabel_ = item[list.labelField] ?? item.id
   const itemLabel = typeof itemLabel_ === 'string' ? itemLabel_ : (item.id as string)
   const hasUnsavedChanges = useMemo(
@@ -189,7 +191,7 @@ function ItemActions({
         })
       }
 
-      onAction(action, data.data?.result?.id ?? null)
+      await onAction(action, data.data?.result?.id ?? null)
     } catch (error: any) {
       toastQueue.critical(replace(m.fail, list, { ...action, itemLabel }), {
         actionLabel: 'Details',
@@ -199,39 +201,54 @@ function ItemActions({
     }
   }
 
+  function startRunAction(action: ActionMeta, actionArgValue: Record<string, unknown>) {
+    if (isRunning) return
+    startAction(async () => {
+      await runAction(action, actionArgValue)
+    })
+  }
+
   return (
     <Fragment>
-      <ActionGroup
-        gridArea="secondary"
-        disabledKeys={disabledKeys}
-        overflowMode="collapse"
-        items={actionItems}
-        onAction={key => {
-          const action = list.actions.find(action => action.key === key)
-          if (!action) return
+      <HStack gridArea="secondary" alignItems="center" gap="regular" minWidth={0}>
+        <Box width="element.xsmall" flexShrink={0}>
+          {isRunning && (
+            <ProgressCircle aria-label="Running item action" size="small" isIndeterminate />
+          )}
+        </Box>
+        <ActionGroup
+          isDisabled={isRunning}
+          disabledKeys={disabledKeys}
+          overflowMode="collapse"
+          items={actionItems}
+          onAction={key => {
+            if (isRunning) return
+            const action = list.actions.find(action => action.key === key)
+            if (!action) return
 
-          setActiveAction(null)
+            setActiveAction(null)
 
-          if (hasUnsavedChanges) {
-            setBlockedAction(action)
-            return
-          }
+            if (hasUnsavedChanges) {
+              setBlockedAction(action)
+              return
+            }
 
-          if (!action.itemView.hidePrompt) {
-            setActiveAction(action)
-            return
-          }
+            if (!action.itemView.hidePrompt) {
+              setActiveAction(action)
+              return
+            }
 
-          runAction(action, {})
-        }}
-      >
-        {item => (
-          <Item textValue={item.label}>
-            {item.icon && <Icon src={item.icon} />}
-            <Text>{item.label}</Text>
-          </Item>
-        )}
-      </ActionGroup>
+            startRunAction(action, {})
+          }}
+        >
+          {item => (
+            <Item textValue={item.label}>
+              {item.icon && <Icon src={item.icon} />}
+              <Text>{item.label}</Text>
+            </Item>
+          )}
+        </ActionGroup>
+      </HStack>
       <DialogContainer onDismiss={() => setActiveAction(null)}>
         {activeAction && (
           <ActionDialog
@@ -244,7 +261,7 @@ function ItemActions({
             })}
             onConfirm={async actionArgValue => {
               setActiveAction(null)
-              await runAction(activeAction, actionArgValue)
+              startRunAction(activeAction, actionArgValue)
             }}
           />
         )}

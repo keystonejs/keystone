@@ -546,6 +546,8 @@ export type IdFieldConfig =
   | { kind: 'number'; type: 'Int' | 'BigInt' }
 
 export type ListDBConfig = {
+  /** Override the global `db.requireItemSelection` setting for this list. */
+  requireItemSelection?: boolean
   /**
    * The kind of id to use.
    * @default { kind: "cuid" }
