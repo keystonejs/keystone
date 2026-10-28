@@ -163,7 +163,28 @@ const KeystoneAdminUIActionMeta = g.object<ActionMetaSource>()({
                     fields: {
                       name: g.field({ type: g.nonNull(g.String) }),
                       type: g.field({ type: g.nonNull(g.String) }),
-                      source: g.field({ type: g.JSON }),
+                      source: g.field({
+                        type: g.JSON,
+                        async resolve({ source }, _, context) {
+                          if (!source || !('field' in source)) return source
+                          const {
+                            label,
+                            description,
+                          }: Pick<FieldMetaSource, 'label' | 'description'> = source.field
+                          const [resolvedLabel, resolvedDescription] = await Promise.all([
+                            label({}, context),
+                            description({}, context),
+                          ])
+                          return {
+                            ...source,
+                            field: {
+                              ...source.field,
+                              label: resolvedLabel,
+                              description: resolvedDescription,
+                            },
+                          }
+                        },
+                      }),
                     },
                   })
                 )
@@ -244,11 +265,7 @@ const KeystoneAdminUIActionMeta = g.object<ActionMetaSource>()({
   },
 })
 
-const KeystoneAdminUIFieldGroupMeta = g.object<{
-  label: string
-  description: string | null
-  fields: FieldMetaSource[]
-}>()({
+const KeystoneAdminUIFieldGroupMeta = g.object<ListMetaSource['groups'][number]>()({
   name: 'KeystoneAdminUIFieldGroupMeta',
   fields: {
     label: g.field({ type: g.nonNull(g.String) }),

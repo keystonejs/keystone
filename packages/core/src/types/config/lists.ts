@@ -239,25 +239,28 @@ export type FieldDefaults<ListTypeInfo extends BaseListTypeInfo> = {
 export type ListAdminUIConfig<ListTypeInfo extends BaseListTypeInfo> = {
   /**
    * The label used to identify the list in navigation and etc.
+   * Accepts a string or a synchronous/asynchronous function of the current request context.
    * @default listKey.replace(/([a-z])([A-Z])/g, '$1 $2').split(/\s|_|\-/).filter(i => i).map(upcase).join(' ');
    */
-  label?: string
+  label?: MaybeSessionFunction<string, ListTypeInfo>
 
   /**
    * The singular form of the list key.
+   * Accepts a string or a synchronous/asynchronous function of the current request context.
    *
    * It is used in sentences like `Are you sure you want to delete these {plural}?`
    * @default pluralize.singular(label)
    */
-  singular?: string
+  singular?: MaybeSessionFunction<string, ListTypeInfo>
 
   /**
    * The plural form of the list key.
+   * Accepts a string or a synchronous/asynchronous function of the current request context.
    *
    * It is used in sentences like `Are you sure you want to delete this {singular}?`.
    * @default pluralize.plural(label)
    */
-  plural?: string
+  plural?: MaybeSessionFunction<string, ListTypeInfo>
 
   /**
    * The path segment to identify the list in URLs.

@@ -186,7 +186,7 @@ export type ListMeta = {
   pageSize: number
   initialColumns: string[]
   initialSearchFields: string[]
-  initialSort: ListSortDescriptor<string>
+  initialSort: ListSortDescriptor<string> | null
   initialFilter: JSONValue
   hiddenFilter: JSONValue | null
   isSingleton: boolean
