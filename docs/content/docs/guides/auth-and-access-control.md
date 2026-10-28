@@ -12,7 +12,7 @@ Keystone comes with several features that work together to control access to the
 
 Session Management and Auth are extremely flexible in Keystone, and it's possible to replace the default implementations we provide with your own (or integrate an entirely separate auth system), but in this guide we'll focus on how all these features are designed to work together.
 
-## Setting up Users, Auth and Session
+## Setting up Users, Sessions and Auth
 
 While you can use Keystone's APIs to implement your own custom session and authentication systems, we've built one for you that probably does what you need most of the time: the `@keystone-6/auth` package. We recommend starting with that.
 
@@ -20,7 +20,7 @@ Keystone is designed to make as few assumptions about your schema and system des
 
 ### Create a list for users
 
-To use the `auth` package, you need to nominate a list that stores your user accounts, and that lists needs at least two fields: an **identity** field (e.g username or email address, it should be unique) that users are looked up by when they sign in; and a **secret** field (i.e password) that is used to verify them.
+To use the `auth` package, you need to nominate a list that stores your user accounts, and that list needs at least two fields: an **identity** field (e.g username or email address, it should be unique) that users are looked up by when they sign in, and a **password** field that is used to verify them.
 
 You can add any other fields you want to your users list, including contact information, permissions, roles, and relationships to other entities in your database.
 
@@ -42,40 +42,76 @@ const Person = list({
 Read more about creating lists in the [schema](../config/lists) and [fields](../fields/overview) API Docs.
 {% /hint %}
 
-### Configure authentication
+### Configure sessions
 
-With our users list in place, we can start configuring our authentication:
+Next we need to tell Keystone how to track sessions. The simplest method is to use **JWT sessions**, which store an HS256 JWT in a cookie. JWT payloads are readable, so they should not contain sensitive data.
 
 ```ts
-import { createAuth } from '@keystone-6/auth'
+import { jwtSessions } from '@keystone-6/auth'
 
-const { withAuth } = createAuth({
-  listKey: 'Person',
-  identityField: 'email',
-  secretField: 'password',
+const sessionStrategy = jwtSessions({
+  secret: crypto.getRandomValues(new Uint8Array(32)),
 })
 ```
 
-The `createAuth` function returns another function called `withAuth` that will automatically extend Keystone's config to set up everything we need. Behind the scenes, the `auth` package is just using lower-level Keystone APIs to do everything, which means if you want to do something differently, you can fork our implementation of `auth` and build your own (this is true for session management as well)
+You can use your own session strategy if, for example, you want to use OAuth sessions.
+
+{% hint kind="tip" %}
+Read more about [Session Stores in the Session API Docs](../config/session#session-stores).
+{% /hint %}
+
+### Configure authentication
+
+With our users list and session strategy in place, we can start configuring our authentication. First, declare the application session shape so `context.session` is typed throughout Keystone:
+
+```ts
+import { createAuth } from '@keystone-6/auth'
+import type { Lists } from './generated/keystone/types'
+
+declare module './generated/keystone/types' {
+  interface Session {
+    user: Lists.Person.Item
+  }
+}
+
+const { withAuth } = createAuth<Lists.Person.TypeInfo>({
+  listKey: 'Person',
+  identityField: 'email',
+  passwordField: 'password',
+  sessionStrategy,
+  getAuthenticatedItemId: context => context.session?.user.id,
+})
+```
+
+The `getAuthenticatedItemId` function maps the data that `getSession` will return back to the authenticated item. The `createAuth` function returns another function called `withAuth` that will automatically extend Keystone's config to set up everything we need. Behind the scenes, the `auth` package is just using lower-level Keystone APIs to do everything, which means if you want to do something differently, you can fork our implementation of `auth` and build your own (this is true for session management as well)
 
 {% hint kind="tip" %}
 Read more about `createAuth` in the [Auth API Docs](../config/auth).
 {% /hint %}
 
-### Configure sessions
+### Add `getSession` to your config
 
-Finally we need to tell Keystone how to track sessions. The simplest method is to use **stateless sessions**, which use an encrypted cookie to store enough information for Keystone to identify the item on each request. They're like JWTs, but without the downsides.
+The session strategy manages the JWT cookie for authentication, but Keystone also needs to know what application data to make available for each request. Add a top-level `getSession` function to your config. It should use the same session strategy to read the cookie, then return the data declared above as `context.session`:
 
 ```ts
-const session = statelessSessions({
-  secret: '-- EXAMPLE COOKIE SECRET; CHANGE ME --',
+import type { TypeInfo } from './generated/keystone/types'
+
+config<TypeInfo>({
+  // ...
+  async getSession({ context }) {
+    const data = await sessionStrategy.get({ context })
+    if (!data) return
+
+    const user = await context.sudo().db.Person.findOne({ where: { id: data.sub } })
+    return user ? { user } : undefined
+  },
 })
 ```
 
-You can use your own session strategy if for example, if you want to use use OAuth sessions.
+Passing `TypeInfo` to `config` applies the merged session type to `context.session` and the rest of Keystone's APIs. Here, the JWT's `sub` identifies a person. `getSession` loads that person without access control and makes it available as `context.session.user`. It returns `undefined` when the cookie is missing or invalid, or when the person no longer exists.
 
 {% hint kind="tip" %}
-Read more about [Session Stores in the Session API Docs](../config/session#session-stores).
+Read more about [`getSession` in the Session API Docs](../config/session).
 {% /hint %}
 
 ### Putting it all together
@@ -84,10 +120,18 @@ Your Keystone config should now look like this:
 
 ```ts
 import { config, list } from '@keystone-6/core'
+import { allowAll } from '@keystone-6/core/access'
 import { checkbox, password, text } from '@keystone-6/core/fields'
-import { statelessSessions } from '@keystone-6/core/session'
+import { jwtSessions } from '@keystone-6/auth'
 import { createAuth } from '@keystone-6/auth'
 import { PrismaBetterSqlite3 } from '@prisma/adapter-better-sqlite3'
+import type { Config, Lists, TypeInfo } from './generated/keystone/types'
+
+declare module './generated/keystone/types' {
+  interface Session {
+    user: Lists.Person.Item
+  }
+}
 
 const db = {
   provider: 'sqlite',
@@ -96,16 +140,18 @@ const db = {
       url: process.env.DATABASE_URL || 'file:./keystone-example.db',
     }),
   }),
-}
+} satisfies Config['db']
 
-const { withAuth } = createAuth({
-  listKey: 'Person',
-  identityField: 'email',
-  secretField: 'password',
+const sessionStrategy = jwtSessions({
+  secret: crypto.getRandomValues(new Uint8Array(32)),
 })
 
-const session = statelessSessions({
-  secret: '-- EXAMPLE COOKIE SECRET; CHANGE ME --',
+const { withAuth } = createAuth<Lists.Person.TypeInfo>({
+  listKey: 'Person',
+  identityField: 'email',
+  passwordField: 'password',
+  sessionStrategy,
+  getAuthenticatedItemId: context => context.session?.user.id,
 })
 
 const lists = {
@@ -118,13 +164,18 @@ const lists = {
       isAdmin: checkbox(),
     },
   }),
-}
+} satisfies Lists
 
-export default withAuth(
-  config({
+export default withAuth<TypeInfo>(
+  config<TypeInfo>({
     db,
     lists,
-    session,
+    async getSession({ context }) {
+      const data = await sessionStrategy.get({ context })
+      if (!data) return
+      const user = await context.sudo().db.Person.findOne({ where: { id: data.sub } })
+      return user ? { user } : undefined
+    },
   })
 )
 ```
@@ -139,31 +190,22 @@ In this initialisation phase, you'll want to load any data you'll need to work o
 
 If no session cookie is present, or no matching item can be found, `context.session` will be `undefined`.
 
-### Add a sessionData query
+### Load application session data
 
-In our example above, we probably want to know the current user's ID and the value of the `isAdmin` checkbox. The `auth` package makes this simple by providing a `sessionData` option, which should contain the fields to query when a session is found.
+In our example above, we load the current person in `getSession`. The returned object becomes `context.session`, so it can include any fields needed by access control and hooks.
 
 You configure it like this:
 
 ```ts
-const { withAuth } = createAuth({
-  // ...
-  sessionData: 'isAdmin',
-})
-```
-
-Think of this like the field selection in a GraphQL query. You can load any fields you need to have at hand when writing Access Control methods, including virtual fields and relationships.
-
-The equivalent GraphQL query would look like this:
-
-```graphql
-query {
-  person(where: { id: $session.itemId }) {
-    id
-    isAdmin
-  }
+async getSession({ context }) {
+  const data = await sessionStrategy.get({ context })
+  if (!data) return
+  const user = await context.sudo().db.Person.findOne({ where: { id: data.sub } })
+  return user ? { user } : undefined
 }
 ```
+
+You can hydrate relationships or derived values here as well when they are needed by your application.
 
 ## Adding Access Control
 
@@ -196,21 +238,16 @@ const Post = list({
 })
 ```
 
-And the Session Data we set up above would look like this:
+The module declaration above is propagated to the generated `Session` type, so access control helpers can use it for their session argument:
 
 ```ts
-type Session = {
-  data: {
-    id: string
-    isAdmin: boolean
-  }
-}
+import type { Session } from './generated/keystone/types'
 ```
 
 We can now set up **operation** access control to restrict the **create**, **update** and **delete** operations to authenticated users with the `isAdmin` checkbox set:
 
 ```ts
-const isAdmin = ({ session }: { session?: Session }) => Boolean(session?.data.isAdmin)
+const isAdmin = ({ session }: { session?: Session }) => Boolean(session?.user.isAdmin)
 
 const Post = list({
   access: {
@@ -232,7 +269,7 @@ We can also use **filter** access control to make sure that unauthenticated user
 ```ts
 function filterPosts({ session }: { session?: Session }) {
   // if the user is an Admin, they can access all the records
-  if (session?.data.isAdmin) return true
+  if (session?.user.isAdmin) return true
   // otherwise, filter for published posts
   return { isPublished: { equals: true } }
 }
@@ -440,7 +477,7 @@ When you need it, you can call `context.sudo()` to create a new context with ele
 For example, we probably want to block all public access to querying users in our system:
 
 ```ts
-const isAdmin = ({ session }: { session?: Session }) => Boolean(session?.data.isAdmin)
+const isAdmin = ({ session }: { session?: Session }) => Boolean(session?.user.isAdmin)
 
 const Person = list({
   access: {
@@ -517,25 +554,26 @@ Building on our blog example above, let's implement the following rules for our 
 The implementation of these rules would look like this:
 
 ```ts
-type PersonData = {
-  id: string
-  name: string
-  email: string
-  isAdmin: boolean
-}
+import type { Lists, Session } from './generated/keystone/types'
 
 // Validate there is a user with a valid session
-const isUser = ({ session }: { session?: Session }) => !!session?.data.id
+const isUser = ({ session }: { session?: Session }) => !!session?.user.id
 
 // Validate the current user is an Admin
-const isAdmin = ({ session }: { session?: Session }) => Boolean(session?.data.isAdmin)
+const isAdmin = ({ session }: { session?: Session }) => Boolean(session?.user.isAdmin)
 
 // Validate the current user is updating themselves
-const isPerson = ({ session, item }: { session?: Session; item: PersonData }) =>
-  session?.data.id === item.id
+const isPerson = ({ session, item }: { session?: Session; item?: Lists.Person.Item }) =>
+  session?.user.id === item?.id
 
 // Validate the current user is an Admin, or updating themselves
-const isAdminOrPerson = ({ session, item }: { session?: Session; item: PersonData }) =>
+const isAdminOrPerson = ({
+  session,
+  item,
+}: {
+  session?: Session
+  item?: Lists.Person.Item
+}) =>
   isAdmin({ session }) || isPerson({ session, item })
 
 const Person = list({
