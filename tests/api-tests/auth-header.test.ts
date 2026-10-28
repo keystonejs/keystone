@@ -1,6 +1,7 @@
 import { describe, expect, test } from 'vitest'
 import { list } from '@keystone-6/core'
-import { text, timestamp, password } from '@keystone-6/core/fields'
+import { text, timestamp } from '@keystone-6/core/fields'
+import { password } from '@keystone-6/auth'
 import { createAuth, jwtSessions } from '@keystone-6/auth'
 import { setupTestRunner, setupTestEnv } from '@keystone-6/api-tests/test-runner'
 import { allowAll } from '@keystone-6/core/access'

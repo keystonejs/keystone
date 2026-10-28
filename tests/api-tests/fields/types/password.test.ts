@@ -1,5 +1,5 @@
 import { expect, test } from 'vitest'
-import { password } from '@keystone-6/core/fields'
+import { password } from '@keystone-6/auth'
 import { filterTests } from './utils.ts'
 import { list } from '@keystone-6/core'
 import { setupTestRunner } from '../../test-runner.ts'

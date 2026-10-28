@@ -1,23 +1,18 @@
 import bcryptjs from 'bcryptjs'
-// @ts-expect-error
-import dumbPasswords from 'dumb-passwords'
-import { userInputError } from '../../../lib/core/graphql-errors.ts'
 import {
   type BaseListTypeInfo,
   type CommonFieldConfig,
   type FieldTypeFunc,
   fieldType,
-} from '../../../types/index.ts'
-import { g } from '../../../index.ts'
-import { makeValidateHook, defaultIsRequired } from '../../non-null-graphql.ts'
-import { isObjectType, type GraphQLSchema } from 'graphql/index.js'
-import type { InferValueFromInputType } from '@graphql-ts/schema'
+} from '@keystone-6/core/types'
+import { g, selectItem } from '@keystone-6/core'
+import { GraphQLError, isObjectType, type GraphQLSchema } from 'graphql/index.js'
 import type { controller } from './views/index.tsx'
 
 type FieldTypeInfo = {
   item: string | null
   inputs: {
-    where: InferValueFromInputType<typeof PasswordFilter> | undefined
+    where: { isSet: boolean } | null | undefined
     create: string | null | undefined
     update: string | null | undefined
     uniqueWhere: never
@@ -35,7 +30,6 @@ export type PasswordFieldConfig<ListTypeInfo extends BaseListTypeInfo> = CommonF
 > & {
   validation?: {
     isRequired?: boolean
-    rejectCommon?: boolean
     match?: { regex: RegExp; explanation?: string }
     length?: {
       /** @default 8 */
@@ -88,7 +82,7 @@ export function password<ListTypeInfo extends BaseListTypeInfo>(
     },
     validation = {},
   } = config
-  const { isRequired = false, rejectCommon = false, match, length: { max } = {} } = validation
+  const { isRequired = false, match, length: { max } = {} } = validation
   const min = isRequired ? (validation.length?.min ?? 8) : validation.length?.min
 
   return meta => {
@@ -126,36 +120,62 @@ export function password<ListTypeInfo extends BaseListTypeInfo>(
       return kdf.hash(val)
     }
 
-    const hasAdditionalValidation = match || rejectCommon || min !== undefined || max !== undefined
-    const { mode, validate } = makeValidateHook(
-      meta,
-      config,
-      hasAdditionalValidation
-        ? ({ inputData, operation, addValidationError }) => {
-            if (operation === 'delete') return
+    const isNullable = config.db?.isNullable ?? !isRequired
+    const mode = isNullable ? 'optional' : 'required'
+    const readIsNonNull =
+      typeof config.graphql?.isNonNull === 'object'
+        ? config.graphql.isNonNull.read
+        : config.graphql?.isNonNull
+    if (isNullable && readIsNonNull) {
+      throw new Error(
+        `${meta.listKey}.${meta.fieldKey} sets graphql.isNonNull.read: true, but not validation.isRequired: true (or db.isNullable: false)\n` +
+          `Set validation.isRequired: true, or db.isNullable: false, or graphql.isNonNull.read: false`
+      )
+    }
 
-            const value = inputData[meta.fieldKey] // we use inputData, as resolveData is hashed
-            if (value != null) {
-              if (min !== undefined && value.length < min) {
-                if (min === 1) {
-                  addValidationError(`value must not be empty`)
-                } else {
-                  addValidationError(`value must be at least ${min} characters long`)
-                }
-              }
-              if (max !== undefined && value.length > max) {
-                addValidationError(`value must be no longer than ${max} characters`)
-              }
-              if (match && !match.regex.test(value)) {
-                addValidationError(match.explanation ?? `value must match ${match.regex}`)
-              }
-              if (rejectCommon && dumbPasswords.check(value)) {
-                addValidationError(`value is too common and is not allowed`)
-              }
+    type ValidateHooks = Exclude<
+      NonNullable<NonNullable<PasswordFieldConfig<ListTypeInfo>['hooks']>['validate']>,
+      Function
+    >
+    type ValidateArgs = Parameters<NonNullable<ValidateHooks['create' | 'update']>>[0]
+    function wrapValidate<Args extends ValidateArgs>(
+      hook: ((args: Args) => void | Promise<void>) | undefined
+    ) {
+      return selectItem.wrap(
+        hook => async args => {
+          const { operation, inputData, resolvedData, addValidationError } = args
+          const resolvedValue = resolvedData[meta.fieldKey]
+          if (
+            (isRequired || !isNullable) &&
+            ((operation === 'create' && resolvedValue === undefined) || resolvedValue === null)
+          ) {
+            addValidationError('missing value')
+          }
+
+          // Validate the input because resolvedData contains the hashed password.
+          const value = inputData[meta.fieldKey]
+          if (value != null) {
+            if (min !== undefined && value.length < min) {
+              addValidationError(
+                min === 1
+                  ? 'value must not be empty'
+                  : `value must be at least ${min} characters long`
+              )
+            }
+            if (max !== undefined && value.length > max) {
+              addValidationError(`value must be no longer than ${max} characters`)
+            }
+            if (match && !match.regex.test(value)) {
+              addValidationError(match.explanation ?? `value must match ${match.regex}`)
             }
           }
-        : undefined
-    )
+          await hook?.(args)
+        },
+        {},
+        hook
+      )
+    }
+    const validate = config.hooks?.validate
 
     return fieldType({
       kind: 'scalar',
@@ -165,10 +185,24 @@ export function password<ListTypeInfo extends BaseListTypeInfo>(
       extendPrismaSchema: config.db?.extendPrismaSchema,
     })({
       ...config,
-      ...defaultIsRequired(config, isRequired),
+      ui: {
+        ...config.ui,
+        createView: {
+          ...config.ui?.createView,
+          isRequired: config.ui?.createView?.isRequired ?? isRequired,
+        },
+        itemView: {
+          ...config.ui?.itemView,
+          isRequired: config.ui?.itemView?.isRequired ?? isRequired,
+        },
+      },
       hooks: {
         ...config.hooks,
-        validate,
+        validate: {
+          create: wrapValidate(typeof validate === 'function' ? validate : validate?.create),
+          update: wrapValidate(typeof validate === 'function' ? validate : validate?.update),
+          delete: typeof validate === 'function' ? validate : validate?.delete,
+        },
       },
       input: {
         where:
@@ -177,7 +211,11 @@ export function password<ListTypeInfo extends BaseListTypeInfo>(
             : {
                 arg: g.arg({ type: PasswordFilter }),
                 resolve(val) {
-                  if (val === null) throw userInputError('Password filters cannot be set to null')
+                  if (val === null) {
+                    throw new GraphQLError('Input error: Password filters cannot be set to null', {
+                      extensions: { code: 'KS_USER_INPUT_ERROR' },
+                    })
+                  }
                   if (val.isSet) return { not: null }
                   return null
                 },
@@ -195,11 +233,10 @@ export function password<ListTypeInfo extends BaseListTypeInfo>(
         },
       },
       __ksTelemetryFieldTypeName: '@keystone-6/password',
-      views: '@keystone-6/core/fields/types/password/views',
+      views: '@keystone-6/auth/fields/password/views',
       getAdminMeta: (): Parameters<typeof controller>[0]['fieldMeta'] => ({
         isNullable: mode === 'optional',
         validation: {
-          rejectCommon,
           match: match
             ? {
                 regex: {

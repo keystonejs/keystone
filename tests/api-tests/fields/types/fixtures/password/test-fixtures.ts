@@ -1,5 +1,5 @@
 import { expect, test } from 'vitest'
-import { password } from '@keystone-6/core/fields'
+import { password } from '@keystone-6/auth'
 
 export const name = 'Password'
 export const typeFunction = password
@@ -15,7 +15,6 @@ export const skipUpdateTest = true
 
 export const getTestFields = () => ({
   password: password({ validation: { length: { min: 4 } } }),
-  passwordRejectCommon: password({ validation: { rejectCommon: true } }),
 })
 
 export const initItems = () => {
@@ -52,24 +51,6 @@ export const crudTests = (keystoneTestWrapper: any) => {
         [GraphQLError: You provided invalid data for this operation.
           - Test.password: value must be at least 4 characters long]
       `)
-    })
-  )
-  test(
-    'setting a common password fails',
-    keystoneTestWrapper(async ({ context }: { context: any }) => {
-      await expect(
-        context.query.Test.createOne({
-          data: { passwordRejectCommon: 'password' },
-        })
-      ).rejects.toMatchInlineSnapshot(`
-        [GraphQLError: You provided invalid data for this operation.
-          - Test.passwordRejectCommon: value is too common and is not allowed]
-      `)
-      const data = await context.query.Test.createOne({
-        data: { passwordRejectCommon: 'sdfinwedvhweqfoiuwdfnvjiewrijnf' },
-        query: `passwordRejectCommon {isSet}`,
-      })
-      expect(data.passwordRejectCommon.isSet).toBe(true)
     })
   )
 }

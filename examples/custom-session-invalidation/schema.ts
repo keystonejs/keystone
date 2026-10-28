@@ -1,6 +1,7 @@
 import { list } from '@keystone-6/core'
 import { allowAll, denyAll, unfiltered } from '@keystone-6/core/access'
-import { text, password, timestamp } from '@keystone-6/core/fields'
+import { text, timestamp } from '@keystone-6/core/fields'
+import { password } from '@keystone-6/auth'
 import type { Lists, Session } from './generated/keystone/types'
 
 // WARNING: this example is for demonstration purposes only
