@@ -337,8 +337,22 @@ export default config<TypeInfo>({
   server: {
     extendExpressApp: (app, commonContext) => {
       app.get('/api/users', async (req, res) => {
-        const context = await commonContext.withRequest(req, res)
+        const requestHeaders = new Headers()
+        for (const [name, value] of Object.entries(req.headers)) {
+          if (value === undefined) continue
+          for (const entry of Array.isArray(value) ? value : [value]) {
+            requestHeaders.append(name, entry)
+          }
+        }
+        const responseHeaders = new Headers()
+        const context = await commonContext.withRequest(requestHeaders, responseHeaders)
         const users = await context.query.User.findMany()
+        for (const [name, value] of responseHeaders) {
+          if (name !== 'set-cookie') res.setHeader(name, value)
+        }
+        for (const cookie of responseHeaders.getSetCookie()) {
+          res.appendHeader('set-cookie', cookie)
+        }
         res.json(users)
       })
     },
