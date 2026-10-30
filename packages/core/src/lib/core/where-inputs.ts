@@ -3,6 +3,7 @@ import type { PrismaFilter, UniquePrismaFilter } from '../../types/prisma.ts'
 import { userInputError } from './graphql-errors.ts'
 import type { InitialisedList } from './initialise-lists.ts'
 import { getDBFieldKeyForFieldOnMultiField } from './utils.ts'
+import { getUniqueWhereValueInput, isUniqueWhereValue } from './compound-unique.ts'
 
 export type InputFilter = Record<string, any> & {
   _____?: 'input filter'
@@ -22,14 +23,76 @@ export async function resolveUniqueWhereInput(
   for (const key in inputFilter) {
     const value = inputFilter[key]
 
-    const resolver = list.fields[key].input!.uniqueWhere!.resolve
+    const compound = list.compoundUnique[key]
+    if (compound) {
+      if (
+        value === null ||
+        typeof value !== 'object' ||
+        Array.isArray(value) ||
+        Object.keys(value).length !== compound.fields.length ||
+        compound.fields.some(fieldKey => !Object.hasOwn(value, fieldKey) || value[fieldKey] == null)
+      ) {
+        throw userInputError(
+          `${list.listKey}.${key} requires every member of the compound selector to be non-null`
+        )
+      }
+      where[compound.prismaKey] = Object.fromEntries(
+        await Promise.all(
+          compound.fields.map(async fieldKey => {
+            const field = list.fields[fieldKey]
+            const input = getUniqueWhereValueInput(field)!
+            const resolved = input.resolve
+              ? await input.resolve(value[fieldKey], context)
+              : value[fieldKey]
+            if (!isUniqueWhereValue(field, resolved)) {
+              throw userInputError(
+                `${list.listKey}.${key}.${fieldKey} must resolve to a non-null exact database value`
+              )
+            }
+            return [fieldKey, resolved]
+          })
+        )
+      )
+      continue
+    }
+
+    const field = list.fields[key]
+    const resolver = field.input!.uniqueWhere!.resolve
     if (resolver !== undefined) {
       where[key] = await resolver(value, context)
     } else {
       where[key] = value
     }
+
+    // Prisma relationship predicates use ordinary filters, not nested compound selector keys.
+    if (field.dbField.kind === 'relation' && where[key] !== null) {
+      const foreignList = list.lists[field.dbField.list]
+      const resolved = await resolveUniqueWhereInput(where[key], foreignList, context)
+      where[key] = mapUniqueWhereToWhere(resolved, foreignList)
+    }
   }
 
+  return where
+}
+
+/** Translate resolved unique selectors to equality predicates for access-controlled lookups. */
+export function mapUniqueWhereToWhere(uniqueWhere: UniquePrismaFilter, list: InitialisedList) {
+  const where: PrismaFilter = {}
+  const conditions: PrismaFilter[] = []
+  for (const key in uniqueWhere) {
+    const compound = list.compoundUnique[key]
+    if (compound) {
+      // Keep overlapping selectors conjunctive, rather than overwriting a member's predicate.
+      for (const fieldKey of compound.fields) {
+        conditions.push({ [fieldKey]: { equals: uniqueWhere[key][fieldKey] } })
+      }
+    } else if (list.fields[key].dbField.kind === 'relation') {
+      where[key] = uniqueWhere[key]
+    } else {
+      where[key] = { equals: uniqueWhere[key] }
+    }
+  }
+  if (conditions.length) where.AND = conditions
   return where
 }
 

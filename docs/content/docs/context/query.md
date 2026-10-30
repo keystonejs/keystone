@@ -26,6 +26,29 @@ The `query` argument (which defaults to `'id'`), is a string which indicates whi
 
 The functions in the API work by directly executing queries and mutations against your GraphQL API.
 
+### Compound unique selectors
+
+Lists configured with [`db.unique`](../config/lists#indexes-and-compound-unique-constraints) accept the same [compound selectors as GraphQL](../graphql/overview#compound-unique-selectors):
+
+```typescript
+const where = { slug_domain: { slug: '/de/about', domain: 'example.com' } };
+const page = await context.query.Page.findOne({ where, query: 'id name' });
+await context.query.Page.updateOne({ where, data: { name: 'About' } });
+const nextPages = await context.query.Page.findMany({
+  cursor: where,
+  orderBy: [{ slug: 'asc' }, { domain: 'asc' }],
+  skip: 1,
+  take: 20,
+  query: 'id name',
+});
+await context.query.Page.deleteOne({ where });
+```
+
+Bulk mutation entries and relationship selectors use the same generated input types.
+Every member must be present and non-null; members need not be individually unique.
+Access control and field filtering restrictions still apply.
+These selectors require a matching database constraint, not just a validation hook, and do not become ordinary `where` filters for `findMany`.
+
 ### findOne
 
 ```typescript

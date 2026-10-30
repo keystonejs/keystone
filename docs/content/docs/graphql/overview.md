@@ -28,6 +28,80 @@ For security through obscurity, the playground and [introspection](https://graph
 You can modify this behaviour using the `config.graphql.playground` and `config.graphql.apolloConfig` options.
 For example, to disable these features irrespective of the `NODE_ENV` environment variables, add this to your Keystone config: `graphql: { playground: false, apolloConfig: { introspection: false } }`.
 
+## Compound unique selectors
+
+A list's [`db.unique`](../config/lists#indexes-and-compound-unique-constraints) declarations expose complete database-backed identities, without making each member individually unique:
+
+```typescript
+Page: list({
+  access: allowAll,
+  db: { unique: [{ fields: ['slug', 'domain'] }] },
+  fields: {
+    slug: text(),
+    domain: text(),
+    name: text(),
+  },
+}),
+```
+
+This generates a `slug_domain` selector in `PageWhereUniqueInput`, accepting an object of type `PageWhereUniqueInput_slug_domain` with required `slug: String!` and `domain: String!` members.
+The name follows the declared field order, joined by underscores, not mapped database column names.
+Database constraint names are distinct from this selector; this configuration does not expose custom naming options.
+Apply the generated database constraint before using the selector, resolving any conflicting existing data first.
+A validation hook or an ordinary index alone is not a database uniqueness guarantee and does not create a selector.
+
+```graphql
+query {
+  page(where: { slug_domain: { slug: "/de/about", domain: "example.com" } }) {
+    id
+    name
+  }
+}
+```
+
+The same input works in update/delete operations, including each entry in bulk mutations:
+
+```graphql
+mutation {
+  updatePage(
+    where: { slug_domain: { slug: "/de/about", domain: "example.com" } }
+    data: { name: "About" }
+  ) { id }
+}
+
+mutation {
+  deletePage(where: { slug_domain: { slug: "/de/about", domain: "example.com" } }) { id }
+}
+```
+
+Compound selectors also work for relationship `connect`, to-many `set`/`disconnect`, and root or relationship pagination cursors:
+
+```graphql
+query {
+  pages(
+    cursor: { slug_domain: { slug: "/de/about", domain: "example.com" } }
+    orderBy: [{ slug: asc }, { domain: asc }]
+    skip: 1
+    take: 20
+  ) { id name }
+}
+```
+
+Every tuple member is an exact value, not a filter object, and must be supplied and non-null.
+Passing a null compound object is also an error; omit it when choosing another selector.
+Nullable columns are permitted in the constraint, but standard unique constraints can allow duplicate null-containing tuples, so those tuples are not supported as selectors.
+See [supported field kinds and null limitations](../config/lists#supported-fields-and-validation).
+
+List operation access, row access filters, and each member's field filtering access continue to apply.
+If a member is omitted from public filtering, the entire selector is omitted from the public schema.
+`context.internal()` restores omitted inputs, not permission to bypass access control; `sudo()` retains its existing behavior.
+Missing or inaccessible records follow the existing query/mutation error conventions.
+
+A complete unique tuple is different from an ordinary multi-field filter.
+`PageWhereInput` does not gain `slug_domain`; use `{ slug: { equals: "/de/about" }, domain: { equals: "example.com" } }` when filtering many items.
+Existing ID, standalone unique, and one-to-one selectors remain available.
+Supplying multiple selector keys retains the existing conjunctive behavior: the item must match all of them.
+
 ## Example
 
 Consider the following system definition:

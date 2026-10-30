@@ -6,7 +6,7 @@ import type {
   KeystoneContext,
   OrderDirection,
 } from '../../../types/index.ts'
-import type { PrismaFilter, UniquePrismaFilter } from '../../../types/prisma.ts'
+import type { PrismaFilter } from '../../../types/prisma.ts'
 
 import { getAccessFilters, getOperationQueryAccess } from '../access-control.ts'
 import {
@@ -14,6 +14,7 @@ import {
   type InputFilter,
   resolveUniqueWhereInput,
   resolveWhereInput,
+  mapUniqueWhereToWhere,
 } from '../where-inputs.ts'
 
 import { limitsExceededError, userInputError } from '../graphql-errors.ts'
@@ -34,29 +35,16 @@ function selectForQuery(
   return select
 }
 
-// we want to put the value we get back from the field's unique where resolver into an equals
-// rather than directly passing the value as the filter (even though Prisma supports that), we use equals
-// because we want to disallow fields from providing an arbitrary filter
-export function mapUniqueWhereToWhere(uniqueWhere: UniquePrismaFilter, list: InitialisedList) {
-  const where: PrismaFilter = {}
-  for (const key in uniqueWhere) {
-    if (list.fields[key].dbField.kind === 'relation') {
-      const foreignList = list.lists[list.fields[key].dbField.list]
-      where[key] = mapUniqueWhereToWhere(uniqueWhere[key], foreignList)
-      continue
-    }
-    where[key] = { equals: uniqueWhere[key] }
-  }
-  return where
-}
-
 export function* traverse(
   list: InitialisedList,
   inputFilter: InputFilter | UniqueInputFilter
 ): Generator<{ fieldKey: string; list: InitialisedList }, void, unknown> {
   for (const fieldKey in inputFilter) {
     const value = inputFilter[fieldKey]
-    if (fieldKey === 'OR' || fieldKey === 'AND' || fieldKey === 'NOT') {
+    const compound = list.compoundUnique[fieldKey]
+    if (compound) {
+      for (const member of compound.fields) yield { fieldKey: member, list }
+    } else if (fieldKey === 'OR' || fieldKey === 'AND' || fieldKey === 'NOT') {
       for (const condition of value) {
         yield* traverse(list, condition)
       }
@@ -174,21 +162,38 @@ export async function findMany(
     resolvedAccessFilter === undefined
       ? resolvedWhere
       : { AND: [resolvedWhere, resolvedAccessFilter] }
+  let resolvedCursor = cursor ? await resolveUniqueWhereInput(cursor, list, context) : undefined
+  const isRelationCursor =
+    cursor && Object.keys(cursor).some(key => list.fields[key]?.dbField.kind === 'relation')
+  if (resolvedCursor && isRelationCursor) {
+    // Prisma cursors require a database unique key. Resolve one-to-one selectors
+    // with the same access filter as the page, rather than the single-item filter.
+    const cursorWhere = mapUniqueWhereToWhere(resolvedCursor, list)
+    const cursorItem = await context.prisma[list.listKey].findFirst({
+      where:
+        resolvedAccessFilter === undefined
+          ? cursorWhere
+          : { AND: [cursorWhere, resolvedAccessFilter] },
+      select: { id: true },
+    })
+    if (!cursorItem) return []
+    resolvedCursor = { id: cursorItem.id }
+  }
   const query = context.prisma[list.listKey].findMany({
     where: extraFilter === undefined ? filter : { AND: [filter, extraFilter] },
     orderBy,
     take: take ?? undefined,
     skip,
-    cursor: cursor ?? undefined,
+    cursor: resolvedCursor,
     select: selectForQuery(list, select),
   })
   let results: BaseItem[]
-  if (cursor && resolvedAccessFilter !== undefined) {
+  if (resolvedCursor && resolvedAccessFilter !== undefined && !isRelationCursor) {
     // Prisma locates the cursor without the list's access filter. Check its visibility
     // concurrently with fetching the page, and discard the page if the cursor is hidden.
     const [cursorItem, items] = await Promise.all([
       context.prisma[list.listKey].findFirst({
-        where: { AND: [mapUniqueWhereToWhere(cursor, list), resolvedAccessFilter] },
+        where: { AND: [mapUniqueWhereToWhere(resolvedCursor, list), resolvedAccessFilter] },
         select: { id: true },
       }),
       query,
