@@ -237,6 +237,7 @@ export function* makeList({
           one: access.query.one ? allowAll : denyAll,
           many: access.query.many ? allowAll : denyAll,
           count: access.query.count ? allowAll : denyAll,
+          byRelationshipFilter: allowAll,
         },
         create: access.create ? allowAll : denyAll,
         update: access.update ? allowAll : denyAll,
@@ -271,6 +272,7 @@ export function* makeList({
             one: access.query.one ? allowAll : denyAll,
             many: access.query.many ? allowAll : denyAll,
             count: access.query.count ? allowAll : denyAll,
+            byRelationshipFilter: allowAll,
           },
           create: allowAll,
           update: allowAll,
@@ -310,7 +312,7 @@ export function* makeList({
       },
       access: {
         operation: {
-          query: { one: allowAll, many: allowAll, count: allowAll },
+          query: { one: allowAll, many: allowAll, count: allowAll, byRelationshipFilter: allowAll },
           create: access.create ? allowAll : denyAll,
           update: allowAll,
           delete: allowAll,
@@ -346,7 +348,7 @@ export function* makeList({
       },
       access: {
         operation: {
-          query: { one: allowAll, many: allowAll, count: allowAll },
+          query: { one: allowAll, many: allowAll, count: allowAll, byRelationshipFilter: allowAll },
           create: access.create ? allowAll : denyAll,
           update: allowAll,
           delete: allowAll,

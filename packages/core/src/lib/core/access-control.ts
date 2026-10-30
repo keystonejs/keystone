@@ -521,13 +521,14 @@ export function parseListAccessControl(
           one: access,
           many: access,
           count: access,
+          byRelationshipFilter: access,
         },
         create: access,
         update: access,
         delete: access,
       },
       filter: {
-        query: { one: allowAll, many: allowAll, count: allowAll },
+        query: { one: allowAll, many: allowAll, count: allowAll, byRelationshipFilter: allowAll },
         update: allowAll,
         delete: allowAll,
       },
@@ -551,7 +552,12 @@ export function parseListAccessControl(
 
   const query =
     typeof operation.query === 'function'
-      ? { one: operation.query, many: operation.query, count: operation.query }
+      ? {
+          one: operation.query,
+          many: operation.query,
+          count: operation.query,
+          byRelationshipFilter: operation.query,
+        }
       : operation.query
 
   const queryFilter = filter?.query ?? allowAll
@@ -566,7 +572,12 @@ export function parseListAccessControl(
     filter: {
       query:
         typeof queryFilter === 'function'
-          ? { one: queryFilter, many: queryFilter, count: queryFilter }
+          ? {
+              one: queryFilter,
+              many: queryFilter,
+              count: queryFilter,
+              byRelationshipFilter: queryFilter,
+            }
           : queryFilter,
       // create: not supported
       update: filter?.update ?? allowAll,
