@@ -57,6 +57,11 @@ for (const modulePath of testModules) {
             mod.beforeAll(matrixValue)
           }
         })
+        // Generate the schema and client outside the per-test timeout.
+        beforeAll(
+          runner(async () => {}),
+          60_000
+        )
         afterEach(async () => {
           if (mod.afterEach) {
             await mod.afterEach(matrixValue)
@@ -88,6 +93,11 @@ for (const modulePath of testModules) {
             mod.beforeAll(matrixValue)
           }
         })
+        // Generate the schema and client outside the per-test timeout.
+        beforeAll(
+          runner(async () => {}),
+          60_000
+        )
         afterEach(async () => {
           if (mod.afterEach) {
             await mod.afterEach(matrixValue)
