@@ -1,5 +1,15 @@
 # @keystone-6/core
 
+## 8.3.0
+
+### Minor Changes
+
+- [#10025](https://github.com/keystonejs/keystone/pull/10025) [`f5078b2`](https://github.com/keystonejs/keystone/commit/f5078b2c22739d10c15de2a12f9e91340a092cd5) Thanks [@MauriceArikoglu](https://github.com/MauriceArikoglu)! - Adds support for context functions in list labels, field labels and descriptions, and group labels and descriptions
+
+### Patch Changes
+
+- [#10077](https://github.com/keystonejs/keystone/pull/10077) [`ed8b212`](https://github.com/keystonejs/keystone/commit/ed8b212484e8a35b64d85b642c62941d5f44552e) Thanks [@emmatown](https://github.com/emmatown)! - Skips unnecessary printing and parsing of GraphQL documents in `context.graphql.{run,raw}` and cache GraphQL validation by document identity
+
 ## 8.2.0
 
 ### Minor Changes
