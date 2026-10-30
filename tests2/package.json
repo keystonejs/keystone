@@ -16,6 +16,7 @@
     "react": "catalog:",
     "react-dom": "catalog:",
     "better-sqlite3": "catalog:",
+    "graphql": "catalog:",
     "pg": "catalog:",
     "mariadb": "catalog:"
   }
