@@ -3401,6 +3401,9 @@ importers:
       better-sqlite3:
         specifier: 'catalog:'
         version: 12.11.1
+      graphql:
+        specifier: 'catalog:'
+        version: 16.14.2
       mariadb:
         specifier: 'catalog:'
         version: 3.4.5

@@ -1,9 +1,19 @@
 import type { IncomingMessage, ServerResponse } from 'http'
-import { type ExecutionResult, type GraphQLSchema, graphql, print } from 'graphql/index.js'
+import {
+  type DocumentNode,
+  type ExecutionResult,
+  type GraphQLError,
+  type GraphQLSchema,
+  execute,
+  parse,
+  validate,
+} from 'graphql/index.js'
 import type { KeystoneContext, KeystoneGraphQLAPI, KeystoneConfig } from '../../types/index.ts'
 
 import type { InitialisedList } from '../core/initialise-lists.ts'
 import { getDbFactory, getQueryFactory } from './api.ts'
+
+const documentValidationCache = new WeakMap<GraphQLSchema, WeakSet<DocumentNode>>()
 
 export function createContext({
   config,
@@ -67,10 +77,27 @@ export function createContext({
   }) => {
     const schema = internal ? graphQLSchemas.internal : graphQLSchemas.public
     const rawGraphQL: KeystoneGraphQLAPI['raw'] = async ({ query, variables }) => {
-      const source = typeof query === 'string' ? query : print(query)
-      return (await graphql({
+      let document: DocumentNode
+      try {
+        document = typeof query === 'string' ? parse(query) : query
+      } catch (error) {
+        return { errors: [error as GraphQLError] }
+      }
+
+      let schemaCache = documentValidationCache.get(schema)
+      if (!schemaCache) {
+        schemaCache = new WeakSet()
+        documentValidationCache.set(schema, schemaCache)
+      }
+      if (!schemaCache.has(document)) {
+        const validationErrors = validate(schema, document)
+        if (validationErrors.length) return { errors: validationErrors }
+        schemaCache.add(document)
+      }
+
+      return (await execute({
         schema,
-        source,
+        document,
         contextValue: context,
         variableValues: variables,
       })) as ExecutionResult<any>
