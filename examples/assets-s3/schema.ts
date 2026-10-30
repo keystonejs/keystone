@@ -1,6 +1,7 @@
 import { list } from '@keystone-6/core'
 import { allowAll } from '@keystone-6/core/access'
-import { text, image, file } from '@keystone-6/core/fields'
+import { text } from '@keystone-6/core/fields'
+import { image, file } from '@keystone-6/fields-media-multipart'
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
 import { S3, GetObjectCommand } from '@aws-sdk/client-s3'
 import { Upload } from '@aws-sdk/lib-storage'

@@ -7,14 +7,15 @@ import type {
   MaybePromise,
   FieldHooks,
   StorageStrategy,
-} from '../../../types/index.ts'
-import { fieldType } from '../../../types/index.ts'
-import { g } from '../../../index.ts'
+} from '@keystone-6/core/types'
+import { fieldType } from '@keystone-6/core/types'
+import { g } from '@keystone-6/core'
 import { SUPPORTED_IMAGE_EXTENSIONS } from './utils.ts'
-import { merge } from '../../resolve-hooks.ts'
-import { selectItem } from '../../../types/item-callback.ts'
-import type { InferValueFromArg, InferValueFromInputType } from '@graphql-ts/schema'
-import { toBase64Url } from '../../../lib/encoding.ts'
+import { merge } from '../resolve-hooks.ts'
+import { selectItem } from '@keystone-6/core'
+import type { InferValueFromArg, InferValueFromInputType } from '@keystone-6/core/graphql-ts'
+import { randomBytes } from 'node:crypto'
+import { Upload } from '../upload.ts'
 import type { ImageExtension } from './internal-utils.ts'
 import { getBytesFromStream, getImageMetadata, teeStream } from './internal-utils.ts'
 
@@ -53,7 +54,7 @@ const ImageExtensionEnum = g.enum({
 const ImageFieldInput = g.inputObject({
   name: 'ImageFieldInput',
   fields: {
-    upload: g.arg({ type: g.nonNull(g.Upload) }),
+    upload: g.arg({ type: g.nonNull(Upload) }),
   },
 })
 
@@ -242,11 +243,11 @@ export function image<ListTypeInfo extends BaseListTypeInfo>(
         },
       }),
       __ksTelemetryFieldTypeName: '@keystone-6/image',
-      views: '@keystone-6/core/fields/types/image/views',
+      views: '@keystone-6/fields-media-multipart/image/views',
     })
   }
 }
 
 function defaultTransformName(_: string) {
-  return toBase64Url(crypto.getRandomValues(new Uint8Array(16)))
+  return randomBytes(16).toString('base64url')
 }

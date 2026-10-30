@@ -286,6 +286,9 @@ importers:
       '@keystone-6/core':
         specifier: workspace:^
         version: link:../../packages/core
+      '@keystone-6/fields-media-multipart':
+        specifier: workspace:^
+        version: link:../../packages/fields-media-multipart
       '@prisma/adapter-better-sqlite3':
         specifier: 'catalog:'
         version: 7.9.0
@@ -301,6 +304,9 @@ importers:
       express:
         specifier: 'catalog:'
         version: 5.2.1(supports-color@7.2.0)
+      graphql-upload:
+        specifier: ^15.0.2
+        version: 15.0.2(@types/express@5.0.6)(graphql@16.14.2)
       next:
         specifier: 'catalog:'
         version: 16.2.10(@babel/core@7.29.0(supports-color@7.2.0))(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
@@ -338,6 +344,9 @@ importers:
       '@keystone-6/core':
         specifier: workspace:^
         version: link:../../packages/core
+      '@keystone-6/fields-media-multipart':
+        specifier: workspace:^
+        version: link:../../packages/fields-media-multipart
       '@prisma/adapter-better-sqlite3':
         specifier: 'catalog:'
         version: 7.9.0
@@ -353,6 +362,9 @@ importers:
       dotenv:
         specifier: ^16.0.0
         version: 16.6.1
+      graphql-upload:
+        specifier: ^15.0.2
+        version: 15.0.2(@types/express@4.17.25)(graphql@16.14.2)
       next:
         specifier: 'catalog:'
         version: 16.2.10(@babel/core@7.29.0(supports-color@7.2.0))(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
@@ -538,6 +550,9 @@ importers:
       dotenv:
         specifier: ^16.0.0
         version: 16.6.1
+      graphql-upload:
+        specifier: ^15.0.2
+        version: 15.0.2(@types/express@4.17.25)(graphql@16.14.2)
       next:
         specifier: 'catalog:'
         version: 16.2.10(@babel/core@7.29.0(supports-color@7.2.0))(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
@@ -2708,9 +2723,15 @@ importers:
       '@keystar/ui':
         specifier: 'catalog:'
         version: 0.10.0(next@16.2.10(@babel/core@7.29.0(supports-color@7.2.0))(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react-aria@3.50.0(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react-dom@19.2.5(react@19.2.5))(react-stately@3.48.0(react@19.2.5))(react@19.2.5)
+      '@keystone-6/fields-media-multipart':
+        specifier: workspace:^
+        version: link:../fields-media-multipart
       cloudinary:
         specifier: ^2.0.0
         version: 2.10.0
+      graphql-upload:
+        specifier: ^15.0.2
+        version: 15.0.2(@types/express@5.0.6)(graphql@16.14.2)
     devDependencies:
       '@keystone-6/core':
         specifier: workspace:^
@@ -2724,9 +2745,6 @@ importers:
       graphql:
         specifier: 'catalog:'
         version: 16.14.2
-      graphql-upload:
-        specifier: ^15.0.2
-        version: 15.0.2(@types/express@5.0.6)(graphql@16.14.2)
       react:
         specifier: 'catalog:'
         version: 19.2.5
@@ -2790,9 +2808,6 @@ importers:
       body-parser:
         specifier: ^2.3.0
         version: 2.3.0(supports-color@7.2.0)
-      bytes:
-        specifier: ^3.1.1
-        version: 3.1.2
       ci-info:
         specifier: ^4.0.0
         version: 4.4.0
@@ -2823,12 +2838,6 @@ importers:
       graphql:
         specifier: 'catalog:'
         version: 16.14.2
-      graphql-upload:
-        specifier: ^15.0.2
-        version: 15.0.2(@types/express@5.0.6)(graphql@16.14.2)
-      image-size:
-        specifier: ^2.0.0
-        version: 2.0.2
       mariadb:
         specifier: ^3.4.5
         version: 3.5.3
@@ -2866,9 +2875,6 @@ importers:
       '@types/body-parser':
         specifier: ^1.19.2
         version: 1.19.6
-      '@types/bytes':
-        specifier: ^3.1.1
-        version: 3.1.5
       '@types/cors':
         specifier: ^2.8.13
         version: 2.8.19
@@ -3006,6 +3012,49 @@ importers:
         specifier: ^0.100.0
         version: 0.100.0(slate@0.120.0)
 
+  packages/fields-media-multipart:
+    dependencies:
+      '@babel/runtime':
+        specifier: ^7.24.7
+        version: 7.29.2
+      '@keystar/ui':
+        specifier: 'catalog:'
+        version: 0.10.0(next@16.2.10(@babel/core@7.29.0(supports-color@7.2.0))(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react-aria@3.50.0(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react-dom@19.2.5(react@19.2.5))(react-stately@3.48.0(react@19.2.5))(react@19.2.5)
+      bytes:
+        specifier: ^3.1.1
+        version: 3.1.2
+      graphql-upload:
+        specifier: ^15.0.2
+        version: 15.0.2(@types/express@5.0.6)(graphql@16.14.2)
+      image-size:
+        specifier: ^2.0.0
+        version: 2.0.2
+      react-aria:
+        specifier: 'catalog:'
+        version: 3.50.0(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
+    devDependencies:
+      '@keystone-6/core':
+        specifier: workspace:^
+        version: link:../core
+      '@types/bytes':
+        specifier: ^3.1.1
+        version: 3.1.5
+      '@types/express':
+        specifier: 'catalog:'
+        version: 5.0.6
+      '@types/react':
+        specifier: 'catalog:'
+        version: 19.2.14
+      graphql:
+        specifier: 'catalog:'
+        version: 16.14.2
+      react:
+        specifier: 'catalog:'
+        version: 19.2.5
+      react-dom:
+        specifier: 'catalog:'
+        version: 19.2.5(react@19.2.5)
+
   prisma-utils:
     devDependencies:
       '@prisma/client':
@@ -3056,6 +3105,9 @@ importers:
 
   tests/api-tests:
     dependencies:
+      '@keystone-6/fields-media-multipart':
+        specifier: workspace:^
+        version: link:../../packages/fields-media-multipart
       express:
         specifier: 'catalog:'
         version: 5.2.1(supports-color@7.2.0)
@@ -3250,6 +3302,9 @@ importers:
       '@keystone-6/fields-document':
         specifier: workspace:^
         version: link:../../packages/fields-document
+      '@keystone-6/fields-media-multipart':
+        specifier: workspace:^
+        version: link:../../packages/fields-media-multipart
       '@prisma/adapter-better-sqlite3':
         specifier: 'catalog:'
         version: 7.9.0
@@ -3262,6 +3317,9 @@ importers:
       better-sqlite3:
         specifier: 'catalog:'
         version: 12.11.1
+      graphql-upload:
+        specifier: ^15.0.2
+        version: 15.0.2(@types/express@4.17.25)(graphql@16.14.2)
       next:
         specifier: 'catalog:'
         version: 16.2.10(@babel/core@7.29.0(supports-color@7.2.0))(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
@@ -20035,6 +20093,19 @@ snapshots:
     dependencies:
       graphql: 16.14.2
       tslib: 2.8.1
+
+  graphql-upload@15.0.2(@types/express@4.17.25)(graphql@16.14.2):
+    dependencies:
+      '@types/busboy': 1.5.4
+      '@types/node': 24.12.2
+      '@types/object-path': 0.11.4
+      busboy: 1.6.0
+      fs-capacitor: 6.2.0
+      graphql: 16.14.2
+      http-errors: 2.0.1
+      object-path: 0.11.8
+    optionalDependencies:
+      '@types/express': 4.17.25
 
   graphql-upload@15.0.2(@types/express@5.0.6)(graphql@16.14.2):
     dependencies:

@@ -2,7 +2,8 @@
 
 import { list } from '@keystone-6/core'
 import { allowAll } from '@keystone-6/core/access'
-import { text, image, file } from '@keystone-6/core/fields'
+import { text } from '@keystone-6/core/fields'
+import { image, file } from '@keystone-6/fields-media-multipart'
 import fs from 'node:fs/promises'
 
 import type { Lists } from './generated/keystone/types'

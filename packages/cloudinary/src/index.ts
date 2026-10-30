@@ -1,3 +1,7 @@
+import type { ReadStream } from 'node:fs'
+import type { GraphQLScalarType } from 'graphql'
+// @ts-expect-error graphql-upload does not provide TypeScript declarations
+import GraphQLUpload from 'graphql-upload/GraphQLUpload.js'
 import { g } from '@keystone-6/core'
 import type { GArg, InferValueFromArg } from '@keystone-6/core/graphql-ts'
 import type {
@@ -11,6 +15,16 @@ import { fieldType } from '@keystone-6/core/types'
 import type Cloudinary from 'cloudinary'
 import { v2 as cloudinary } from 'cloudinary'
 import { randomBytes } from 'node:crypto'
+
+const Upload: GraphQLScalarType<
+  Promise<{
+    filename: string
+    mimetype: string
+    encoding: string
+    createReadStream(): ReadStream
+  }>,
+  {}
+> = GraphQLUpload
 
 type StoredFile = {
   id: string
@@ -126,7 +140,7 @@ export function cloudinaryImage<ListTypeInfo extends BaseListTypeInfo>({
       throw Error("isIndexed: 'unique' is not a supported option for field type cloudinaryImage")
     }
 
-    const inputArg = g.arg({ type: g.Upload })
+    const inputArg = g.arg({ type: Upload })
     async function resolveInput(
       uploadData: InferValueFromArg<typeof inputArg>
     ): Promise<StoredFile | undefined | null> {
