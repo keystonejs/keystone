@@ -50,4 +50,6 @@ minimumReleaseAgeExclude:
   - '@keystar/ui'
   - '@keystatic/core'
   - '@keystatic/next'
+  # Renovate security update: body-parser@2.4.0
+  - body-parser@2.4.0
 verifyDepsBeforeRun: false
