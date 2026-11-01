@@ -50,4 +50,6 @@ minimumReleaseAgeExclude:
   - '@keystar/ui'
   - '@keystatic/core'
   - '@keystatic/next'
+  # Renovate security update: @babel/core@7.29.6
+  - "@babel/core@7.29.6"
 verifyDepsBeforeRun: false
