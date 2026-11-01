@@ -50,4 +50,6 @@ minimumReleaseAgeExclude:
   - '@keystar/ui'
   - '@keystatic/core'
   - '@keystatic/next'
+  # Renovate security update: js-yaml@4.3.2
+  - js-yaml@4.3.2
 verifyDepsBeforeRun: false
