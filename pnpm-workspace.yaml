@@ -50,4 +50,6 @@ minimumReleaseAgeExclude:
   - '@keystar/ui'
   - '@keystatic/core'
   - '@keystatic/next'
+  # Renovate security update: image-size@2.0.3
+  - image-size@2.0.3
 verifyDepsBeforeRun: false
