@@ -743,6 +743,7 @@ enum KeystoneAdminUIFieldMetaListViewFieldMode {
 type KeystoneAdminUIFieldGroupMeta {
   label: String!
   description: String
+  defaultOpen: Boolean!
   fields: [KeystoneAdminUIFieldMeta!]!
 }
 

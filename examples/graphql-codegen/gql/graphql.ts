@@ -121,6 +121,7 @@ export type KeystoneAdminMetaListArgs = {
 
 export type KeystoneAdminUiFieldGroupMeta = {
   __typename?: 'KeystoneAdminUIFieldGroupMeta';
+  defaultOpen: Scalars['Boolean']['output'];
   description?: Maybe<Scalars['String']['output']>;
   fields: Array<KeystoneAdminUiFieldMeta>;
   label: Scalars['String']['output'];
