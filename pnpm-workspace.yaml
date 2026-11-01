@@ -50,4 +50,6 @@ minimumReleaseAgeExclude:
   - '@keystar/ui'
   - '@keystatic/core'
   - '@keystatic/next'
+  # Renovate security update: vite@6.4.4
+  - vite@6.4.4
 verifyDepsBeforeRun: false
