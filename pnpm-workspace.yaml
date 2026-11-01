@@ -26,7 +26,7 @@ catalog:
   express: ^5.2.1
   graphql: ^16.14.2
   next: ^16.2.10
-  mariadb: 3.4.5
+  mariadb: 3.5.4
   pg: ^8.16.3
   react: ^19.2.4
   react-dom: ^19.2.4
@@ -50,4 +50,6 @@ minimumReleaseAgeExclude:
   - '@keystar/ui'
   - '@keystatic/core'
   - '@keystatic/next'
+  # Renovate security update: mariadb@3.5.4
+  - mariadb@3.5.4
 verifyDepsBeforeRun: false
