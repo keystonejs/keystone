@@ -50,4 +50,6 @@ minimumReleaseAgeExclude:
   - '@keystar/ui'
   - '@keystatic/core'
   - '@keystatic/next'
+  # Renovate security update: esbuild@0.28.1
+  - esbuild@0.28.1
 verifyDepsBeforeRun: false
