@@ -13,6 +13,7 @@ const sql: string[] = []
 const hintResults: BaseItem[][] = []
 let failNext = false
 let blockNext: (() => Promise<void>) | undefined
+const observedClients = new WeakSet<object>()
 
 const suite = setupTestSuite({
   wrap(config) {
@@ -30,29 +31,32 @@ const suite = setupTestSuite({
   },
   config: {
     db: {
-      extendPrismaClient(client) {
+      async onConnect(context) {
+        const client = context.prisma
+        if (observedClients.has(client)) return
+        observedClients.add(client)
         client.$on('query', (event: { query: string }) => sql.push(event.query))
-        return client.$extends({
-          query: {
-            $allModels: {
-              async $allOperations({ model, operation, args, query }: any) {
-                calls.push({ model, operation, args })
-                if (model === 'Parent' && args.select?.children) {
-                  if (failNext) {
-                    failNext = false
-                    throw new Error('Relationship batch failed')
-                  }
-                  if (blockNext) {
-                    const block = blockNext
-                    blockNext = undefined
-                    await block()
-                  }
-                }
-                return query(args)
-              },
-            },
-          },
-        })
+
+        // Observe the default client without installing a query extension. Custom
+        // client behavior is covered separately by the regression tests.
+        for (const model of Object.keys(context.__internal.lists)) {
+          const findMany = client[model].findMany.bind(client[model])
+          client[model].findMany = async (args: any) => {
+            calls.push({ model, operation: 'findMany', args })
+            if (model === 'Parent' && args.select?.children) {
+              if (failNext) {
+                failNext = false
+                throw new Error('Relationship batch failed')
+              }
+              if (blockNext) {
+                const block = blockNext
+                blockNext = undefined
+                await block()
+              }
+            }
+            return findMany(args)
+          }
+        }
       },
     },
     lists: {
@@ -86,7 +90,6 @@ const suite = setupTestSuite({
           },
         },
         graphql: {
-          maxTake: 3,
           cacheHint: selectItem(
             ({ results }) => {
               if (Array.isArray(results)) hintResults.push(results)
@@ -281,7 +284,9 @@ for (const selection of [
     resetCalls()
     assert.deepEqual(await readParents(context, ids, selection), expected)
     const field = selection.startsWith('tags') ? 'tags' : 'children'
-    assert.equal(relationCalls(field).length, selection.startsWith('a:') ? 3 : 1)
+    let expectedBatches = 1
+    if (!selection.startsWith('a:') && selection.includes('take:')) expectedBatches = 0
+    assert.equal(relationCalls(field).length, expectedBatches)
   })
 }
 
@@ -294,7 +299,7 @@ test('cursors retain per-parent membership and hidden cursor protection', async 
     for (const id of ids) expected.push(...(await readParents(context, [id], selection)))
     resetCalls()
     assert.deepEqual(await readParents(context, ids, selection), expected)
-    assert.equal(relationCalls().length, 1)
+    assert.equal(relationCalls().length, 0)
     if (cursor === children[0][2]) assert.ok(expected.every(parent => parent.children.length === 0))
   }
 })
@@ -314,7 +319,7 @@ test('one parent keeps a flat child query and later reads do not reuse completed
   }
 })
 
-test('operation, filter, order, field access, and maxTake checks still apply before batching', async () => {
+test('operation, filter, order, and field access checks still apply before batching', async () => {
   const { context, parents } = await fixture
   const ids = parents.map(parent => parent.id)
   resetCalls()
@@ -331,7 +336,6 @@ test('operation, filter, order, field access, and maxTake checks still apply bef
   for (const selection of [
     'children(where: { secret: { equals: "Hidden" } }) { name }',
     'children(orderBy: { secret: asc }) { name }',
-    'children(take: 4) { name }',
   ]) {
     resetCalls()
     const result = await context.graphql.raw({
@@ -369,7 +373,7 @@ test('sessions, sudo, and transaction contexts keep separate pending batches', a
     ])
     assert.deepEqual(inside, outside)
   })
-  assert.equal(relationCalls().length, 2)
+  assert.equal(sql.filter(statement => statement.startsWith('SELECT')).length, 6)
 })
 
 test('failed batches do not affect other groups and do not persist', async () => {

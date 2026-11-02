@@ -2,4 +2,4 @@
 '@keystone-6/core': patch
 ---
 
-Batch compatible to-many relationship reads across parents while preserving access checks and per-parent pagination.
+Batch compatible unpaginated to-many relationship reads across parents on the default Prisma client. Preserve the existing path for custom clients and pagination so query extensions and database limits remain effective.

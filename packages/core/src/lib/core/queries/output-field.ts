@@ -51,16 +51,30 @@ function getRelationVal(
         args: FindManyArgsValue,
         select?: Readonly<Record<string, true | undefined>>
       ) =>
-        queries.findMany(args, foreignList, context, info, select, undefined, query =>
-          // Queue only after the existing access checks have prepared the child query.
-          // The nested relation supplies membership; a single parent keeps its flat query.
-          fetchRelatedMany(context)(foreignList)(dbField)(id, query, () =>
+        queries.findMany(args, foreignList, context, info, select, undefined, query => {
+          const fallback = () =>
             context.prisma[foreignList.listKey].findMany({
               ...query,
               where: { AND: [query.where, relationFilter] },
             })
-          )
-        ),
+
+          // Keep custom client callbacks on the child model. Nested reads do not
+          // call those callbacks, which can enforce policies or change results.
+          // Keep pagination in SQL: Prisma can load an entire nested relation
+          // before it applies each parent's take, skip, or cursor in memory.
+          if (
+            !context.__internal.canBatchToMany ||
+            query.take !== undefined ||
+            query.skip !== 0 ||
+            query.cursor !== undefined
+          ) {
+            return fallback()
+          }
+
+          // Access checks have prepared an unpaginated query on the default client.
+          // The nested relation supplies membership for all queued parents.
+          return fetchRelatedMany(context)(foreignList)(dbField)(id, query, fallback)
+        }),
       count: async ({ where }: { where: Record<string, unknown> }) =>
         queries.count({ where }, foreignList, context, info, relationFilter),
     }
@@ -189,8 +203,8 @@ async function fetchRelatedManyItems(
   const oppositeDbField = foreignList.resolvedDbFields[dbField.field]
   if (oppositeDbField.kind !== 'relation') throw new Error('failed assert')
 
-  // Prisma applies child filters, ordering, cursors, and limits separately to each
-  // parent. A flat child query with a shared take or skip would change the results.
+  // Only unpaginated reads on the default client reach this batch. Child filters
+  // and ordering remain local to each parent in the nested relation selection.
   const parents = await context.prisma[oppositeDbField.list].findMany({
     where: { id: { in: [...batch.requests.keys()] } },
     select: { id: true, [oppositeDbField.field]: batch.query },

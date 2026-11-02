@@ -10,6 +10,7 @@ export function createContext({
   lists,
   graphQLSchemas,
   prismaClient,
+  canBatchToMany = false,
   prismaTypes,
   prismaModelSelections,
 }: {
@@ -20,6 +21,7 @@ export function createContext({
     internal: GraphQLSchema
   }
   prismaClient: unknown
+  canBatchToMany?: boolean
   prismaTypes: {
     DbNull: unknown
     JsonNull: unknown
@@ -131,6 +133,7 @@ export function createContext({
       sudo: () => construct({ prisma, req, res, session, internal: true, sudo: true }),
 
       __internal: {
+        canBatchToMany,
         sudo,
         lists,
         prisma: {

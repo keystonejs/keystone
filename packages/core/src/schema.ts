@@ -118,6 +118,10 @@ function identity<T>(x: T) {
   return x
 }
 
+// Keep the default client hook distinct from user hooks. A custom hook can change
+// read behavior even when it returns the same client instance.
+export const defaultPrismaClientExtension = identity
+
 export function config<TypeInfo extends BaseKeystoneTypeInfo>(
   config: KeystoneConfigPre<TypeInfo>
 ): KeystoneConfig<TypeInfo> {
@@ -150,7 +154,7 @@ export function config<TypeInfo extends BaseKeystoneTypeInfo>(
     db: {
       ...config.db,
       extendPrismaSchema: config.db?.extendPrismaSchema ?? identity,
-      extendPrismaClient: config.db?.extendPrismaClient ?? identity,
+      extendPrismaClient: config.db?.extendPrismaClient ?? defaultPrismaClientExtension,
       onConnect: config.db.onConnect ?? noop,
       prismaClientPath: config.db?.prismaClientPath ?? 'generated/prisma',
       prismaSchemaPath: config.db?.prismaSchemaPath ?? 'schema.prisma',
