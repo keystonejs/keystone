@@ -102,7 +102,7 @@ export const lists: Lists = {
           isRequired: true,
         },
       }),
-      // the user's password, used as the secret field for authentication
+      // the user's password, used for authentication
       //   should not be publicly visible
       password: password({
         access: {

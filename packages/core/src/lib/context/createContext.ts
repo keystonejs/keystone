@@ -35,6 +35,19 @@ export function createContext({
   }
   prismaModelSelections: Record<string, Record<string, true>>
 }) {
+  async function resolveSession(context: KeystoneContext) {
+    const session = await config.getSession?.({ context })
+
+    if (
+      config.getSession &&
+      session !== undefined &&
+      (session === null || typeof session !== 'object')
+    ) {
+      throw new TypeError('getSession must return a non-null object or undefined')
+    }
+    return session
+  }
+
   const dbFactories: Record<string, ReturnType<typeof getDbFactory>> = {}
   for (const [listKey, list] of Object.entries(lists)) {
     dbFactories[listKey] = getDbFactory(list, graphQLSchemas.public, prismaModelSelections[listKey])
@@ -131,7 +144,6 @@ export function createContext({
 
       req,
       res,
-      sessionStrategy: config.session,
       ...(session ? { session } : {}),
 
       withRequest: async (newReq, newRes) => {
@@ -143,9 +155,7 @@ export function createContext({
           internal,
           sudo,
         })
-        return newContext.withSession(
-          (await config.session?.get({ context: newContext })) ?? undefined
-        )
+        return newContext.withSession((await resolveSession(newContext)) ?? undefined)
       },
 
       withSession: session => {
