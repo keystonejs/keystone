@@ -81,8 +81,6 @@ export type FieldMeta = {
   label: string
   description: string
   fieldMeta: JSONValue | null
-  viewsIndex: number
-  customViewsIndex: number | null
   views: FieldViews[number]
   controller: FieldController<unknown, JSONValue>
   isFilterable: boolean

@@ -20,7 +20,14 @@ const runner = setupTestRunner({
             args: {
               title: {
                 graphql: g.arg({ type: g.String }),
-                ui: { source: { field: text({ validation: { isRequired: true } }) } },
+                ui: {
+                  source: {
+                    field: text({
+                      validation: { isRequired: true },
+                      ui: { views: '@keystone-6/core/fields/types/text/views' },
+                    }),
+                  },
+                },
               },
               previousTitle: {
                 graphql: g.arg({ type: g.String }),
@@ -81,7 +88,7 @@ describe('actions', () => {
     runner(async ({ context }) => {
       const data = (await context.sudo().graphql.run({ query: adminMetaQuery })) as any
       const task = data.keystone.adminMeta.lists.find((list: any) => list.key === 'Task')
-      expect(task.actions[0].graphql.arguments).toMatchObject([
+      expect(JSON.parse(JSON.stringify(task.actions[0].graphql.arguments))).toMatchObject([
         {
           name: 'title',
           type: 'String',
@@ -89,6 +96,8 @@ describe('actions', () => {
             field: {
               key: 'title',
               label: 'Title',
+              views: task.fields.find((field: any) => field.key === 'title').views,
+              customViews: task.fields.find((field: any) => field.key === 'title').views,
             },
           },
         },
