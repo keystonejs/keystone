@@ -63,7 +63,8 @@ Let's add a password field to our `User` list so users can authenticate with Key
 ```ts{3,11}[14-28,30-500]
 import { list, config } from '@keystone-6/core';
 import { PrismaBetterSqlite3 } from '@prisma/adapter-better-sqlite3';
-import { password, text, timestamp, select, relationship } from '@keystone-6/core/fields';
+import { text, timestamp, select, relationship } from '@keystone-6/core/fields';
+import { password } from '@keystone-6/auth';
 
 const lists = {
   User: list({
@@ -183,7 +184,8 @@ Finally, we need to add an `isAccessAllowed` function to our export so that only
 //keystone.ts
 import { list, config } from '@keystone-6/core';
 import { PrismaBetterSqlite3 } from '@prisma/adapter-better-sqlite3';
-import { password, text, timestamp, select, relationship } from '@keystone-6/core/fields';
+import { text, timestamp, select, relationship } from '@keystone-6/core/fields';
+import { password } from '@keystone-6/auth';
 import { withAuth, sessionStrategy } from './auth';
 
 const lists = {
@@ -269,7 +271,8 @@ export { withAuth, sessionStrategy }
 //keystone.ts
 import { list, config } from '@keystone-6/core'
 import { PrismaBetterSqlite3 } from '@prisma/adapter-better-sqlite3'
-import { password, text, timestamp, select, relationship } from '@keystone-6/core/fields'
+import { text, timestamp, select, relationship } from '@keystone-6/core/fields'
+import { password } from '@keystone-6/auth'
 import { withAuth, sessionStrategy } from './auth'
 
 const lists = {
