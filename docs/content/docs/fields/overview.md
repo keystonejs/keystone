@@ -213,6 +213,8 @@ export default config({
 
 Fields can be grouped together in the Admin UI using the `group` function, with a customisable `label` and `description`.
 
+Groups are expanded by default in the create and item views. Set `ui.defaultOpen` to `false` to start a group collapsed. Users can still expand or collapse the group manually.
+
 ```typescript
 import { config, list, group } from '@keystone-6/core'
 import { text } from '@keystone-6/core/fields'
@@ -224,6 +226,7 @@ export default config({
         ...group({
           label: 'Group label',
           description: 'Group description',
+          ui: { defaultOpen: false },
           fields: {
             someFieldName: text({
               /* ... */

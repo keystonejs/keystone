@@ -270,6 +270,7 @@ const KeystoneAdminUIFieldGroupMeta = g.object<ListMetaSource['groups'][number]>
   fields: {
     label: g.field({ type: g.nonNull(g.String) }),
     description: g.field({ type: g.String }),
+    defaultOpen: g.field({ type: g.nonNull(g.Boolean) }),
     fields: g.field({
       type: g.nonNull(g.list(g.nonNull(KeystoneAdminUIFieldMeta))),
     }),

@@ -53,9 +53,15 @@ export const lists = {
         },
       }),
 
-      content: text({
-        db: {
-          isNullable: true,
+      ...group({
+        label: 'Content',
+        ui: { defaultOpen: false },
+        fields: {
+          content: text({
+            db: {
+              isNullable: true,
+            },
+          }),
         },
       }),
     },

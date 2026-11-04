@@ -129,7 +129,12 @@ export function Fields({
               ]
               if (fields.length === 0) continue
               yield (
-                <FieldGroup key={group.label} label={group.label} description={group.description}>
+                <FieldGroup
+                  key={group.label}
+                  label={group.label}
+                  description={group.description}
+                  defaultOpen={group.defaultOpen}
+                >
                   {fields}
                 </FieldGroup>
               )
@@ -148,17 +153,19 @@ export function Fields({
 function FieldGroup({
   description,
   label,
+  defaultOpen,
   children,
 }: {
   label: string
   description: string | null
+  defaultOpen: boolean
   children: ReactNode
 }) {
   const labelId = useId()
   const descriptionId = useSlotId([Boolean(description)])
 
   return (
-    <details aria-labelledby={labelId} aria-describedby={descriptionId} open>
+    <details aria-labelledby={labelId} aria-describedby={descriptionId} open={defaultOpen}>
       <HStack
         gap="medium"
         alignItems="center"
