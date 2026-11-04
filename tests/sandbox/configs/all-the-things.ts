@@ -1,3 +1,5 @@
+// @ts-expect-error graphql-upload does not provide TypeScript declarations
+import graphqlUploadExpress from 'graphql-upload/graphqlUploadExpress.js'
 import { list, g, config, group } from '@keystone-6/core'
 import { allowAll } from '@keystone-6/core/access'
 import {
@@ -5,9 +7,7 @@ import {
   calendarDay,
   checkbox,
   decimal,
-  file,
   float,
-  image,
   integer,
   json,
   multiselect,
@@ -18,6 +18,7 @@ import {
   timestamp,
   virtual,
 } from '@keystone-6/core/fields'
+import { file, image } from '@keystone-6/fields-media-multipart'
 import { document, structure } from '@keystone-6/fields-document'
 import { schema as structureSchema } from '../structure'
 import { schema as structureNestedSchema } from '../structure-nested'
@@ -233,6 +234,11 @@ export const lists = {
 }
 
 export default config({
+  server: {
+    extendExpressApp(app) {
+      app.use(graphqlUploadExpress({ maxFileSize: 10 * 1024 * 1024, maxFiles: 10 }))
+    },
+  },
   db: {
     provider: 'postgresql',
     prismaClientOptions: () => ({
