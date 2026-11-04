@@ -1,6 +1,4 @@
 import { expect, test, vi } from 'vitest'
-import { IncomingMessage } from 'node:http'
-import { Socket } from 'node:net'
 import { action, g, group, list } from '@keystone-6/core'
 import type { KeystoneContext } from '@keystone-6/core/types'
 import { allowAll } from '@keystone-6/core/access'
@@ -498,7 +496,7 @@ function metadataLocale(context: KeystoneContext) {
 
 const dynamicListLabel = vi.fn(({ context }: { context: KeystoneContext }) => {
   if (metadataLocale(context) === 'error') throw new Error('Label resolution failed')
-  return `${context.req?.headers['x-admin-locale'] ?? metadataLocale(context)}:Articles`
+  return `${context.req?.get('x-admin-locale') ?? metadataLocale(context)}:Articles`
 })
 
 const dynamicTextRunner = setupTestRunner({
@@ -673,8 +671,7 @@ for (const kind of ['static', 'dynamic']) {
 test(
   'presentation callbacks can read request headers',
   dynamicTextRunner(async ({ context }) => {
-    const req = new IncomingMessage(new Socket())
-    req.headers['x-admin-locale'] = 'fr'
+    const req = new Headers({ 'x-admin-locale': 'fr' })
     const queryContext = (await context.withRequest(req)).sudo()
     const data = await queryContext.graphql.run({
       query: '{ keystone { adminMeta { list(key: "Article") { label } } } }',
