@@ -272,7 +272,8 @@ jobs:
 
   examples_smoke_tests:
     name: Smoke Tests For Examples
-    runs-on: ubuntu-latest
+    # Playwright 1.60 has no Chromium build for Ubuntu 26.04.
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     env:
       DATABASE_URL: file:./test.db
@@ -315,7 +316,8 @@ jobs:
 
   admin_ui_integration_tests:
     name: Integration tests for Admin UI
-    runs-on: ubuntu-latest
+    # Playwright 1.60 has no Chromium build for Ubuntu 26.04.
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     env:
       DATABASE_URL: file:./test.db
