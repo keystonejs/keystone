@@ -76,6 +76,7 @@ export function timestamp<ListTypeInfo extends BaseListTypeInfo>(
         validate,
       },
       input: {
+        uniqueWhereValue: { arg: g.arg({ type: g.DateTime }) },
         uniqueWhere: isIndexed === 'unique' ? { arg: g.arg({ type: g.DateTime }) } : undefined,
         where: {
           arg: g.arg({ type: filters[meta.provider].DateTime[mode] }),

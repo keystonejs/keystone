@@ -143,6 +143,7 @@ export function bigInt<ListTypeInfo extends BaseListTypeInfo>(
         validate,
       },
       input: {
+        uniqueWhereValue: { arg: g.arg({ type: g.BigInt }) },
         uniqueWhere: isIndexed === 'unique' ? { arg: g.arg({ type: g.BigInt }) } : undefined,
         where: {
           arg: g.arg({ type: filters[meta.provider].BigInt[mode] }),

@@ -1,6 +1,7 @@
 import type { KeystoneContext } from './context.ts'
 import type { BaseListTypeInfo } from './type-info.ts'
 import type { DatabaseProvider } from './core.ts'
+import { fieldType } from './next-fields.ts'
 import { selectItem } from './item-callback.ts'
 import type { ListHooks, ValidateHook } from './config/hooks.ts'
 import type { FieldAccessControl } from './config/access-control.ts'
@@ -49,6 +50,48 @@ const sqliteContext: KeystoneContext<TypeInfoForProvider<'sqlite'>> = undefined!
 sqliteContext.transaction(async () => {}, { isolationLevel: 'Serializable' })
 // @ts-expect-error SQLite only supports Serializable transactions
 sqliteContext.transaction(async () => {}, { isolationLevel: 'ReadCommitted' })
+
+// Exact selector conversion has its own input type and stored-value contract;
+// it does not need a mutation resolver or an independently unique database field.
+fieldType({ kind: 'scalar', scalar: 'Int', mode: 'optional' })({
+  views: '',
+  output: g.field({ type: g.Int }),
+  input: {
+    uniqueWhereValue: {
+      arg: g.arg({ type: g.String }),
+      resolve(value) {
+        const input: string = value
+        // @ts-expect-error the GraphQL string argument is not a number
+        const invalid: number = value
+        return Number(input)
+      },
+    },
+  },
+})
+
+fieldType({ kind: 'scalar', scalar: 'Int', mode: 'optional' })({
+  views: '',
+  output: g.field({ type: g.Int }),
+  input: {
+    uniqueWhereValue: {
+      arg: g.arg({ type: g.String }),
+      // @ts-expect-error return an exact stored integer, not a filter
+      resolve: value => ({ equals: Number(value) }),
+    },
+  },
+})
+
+fieldType({ kind: 'scalar', scalar: 'Int', mode: 'optional' })({
+  views: '',
+  output: g.field({ type: g.Int }),
+  input: {
+    uniqueWhereValue: {
+      arg: g.arg({ type: g.String }),
+      // @ts-expect-error nullable database columns still require non-null selector values
+      resolve: () => null,
+    },
+  },
+})
 
 type SelectedList = Omit<BaseListTypeInfo, 'item'> & {
   item: { id: string; title: string; status: string }

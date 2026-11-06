@@ -85,6 +85,10 @@ export function calendarDay<ListTypeInfo extends BaseListTypeInfo>(
         validate,
       },
       input: {
+        uniqueWhereValue: {
+          arg: g.arg({ type: g.CalendarDay }),
+          resolve: usesNativeDateType ? dateStringToDateObjectInUTC : undefined,
+        },
         uniqueWhere:
           isIndexed === 'unique'
             ? {
