@@ -119,7 +119,8 @@ export function bigInt<ListTypeInfo extends BaseListTypeInfo>(
               }
             }
           }
-        : undefined
+        : undefined,
+      defaultValue !== null
     )
 
     return fieldType({
@@ -155,7 +156,7 @@ export function bigInt<ListTypeInfo extends BaseListTypeInfo>(
           }),
           resolve(value) {
             if (value === undefined) {
-              if (defaultValue === 'autoincrement') return null
+              if (defaultValue === 'autoincrement') return undefined
               return defaultValue
             }
             return value
