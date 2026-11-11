@@ -28,7 +28,10 @@ export async function start(
   await keystone.connect()
 
   log('✨ Creating server')
-  const { expressServer, httpServer } = await createExpressServer(system.config, keystone.context)
+  const { apolloServer, expressServer, httpServer } = await createExpressServer(
+    system.config,
+    keystone.context
+  )
 
   log(`✅ GraphQL API ready`)
   if (!system.config.ui?.isDisabled && ui) {
@@ -61,5 +64,38 @@ export async function start(
     log(
       `⭐️ Server listening on ${httpOptions.host || ''}:${httpOptions.port} (http://${easyHost}:${httpOptions.port}/)`
     )
+
+    // shut down gracefully on SIGINT and SIGTERM (e.g. when a container is stopped),
+    //   in-flight requests are allowed to complete before the database is disconnected
+    let isShuttingDown = false
+    async function shutdown(signal: NodeJS.Signals) {
+      if (isShuttingDown) {
+        console.error(`Received ${signal} while shutting down, exiting immediately`)
+        process.exit(1)
+      }
+      isShuttingDown = true
+
+      log(`✨ Received ${signal}, shutting down`)
+      try {
+        // stop accepting new connections, and wait for existing requests to finish
+        const closed = new Promise<void>((resolve, reject) => {
+          httpServer.close(err => (err ? reject(err) : resolve()))
+        })
+        httpServer.closeIdleConnections()
+        await closed
+
+        await apolloServer.stop()
+        await keystone.disconnect()
+      } catch (err) {
+        console.error('Error shutting down Keystone', err)
+        process.exit(1)
+      }
+
+      log('✅ Keystone stopped')
+      process.exit(0)
+    }
+
+    process.on('SIGINT', shutdown)
+    process.on('SIGTERM', shutdown)
   })
 }
