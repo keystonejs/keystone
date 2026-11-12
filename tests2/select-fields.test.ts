@@ -1,3 +1,4 @@
+import { file, image } from '../packages/fields-media-multipart/src/index.ts'
 import assert from 'node:assert/strict'
 import { test } from 'node:test'
 
@@ -12,9 +13,7 @@ import {
   calendarDay,
   checkbox,
   decimal,
-  file,
   float,
-  image,
   integer,
   json,
   multiselect,

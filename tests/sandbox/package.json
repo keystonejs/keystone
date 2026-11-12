@@ -20,7 +20,9 @@
     "react": "catalog:",
     "react-dom": "catalog:",
     "better-sqlite3": "catalog:",
-    "pg": "catalog:"
+    "pg": "catalog:",
+    "@keystone-6/fields-media-multipart": "workspace:^",
+    "graphql-upload": "^15.0.2"
   },
   "repository": "https://github.com/keystonejs/keystone/tree/main/tests/sandbox",
   "devDependencies": {
