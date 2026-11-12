@@ -1,4 +1,3 @@
-import type { IncomingMessage, ServerResponse } from 'http'
 import {
   type DocumentNode,
   type ExecutionResult,
@@ -69,8 +68,8 @@ export function createContext({
     sudo,
   }: {
     prisma: any
-    req?: IncomingMessage
-    res?: ServerResponse
+    req?: Headers
+    res?: Headers
     session?: unknown
     internal: boolean
     sudo: boolean
@@ -135,10 +134,10 @@ export function createContext({
       sessionStrategy: config.session,
       ...(session ? { session } : {}),
 
-      withRequest: async (newReq, newRes) => {
+      withHeaders: async (newReq, newRes) => {
         const newContext = construct({
           prisma,
-          req: newReq,
+          req: new Headers(newReq),
           res: newRes,
           session,
           internal,
