@@ -1,5 +1,6 @@
 import { describe, expect, test } from 'vitest'
-import { text, password } from '@keystone-6/core/fields'
+import { text } from '@keystone-6/core/fields'
+import { password } from '@keystone-6/auth'
 import { list } from '@keystone-6/core'
 import { jwtSessions } from '@keystone-6/auth'
 import { createAuth } from '@keystone-6/auth'
