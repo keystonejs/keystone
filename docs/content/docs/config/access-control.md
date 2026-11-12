@@ -149,7 +149,7 @@ export default config({
 ```
 
 {% hint kind="warn" %}
-The `query` access control is applied only when running GraphQL query operations.
+The `one`, `many`, and `count` kinds control querying items. Filtering through relationships uses `one` for unique filters and `many` for non-unique filters.
 It can be a shared function receiving `kind: 'one' | 'many' | 'count'`, or an object with required `one`, `many`, and `count` functions.
 A user can still **read** fields as part of a return query when using a mutation `operation` (`create`, `update` or `delete`).
 If you want to limit access to fields, use [field access control](https://keystonejs.com/docs/config/access-control#field-access-control).
@@ -166,7 +166,7 @@ In general, the filter access control functions will return GraphQL filters.
 They can also return boolean values `true` or `false` to match or exclude all items.
 
 `access.filter.query` can be a shared function receiving `kind: 'one' | 'many' | 'count'`, or an object with required `one`, `many`, and `count` functions.
-These kinds apply to both root queries and relationship queries.
+The `one`, `many`, and `count` kinds apply to both root queries and relationship queries.
 
 ```typescript
 filter: {
@@ -216,6 +216,23 @@ export default config({
 Filter based access control cannot be used for `create` operations.
 If you want to limit `create` operations, use either `access.operation.create` or `access.item.create`.
 {% /hint %}
+
+### Filtering through relationships
+
+When filtering `posts(where: { author: { name: { equals: "Alice" } } })`, Keystone checks `Author.access.operation.query.many` and applies `Author.access.filter.query.many` to the matching authors. This uses `many` even though `author` is a to-one relationship: the input is a non-unique filter. Returning `false` from operation access rejects the filter with an access-denied error. Returning `false` from filter access makes every author inaccessible through that filter.
+
+For a unique filter, such as `post(where: { author: { name: "Alice" } })` with a one-to-one `Post.author` relationship and unique `Author.name`, Keystone instead checks `Author.access.operation.query.one` and applies `Author.access.filter.query.one`.
+
+This applies recursively to relationships in user-supplied filters. Unique selectors used to update, delete, connect, or position a cursor use `one` for their relationship checks, even when the outer operation is a mutation or a many query. Non-unique filters always use `many` for their relationship checks, including filters in count queries. Shared query access functions receive the corresponding `kind: 'one' | 'many'`. Access filters are trusted configuration and are resolved with sudo to avoid recursive access checks.
+
+Relationship filters operate over accessible related items:
+
+- `some` matches if an accessible related item matches the filter.
+- `none` matches if no accessible related item matches the filter.
+- `every` matches if all accessible related items match the filter. Inaccessible items are ignored; an empty accessible set matches.
+- A single relationship filtered with `null` matches when there is no accessible related item, including when the related item exists but is inaccessible.
+
+Access-control filters are trusted configuration and are resolved without recursively applying relationship filter access. Sudo bypasses these controls.
 
 ### Item (mutations only)
 
@@ -267,7 +284,7 @@ List-level access control functions are passed a collection of arguments which c
 | `context`   | The [`KeystoneContext`](../context/overview) object of the originating GraphQL operation.                     |
 | `listKey`   | The key of the list being operated on.                                                                        |
 | `operation` | The operation being performed (`'query'`, `'create'`, `'update'`, `'delete'`).                                |
-| `kind`      | For operation access on `query`, the query kind (`'one'`, `'many'`, or `'count'`).                            |
+| `kind`      | For operation access on `query`, the query kind (`'one'`, `'many'`, or `'count'`).  |
 | `inputData` | For `create` and `update` operations, this is the value of `data` passed into the mutation. (Item level only) |
 | `item`      | The existing item being updated/deleted in `update` and `delete` operations. (Item level only)                |
 
