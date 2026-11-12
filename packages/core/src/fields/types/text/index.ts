@@ -154,6 +154,7 @@ export function text<ListTypeInfo extends BaseListTypeInfo>(
         validate,
       },
       input: {
+        uniqueWhereValue: { arg: g.arg({ type: g.String }) },
         uniqueWhere: isIndexed === 'unique' ? { arg: g.arg({ type: g.String }) } : undefined,
         where: {
           arg: g.arg({

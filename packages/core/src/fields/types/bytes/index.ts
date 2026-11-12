@@ -170,6 +170,7 @@ export function bytes<ListTypeInfo extends BaseListTypeInfo>(
         validate,
       },
       input: {
+        uniqueWhereValue: { arg: g.arg({ type: scalar }) },
         uniqueWhere: isIndexed === 'unique' ? { arg: g.arg({ type: scalar }) } : undefined,
         where: {
           arg: g.arg({
