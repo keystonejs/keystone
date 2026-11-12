@@ -24,7 +24,7 @@ jobs:
     steps:
       - uses: actions/checkout@main
         with:
-          persist-credentials: true # needed for git push
+          persist-credentials: false
 
       - uses: ./.github/actions/ci-setup
 
@@ -55,4 +55,10 @@ jobs:
         run: |
           git reset HEAD~1 --hard
 
-      - run: git push origin --tags
+      # the checkout does not keep the token in .git/config anymore,
+      # it is attached here, for the tag push only
+      - run: |
+          git remote set-url origin "https://x-access-token:${PUSH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          git push origin --tags
+        env:
+          PUSH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
