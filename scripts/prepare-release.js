@@ -1,5 +1,5 @@
 const { spawnSync } = require('child_process')
-const { readFileSync, writeFileSync } = require('fs')
+const { globSync, readFileSync, writeFileSync } = require('fs')
 const { default: getReleasePlan } = require('@changesets/get-release-plan')
 const { getInfo } = require('@changesets/get-github-info')
 
@@ -17,15 +17,10 @@ const verbs = new Set([
   'Replaces',
 ])
 
-// TODO: derived?
-const publicPackages = [
-  '@keystone-6/auth',
-  '@keystone-6/cloudinary',
-  '@keystone-6/core',
-  '@keystone-6/document-renderer',
-  '@keystone-6/fields-document',
-  'create-keystone-app',
-]
+const publicPackages = globSync('packages/*/package.json')
+  .map(path => JSON.parse(readFileSync(path, 'utf8')))
+  .filter(pkg => !pkg.private)
+  .map(pkg => pkg.name)
 
 const cves = [
   //    {
