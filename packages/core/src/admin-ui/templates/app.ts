@@ -49,23 +49,32 @@ function doesConfigExist(dir: string, name: string) {
   }
 }
 
-export function appTemplate(config: KeystoneConfig, adminMeta: AdminMetaSource) {
-  const allViews = adminMeta.views.map(viewRelativeToProject => {
-    const isRelativeToFile =
-      viewRelativeToProject.startsWith('./') || viewRelativeToProject.startsWith('../')
-    const viewRelativeToAppFile = isRelativeToFile
-      ? '../../../' + viewRelativeToProject
-      : viewRelativeToProject
+export async function appTemplate(config: KeystoneConfig, adminMeta: AdminMetaSource) {
+  const allViews = (
+    await Promise.all(
+      Object.entries(adminMeta.views).map(async ([viewRelativeToProject, hash]) => ({
+        viewRelativeToProject,
+        hash: await hash,
+      }))
+    )
+  )
+    .sort((a, b) => a.hash.localeCompare(b.hash))
+    .map(({ viewRelativeToProject, hash }) => {
+      const isRelativeToFile =
+        viewRelativeToProject.startsWith('./') || viewRelativeToProject.startsWith('../')
+      const viewRelativeToAppFile = isRelativeToFile
+        ? '../../../' + viewRelativeToProject
+        : viewRelativeToProject
 
-    // we're not using serializePathForImport here because we want the thing you write for a view
-    // to be exactly what you would put in an import in the project directory.
-    // we're still using JSON.stringify to escape anything that might need to be though
-    return JSON.stringify(viewRelativeToAppFile)
-  })
+      // we're not using serializePathForImport here because we want the thing you write for a view
+      // to be exactly what you would put in an import in the project directory.
+      // we're still using JSON.stringify to escape anything that might need to be though
+      return { hash, importPath: JSON.stringify(viewRelativeToAppFile) }
+    })
   // -- TEMPLATE START
   return `import { getApp } from '@keystone-6/core/___internal-do-not-use-will-break-in-patch/admin-ui/pages/App'
 
-${allViews.map((views, i) => `import * as view${i} from ${views}`).join('\n')}
+${allViews.map(({ hash, importPath }) => `import * as _${hash} from ${importPath}`).join('\n')}
 
 ${
   doesConfigExist('.keystone/admin', 'config')
@@ -85,7 +94,7 @@ export default getApp({
     ...userAdminConfig
   },
   apiPath: "${config.graphql.path}",
-  fieldViews: [${allViews.map((_, i) => `view${i}`)}],
+  fieldViews: {${allViews.map(({ hash }) => `${JSON.stringify(hash)}: _${hash}`)}},
 })
 `
 }

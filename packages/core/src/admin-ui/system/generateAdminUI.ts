@@ -100,7 +100,7 @@ export async function generateAdminUI(
     const adminFilesMap = new Map<string, AdminFileToWrite>()
 
     // Add internal files first
-    for (const file of writeAdminFiles(config, adminMeta)) {
+    for (const file of await writeAdminFiles(config, adminMeta)) {
       adminFilesMap.set(file.outputPath, file)
     }
 
