@@ -50,7 +50,31 @@ function getRelationVal(
       findMany: async (
         args: FindManyArgsValue,
         select?: Readonly<Record<string, true | undefined>>
-      ) => queries.findMany(args, foreignList, context, info, select, relationFilter),
+      ) =>
+        queries.findMany(args, foreignList, context, info, select, undefined, query => {
+          const fallback = () =>
+            context.prisma[foreignList.listKey].findMany({
+              ...query,
+              where: { AND: [query.where, relationFilter] },
+            })
+
+          // Keep custom client callbacks on the child model. Nested reads do not
+          // call those callbacks, which can enforce policies or change results.
+          // Keep pagination in SQL: Prisma can load an entire nested relation
+          // before it applies each parent's take, skip, or cursor in memory.
+          if (
+            !context.__internal.canBatchToMany ||
+            query.take !== undefined ||
+            query.skip !== 0 ||
+            query.cursor !== undefined
+          ) {
+            return fallback()
+          }
+
+          // Access checks have prepared an unpaginated query on the default client.
+          // The nested relation supplies membership for all queued parents.
+          return fetchRelatedMany(context)(foreignList)(dbField)(id, query, fallback)
+        }),
       count: async ({ where }: { where: Record<string, unknown> }) =>
         queries.count({ where }, foreignList, context, info, relationFilter),
     }
@@ -74,6 +98,118 @@ function getRelationVal(
       )
     }
   }
+}
+
+type RelatedManyRequest = {
+  promise: Promise<BaseItem[]>
+  resolve: (items: BaseItem[]) => void
+  reject: (error: unknown) => void
+  fallback: () => Promise<BaseItem[]>
+}
+
+type RelatedManyBatch = {
+  query: queries.FindManyQuery
+  requests: Map<IdType, RelatedManyRequest>
+}
+
+// Preserve object key order, including JSON filter values. Unrecognised value types
+// stay in separate groups so custom field inputs cannot change query semantics.
+function sameRelationQuery(left: unknown, right: unknown): boolean {
+  if (left === right) return true
+  if (left === null || right === null) return false
+  if (typeof left !== 'object' || typeof right !== 'object') return false
+  if (left instanceof Date && right instanceof Date) return left.getTime() === right.getTime()
+  const prototype = Object.getPrototypeOf(left)
+  if (prototype !== Object.getPrototypeOf(right)) return false
+  if (!Array.isArray(left) && prototype !== Object.prototype && prototype !== null) return false
+
+  if (Array.isArray(left) && Array.isArray(right) && left.length !== right.length) return false
+
+  const leftKeys = Object.keys(left)
+  const rightKeys = Object.keys(right)
+  return (
+    leftKeys.length === rightKeys.length &&
+    leftKeys.every(
+      (key, index) =>
+        key === rightKeys[index] &&
+        sameRelationQuery(
+          (left as Record<string, unknown>)[key],
+          (right as Record<string, unknown>)[key]
+        )
+    )
+  )
+}
+
+// Share pending reads only. Context identity isolates sessions, sudo, and transactions.
+const fetchRelatedMany = weakMemoize((context: KeystoneContext) =>
+  weakMemoize((foreignList: InitialisedList) =>
+    weakMemoize((dbField: ResolvedRelationDBField) => {
+      let batches: RelatedManyBatch[] = []
+      return (
+        id: IdType,
+        query: queries.FindManyQuery,
+        fallback: RelatedManyRequest['fallback']
+      ) => {
+        let batch = batches.find(batch => sameRelationQuery(batch.query, query))
+        if (!batch) {
+          if (batches.length === 0) {
+            scheduleBatch(() => {
+              const pending = batches
+              batches = []
+              for (const batch of pending) {
+                fetchRelatedManyItems(context, foreignList, dbField, batch).then(
+                  items => {
+                    for (const [id, request] of batch.requests) request.resolve(items.get(id) ?? [])
+                  },
+                  error => {
+                    for (const request of batch.requests.values()) request.reject(error)
+                  }
+                )
+              }
+            })
+          }
+          batch = { query, requests: new Map() }
+          batches.push(batch)
+        }
+
+        let request = batch.requests.get(id)
+        if (!request) {
+          let resolve!: RelatedManyRequest['resolve']
+          let reject!: RelatedManyRequest['reject']
+          const promise = new Promise<BaseItem[]>((resolveItems, rejectItems) => {
+            resolve = resolveItems
+            reject = rejectItems
+          })
+          request = { promise, resolve, reject, fallback }
+          batch.requests.set(id, request)
+        }
+        return request.promise
+      }
+    })
+  )
+)
+
+async function fetchRelatedManyItems(
+  context: KeystoneContext,
+  foreignList: InitialisedList,
+  dbField: ResolvedRelationDBField,
+  batch: RelatedManyBatch
+): Promise<Map<IdType, BaseItem[]>> {
+  if (batch.requests.size === 1) {
+    const [id, request] = batch.requests.entries().next().value!
+    return new Map([[id, await request.fallback()]])
+  }
+
+  const oppositeDbField = foreignList.resolvedDbFields[dbField.field]
+  if (oppositeDbField.kind !== 'relation') throw new Error('failed assert')
+
+  // Only unpaginated reads on the default client reach this batch. Child filters
+  // and ordering remain local to each parent in the nested relation selection.
+  const parents = await context.prisma[oppositeDbField.list].findMany({
+    where: { id: { in: [...batch.requests.keys()] } },
+    select: { id: true, [oppositeDbField.field]: batch.query },
+  })
+  return new Map(parents.map((parent: any) => [parent.id, parent[oppositeDbField.field]]))
 }
 
 type RelatedItemRequest = {
