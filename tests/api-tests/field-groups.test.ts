@@ -1,8 +1,71 @@
-import { expect, test } from 'vitest'
+import { beforeAll, describe, expect, test } from 'vitest'
 import { config, list, group } from '@keystone-6/core'
 import { allowAll } from '@keystone-6/core/access'
 import { getContext } from '@keystone-6/core/context'
 import { integer, text } from '@keystone-6/core/fields'
+import { setupTestRunner } from '@keystone-6/api-tests/test-runner'
+import { adminMetaQuery } from '../../packages/core/src/admin-ui/admin-meta-graphql.ts'
+
+describe('group UI configuration', () => {
+  const runner = setupTestRunner({
+    config: {
+      lists: {
+        Post: list({
+          access: allowAll,
+          fields: {
+            ...group({
+              label: 'Default',
+              fields: { defaultField: text() },
+            }),
+            ...group({
+              label: 'Empty UI',
+              ui: {},
+              fields: { emptyUIField: text() },
+            }),
+            ...group({
+              label: 'Expanded',
+              ui: { defaultOpen: true },
+              fields: { expandedField: text() },
+            }),
+            ...group({
+              label: 'Collapsed',
+              ui: { defaultOpen: false },
+              fields: { collapsedField: text() },
+            }),
+          },
+        }),
+      },
+    },
+  })
+
+  beforeAll(
+    runner(async () => {}),
+    60_000
+  )
+
+  test(
+    'exposes the configured initial state and defaults to expanded in Admin UI metadata',
+    runner(async ({ context }) => {
+      const data = await context.sudo().graphql.run({ query: adminMetaQuery })
+      expect(data).toMatchObject({
+        keystone: {
+          adminMeta: {
+            lists: [
+              {
+                groups: [
+                  { label: 'Default', defaultOpen: true, fields: [{ key: 'defaultField' }] },
+                  { label: 'Empty UI', defaultOpen: true, fields: [{ key: 'emptyUIField' }] },
+                  { label: 'Expanded', defaultOpen: true, fields: [{ key: 'expandedField' }] },
+                  { label: 'Collapsed', defaultOpen: false, fields: [{ key: 'collapsedField' }] },
+                ],
+              },
+            ],
+          },
+        },
+      })
+    })
+  )
+})
 
 test('errors with nested field groups', () => {
   expect(() =>

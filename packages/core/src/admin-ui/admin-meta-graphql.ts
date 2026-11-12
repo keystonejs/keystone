@@ -46,6 +46,7 @@ export const adminMetaQuery = gql`
           groups {
             label
             description
+            defaultOpen
             fields {
               key
             }
