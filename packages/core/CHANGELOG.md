@@ -1,5 +1,11 @@
 # @keystone-6/core
 
+## 8.3.1
+
+### Patch Changes
+
+- [#10090](https://github.com/keystonejs/keystone/pull/10090) [`6bd9674`](https://github.com/keystonejs/keystone/commit/6bd9674028014b7f4100d04010a998da892240a2) Thanks [@emmatown](https://github.com/emmatown)! - Fixes repeated form submissions in create view creating multiple items
+
 ## 8.3.0
 
 ### Minor Changes
