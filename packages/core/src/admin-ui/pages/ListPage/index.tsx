@@ -377,7 +377,7 @@ export function ListPage({ listKey }: ListPageProps) {
   ])
 
   const allowCreate = !(list.hideCreate ?? true)
-  const isConstrained = Boolean(filters.length || query.search)
+  const isConstrained = Boolean(filters.length || query.search || searchString)
   const readableFields = Object.values(list.fields).map(f => ({
     id: f.key,
     value: f.key,
