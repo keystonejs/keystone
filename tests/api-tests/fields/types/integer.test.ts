@@ -8,10 +8,6 @@ for (const isNullable of [true, false]) {
     filterTests(integer({ db: { isNullable } }), match => {
       orderableFilterTests(match, values, isNullable)
     })
-    uniqueEqualityFilterTest(
-      integer({ db: { isNullable }, isIndexed: 'unique' }),
-      values,
-      isNullable
-    )
+    uniqueEqualityFilterTest(integer({ db: { isNullable }, isIndexed: 'unique' }), values)
   })
 }
