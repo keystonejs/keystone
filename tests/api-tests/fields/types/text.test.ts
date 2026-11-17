@@ -21,6 +21,17 @@ for (const isNullable of [true, false]) {
         match(differentCases, { ...addModeOnPostgres, not: { equals: differentCases[3] } }, [0, 4])
       }
 
+      if (dbProvider === 'postgresql' && isNullable) {
+        // `not` on a StringNullableFilter is a StringNullableFilter, so it can set its own mode
+        match(differentCases, { not: { equals: differentCases[3], mode: 'insensitive' } }, [0, 4])
+        match(differentCases, { not: { mode: 'insensitive', equals: differentCases[3] } }, [0, 4])
+        match(
+          differentCases,
+          { mode: 'insensitive', not: { equals: differentCases[3], mode: 'default' } },
+          [0, 1, 2, 4]
+        )
+      }
+
       const forPartials = ['', 'other', 'FOOBAR', 'fooBAR', 'foobar'] as const
 
       if (dbProvider === 'postgresql') {
