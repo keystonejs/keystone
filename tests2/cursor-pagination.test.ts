@@ -3,10 +3,167 @@ import { describe, test } from 'node:test'
 
 import { list } from '@keystone-6/core'
 import { allowAll } from '@keystone-6/core/access'
-import { checkbox, relationship, text } from '@keystone-6/core/fields'
+import { checkbox, integer, relationship, text } from '@keystone-6/core/fields'
 import { dbProvider, setupTestSuite } from './utils.ts'
 import { findMany } from '../packages/core/src/lib/core/queries/resolvers.ts'
 import { query } from '../tests/api-tests/run-field.ts'
+
+describe(`cursor inputs (${dbProvider})`, () => {
+  const suite = setupTestSuite({
+    config: {
+      lists: {
+        Post: list({
+          db: { idField: { kind: 'autoincrement' } },
+          access: {
+            operation: allowAll,
+            filter: {
+              query: ({ session }) => (session?.filter ? { visible: { equals: true } } : true),
+            },
+          },
+          fields: {
+            value: meta => {
+              const field = text({ isIndexed: 'unique' })(meta)
+              return {
+                ...field,
+                input: {
+                  ...field.input,
+                  uniqueWhere: {
+                    ...field.input!.uniqueWhere!,
+                    resolve: value => (typeof value === 'string' ? value.toLowerCase() : value),
+                  },
+                },
+              }
+            },
+            visible: checkbox(),
+            author: relationship({ ref: 'Author.post' }),
+          },
+        }),
+        Author: list({
+          access: allowAll,
+          fields: {
+            name: text({ isIndexed: 'unique' }),
+            post: relationship({ ref: 'Post.author' }),
+            posts: relationship({ ref: 'Post', many: true }),
+          },
+        }),
+      },
+    },
+  })()
+  const seeded = suite.then(async ({ context }) => {
+    const posts = await context.db.Post.createMany({
+      data: [
+        { value: 'a', visible: true },
+        { value: 'b', visible: false },
+        { value: 'c', visible: true },
+      ],
+    })
+    const author = await context.db.Author.createOne({
+      data: {
+        name: 'Alice',
+        post: { connect: { id: posts[0].id } },
+        posts: { connect: posts.map(({ id }) => ({ id })) },
+      },
+    })
+    return { posts, author }
+  })
+
+  for (const api of ['graphql', 'db'] as const) {
+    for (const filter of [false, true]) {
+      const fetchPage = async (cursor: Record<string, any>, take = 1, skip = 0) => {
+        const { context } = await suite
+        const ctx = context.withSession({ filter })
+        if (api === 'graphql') {
+          return (
+            (await ctx.graphql.run({
+              query: `query($cursor: PostWhereUniqueInput!, $take: Int!, $skip: Int!) {
+                posts(cursor: $cursor, take: $take, skip: $skip, orderBy: { value: asc }) { value }
+              }`,
+              variables: { cursor, take, skip },
+            })) as { posts: { value: string }[] }
+          ).posts
+        }
+        return ctx.db.Post.findMany({
+          cursor,
+          take,
+          skip,
+          orderBy: [{ value: 'asc' }],
+          select: { value: true },
+        })
+      }
+
+      test(`${api}: parses cursor IDs and unique field values (filter: ${filter})`, async () => {
+        const { posts } = await seeded
+        for (const cursor of [{ id: String(posts[0].id) }, { value: 'A' }]) {
+          assert.deepEqual(
+            (await fetchPage(cursor)).map(post => post.value),
+            ['a']
+          )
+          assert.deepEqual(
+            (await fetchPage(cursor, 1, 1)).map(post => post.value),
+            [filter ? 'c' : 'b']
+          )
+        }
+        assert.deepEqual(
+          (await fetchPage({ id: String(posts[2].id) }, -1, 1)).map(post => post.value),
+          [filter ? 'a' : 'b']
+        )
+        assert.deepEqual(
+          (await fetchPage({ value: 'B' })).map(post => post.value),
+          filter ? [] : ['b']
+        )
+      })
+
+      test(`${api}: invalid cursor IDs return input errors (filter: ${filter})`, async () => {
+        await seeded
+        for (const id of ['invalid', '']) {
+          await assert.rejects(fetchPage({ id }), {
+            message: 'Input error: Only a int can be passed to id filters',
+            extensions: { code: 'KS_USER_INPUT_ERROR' },
+          })
+        }
+      })
+
+      test(`${api}: rejects relationship cursors (filter: ${filter})`, async () => {
+        const { posts } = await seeded
+        for (const author of [{ name: 'Alice' }, { post: { id: posts[0].id } }, null]) {
+          for (const cursor of [{ author }, { id: posts[0].id, author }]) {
+            await assert.rejects(fetchPage(cursor), {
+              message:
+                'Input error: The relationship field "Post.author" cannot be used in a cursor',
+              extensions: { code: 'KS_USER_INPUT_ERROR' },
+            })
+          }
+        }
+      })
+    }
+  }
+
+  test('relationship queries parse scalar cursors and reject relationship cursors', async () => {
+    const { context } = await suite
+    const { posts, author } = await seeded
+    const query = `query($id: ID!, $cursor: PostWhereUniqueInput!) {
+      author(where: { id: $id }) { posts(cursor: $cursor, take: 1) { value } }
+    }`
+    const result = (await context.graphql.run({
+      query,
+      variables: { id: author.id, cursor: { id: String(posts[0].id) } },
+    })) as { author: { posts: { value: string }[] } }
+    assert.deepEqual(
+      result.author.posts.map(post => post.value),
+      ['a']
+    )
+    await assert.rejects(
+      context.graphql.run({
+        query,
+        variables: { id: author.id, cursor: { author: { name: 'Alice' } } },
+      }),
+      {
+        message: 'Input error: The relationship field "Post.author" cannot be used in a cursor',
+        extensions: { code: 'KS_USER_INPUT_ERROR' },
+      }
+    )
+  })
+})
 
 describe(`cursor pagination access (${dbProvider})`, () => {
   const cacheResults: unknown[] = []
@@ -35,6 +192,16 @@ describe(`cursor pagination access (${dbProvider})`, () => {
                 },
               },
             }),
+            some: integer({
+              isIndexed: 'unique',
+              access: {
+                read: {
+                  item: allowAll,
+                  filter: ({ session }) => !session?.denyFilter,
+                  order: allowAll,
+                },
+              },
+            }),
             visible: checkbox(),
           },
         }),
@@ -47,8 +214,9 @@ describe(`cursor pagination access (${dbProvider})`, () => {
   })()
   const seeded = suite.then(async ({ context }) => {
     const posts = await context.sudo().db.Post.createMany({
-      data: ['a-hidden', 'b-visible', 'c-hidden', 'd-visible', 'e-hidden'].map(value => ({
+      data: ['a-hidden', 'b-visible', 'c-hidden', 'd-visible', 'e-hidden'].map((value, index) => ({
         value,
+        some: index,
         visible: value.endsWith('visible'),
       })),
       select: { id: true, value: true },
@@ -159,13 +327,13 @@ describe(`cursor pagination access (${dbProvider})`, () => {
   test('cursor fields still require filter access', async () => {
     const { context } = await suite
     await seeded
-    await assert.rejects(
-      query(context.withSession({ denyFilter: true })).posts({
-        cursor: { value: 'b-visible' },
-        query: 'id',
-      }),
-      /Access denied: You cannot filter/
-    )
+    const denied = query(context.withSession({ denyFilter: true }))
+    for (const cursor of [{ value: 'b-visible' }, { some: 1 }]) {
+      await assert.rejects(
+        denied.posts({ cursor, query: 'id' }),
+        /Access denied: You cannot filter/
+      )
+    }
   })
 
   for (const value of ['b-visible', 'c-hidden']) {
