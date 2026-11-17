@@ -30,7 +30,7 @@ export default config({
 Keystone supports both stateless and stored sessions.
 In a stateless session all session data is stored in a cookie.
 In a stored session a session ID is stored in the cookie, and this ID is used to save and load data from a data store on the server.
-All cookies are encrypted with [`@hapi/iron`](https://hapi.dev/module/iron/).
+All cookies are encrypted with [`@hapi/iron`](https://hapi.dev/module/iron/api/7.x.x).
 
 Both `statelessSessions()` and `storedSessions()` accept a common set of arguments which control the behaviour of the cookies.
 `storedSessions()` accepts an additional `store` argument, which is an object capable of loading and storing session data.
@@ -53,7 +53,7 @@ Options
 
 - `secret` (required): The secret used by `@hapi/iron` for encrypting the cookie data. Must be at least 32 characters long.
 - `ironOptions`: Additional options to be passed to `Iron.seal()` and `Iron.unseal()` when encrypting and decrypting the cookies.
-  See the [`@hapi/iron` docs](https://hapi.dev/module/iron/api/?v=6.0.0#options) for details.
+  See the [`@hapi/iron` docs](https://hapi.dev/module/iron/api/7.x.x#options) for details.
 - `maxAge` (default: `60 * 60 * 8` (8 hours)): The number of seconds until the [cookie expires](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie).
 - `secure` (default: `process.env.NODE_ENV === 'production`): If `true`, the cookie is only sent to the server when a request is made with the `https:` scheme (except on localhost), and therefore is more resistent to man-in-the-middle attacks.
   **Note:** Do not assume that `secure` prevents all access to sensitive information in cookies (session keys, login details, etc.).
