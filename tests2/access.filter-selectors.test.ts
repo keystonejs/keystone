@@ -29,6 +29,9 @@ function postAPI(context: KeystoneContext, api: (typeof apis)[number]) {
   return {
     findOne: ({ where }: { where: Record<string, unknown> }) =>
       graphql.post<Post | null>({ where, query: 'id' }),
+    findMany: ({ where }: { where: Record<string, unknown> }) =>
+      graphql.posts<Post[]>({ where, query: 'id' }),
+    count: ({ where }: { where: Record<string, unknown> }) => graphql.postsCount({ where }),
     updateOne: ({ where, data }: { where: Record<string, unknown>; data: { title: string } }) =>
       mutate.updatePost<Post>({ where, data, query: 'id' }),
     deleteOne: ({ where }: { where: Record<string, unknown> }) =>
@@ -108,12 +111,12 @@ describe(`selector field access (${dbProvider})`, () => {
                   ...field.input,
                   uniqueWhere: {
                     ...uniqueWhere,
-                    resolve(value, context) {
+                    resolve(value, context, resolve) {
                       context.session?.resolvedSelectors?.push(value)
                       if (context.session?.authorNumber !== undefined) {
-                        return { some: context.session.authorNumber }
+                        return resolve({ some: context.session.authorNumber })
                       }
-                      return value
+                      return resolve(value)
                     },
                   },
                 },
@@ -147,6 +150,7 @@ describe(`selector field access (${dbProvider})`, () => {
                 },
               }
             },
+            authors: relationship({ ref: 'Author', many: true }),
           },
         }),
         Tag: list({
@@ -164,6 +168,7 @@ describe(`selector field access (${dbProvider})`, () => {
         title: 'Post',
         author: { connect: { id: author.id } },
         authorByAlias: { connect: { id: author.id } },
+        authors: { connect: [{ id: author.id }] },
       },
     })
     return { context, sudo, author, post }
@@ -278,5 +283,27 @@ describe(`selector field access (${dbProvider})`, () => {
       context.db.Tag.createOne({ data: { post: { connect: { id: '' } } } }),
       /Input error: Only a string can be passed to id filters/
     )
+  })
+
+  test('checks access on fields named like to-many quantifiers', async () => {
+    const { context, sudo } = await seeded
+    const some = { equals: 1 }
+    const denied = /You cannot filter that Author.*some/
+
+    await assert.rejects(context.db.Author.count({ where: { some } }), denied)
+    await assert.rejects(context.db.Author.findMany({ cursor: { some: 1 } }), denied)
+    for (const api of apis) {
+      const post = postAPI(context, api)
+      const sudoPost = postAPI(sudo, api)
+      for (const where of [
+        { author: { some } },
+        { authors: { some: { some } } },
+        { authors: { some: {}, every: { some } } },
+      ]) {
+        await assert.rejects(post.findMany({ where }), denied)
+        await assert.rejects(post.count({ where }), denied)
+        assert.equal(await sudoPost.count({ where }), 1)
+      }
+    }
   })
 })

@@ -44,8 +44,7 @@ for (const isNullable of [true, false]) {
         })
         uniqueEqualityFilterTest(
           select({ db: { isNullable }, options, type, isIndexed: 'unique' }),
-          values,
-          isNullable
+          values
         )
       })
     }

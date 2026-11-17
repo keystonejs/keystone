@@ -261,28 +261,37 @@ describe('searching by unique fields', () => {
     })
   )
 
-  // WARNING: this is database specific behaviour
   test(
-    'findOne returns the first item for null if a value exists',
+    'findOne throws for null where values',
     runner(async ({ context }) => {
-      const item = await context.db.User.createOne({ data: { email: null }, select: { id: true } })
+      await context.db.User.createOne({ data: { email: null }, select: { id: true } })
       const { data, errors } = await context.graphql.raw({
         query: '{ user(where: { email: null }) { id email } }',
       })
-      expect(errors).toBe(undefined)
-      expect(data).toEqual({ user: { id: item.id, email: null } })
+      expectBadUserInput(errors, [
+        {
+          path: ['user'],
+          message: 'The key "email" in UserWhereUniqueInput cannot be set to null',
+        },
+      ])
+      expect(data).toEqual({ user: null })
     })
   )
 
   test(
-    'findOne returns the unique item when filtering with multiple values',
+    'findOne throws for null where values alongside another unique value',
     runner(async ({ context }) => {
       const item = await context.db.User.createOne({ data: { email: null }, select: { id: true } })
       const { data, errors } = await context.graphql.raw({
         query: `{ user(where: { id: "${item.id}" email: null }) { id email } }`,
       })
-      expect(errors).toBe(undefined)
-      expect(data).toEqual({ user: { id: item.id, email: null } })
+      expectBadUserInput(errors, [
+        {
+          path: ['user'],
+          message: 'The key "email" in UserWhereUniqueInput cannot be set to null',
+        },
+      ])
+      expect(data).toEqual({ user: null })
     })
   )
 
@@ -299,23 +308,14 @@ describe('searching by unique fields', () => {
   )
 
   test(
-    'findOne returns null for zero where values',
+    'findOne throws for zero where values',
     runner(async ({ context }) => {
       const { data, errors } = await context.graphql.raw({
         query: '{ user(where: {}) { id email } }',
       })
-      expect(errors).toBe(undefined)
-      expect(data).toEqual({ user: null })
-    })
-  )
-
-  test(
-    'findOne returns null for null where values',
-    runner(async ({ context }) => {
-      const { data, errors } = await context.graphql.raw({
-        query: '{ user(where: { email: null }) { id email } }',
-      })
-      expect(errors).toBe(undefined)
+      expectBadUserInput(errors, [
+        { path: ['user'], message: 'At least one key must be passed to UserWhereUniqueInput' },
+      ])
       expect(data).toEqual({ user: null })
     })
   )

@@ -206,7 +206,13 @@ for (const fixture of fixtures) {
             query: `query ($id: ID) { user(where: { id: $id }) { id } }`,
             variables: { id },
           })
-          expectBadUserInput(errors, [{ path: ['user'], message: error }])
+          expectBadUserInput(errors, [
+            {
+              path: ['user'],
+              message:
+                id === null ? 'The key "id" in UserWhereUniqueInput cannot be set to null' : error,
+            },
+          ])
           expect(data).toEqual({ user: null })
         })
       )
