@@ -71,18 +71,21 @@ function* traverse(
       for (const condition of value) {
         yield* traverse(list, condition)
       }
-    } else if (fieldKey === 'some' || fieldKey === 'none' || fieldKey === 'every') {
-      yield* traverse(list, value)
-    } else {
-      yield { fieldKey, list }
+      continue
+    }
 
-      // if it's a relationship, check the nested filters.
-      const field = list.fields[fieldKey]
-      if (field.dbField.kind === 'relation' && value !== null) {
-        const foreignList = list.lists[field.dbField.list]
+    yield { fieldKey, list }
 
-        yield* traverse(foreignList, value)
+    const { dbField } = list.fields[fieldKey]
+    if (dbField.kind !== 'relation' || value == null) continue
+
+    const foreignList = list.lists[dbField.list]
+    if (dbField.mode === 'many') {
+      for (const condition of Object.values<InputFilter | null>(value)) {
+        if (condition !== null) yield* traverse(foreignList, condition)
       }
+    } else {
+      yield* traverse(foreignList, value)
     }
   }
 }
@@ -98,9 +101,6 @@ export async function findOne(
 
   // validate and resolve the input filter
   const resolvedWhere = await resolveUniqueWhereWithAccess(args.where, list, context)
-
-  // findOne requires at least one filter
-  if (Object.keys(resolvedWhere).length === 0) return null
 
   // apply access control
   const filter = accessControlledFilter(resolvedWhere, accessFilters)

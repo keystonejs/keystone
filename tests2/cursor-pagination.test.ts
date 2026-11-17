@@ -121,6 +121,14 @@ describe(`cursor inputs (${dbProvider})`, () => {
             extensions: { code: 'KS_USER_INPUT_ERROR' },
           })
         }
+        await assert.rejects(fetchPage({ id: null }), {
+          message: 'Input error: The key "id" in PostWhereUniqueInput cannot be set to null',
+          extensions: { code: 'KS_USER_INPUT_ERROR' },
+        })
+        await assert.rejects(fetchPage({}), {
+          message: 'Input error: At least one key must be passed to PostWhereUniqueInput',
+          extensions: { code: 'KS_USER_INPUT_ERROR' },
+        })
       })
 
       test(`${api}: rejects relationship cursors (filter: ${filter})`, async () => {

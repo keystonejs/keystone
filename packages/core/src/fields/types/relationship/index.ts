@@ -374,6 +374,9 @@ export function relationship<
         },
         uniqueWhere: {
           arg: g.arg({ type: foreignListTypes.uniqueWhere }),
+          resolve(value, _context, resolve) {
+            return resolve(value)
+          },
         },
 
         create: foreignListTypes.relateTo.one.create && {
