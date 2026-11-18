@@ -118,12 +118,16 @@ query {
 }
 ```
 
+#### Updating a two-sided relationship
+
+Both fields represent the same relationship, and you can change it from either side. For example, connecting a user through `updatePost` with `authors.connect` has the same effect on the relationship as connecting the post through `updateUser` with `posts.connect`.
+
+For `connect`, `disconnect`, and `set`, Keystone applies the [access control](../config/access-control) and runs the applicable [hooks](../config/hooks) for the item targeted by the mutation. When you update `authors` through `updatePost`, Keystone checks update access for `Post` and `Post.authors` and runs the applicable hooks for that post.
+
+Items supplied to `connect`, `disconnect`, or `set` are looked up using the related list's `query` access rules. A nested `create` runs `create` access control and hooks for the new related item.
+
 {% hint kind="warn" %}
-**Things to keep in mind:**
-
-Two-sided relationships are declared in two places, but **there is only one relationship between both lists**.
-
-**Both fields share the same data**. If you change the author of a post, that post will no longer show up in the original author’s posts.
+To restrict who can change a two-sided relationship, configure `create`/`update` access on both sides. You can also e.g. deny all write access from one side to enforce updating from the other side
 {% /hint %}
 
 ### Self-referencing relationships
