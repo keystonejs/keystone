@@ -43,6 +43,7 @@ export type KeystoneContext<TypeInfo extends BaseKeystoneTypeInfo = BaseKeystone
    * WARNING: may change in patch
    */
   __internal: {
+    canBatchToMany?: boolean
     sudo: boolean
     lists: Record<string, InitialisedList>
     prisma: {

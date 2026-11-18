@@ -1,3 +1,4 @@
+import { defaultPrismaClientExtension } from '../schema.ts'
 import type { BaseKeystoneTypeInfo, KeystoneConfig, KeystoneContext } from '../types/index.ts'
 import { createAdminMeta } from './admin-meta.ts'
 import { createContext } from './context/createContext.ts'
@@ -122,6 +123,11 @@ export function createContextSystem(config: KeystoneConfig) {
         lists,
         graphQLSchemas,
         prismaClient,
+        // Custom and supplied clients can apply policies to each child read. Keep
+        // those reads on their existing path instead of bypassing their callbacks.
+        canBatchToMany:
+          existingPrismaClient === undefined &&
+          config.db.extendPrismaClient === defaultPrismaClientExtension,
         prismaModelSelections,
         prismaTypes: {
           DbNull: PM.Prisma.DbNull,

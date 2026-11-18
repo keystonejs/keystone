@@ -133,13 +133,24 @@ export async function findOne(
   return result
 }
 
+export type FindManyQuery = {
+  where: PrismaFilter
+  orderBy: readonly Record<string, OrderDirection>[]
+  take: number | undefined
+  skip: number
+  cursor: UniquePrismaFilter | undefined
+  select: Record<string, true> | undefined
+}
+
 export async function findMany(
   { where, take, skip, orderBy: rawOrderBy, cursor }: FindManyArgsValue,
   list: InitialisedList,
   context: KeystoneContext,
   info: GraphQLResolveInfo,
   select: Readonly<Record<string, true | undefined>> | undefined,
-  extraFilter?: PrismaFilter
+  extraFilter?: PrismaFilter,
+  executeQuery: (query: FindManyQuery) => Promise<BaseItem[]> = query =>
+    context.prisma[list.listKey].findMany(query)
 ): Promise<BaseItem[]> {
   const maxTake = (list.graphql.types.findManyArgs.take.defaultValue ?? Infinity) as number
   if (Math.abs(take ?? Infinity) > maxTake) {
@@ -174,14 +185,17 @@ export async function findMany(
     resolvedAccessFilter === undefined
       ? resolvedWhere
       : { AND: [resolvedWhere, resolvedAccessFilter] }
-  const query = context.prisma[list.listKey].findMany({
+  const queryArgs: FindManyQuery = {
     where: extraFilter === undefined ? filter : { AND: [filter, extraFilter] },
     orderBy,
     take: take ?? undefined,
     skip,
     cursor: cursor ?? undefined,
     select: selectForQuery(list, select),
-  })
+  }
+
+  // Relationship batches use the same access checks and query preparation as direct reads.
+  const query = executeQuery(queryArgs)
   let results: BaseItem[]
   if (cursor && resolvedAccessFilter !== undefined) {
     // Prisma locates the cursor without the list's access filter. Check its visibility
