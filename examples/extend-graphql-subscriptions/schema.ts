@@ -72,8 +72,7 @@ export const extendGraphqlSchema = (schema: GraphQLSchema) =>
       Mutation: {
         // custom mutation to publish a post
         publishPost: async (root, { id }, context) => {
-          // we use `context.db.Post`, not `context.query.Post`
-          //   as this matches the type needed for GraphQL resolvers
+          // context.db.Post returns the item needed by the Post field resolvers.
           const post = context.db.Post.updateOne({
             where: { id },
             data: { status: 'published', publishDate: new Date().toISOString() },

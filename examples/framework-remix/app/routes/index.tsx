@@ -9,11 +9,11 @@ export const loader = async ({ request }: LoaderArgs) => {
   //   https://remix.run/docs/en/main/tutorials/jokes
   const session = {}
   const context = keystoneContext.withSession(session)
-  return json({
-    posts: (await context.query.Post.findMany({
-      query: 'id name content',
-    })) as { id: string; name: string; content: string }[],
-  })
+  const { posts }: { posts: { id: string; name: string | null; content: string | null }[] } =
+    await context.graphql.run({
+      query: '{ posts { id name content } }',
+    })
+  return json({ posts })
 }
 
 export default function UsersIndexRoute() {

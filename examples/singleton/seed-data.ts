@@ -16,9 +16,8 @@ async function main() {
 
   console.log(`🌱 Inserting seed data`)
   const createPost = async (postData: PostProps) => {
-    await context.query.Post.createOne({
+    await context.db.Post.createOne({
       data: postData,
-      query: 'id',
     })
   }
 

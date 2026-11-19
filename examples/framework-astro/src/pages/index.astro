@@ -15,8 +15,8 @@ const context = keystoneContext.withSession({
   browser: browserName.toLowerCase(),
   user: 'astro',
 })
-const posts = await context.query.Post.findMany({
-  query: 'title id',
+const { posts }: { posts: { id: string; title: string | null }[] } = await context.graphql.run({
+  query: '{ posts { id title } }',
 })
 ---
 

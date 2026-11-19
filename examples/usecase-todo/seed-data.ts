@@ -19,28 +19,26 @@ export async function main() {
 
   console.log(`🌱 Inserting seed data`)
   const createPerson = async (personData: PersonProps) => {
-    let person = await context.query.Person.findOne({
+    const person = await context.db.Person.findOne({
       where: { name: personData.name },
-      query: 'id',
+      select: { id: true },
     })
 
     if (!person) {
-      person = await context.query.Person.createOne({
+      await context.db.Person.createOne({
         data: personData,
-        query: 'id',
       })
     }
   }
 
   const createTask = async (taskData: TaskProps) => {
-    const persons = await context.query.Person.findMany({
+    const persons = await context.db.Person.findMany({
       where: { name: { equals: taskData.assignedTo } },
-      query: 'id',
+      select: { id: true },
     })
 
-    await context.query.Task.createOne({
+    await context.db.Task.createOne({
       data: { ...taskData, assignedTo: { connect: { id: persons[0].id } } },
-      query: 'id',
     })
   }
 
