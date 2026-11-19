@@ -10,7 +10,7 @@ import {
 import type { KeystoneContext, KeystoneGraphQLAPI, KeystoneConfig } from '../../types/index.ts'
 
 import type { InitialisedList } from '../core/initialise-lists.ts'
-import { getDbFactory, getQueryFactory } from './api.ts'
+import { getDbFactory } from './api.ts'
 
 const documentValidationCache = new WeakMap<GraphQLSchema, WeakSet<DocumentNode>>()
 
@@ -56,16 +56,6 @@ export function createContext({
       graphQLSchemas.internal,
       prismaModelSelections[listKey]
     )
-  }
-
-  const queryFactories: Record<string, ReturnType<typeof getQueryFactory>> = {}
-  for (const [listKey, list] of Object.entries(lists)) {
-    queryFactories[listKey] = getQueryFactory(list, graphQLSchemas.public)
-  }
-
-  const queryFactoriesInternal: Record<string, ReturnType<typeof getQueryFactory>> = {}
-  for (const [listKey, list] of Object.entries(lists)) {
-    queryFactoriesInternal[listKey] = getQueryFactory(list, graphQLSchemas.internal)
   }
 
   const construct = ({
@@ -120,7 +110,6 @@ export function createContext({
     const context: KeystoneContext = {
       prisma,
       db: {},
-      query: {},
       graphql: { raw: rawGraphQL, run: runGraphQL, schema },
 
       transaction: async (f, opts) => {
@@ -172,11 +161,9 @@ export function createContext({
     }
 
     const _dbFactories = internal ? dbFactoriesInternal : dbFactories
-    const _queryFactories = internal ? queryFactoriesInternal : queryFactories
 
     for (const listKey of Object.keys(lists)) {
       context.db[listKey] = _dbFactories[listKey](context)
-      context.query[listKey] = _queryFactories[listKey](context)
     }
 
     return context
