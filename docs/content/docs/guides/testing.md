@@ -63,35 +63,51 @@ We're setting the database URL as `file:./test-${process.env.VITEST_WORKER_ID}.d
 ### Context API
 
 The [context API](../context/overview) lets you easily manipulate data in your system.
-We can use the [Query API](../context/query) to ensure that we can do basic CRUD operations.
+Use `context.graphql.run` to check that a GraphQL operation succeeds and returns the fields you expect.
+The examples in this section use the `graphql()` function from a [gql.tada setup](../context/overview#typed-graphql-documents).
 
 ```typescript
-const person = await context.query.Person.createOne({
-  data: { name: 'Alice', email: 'alice@example.com', password: 'super-secret' },
-  query: 'id name email password { isSet }',
+import { graphql } from './tada'
+
+const CreatePerson = graphql(`
+  mutation CreatePerson($data: PersonCreateInput!) {
+    createPerson(data: $data) {
+      id
+      name
+      email
+      password {
+        isSet
+      }
+    }
+  }
+`)
+
+const { createPerson: person } = await context.graphql.run({
+  query: CreatePerson,
+  variables: {
+    data: { name: 'Alice', email: 'alice@example.com', password: 'super-secret' },
+  },
 })
-expect(person.name).toEqual('Alice')
-expect(person.email).toEqual('alice@example.com')
-expect(person.password.isSet).toEqual(true)
+expect(person?.name).toEqual('Alice')
+expect(person?.email).toEqual('alice@example.com')
+expect(person?.password?.isSet).toEqual(true)
 ```
 
-This API works well when we expect an operation to succeed.
-If we expect an operation to fail we can use the `context.graphql.raw` operation to check that both the `data` and `errors` returned by a query are what we expect.
+If you expect an operation to fail, use `context.graphql.raw` to check the returned `data` and `errors`.
 
 ```typescript
-// Create user without the required `name` field
+// Create a person without the required `name` field
 const { data, errors } = await context.graphql.raw({
-  query: `mutation {
-    createPerson(data: { email: "alice@example.com", password: "super-secret" }) {
-      id name email password { isSet }
-    }
-  }`,
+  query: CreatePerson,
+  variables: {
+    data: { email: 'alice@example.com', password: 'super-secret' },
+  },
 })
-expect(data.createPerson).toBe(null)
+expect(data?.createPerson).toBe(null)
 expect(errors).toHaveLength(1)
-expect(errors[0].path).toEqual(['createPerson'])
-expect(errors[0].message).toEqual(
-  'You provided invalid data for this operation.\n  - Person.name: Name must not be empty'
+expect(errors?.[0]?.path).toEqual(['createPerson'])
+expect(errors?.[0]?.message).toEqual(
+  'You provided invalid data for this operation.\n  - Person.name: value must not be empty'
 )
 ```
 
@@ -101,37 +117,42 @@ In the example below, the access control only allows users to update their own t
 
 ```typescript
 // Create some users
-const [alice, bob] = await context.query.Person.createMany({
+const [alice, bob] = await context.db.Person.createMany({
   data: [
     { name: 'Alice', email: 'alice@example.com', password: 'super-secret' },
     { name: 'Bob', email: 'bob@example.com', password: 'super-secret' },
   ],
+  select: { id: true },
 })
 
 // Create a task assigned to Alice
-const task = await context.query.Task.createOne({
+const task = await context.db.Task.createOne({
   data: {
     label: 'Experiment with Keystone',
     priority: 'high',
     isComplete: false,
-    assignedTo: { connect: { id: alice.id } },
+    assignedTo: { connect: { id: alice.id.toString() } },
   },
+  select: { id: true },
 })
 
 // Check that we can't update the task when logged in as Bob
-const { data, errors } = await context.withSession({ itemId: bob.id, data: {} }).graphql.raw({
-  query: `mutation update($id: ID!) {
+const bobContext = context.withSession({ itemId: bob.id.toString(), data: {} })
+const { data, errors } = await bobContext.graphql.raw({
+  query: graphql(`
+    mutation CompleteTask($id: ID!) {
       updateTask(where: { id: $id }, data: { isComplete: true }) {
         id
       }
-    }`,
-  variables: { id: task.id },
+    }
+  `),
+  variables: { id: task.id.toString() },
 })
-expect(data!.updateTask).toBe(null)
+expect(data?.updateTask).toBe(null)
 expect(errors).toHaveLength(1)
-expect(errors![0].path).toEqual(['updateTask'])
-expect(errors![0].message).toEqual(
-  `Access denied: You cannot update the item '{"id":"${task.id}"}' - it may not exist`
+expect(errors?.[0]?.path).toEqual(['updateTask'])
+expect(errors?.[0]?.message).toEqual(
+  'Access denied: You cannot update that Task - it may not exist'
 )
 ```
 
@@ -150,8 +171,8 @@ href="/docs/context/overview" %}
 The API for run-time functionality in your Keystone system. Use it to write business logic for access control, hooks, testing, GraphQL schema extensions, and more.
 {% /well %}
 {% well
-heading="Query API Reference"
-href="/docs/context/query" %}
-A programmatic API for running CRUD operations against your GraphQL API. For each list in your system you get an API at `context.query.<listName>`.
+heading="Database API Reference"
+href="/docs/context/db-items" %}
+Use `context.db` to create and read test fixtures with Keystone's access control and hooks.
 {% /well %}
 {% /related-content %}
