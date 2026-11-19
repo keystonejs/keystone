@@ -264,11 +264,6 @@ navGroups:
           discriminant: page
           value: context/get-context
         status: default
-      - label: Query
-        link:
-          discriminant: page
-          value: context/query
-        status: default
       - label: DB
         link:
           discriminant: page
