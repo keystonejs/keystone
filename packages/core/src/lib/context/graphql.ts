@@ -4,7 +4,6 @@ import {
   type ConstValueNode,
   type DocumentNode,
   execute,
-  type FragmentDefinitionNode,
   type GraphQLArgument,
   type GraphQLArgumentConfig,
   type GraphQLEnumType,
@@ -24,9 +23,7 @@ import {
   type ListTypeNode,
   type NamedTypeNode,
   OperationTypeNode,
-  parse,
   type TypeNode,
-  validate,
   type VariableDefinitionNode,
 } from 'graphql/index.js'
 
@@ -77,16 +74,6 @@ function getVariablesForGraphQLField(field: GraphQLField<any, any>) {
   }))
 
   return { variableDefinitions, argumentNodes }
-}
-
-function getRootTypeName(type: GraphQLOutputType): string {
-  if (type instanceof GraphQLNonNull) {
-    return getRootTypeName(type.ofType)
-  }
-  if (type instanceof GraphQLList) {
-    return getRootTypeName(type.ofType)
-  }
-  return type.name
 }
 
 const rawField = 'raw'
@@ -266,76 +253,5 @@ export function makeContextDbFn(
       throw result.errors[0]
     }
     return getSourceGivenOutputType(type, result.data![field.name])
-  }
-}
-
-export function makeContextQueryFn(
-  schema: GraphQLSchema,
-  operation: 'query' | 'mutation',
-  field: GraphQLField<any, unknown>
-) {
-  const { argumentNodes, variableDefinitions } = getVariablesForGraphQLField(field)
-  const rootName = getRootTypeName(field.type)
-  const exec = async (args: Record<string, any>, query: string, context: KeystoneContext) => {
-    const selectionSet = (
-      parse(`fragment x on ${rootName} {${query}}`).definitions[0] as FragmentDefinitionNode
-    ).selectionSet
-
-    const document: DocumentNode = {
-      kind: Kind.DOCUMENT,
-      definitions: [
-        {
-          kind: Kind.OPERATION_DEFINITION,
-          // OperationTypeNode is an ts enum where the values are 'query' | 'mutation' | 'subscription'
-          operation: operation as OperationTypeNode,
-          selectionSet: {
-            kind: Kind.SELECTION_SET,
-            selections: [
-              {
-                kind: Kind.FIELD,
-                name: { kind: Kind.NAME, value: field.name },
-                arguments: argumentNodes,
-                selectionSet: selectionSet,
-              },
-            ],
-          },
-          variableDefinitions,
-        },
-      ],
-    }
-
-    const validationErrors = validate(schema, document)
-
-    if (validationErrors.length > 0) {
-      throw validationErrors[0]
-    }
-
-    const result = await execute({
-      schema,
-      document,
-      contextValue: context,
-      variableValues: Object.fromEntries(
-        // GraphQL for some reason decides to make undefined values in args
-        // skip defaulting for some reason
-        // this ofc doesn't technically fully fix it (bc nested things)
-        // but for the cases where we care, it does
-        Object.entries(args).filter(([, val]) => val !== undefined)
-      ),
-      rootValue: {},
-    })
-    if (result.errors?.length) {
-      throw result.errors[0]
-    }
-    return result.data![field.name]
-  }
-
-  return (
-    _args: {
-      query?: string
-    } & Record<string, unknown> = {}, // WARNING: sometimes this is undefined somewhere
-    context: KeystoneContext
-  ) => {
-    const { query, ...args } = _args
-    return exec(args, query ?? 'id', context) as Promise<any>
   }
 }

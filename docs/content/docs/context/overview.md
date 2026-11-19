@@ -14,9 +14,6 @@ The `Context` object has the following properties, which are documented below.
 import type { Context } from './generated/keystone/types'
 
 const context = {
-  // Query API
-  query,
-
   // Database API
   db,
 
@@ -53,10 +50,6 @@ const context = {
 `req`: A WHATWG [`Headers`](https://developer.mozilla.org/en-US/docs/Web/API/Headers) object containing the incoming request headers.
 
 `res`: A WHATWG `Headers` object for outgoing response headers. It can be undefined for read-only contexts.
-
-### Query API
-
-`query`: The [Query API](./query), which can be used to perform CRUD operations against your GraphQL API and return a queried value.
 
 ### Database API
 
@@ -135,11 +128,6 @@ Access through `context.prisma` bypasses the GraphQL schema and Keystone access 
 ## Related resources
 
 {% related-content %}
-{% well
-heading="Query API Reference"
-href="/docs/context/query" %}
-A programmatic API for running CRUD operations against your GraphQL API. For each list in your system you get an API at `context.query.<listName>`
-{% /well %}
 {% well
 heading="DB API Reference"
 href="/docs/context/db-items" %}
