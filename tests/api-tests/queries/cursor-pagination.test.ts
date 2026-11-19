@@ -201,7 +201,7 @@ describe('cursor pagination', () => {
       let currentOrder = 12
       expect(result1).toEqual(Array.from(Array(3).keys()).map(_ => posts[currentOrder--]))
 
-      await context.query.Post.createMany({
+      await context.db.Post.createMany({
         data: [{ order: 15 }, { order: 16 }, { order: 17 }, { order: 18 }],
       })
 

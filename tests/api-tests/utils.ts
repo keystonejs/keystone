@@ -205,8 +205,9 @@ export async function seed<T extends Record<keyof T, Record<string, unknown>[]>>
 ) {
   const results: any = {}
   for (const listKey of Object.keys(initialData)) {
-    results[listKey as keyof T] = await context.sudo().query[listKey].createMany({
+    results[listKey as keyof T] = await context.sudo().db[listKey].createMany({
       data: initialData[listKey as keyof T],
+      select: { id: true },
     })
   }
 

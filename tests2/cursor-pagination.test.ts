@@ -45,15 +45,16 @@ describe(`cursor pagination access (${dbProvider})`, () => {
     },
   })()
   const seeded = suite.then(async ({ context }) => {
-    const posts = await context.sudo().query.Post.createMany({
+    const posts = await context.sudo().db.Post.createMany({
       data: ['a-hidden', 'b-visible', 'c-hidden', 'd-visible', 'e-hidden'].map(value => ({
         value,
         visible: value.endsWith('visible'),
       })),
-      query: 'id value',
+      select: { id: true, value: true },
     })
-    const parent = await context.sudo().query.Parent.createOne({
+    const parent = await context.sudo().db.Parent.createOne({
       data: { posts: { connect: posts.map(({ id }) => ({ id })) } },
+      select: { id: true },
     })
     return { posts, parent }
   })
@@ -65,7 +66,7 @@ describe(`cursor pagination access (${dbProvider})`, () => {
           const { context } = await suite
           const { posts } = await seeded
           const candidates = [
-            ...posts.filter(post => post.value.endsWith('hidden')),
+            ...posts.filter(post => String(post.value).endsWith('hidden')),
             { id: 'missing', value: 'missing' },
           ]
           for (const post of candidates) {
@@ -178,7 +179,7 @@ describe(`cursor pagination access (${dbProvider})`, () => {
         const results = await findMany(
           {
             where: {},
-            cursor: { id: posts.find(post => post.value === value)!.id },
+            cursor: { id: posts.find(post => post.value === value)!.id.toString() },
             orderBy: [{ value: 'asc' }],
             take: 10,
             skip: 0,

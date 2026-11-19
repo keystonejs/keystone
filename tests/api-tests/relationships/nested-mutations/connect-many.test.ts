@@ -65,7 +65,10 @@ describe('no access control', () => {
       const noteContent = sampleOne(alphanumGenerator)
 
       // Create an item to link against
-      const createNote = await context.query.Note.createOne({ data: { content: noteContent } })
+      const createNote = await context.db.Note.createOne({
+        data: { content: noteContent },
+        select: { id: true },
+      })
 
       // Create an item that does the linking
       const user = await context.query.User.createOne({
@@ -103,9 +106,13 @@ describe('no access control', () => {
       const noteContent2 = sampleOne(alphanumGenerator)
 
       // Create an item to link against
-      const createNote = await context.query.Note.createOne({ data: { content: noteContent } })
-      const createNote2 = await context.query.Note.createOne({
+      const createNote = await context.db.Note.createOne({
+        data: { content: noteContent },
+        select: { id: true },
+      })
+      const createNote2 = await context.db.Note.createOne({
         data: { content: noteContent2 },
+        select: { id: true },
       })
 
       // Create an item that does the linking
@@ -127,17 +134,24 @@ describe('no access control', () => {
       const noteContent2 = sampleOne(alphanumGenerator)
 
       // Create an item to link against
-      const createNote = await context.query.Note.createOne({ data: { content: noteContent } })
-      const createNote2 = await context.query.Note.createOne({
+      const createNote = await context.db.Note.createOne({
+        data: { content: noteContent },
+        select: { id: true },
+      })
+      const createNote2 = await context.db.Note.createOne({
         data: { content: noteContent2 },
+        select: { id: true },
       })
 
       // Create an item to update
-      const createUser = await context.query.User.createOne({ data: { username: 'A thing' } })
+      const createUser = await context.db.User.createOne({
+        data: { username: 'A thing' },
+        select: { id: true },
+      })
 
       // Update the item and link the relationship field
       const user = await context.query.User.updateOne({
-        where: { id: createUser.id },
+        where: { id: createUser.id.toString() },
         data: { username: 'A thing', notes: { connect: [{ id: createNote.id }] } },
         query: 'id notes { id content }',
       })
@@ -149,7 +163,7 @@ describe('no access control', () => {
 
       // Update the item and link multiple relationship fields
       const _user = await context.query.User.updateOne({
-        where: { id: createUser.id },
+        where: { id: createUser.id.toString() },
         data: {
           username: 'A thing',
           notes: { connect: [{ id: createNote.id }, { id: createNote2.id }] },
@@ -173,19 +187,24 @@ describe('no access control', () => {
       const noteContent2 = sampleOne(alphanumGenerator)
 
       // Create an item to link against
-      const createNote = await context.query.Note.createOne({ data: { content: noteContent } })
-      const createNote2 = await context.query.Note.createOne({
+      const createNote = await context.db.Note.createOne({
+        data: { content: noteContent },
+        select: { id: true },
+      })
+      const createNote2 = await context.db.Note.createOne({
         data: { content: noteContent2 },
+        select: { id: true },
       })
 
       // Create an item to update
-      const createUser = await context.query.User.createOne({
+      const createUser = await context.db.User.createOne({
         data: { username: 'A thing', notes: { connect: [{ id: createNote.id }] } },
+        select: { id: true },
       })
 
       // Update the item and link the relationship field
       const user = await context.query.User.updateOne({
-        where: { id: createUser.id },
+        where: { id: createUser.id.toString() },
         data: { username: 'A thing', notes: { connect: [{ id: createNote2.id }] } },
         query: 'id notes { id content }',
       })
@@ -207,28 +226,36 @@ describe('no access control', () => {
       const noteContent2 = sampleOne(alphanumGenerator)
 
       // Create an item to link against
-      const createNote = await context.query.Note.createOne({ data: { content: noteContent } })
-      const createNote2 = await context.query.Note.createOne({
+      const createNote = await context.db.Note.createOne({
+        data: { content: noteContent },
+        select: { id: true },
+      })
+      const createNote2 = await context.db.Note.createOne({
         data: { content: noteContent2 },
+        select: { id: true },
       })
 
       // Create an item to update
-      const createUser = await context.query.User.createOne({
+      const createUser = await context.db.User.createOne({
         data: {
           username: 'user1',
           notes: { connect: [{ id: createNote.id }, { id: createNote2.id }] },
         },
+        select: { id: true },
       })
-      const createUser2 = await context.query.User.createOne({ data: { username: 'user2' } })
+      const createUser2 = await context.db.User.createOne({
+        data: { username: 'user2' },
+        select: { id: true },
+      })
 
       const users = await context.query.User.updateMany({
         data: [
           {
-            where: { id: createUser.id },
+            where: { id: createUser.id.toString() },
             data: { notes: { set: [{ id: createNote.id }] } },
           },
           {
-            where: { id: createUser2.id },
+            where: { id: createUser2.id.toString() },
             data: { notes: { set: [{ id: createNote2.id }] } },
           },
         ],
@@ -274,7 +301,7 @@ describe('non-matching filter', () => {
       const FAKE_ID = 'cabc123'
 
       // Create an item to link against
-      const createUser = await context.query.User.createOne({ data: {} })
+      const createUser = await context.db.User.createOne({ data: {}, select: { id: true } })
 
       // Create an item that does the linking
       const { data, errors } = await context.graphql.raw({
@@ -303,7 +330,7 @@ describe('non-matching filter', () => {
     'errors on incomplete data',
     runner(async ({ context }) => {
       // Create an item to link against
-      const createUser = await context.query.User.createOne({ data: {} })
+      const createUser = await context.db.User.createOne({ data: {}, select: { id: true } })
 
       // Create an item that does the linking
       const { data, errors } = await context.graphql.raw({
@@ -334,8 +361,9 @@ describe('with access control', () => {
         const noteContent = sampleOne(alphanumGenerator)
 
         // Create an item to link against
-        const createNoteNoRead = await context.sudo().query.NoteNoRead.createOne({
+        const createNoteNoRead = await context.sudo().db.NoteNoRead.createOne({
           data: { content: noteContent },
+          select: { id: true },
         })
 
         const { data, errors } = await context.graphql.raw({
@@ -367,13 +395,15 @@ describe('with access control', () => {
         const noteContent = sampleOne(alphanumGenerator)
 
         // Create an item to link against
-        const createNote = await context.sudo().query.NoteNoRead.createOne({
+        const createNote = await context.sudo().db.NoteNoRead.createOne({
           data: { content: noteContent },
+          select: { id: true },
         })
 
         // Create an item to update
-        const createUser = await context.sudo().query.UserToNotesNoRead.createOne({
+        const createUser = await context.sudo().db.UserToNotesNoRead.createOne({
           data: { username: 'A thing' },
+          select: { id: true },
         })
 
         // Update the item and link the relationship field
@@ -410,8 +440,9 @@ describe('with access control', () => {
         const noteContent = sampleOne(alphanumGenerator)
 
         // Create an item to link against
-        const createNoteNoCreate = await context.sudo().query.NoteNoCreate.createOne({
+        const createNoteNoCreate = await context.sudo().db.NoteNoCreate.createOne({
           data: { content: noteContent },
+          select: { id: true },
         })
 
         // Create an item that does the linking
@@ -429,18 +460,20 @@ describe('with access control', () => {
         const noteContent = sampleOne(alphanumGenerator)
 
         // Create an item to link against
-        const createNote = await context.sudo().query.NoteNoCreate.createOne({
+        const createNote = await context.sudo().db.NoteNoCreate.createOne({
           data: { content: noteContent },
+          select: { id: true },
         })
 
         // Create an item to update
-        const createUser = await context.sudo().query.UserToNotesNoCreate.createOne({
+        const createUser = await context.sudo().db.UserToNotesNoCreate.createOne({
           data: { username: 'A thing' },
+          select: { id: true },
         })
 
         // Update the item and link the relationship field
         const data = await context.query.UserToNotesNoCreate.updateOne({
-          where: { id: createUser.id },
+          where: { id: createUser.id.toString() },
           data: { username: 'A thing', notes: { connect: [{ id: createNote.id }] } },
         })
 

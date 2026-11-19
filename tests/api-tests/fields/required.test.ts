@@ -145,14 +145,15 @@ for (const modulePath of testModules) {
       test(
         'Update an object without the required field',
         runner(async ({ context }) => {
-          const data0 = await context.query.Test.createOne({
+          const data0 = await context.db.Test.createOne({
             data: {
               name: 'test entry',
               testField: mod.exampleValue(matrixValue),
             },
+            select: { id: true },
           })
           const data = await context.query.Test.updateOne({
-            where: { id: data0.id },
+            where: { id: data0.id.toString() },
             data: { name: 'updated test entry' },
             query: 'id name',
           })

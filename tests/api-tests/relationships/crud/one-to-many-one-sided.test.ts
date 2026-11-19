@@ -12,19 +12,21 @@ type IdType = any
 const alphanumGenerator = gen.alphaNumString.notEmpty()
 
 const createInitialData = async (context: ContextFromRunner<typeof runner>) => {
-  const companies = await context.query.Company.createMany({
+  const companies = await context.db.Company.createMany({
     data: [
       { name: sampleOne(alphanumGenerator) },
       { name: sampleOne(alphanumGenerator) },
       { name: sampleOne(alphanumGenerator) },
     ],
+    select: { id: true },
   })
-  const locations = await context.query.Location.createMany({
+  const locations = await context.db.Location.createMany({
     data: [
       { name: sampleOne(alphanumGenerator) },
       { name: sampleOne(alphanumGenerator) },
       { name: sampleOne(alphanumGenerator) },
     ],
+    select: { id: true },
   })
   return { locations, companies }
 }
@@ -69,9 +71,9 @@ const createComplexData = async (context: ContextFromRunner<typeof runner>) => {
     data: { name: 'D', location: { connect: { id: companies[2].location.id } } },
     query: 'id name location { id name }',
   })
-  const _location = await context.query.Location.createOne({
+  const _location = await context.db.Location.createOne({
     data: { name: 'C' },
-    query: 'id name',
+    select: { id: true, name: true },
   })
   expect(_company.name).toEqual('D')
   expect(_company.location.name).toEqual('B')
@@ -258,7 +260,7 @@ describe(`One-to-many relationships`, () => {
         const company = companies[0]
         const locationName = sampleOne(alphanumGenerator)
         const _company = await context.query.Company.updateOne({
-          where: { id: company.id },
+          where: { id: company.id.toString() },
           data: { location: { create: { name: locationName } } },
           query: 'id location { id name }',
         })

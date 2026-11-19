@@ -73,9 +73,9 @@ describe(`actions (${dbProvider})`, () => {
     const { connect, context } = await result
     await connect()
 
-    const first = await context.query.Post.createOne({
+    const first = await context.db.Post.createOne({
       data: { title: 'Draft' },
-      query: 'id title',
+      select: { id: true, title: true },
     })
     const single = await context.graphql.raw({
       query: `
@@ -94,9 +94,9 @@ describe(`actions (${dbProvider})`, () => {
       title: 'Published',
     })
 
-    const second = await context.query.Post.createOne({
+    const second = await context.db.Post.createOne({
       data: { title: 'Second' },
-      query: 'id',
+      select: { id: true },
     })
     const many = await context.graphql.raw({
       query: `

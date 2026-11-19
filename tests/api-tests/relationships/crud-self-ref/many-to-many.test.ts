@@ -12,12 +12,13 @@ type IdType = any
 const alphanumGenerator = gen.alphaNumString.notEmpty()
 
 const createInitialData = async (context: ContextFromRunner<typeof runner>) => {
-  const users = await context.query.User.createMany({
+  const users = await context.db.User.createMany({
     data: [
       { name: sampleOne(alphanumGenerator) },
       { name: sampleOne(alphanumGenerator) },
       { name: sampleOne(alphanumGenerator) },
     ],
+    select: { id: true },
   })
 
   return { users }
@@ -57,9 +58,9 @@ const getUserAndFriend = async (context: KeystoneContext, userId: IdType, friend
 
 const createReadData = async (context: ContextFromRunner<typeof runner>) => {
   // create locations [A, A, B, B, C, C];
-  const createUsers = await context.query.User.createMany({
+  const createUsers = await context.db.User.createMany({
     data: ['A', 'A', 'B', 'B', 'C', 'C', 'D', 'D', 'E'].map(name => ({ name })),
-    query: 'id name',
+    select: { id: true, name: true },
   })
 
   await Promise.all(
@@ -75,10 +76,9 @@ const createReadData = async (context: ContextFromRunner<typeof runner>) => {
       [], //  -> []
     ].map(async (locationIdxs, j) => {
       const ids = locationIdxs.map(i => ({ id: createUsers[i].id }))
-      await context.query.User.updateOne({
-        where: { id: createUsers[j].id },
+      await context.db.User.updateOne({
+        where: { id: createUsers[j].id.toString() },
         data: { friends: { connect: ids } },
-        query: 'id friends { name }',
       })
     })
   )
@@ -333,7 +333,7 @@ describe(`Many-to-many relationships`, () => {
         const locationName = sampleOne(alphanumGenerator)
 
         const _user = await context.query.User.updateOne({
-          where: { id: user.id },
+          where: { id: user.id.toString() },
           data: { friends: { create: [{ name: locationName }] } },
           query: 'id friends { id name }',
         })

@@ -30,17 +30,18 @@ describe(`field access sudo tests (${dbProvider})`, () => {
 
   test('sudo bypasses field filter and order access', async () => {
     const { context } = await suite
-    const item = await context.sudo().query.Item.createOne({
+    const item = await context.sudo().db.Item.createOne({
       data: { value: 'value' },
-      query: 'id value',
+      select: { id: true, value: true },
     })
 
+    const results = await context.sudo().query.Item.findMany({
+      where: { value: { equals: item.value } },
+      orderBy: { value: 'asc' },
+      query: 'id value',
+    })
     assert.deepEqual(
-      await context.sudo().query.Item.findMany({
-        where: { value: { equals: item.value } },
-        orderBy: { value: 'asc' },
-        query: 'id value',
-      }),
+      results.map(result => ({ ...result })),
       [item]
     )
   })

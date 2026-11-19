@@ -11,36 +11,41 @@ const alphanumGenerator = gen.alphaNumString.notEmpty()
 type IdType = any
 
 const createInitialData = async (context: ContextFromRunner<typeof runner>) => {
-  const companies = (await context.query.Company.createMany({
+  const companies = (await context.db.Company.createMany({
     data: [
       { name: sampleOne(alphanumGenerator) },
       { name: sampleOne(alphanumGenerator) },
       { name: sampleOne(alphanumGenerator) },
     ],
+    select: { id: true },
   })) as { id: IdType }[]
-  const locations = (await context.query.Location.createMany({
+  const locations = (await context.db.Location.createMany({
     data: [
       { name: sampleOne(alphanumGenerator) },
       { name: sampleOne(alphanumGenerator) },
       { name: sampleOne(alphanumGenerator) },
       { name: sampleOne(alphanumGenerator) },
     ],
+    select: { id: true },
   })) as { id: IdType }[]
-  const owners = await context.query.Owner.createMany({
+  const owners = await context.db.Owner.createMany({
     data: companies.map(({ id }) => ({ name: `Owner_of_${id}`, companies: { connect: [{ id }] } })),
+    select: { id: true },
   })
-  const custodians = await context.query.Custodian.createMany({
+  const custodians = await context.db.Custodian.createMany({
     data: locations.map(({ id }) => ({
       name: `Custodian_of_${id}`,
       locations: { connect: [{ id }] },
     })),
+    select: { id: true },
   })
   return { locations, companies, owners, custodians }
 }
 
 const createCompanyAndLocation = async (context: ContextFromRunner<typeof runner>) => {
-  const [cu1, cu2] = await context.query.Custodian.createMany({
+  const [cu1, cu2] = await context.db.Custodian.createMany({
     data: [{ name: sampleOne(alphanumGenerator) }, { name: sampleOne(alphanumGenerator) }],
+    select: { id: true },
   })
 
   return context.query.Owner.createOne({

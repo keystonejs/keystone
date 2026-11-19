@@ -160,11 +160,14 @@ describe('no access control', () => {
       const noteContent3 = `c${sampleOne(alphanumGenerator)}`
 
       // Create an item to update
-      const createUser = await context.query.User.createOne({ data: { username: 'A thing' } })
+      const createUser = await context.db.User.createOne({
+        data: { username: 'A thing' },
+        select: { id: true },
+      })
 
       // Update an item that does the nested create
       const user = await context.query.User.updateOne({
-        where: { id: createUser.id },
+        where: { id: createUser.id.toString() },
         data: { username: 'A thing', notes: { create: [{ content: noteContent }] } },
         query: 'id notes { id content }',
       })
@@ -176,7 +179,7 @@ describe('no access control', () => {
 
       type T = { id: IdType; notes: { id: IdType; content: string }[] }
       const _user = (await context.query.User.updateOne({
-        where: { id: createUser.id },
+        where: { id: createUser.id.toString() },
         data: {
           username: 'A thing',
           notes: { create: [{ content: noteContent2 }, { content: noteContent3 }] },
@@ -259,8 +262,9 @@ describe('with access control', () => {
         const noteContent = sampleOne(alphanumGenerator)
 
         // Create an item to update
-        const createUser = await context.query.UserToNotesNoRead.createOne({
+        const createUser = await context.db.UserToNotesNoRead.createOne({
           data: { username: 'A thing' },
+          select: { id: true },
         })
 
         // Update an item that does the nested create
@@ -332,8 +336,9 @@ describe('with access control', () => {
         const noteContent = sampleOne(alphanumGenerator)
 
         // Create an item to update
-        const createUserToNotesNoCreate = await context.query.UserToNotesNoCreate.createOne({
+        const createUserToNotesNoCreate = await context.db.UserToNotesNoCreate.createOne({
           data: { username: 'A thing' },
+          select: { id: true },
         })
 
         // Update an item that does the nested create

@@ -153,11 +153,14 @@ describe('no access control', () => {
       const groupName = sampleOne(gen.alphaNumString.notEmpty())
 
       // Create an item to update
-      const createEvent = await context.query.Event.createOne({ data: { title: 'A thing' } })
+      const createEvent = await context.db.Event.createOne({
+        data: { title: 'A thing' },
+        select: { id: true },
+      })
 
       // Update an item that does the nested create
       const event = await context.query.Event.updateOne({
-        where: { id: createEvent.id },
+        where: { id: createEvent.id.toString() },
         data: { title: 'A thing', group: { create: { name: groupName } } },
         query: 'id group { id name }',
       })
@@ -218,13 +221,14 @@ describe('with access control', () => {
             const groupName = sampleOne(gen.alphaNumString.notEmpty())
 
             // Create an item to update
-            const eventModel = await context.query[`EventTo${group.name}`].createOne({
+            const eventModel = await context.db[`EventTo${group.name}`].createOne({
               data: { title: 'A thing' },
+              select: { id: true },
             })
 
             // Update an item that does the nested create
             const data = await context.query[`EventTo${group.name}`].updateOne({
-              where: { id: eventModel.id },
+              where: { id: eventModel.id.toString() },
               data: { title: 'A thing', group: { create: { name: groupName } } },
             })
 
@@ -303,8 +307,9 @@ describe('with access control', () => {
             const groupName = sampleOne(gen.alphaNumString.notEmpty())
 
             // Create an item to update
-            const eventModel = await context.query[`EventTo${group.name}`].createOne({
+            const eventModel = await context.db[`EventTo${group.name}`].createOne({
               data: { title: 'A thing' },
+              select: { id: true },
             })
 
             // Update an item that does the nested create

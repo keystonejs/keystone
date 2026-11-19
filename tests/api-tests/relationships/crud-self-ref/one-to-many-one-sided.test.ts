@@ -12,12 +12,13 @@ type IdType = any
 const alphanumGenerator = gen.alphaNumString.notEmpty()
 
 const createInitialData = async (context: ContextFromRunner<typeof runner>) => {
-  const users = await context.query.User.createMany({
+  const users = await context.db.User.createMany({
     data: [
       { name: sampleOne(alphanumGenerator) },
       { name: sampleOne(alphanumGenerator) },
       { name: sampleOne(alphanumGenerator) },
     ],
+    select: { id: true },
   })
 
   return { users }
@@ -222,7 +223,7 @@ describe(`One-to-many relationships`, () => {
         const user = users[0]
         const friendName = sampleOne(alphanumGenerator)
         const _user = await context.query.User.updateOne({
-          where: { id: user.id },
+          where: { id: user.id.toString() },
           data: { friend: { create: { name: friendName } } },
           query: 'id friend { id name }',
         })

@@ -54,7 +54,7 @@ export function filterTests(field: FieldTypeFunc<BaseListTypeInfo>, cb: (match: 
           JSON.stringify(where),
           runner(async ({ context }) => {
             for (const [idx, data] of inputValues.entries()) {
-              await context.query.Test.createOne({ data: { index: idx, testField: data } })
+              await context.db.Test.createOne({ data: { index: idx, testField: data } })
             }
             let expected = expectedIndexes
             if (kind === 'with negation') {
@@ -123,7 +123,7 @@ export function uniqueEqualityFilterTest(
     'unique filter',
     runner(async ({ context }) => {
       for (const [idx, value] of values.entries()) {
-        await context.query.Test.createOne({ data: { index: idx, testField: value } })
+        await context.db.Test.createOne({ data: { index: idx, testField: value } })
       }
 
       await Promise.all(

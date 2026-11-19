@@ -129,13 +129,16 @@ describe(`query kinds (${dbProvider})`, () => {
 
   test('routes list and field access by kind', async () => {
     const { context } = await suite
-    const created = await context.sudo().query.AccessTarget.createOne({
+    const created = await context.sudo().db.AccessTarget.createOne({
       data: { value: 'a' },
-      query: 'id value',
+      select: { id: true, value: true },
     })
 
     assert.equal(
-      await context.query.AccessTarget.findOne({ where: { id: created.id }, query: 'id value' }),
+      await context.query.AccessTarget.findOne({
+        where: { id: created.id.toString() },
+        query: 'id value',
+      }),
       null
     )
     assert.equal(
@@ -154,16 +157,17 @@ describe(`query kinds (${dbProvider})`, () => {
   test('routes shared and separate query filters by kind', async () => {
     const { context } = await suite
     for (const listKey of ['FilterTarget', 'SharedFilterTarget']) {
-      const items = await context.sudo().query[listKey].createMany({
+      const items = await context.sudo().db[listKey].createMany({
         data: ['one', 'many', 'count', 'count'].map(value => ({ value })),
-        query: 'id value',
+        select: { id: true, value: true },
       })
       for (const api of [context.query, context.db]) {
         assert.equal(
-          (await api[listKey].findOne({ where: { id: items[0].id }, query: 'id value' }))?.value,
+          (await api[listKey].findOne({ where: { id: items[0].id.toString() }, query: 'id value' }))
+            ?.value,
           'one'
         )
-        assert.equal(await api[listKey].findOne({ where: { id: items[1].id } }), null)
+        assert.equal(await api[listKey].findOne({ where: { id: items[1].id.toString() } }), null)
         assert.deepEqual(
           (await api[listKey].findMany({ query: 'id value' })).map(item => item.value),
           ['many']
@@ -181,32 +185,36 @@ describe(`query kinds (${dbProvider})`, () => {
 
   test('routes relationship query filters by kind', async () => {
     const { context } = await suite
-    const items = await context.sudo().query.FilterTarget.createMany({
+    const items = await context.sudo().db.FilterTarget.createMany({
       data: ['one', 'many', 'count', 'count'].map(value => ({ value })),
-      query: 'id value',
+      select: { id: true, value: true },
     })
-    const parent = await context.sudo().query.Parent.createOne({
+    const parent = await context.sudo().db.Parent.createOne({
       data: {
         filterOne: { connect: { id: items[0].id } },
         filterMany: { connect: items.map(({ id }) => ({ id })) },
       },
+      select: { id: true },
     })
     const query = 'filterOne { value } filterMany { value } filterManyCount'
-    const result = await context.query.Parent.findOne({ where: { id: parent.id }, query })
+    const result = await context.query.Parent.findOne({
+      where: { id: parent.id.toString() },
+      query,
+    })
     assert.equal(result?.filterOne.value, 'one')
     assert.deepEqual(
       result?.filterMany.map((item: { value: string }) => item.value),
       ['many']
     )
     assert.equal(result?.filterManyCount, 2)
-    await context.sudo().query.Parent.updateOne({
-      where: { id: parent.id },
+    await context.sudo().db.Parent.updateOne({
+      where: { id: parent.id.toString() },
       data: { filterOne: { connect: { id: items[1].id } } },
     })
     assert.deepEqual(
       {
         ...(await context.query.Parent.findOne({
-          where: { id: parent.id },
+          where: { id: parent.id.toString() },
           query: 'filterOne { value }',
         })),
       },

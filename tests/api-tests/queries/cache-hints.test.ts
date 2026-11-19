@@ -79,15 +79,16 @@ const runner = setupTestRunner({
 })
 
 const addFixtures = async (context: ContextFromRunner<typeof runner>) => {
-  const users = await context.query.User.createMany({
+  const users = await context.db.User.createMany({
     data: [
       { name: 'Jess', favNumber: 1 },
       { name: 'Johanna', favNumber: 8 },
       { name: 'Sam', favNumber: 5 },
     ],
+    select: { id: true },
   })
 
-  const posts = await context.query.Post.createMany({
+  const posts = await context.db.Post.createMany({
     data: [
       { author: { connect: [{ id: users[0].id }] }, title: 'One author' },
       { author: { connect: [{ id: users[0].id }, { id: users[1].id }] }, title: 'Two authors' },
@@ -96,6 +97,7 @@ const addFixtures = async (context: ContextFromRunner<typeof runner>) => {
         title: 'Three authors',
       },
     ],
+    select: { id: true },
   })
 
   return { users, posts }

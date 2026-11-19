@@ -32,8 +32,9 @@ describe('Reconnect', () => {
     'Reconnect from the many side',
     runner(async ({ context }) => {
       // Create some notes
-      const [noteA, noteB, noteC, noteD] = await context.query.Note.createMany({
+      const [noteA, noteB, noteC, noteD] = await context.db.Note.createMany({
         data: [{ title: 'A' }, { title: 'B' }, { title: 'C' }, { title: 'D' }],
+        select: { id: true },
       })
 
       // Create some users that does the linking
@@ -70,7 +71,7 @@ describe('Reconnect', () => {
       // B should see Bob as its author
       await (async () => {
         const note = await context.query.Note.findOne({
-          where: { id: noteB.id },
+          where: { id: noteB.id.toString() },
           query: 'id author { id username }',
         })
         expect(note).toEqual({ id: noteB.id, author: { id: bob.id, username: 'Bob' } })
