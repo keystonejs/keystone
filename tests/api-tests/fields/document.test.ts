@@ -4,6 +4,7 @@ import { setupTestRunner } from '../test-runner.ts'
 import { allowAll } from '@keystone-6/core/access'
 import { document } from '@keystone-6/fields-document'
 import { component, fields } from '@keystone-6/fields-document/component-blocks'
+import { mutation } from '../run-field.ts'
 
 const runner = setupTestRunner({
   config: {
@@ -44,10 +45,11 @@ test(
         { text: 'blah' },
       ],
     }))
-    await context.query.Post.createOne({
+    await mutation(context).createPost({
       data: {
         document: content,
       },
+      query: 'id',
     })
   })
 )
@@ -66,10 +68,11 @@ test(
       },
     ]
     await expect(() =>
-      context.query.Post.createOne({
+      mutation(context).createPost({
         data: {
           document: content,
         },
+        query: 'id',
       })
     ).rejects.toHaveProperty(
       'message',
@@ -113,10 +116,11 @@ test(
       },
     ]
     await expect(() =>
-      context.query.Post.createOne({
+      mutation(context).createPost({
         data: {
           document: content,
         },
+        query: 'id',
       })
     ).rejects.toHaveProperty(
       'message',

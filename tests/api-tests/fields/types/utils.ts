@@ -4,6 +4,7 @@ import { integer } from '@keystone-6/core/fields'
 import { setupTestRunner } from '@keystone-6/api-tests/test-runner'
 import type { FieldTypeFunc, BaseListTypeInfo } from '@keystone-6/core/types'
 import { allowAll } from '@keystone-6/core/access'
+import { query } from '../../run-field.ts'
 
 function filterTestRunner(field: FieldTypeFunc<BaseListTypeInfo>) {
   return setupTestRunner({
@@ -63,7 +64,7 @@ export function filterTests(field: FieldTypeFunc<BaseListTypeInfo>, cb: (match: 
             }
             expect(
               (
-                await context.query.Test.findMany({
+                await query(context).tests<{ index: number }[]>({
                   where:
                     kind === 'with negation' ? { NOT: { testField: where } } : { testField: where },
                   orderBy: { index: 'asc' },
@@ -128,7 +129,7 @@ export function uniqueEqualityFilterTest(
 
       await Promise.all(
         values.map(async (testField, idx) => {
-          const { index } = await context.query.Test.findOne({
+          const { index } = await query(context).test<{ index: number }>({
             where: { testField },
             query: 'index',
           })
@@ -141,7 +142,7 @@ export function uniqueEqualityFilterTest(
     test(
       'unique filter with null returns null',
       runner(async ({ context }) => {
-        const result = await context.query.Test.findOne({
+        const result = await query(context).test({
           where: { testField: null },
           query: 'index',
         })

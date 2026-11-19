@@ -1,6 +1,7 @@
 import { expect, test } from 'vitest'
 import { decimal } from '@keystone-6/core/fields'
 import type { KeystoneContext } from '@keystone-6/core/types'
+import { mutation } from '../../../../run-field.ts'
 
 export const name = 'Decimal'
 export const typeFunction = decimal
@@ -88,7 +89,7 @@ export const crudTests = (keystoneTestWrapper: any) => {
     test(
       `saves when the value is exactly the ${name}`,
       keystoneTestWrapper(async ({ context }: { context: KeystoneContext }) => {
-        const result = await context.query.Test.createOne({
+        const result = await mutation(context).createTest({
           data: {
             price: value,
           },

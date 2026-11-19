@@ -3,7 +3,7 @@ import { text, image } from '@keystone-6/core/fields'
 import { list } from '@keystone-6/core'
 import { setupTestRunner } from '@keystone-6/api-tests/test-runner'
 import { allowAll } from '@keystone-6/core/access'
-import { expectSingleResolverError } from '../utils.ts'
+import { expectSingleResolverError, type ContextFromRunner } from '../utils.ts'
 import {
   collectStream,
   inMemoryStorageStrategy,
@@ -16,6 +16,9 @@ import Upload from 'graphql-upload/Upload.js'
 import { Readable } from 'stream'
 import { randomBytes } from 'crypto'
 import type { BaseKeystoneTypeInfo, StorageStrategy } from '@keystone-6/core/types'
+import { mutation } from '../run-field.ts'
+
+type ImageResult = { id: string; avatar: { id: string } }
 
 vi.setConfig({ testTimeout: 10000 })
 
@@ -56,8 +59,8 @@ function getRunner(args: Parameters<typeof image>[0]) {
     })
 }
 
-const createItem = async (context: any, filename: string) =>
-  await context.query.Test.createOne({
+const createItem = async (context: ContextFromRunner<typeof runner>, filename: string) =>
+  await mutation(context).createTest<ImageResult>({
     data: { avatar: prepareTestFile(filename) },
     query: `
       id
@@ -133,7 +136,7 @@ const createItem = async (context: any, filename: string) =>
       const { id, avatar } = await createItem(context, 'keystone.jpeg')
       expect(files).toEqual(new Map([[`${avatar.id}.jpg`, await readTestFile('keystone.jpeg')]]))
 
-      const updatedItem = await context.query.Test.updateOne({
+      const updatedItem = await mutation(context).updateTest<{ avatar: ImageResult['avatar'] }>({
         where: { id },
         data: { avatar: prepareTestFile('thinkmill.jpg') },
         query: 'avatar { id }',
@@ -142,7 +145,7 @@ const createItem = async (context: any, filename: string) =>
         new Map([[`${updatedItem.avatar.id}.jpg`, await readTestFile('thinkmill.jpg')]])
       )
 
-      await context.query.Test.deleteOne({ where: { id } })
+      await mutation(context).deleteTest({ where: { id }, query: 'id' })
       expect(files).toEqual(new Map())
     })
   )
@@ -198,7 +201,10 @@ const createItem = async (context: any, filename: string) =>
         encoding: 'utf-8',
       })
 
-      const { id, avatar } = await context.query.Test.createOne({
+      const { id, avatar } = await mutation(context).createTest<{
+        id: string
+        avatar: { id: string; extension: string }
+      }>({
         data: { avatar: { upload } },
         query: `
           id
@@ -213,7 +219,7 @@ const createItem = async (context: any, filename: string) =>
         new Map([[`${avatar.id}.jpg`, { state: 'done', bytesSeen: totalBytes }]])
       )
 
-      await context.query.Test.deleteOne({ where: { id } })
+      await mutation(context).deleteTest({ where: { id }, query: 'id' })
       expect(files).toEqual(new Map())
     })
   )
@@ -244,7 +250,7 @@ function wait(ms: number) {
       storage,
       transformName: () => 'something',
     })(async ({ context }) => {
-      const item = await context.query.Test.createOne({
+      const item = await mutation(context).createTest<ImageResult>({
         data: { avatar: prepareTestFile('keystone.jpg') },
         query: `
             id
@@ -263,9 +269,10 @@ function wait(ms: number) {
 
       expect(files).toEqual(new Map([['something.jpg', await readTestFile('keystone.jpg')]]))
 
-      await context.query.Test.updateOne({
+      await mutation(context).updateTest({
         where: { id: item.id },
         data: { avatar: prepareTestFile('graphql.jpg') },
+        query: 'id',
       })
       expect(files).toEqual(new Map([['something.jpg', await readTestFile('graphql.jpg')]]))
     })
@@ -285,7 +292,7 @@ function wait(ms: number) {
         return 'something'
       },
     })(async ({ context }) => {
-      const item = await context.query.Test.createOne({
+      const item = await mutation(context).createTest<ImageResult>({
         data: { avatar: prepareTestFile('keystone.jpg') },
         query: `
             id
@@ -305,9 +312,10 @@ function wait(ms: number) {
       expect(files).toEqual(new Map([['something.jpg', await readTestFile('keystone.jpg')]]))
 
       try {
-        await context.query.Test.updateOne({
+        await mutation(context).updateTest({
           where: { id: item.id },
           data: { avatar: prepareTestFile('graphql.jpg') },
+          query: 'id',
         })
         expect(true).toBe(false)
       } catch (err: any) {

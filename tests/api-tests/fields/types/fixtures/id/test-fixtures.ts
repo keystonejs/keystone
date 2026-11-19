@@ -1,5 +1,6 @@
 import { expect, test } from 'vitest'
 import type { KeystoneContext } from '@keystone-6/core/types'
+import { query } from '../../../../run-field.ts'
 
 export const name = 'ID'
 
@@ -18,7 +19,7 @@ export const skipRequiredTest = true
 export const skipUniqueTest = true
 
 const getIDs = async (context: KeystoneContext) => {
-  const items = await context.query.Test.findMany({ query: 'id name' })
+  const items = await query(context).tests<{ id: string; name: string }[]>({ query: 'id name' })
   return Object.fromEntries(items.map(({ id, name }) => [name, id]))
 }
 
@@ -29,7 +30,7 @@ export const filterTests = (withKeystone: any) => {
     expected: any[]
   ) =>
     expect(
-      await context.query.Test.findMany({ where, orderBy: { name: 'asc' }, query: 'id name' })
+      await query(context).tests({ where, orderBy: { name: 'asc' }, query: 'id name' })
     ).toEqual(expected)
 
   test(

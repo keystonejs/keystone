@@ -9,6 +9,7 @@ import {
   expectBadUserInput,
   expectGraphQLValidationError,
 } from '../utils.ts'
+import { query } from '../run-field.ts'
 
 const runner = setupTestRunner({
   serve: true,
@@ -126,15 +127,19 @@ describe('filtering on field name', () => {
   test(
     'filter works when there is no dash in field name',
     runner(async ({ context }) => {
-      const users = await context.query.User.findMany({ where: { noDash: { equals: 'aValue' } } })
+      const users = await query(context).users({
+        where: { noDash: { equals: 'aValue' } },
+        query: 'id',
+      })
       expect(users).toEqual([])
     })
   )
   test(
     'filter works when there is one dash in field name',
     runner(async ({ context }) => {
-      const users = await context.query.User.findMany({
+      const users = await query(context).users({
         where: { single_dash: { equals: 'aValue' } },
+        query: 'id',
       })
       expect(users).toEqual([])
     })
@@ -142,8 +147,9 @@ describe('filtering on field name', () => {
   test(
     'filter works when there are multiple dashes in field name',
     runner(async ({ context }) => {
-      const users = await context.query.User.findMany({
+      const users = await query(context).users({
         where: { many_many_many_dashes: { equals: 'aValue' } },
+        query: 'id',
       })
       expect(users).toEqual([])
     })
@@ -151,8 +157,9 @@ describe('filtering on field name', () => {
   test(
     'filter works when there are multiple dashes in a row in a field name',
     runner(async ({ context }) => {
-      const users = await context.query.User.findMany({
+      const users = await query(context).users({
         where: { multi____dash: { equals: 'aValue' } },
+        query: 'id',
       })
       expect(users).toEqual([])
     })
@@ -160,8 +167,9 @@ describe('filtering on field name', () => {
   test(
     'filter works when there is one dash in field name as part of a relationship',
     runner(async ({ context }) => {
-      const secondaries = await context.query.SecondaryList.findMany({
+      const secondaries = await query(context).secondaryLists({
         where: { NOT: { someUser: null } },
+        query: 'id',
       })
       expect(secondaries).toEqual([])
     })

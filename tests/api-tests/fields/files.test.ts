@@ -15,6 +15,10 @@ import { Readable } from 'node:stream'
 import Upload from 'graphql-upload/Upload.js'
 import { randomBytes } from 'node:crypto'
 import type { BaseKeystoneTypeInfo, StorageStrategy } from '@keystone-6/core/types'
+import { mutation } from '../run-field.ts'
+import type { ContextFromRunner } from '../utils.ts'
+
+type FileResult = { id: string; secretFile: { filename: string } }
 
 vi.setConfig({ testTimeout: 10000 })
 
@@ -60,8 +64,8 @@ function getRunner(opts: Parameters<typeof file>[0]) {
     })
 }
 
-const createItem = (context: any) =>
-  context.query.Test.createOne({
+const createItem = (context: ContextFromRunner<typeof runner>) =>
+  mutation(context).createTest<FileResult>({
     data: { secretFile: prepareTestFile('keystone.jpeg') },
     query: `
         id
@@ -113,7 +117,7 @@ const createItem = (context: any) =>
 
       const {
         secretFile: { filename: filename2 },
-      } = await context.query.Test.updateOne({
+      } = await mutation(context).updateTest<{ secretFile: FileResult['secretFile'] }>({
         where: { id },
         data: { secretFile: prepareTestFile('thinkmill.jpg') },
         query: `secretFile { filename }`,
@@ -121,7 +125,7 @@ const createItem = (context: any) =>
 
       expect(files).toEqual(new Map([[filename2, await readTestFile('thinkmill.jpg')]]))
 
-      await context.query.Test.deleteOne({ where: { id } })
+      await mutation(context).deleteTest({ where: { id }, query: 'id' })
 
       expect(files).toEqual(new Map())
     })
@@ -159,7 +163,7 @@ const createItem = (context: any) =>
         filename: 'something',
         mimetype: 'application/octet-stream',
       })
-      const item = await context.query.Test.createOne({
+      const item = await mutation(context).createTest<FileResult>({
         data: { secretFile: { upload } },
         query: `
             id
@@ -197,7 +201,7 @@ const createItem = (context: any) =>
       storage,
       transformName: () => 'something',
     })(async ({ context }) => {
-      const item = await context.query.Test.createOne({
+      const item = await mutation(context).createTest<FileResult>({
         data: { secretFile: prepareTestFile('keystone.jpg') },
         query: `
             id
@@ -216,7 +220,7 @@ const createItem = (context: any) =>
 
       expect(files).toEqual(new Map([['something', await readTestFile('keystone.jpg')]]))
 
-      await context.query.Test.updateOne({
+      await mutation(context).updateTest({
         where: { id: item.id },
         data: { secretFile: prepareTestFile('graphql.jpg') },
         query: `secretFile { filename }`,
@@ -239,7 +243,7 @@ const createItem = (context: any) =>
         return 'something'
       },
     })(async ({ context }) => {
-      const item = await context.query.Test.createOne({
+      const item = await mutation(context).createTest<FileResult>({
         data: { secretFile: prepareTestFile('keystone.jpg') },
         query: `
             id
@@ -259,7 +263,7 @@ const createItem = (context: any) =>
       expect(files).toEqual(new Map([['something', await readTestFile('keystone.jpg')]]))
 
       try {
-        await context.query.Test.updateOne({
+        await mutation(context).updateTest({
           where: { id: item.id },
           data: { secretFile: prepareTestFile('graphql.jpg') },
           query: `secretFile { filename }`,
