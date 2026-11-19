@@ -32,20 +32,20 @@ export default config<TypeInfo>({
         // if (!context.session) return res.status(401).end()
 
         const isDraft = req.query?.draft === '1'
-        const tasks = await context.query.Post.findMany({
-          where: {
-            draft: {
-              equals: isDraft,
-            },
-          },
+        const { posts } = await context.graphql.run<{ posts: unknown[] }, { isDraft: boolean }>({
           query: `
-            id
-            title
-            content
+            query ($isDraft: Boolean!) {
+              posts(where: { draft: { equals: $isDraft } }) {
+                id
+                title
+                content
+              }
+            }
           `,
+          variables: { isDraft },
         })
 
-        res.json(tasks)
+        res.json(posts)
       })
     },
 
@@ -61,20 +61,23 @@ export default config<TypeInfo>({
         const context = await commonContext.withRequest(req, res)
         // if (!context.session) return res.status(401).end()
 
-        const task = await context.query.Post.findOne({
-          where: {
-            id: req.url.slice('/rest/posts/'.length),
-          },
+        const id = req.url.slice('/rest/posts/'.length)
+        const { post } = await context.graphql.run<{ post: object | null }, { id: string }>({
           query: `
-            id
-            title
-            content
-            draft
+            query ($id: ID!) {
+              post(where: { id: $id }) {
+                id
+                title
+                content
+                draft
+              }
+            }
           `,
+          variables: { id },
         })
 
-        if (!task) return res.writeHead(404).end()
-        res.writeHead(200).end(JSON.stringify(task))
+        if (!post) return res.writeHead(404).end()
+        res.writeHead(200).end(JSON.stringify(post))
       })
     },
   },

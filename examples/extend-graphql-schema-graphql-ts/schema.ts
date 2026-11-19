@@ -41,7 +41,7 @@ export const extendGraphqlSchema = g.extend(base => {
       draft: g.field({
         type: g.Int,
         resolve({ authorId }, args, context) {
-          return context.query.Post.count({
+          return context.db.Post.count({
             where: { author: { id: { equals: authorId } }, status: { equals: 'draft' } },
           })
         },
@@ -49,7 +49,7 @@ export const extendGraphqlSchema = g.extend(base => {
       published: g.field({
         type: g.Int,
         resolve({ authorId }, args, context) {
-          return context.query.Post.count({
+          return context.db.Post.count({
             where: { author: { id: { equals: authorId } }, status: { equals: 'published' } },
           })
         },
@@ -78,8 +78,6 @@ export const extendGraphqlSchema = g.extend(base => {
         resolve(source, { id }, context) {
           // Note we use `context.db.Post` here as we have a return type
           // of Post, and this API provides results in the correct format.
-          // If you accidentally use `context.query.Post` here you can expect problems
-          // when accessing the fields in your GraphQL client.
           return context.db.Post.updateOne({
             where: { id },
             data: { status: 'published', publishDate: new Date().toISOString() },
@@ -115,8 +113,6 @@ export const extendGraphqlSchema = g.extend(base => {
 
           // Note we use `context.db.Post` here as we have a return type
           // of [Post], and this API provides results in the correct format.
-          // If you accidentally use `context.query.Post` here you can expect problems
-          // when accessing the fields in your GraphQL client.
           return context.db.Post.findMany({
             where: { author: { id: { equals: id } }, publishDate: { gt: cutoff } },
           })

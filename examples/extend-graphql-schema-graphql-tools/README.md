@@ -117,12 +117,12 @@ Note that we're not doing any actual fetching inside `Query.stats`, we're doing 
           return post;
         },
         draft: (val, args, context) => {
-          return context.query.Post.count({
+          return context.db.Post.count({
             where: { author: { id: { equals: val.authorId } }, status: { equals: 'draft' } },
           });
         },
         published: (val, args, context) => {
-          return context.query.Post.count({
+          return context.db.Post.count({
             where: { author: { id: { equals: val.authorId } }, status: { equals: 'published' } },
           });
         },

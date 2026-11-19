@@ -8,8 +8,23 @@ export default async function HomePage() {
   //   you will probably use getServerSession from 'next/auth'
   //   https://next-auth.js.org/configuration/nextjs#in-app-directory
   const session = {}
-  const users = await keystoneContext.withSession(session).query.User.findMany({
-    query: 'id name about { document }',
+  const context = keystoneContext.withSession(session)
+  const {
+    users,
+  }: {
+    users: { id: string; name: string | null; about: { document: unknown } | null }[]
+  } = await context.graphql.run({
+    query: `
+      {
+        users {
+          id
+          name
+          about {
+            document
+          }
+        }
+      }
+    `,
   })
 
   return (

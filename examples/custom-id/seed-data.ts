@@ -9,9 +9,9 @@ export async function main() {
   console.log(`🌱 Inserting seed data`)
   for (const person of persons) {
     if (
-      await context.query.Person.findOne({
+      await context.db.Person.findOne({
         where: { name: person.name },
-        query: 'id',
+        select: { id: true },
       })
     ) {
       console.log(`👩 Found ${person.name}`)
@@ -19,23 +19,21 @@ export async function main() {
     }
 
     console.log(`👩 Adding person: ${person.name}`)
-    await context.query.Person.createOne({
+    await context.db.Person.createOne({
       data: person,
-      query: 'id',
     })
   }
 
   for (const task of tasks) {
     console.log(`🔘 Adding task: ${task.label}`)
-    const persons = await context.query.Person.findMany({
+    const persons = await context.db.Person.findMany({
       where: { name: { equals: task.assignedTo } },
-      query: 'id',
+      select: { id: true },
     })
 
     for (const person of persons) {
-      await context.query.Task.createOne({
+      await context.db.Task.createOne({
         data: { ...task, assignedTo: { connect: { id: person.id } } },
-        query: 'id',
       })
     }
   }

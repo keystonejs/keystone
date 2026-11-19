@@ -4,6 +4,8 @@ import { gql } from 'graphql-request'
 import { client } from '../util/request'
 import { keystoneContext } from '../keystone/context'
 
+type User = { id: string; name: string | null; about: string | null }
+
 const Home: NextPage = ({ users }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   return (
     <div
@@ -65,19 +67,15 @@ const Home: NextPage = ({ users }: InferGetServerSidePropsType<typeof getServerS
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
   const context = await keystoneContext.withRequest(req, res)
-  const users = await context.query.User.findMany({
-    query: 'id name about',
+  const { users }: { users: User[] } = await context.graphql.run({
+    query: '{ users { id name about } }',
   })
   return {
     props: { users: users }, // will be passed to the page component as props
   }
 }
 
-function ServerRenderedContent({
-  users,
-}: {
-  users: { id: string; name: string; about: string | null }[]
-}) {
+function ServerRenderedContent({ users }: { users: User[] }) {
   return (
     <div>
       <p>
@@ -103,7 +101,7 @@ function ServerRenderedContent({
 }
 
 function ClientRenderedContent() {
-  const [users, setUsers] = useState<Array<{ id: string; name: string; about: string | null }>>([])
+  const [users, setUsers] = useState<User[]>([])
 
   // Fetch users from REST api route
   useEffect(() => {
