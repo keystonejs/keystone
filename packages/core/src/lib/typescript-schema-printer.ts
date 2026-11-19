@@ -22,6 +22,10 @@ const SCALARS = {
   String: 'string',
   Int: 'number',
   Float: 'number',
+  DateTime: 'Date | string',
+  CalendarDay: 'string',
+  BigInt: 'bigint | string',
+  Hex: 'Uint8Array | string',
   JSON: `import('@keystone-6/core/types').JSONValue`,
   Decimal: `import('@keystone-6/core/types').Decimal | string`,
   Empty: `{}`,
@@ -108,6 +112,11 @@ export function printGeneratedTypes(
   dbProvider: DatabaseProvider
 ) {
   prismaClientPath = stringify(prismaClientPath).replace(/'/g, `\\'`)
+  const compoundInputNames = new Set(
+    Object.values(lists).flatMap(list =>
+      Object.values(list.compoundUnique).map(selector => selector.inputType.name)
+    )
+  )
 
   return [
     '/* eslint-disable */',
@@ -124,6 +133,26 @@ export function printGeneratedTypes(
               ...(function* () {
                 for (const { name, type: type_ } of Object.values(type.getFields())) {
                   const maybe = type_ instanceof GraphQLNonNull ? '' : '?'
+                  // Custom scalar input representations cannot be inferred from runtime
+                  // GraphQL metadata. Preserve the non-null tuple contract without guessing.
+                  if (
+                    compoundInputNames.has(type.name) &&
+                    type_ instanceof GraphQLNonNull &&
+                    type_.ofType instanceof GraphQLScalarType &&
+                    !(type_.ofType.name in SCALARS)
+                  ) {
+                    yield `  readonly ${name}: NonNullable<unknown>`
+                    continue
+                  }
+                  // GraphQL requires optional selector fields to be nullable; runtime rejects
+                  // an explicitly null compound object, so generated callers should reject it too.
+                  if (
+                    type_ instanceof GraphQLInputObjectType &&
+                    compoundInputNames.has(type_.name)
+                  ) {
+                    yield `  readonly ${name}${maybe}: ${printTypeReferenceWithoutNullable(type_)}`
+                    continue
+                  }
                   yield `  readonly ${name}${maybe}: ${printTypeReference(type_)}`
                 }
               })(),

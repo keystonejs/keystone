@@ -45,6 +45,7 @@ export function checkbox<ListTypeInfo extends BaseListTypeInfo>(
     })({
       ...config,
       input: {
+        uniqueWhereValue: { arg: g.arg({ type: g.Boolean }) },
         where: { arg: g.arg({ type: filters[meta.provider].Boolean.required }) },
         create: {
           arg: g.arg({

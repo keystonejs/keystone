@@ -118,6 +118,7 @@ export function integer<ListTypeInfo extends BaseListTypeInfo>(
         validate,
       },
       input: {
+        uniqueWhereValue: { arg: g.arg({ type: g.Int }) },
         uniqueWhere: isIndexed === 'unique' ? { arg: g.arg({ type: g.Int }) } : undefined,
         where: {
           arg: g.arg({ type: filters[meta.provider].Int[mode] }),

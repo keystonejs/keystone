@@ -69,3 +69,21 @@ For to-many relationships (`many: true`), the update input type includes `connec
 - `connect`: Nominate an item to relate to this item.
 - `disconnect`: Disconnect any relationships to this item.
 - `set`: Replace the set of related items (disconnects, then connects the nominated items).
+
+These inputs accept the related list's [compound unique selectors](../graphql/overview#compound-unique-selectors), provided the list declares the matching database constraint through `db.unique`:
+
+```typescript
+await context.db.Link.createOne({
+  data: {
+    page: {
+      connect: { slug_domain: { slug: '/de/about', domain: 'example.com' } },
+    },
+  },
+});
+```
+
+To-many `connect`, `set`, and `disconnect` accept arrays of these complete selectors, including when combined with nested creates.
+To-one `disconnect` remains a boolean; its input shape does not change.
+To-many relationship query cursors also accept compound selectors.
+Every tuple member must be present and non-null, and need not be individually unique.
+Related-item visibility and member field filtering access are checked as for existing unique selectors; missing and inaccessible items retain the same error behavior.

@@ -22,7 +22,7 @@ import {
 } from '../graphql-errors.ts'
 import { runSideEffectOnlyHook, validate } from '../hooks.ts'
 import type { InitialisedAction, InitialisedList } from '../initialise-lists.ts'
-import { mapUniqueWhereToWhere, traverse } from '../queries/resolvers.ts'
+import { traverse } from '../queries/resolvers.ts'
 import { selectExistingItem, selectMutationResult } from './select.ts'
 import type { ResolvedDBField } from '../resolve-relationships.ts'
 import {
@@ -35,6 +35,7 @@ import {
   type UniqueInputFilter,
   resolveUniqueWhereInput,
   resolveWhereInput,
+  mapUniqueWhereToWhere,
 } from '../where-inputs.ts'
 import {
   RelationshipErrors,

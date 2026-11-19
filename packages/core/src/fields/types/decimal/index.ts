@@ -139,6 +139,7 @@ export function decimal<ListTypeInfo extends BaseListTypeInfo>(
         validate,
       },
       input: {
+        uniqueWhereValue: { arg: g.arg({ type: g.Decimal }) },
         uniqueWhere: isIndexed === 'unique' ? { arg: g.arg({ type: g.Decimal }) } : undefined,
         where: {
           arg: g.arg({ type: filters[meta.provider].Decimal[mode] }),
