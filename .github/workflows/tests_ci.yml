@@ -273,6 +273,10 @@ jobs:
   examples_smoke_tests:
     name: Smoke Tests For Examples
     runs-on: ubuntu-latest
+    container:
+      # Match the Playwright version in pnpm-lock.yaml.
+      image: mcr.microsoft.com/playwright:v1.64.1-noble
+      options: --ipc=host
     timeout-minutes: 10
     env:
       DATABASE_URL: file:./test.db
@@ -302,13 +306,20 @@ jobs:
       fail-fast: false
     steps:
       - uses: actions/checkout@main
+
+      - name: Keep only the example under test
+        shell: bash
+        env:
+          EXAMPLE_TEST: ${{ matrix.test }}
+        run: |
+          example=${EXAMPLE_TEST%.test.ts}
+          if [[ ! -f "examples/$example/package.json" ]]; then
+            echo "::error::No example package found for $EXAMPLE_TEST"
+            exit 1
+          fi
+          find examples -mindepth 1 -maxdepth 1 -type d ! -name "$example" -exec rm -rf -- {} +
+
       - uses: ./.github/actions/ci-setup-examples
-
-      - name: Install Dependencies of Browsers
-        run: cd tests/examples-smoke-tests && pnpm playwright install-deps chromium
-
-      - name: Install Browsers
-        run: cd tests/examples-smoke-tests && pnpm playwright install chromium
 
       - name: Unit tests
         run: pnpm vitest run tests/examples-smoke-tests/${{ matrix.test }}
@@ -316,6 +327,10 @@ jobs:
   admin_ui_integration_tests:
     name: Integration tests for Admin UI
     runs-on: ubuntu-latest
+    container:
+      # Match the Playwright version in pnpm-lock.yaml.
+      image: mcr.microsoft.com/playwright:v1.64.1-noble
+      options: --ipc=host
     timeout-minutes: 10
     env:
       DATABASE_URL: file:./test.db
@@ -333,13 +348,11 @@ jobs:
       fail-fast: false
     steps:
       - uses: actions/checkout@main
+
+      - name: Remove examples
+        run: rm -rf -- examples/
+
       - uses: ./.github/actions/ci-setup-examples
-
-      - name: Install Dependencies of Browsers
-        run: cd tests/admin-ui-tests && pnpm playwright install-deps chromium
-
-      - name: Install Browsers
-        run: cd tests/admin-ui-tests && pnpm playwright install chromium
 
       - name: Unit tests
         run: pnpm vitest run --maxWorkers=1 tests/admin-ui-tests/${{ matrix.test }}
