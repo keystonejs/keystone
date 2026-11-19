@@ -4,6 +4,7 @@ import { describe, test } from 'node:test'
 import { list } from '@keystone-6/core'
 import { allowAll, denyAll } from '@keystone-6/core/access'
 import { text } from '@keystone-6/core/fields'
+import { query } from '../tests/api-tests/run-field.ts'
 import { dbProvider, setupTestSuite } from './utils.ts'
 
 describe(`field access sudo tests (${dbProvider})`, () => {
@@ -35,7 +36,7 @@ describe(`field access sudo tests (${dbProvider})`, () => {
       select: { id: true, value: true },
     })
 
-    const results = await context.sudo().query.Item.findMany({
+    const results = await query(context.sudo()).items<{ id: string; value: string | null }[]>({
       where: { value: { equals: item.value } },
       orderBy: { value: 'asc' },
       query: 'id value',

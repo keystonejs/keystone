@@ -1,12 +1,21 @@
 import assert from 'node:assert/strict'
 import { describe, test } from 'node:test'
 import { dbProvider, setupTestSuite } from './utils.ts'
-import { config, expectEqualItems, lists, seedMany } from './utils2.ts'
+import { query } from '../tests/api-tests/run-field.ts'
+import {
+  getListGraphQLNames,
+  type AccessItem,
+  config,
+  expectEqualItems,
+  lists,
+  seedMany,
+} from './utils2.ts'
 
 describe(`field.access.orderable tests (${dbProvider})`, () => {
   const suite = setupTestSuite({ config })()
 
   for (const l of lists) {
+    const { listQueryName } = getListGraphQLNames(l)
     const itemQuery = `id ${l.fields.map(x => x.name).join(' ')}`
 
     // field access tests
@@ -16,7 +25,7 @@ describe(`field.access.orderable tests (${dbProvider})`, () => {
         const seeded = await seedMany(l, context)
 
         // test list.access.*.query
-        const findPromise = context.query[l.name].findMany({
+        const findPromise = query(context)[listQueryName]<AccessItem[]>({
           orderBy: { [f.name]: 'asc' },
           where: {
             id: {

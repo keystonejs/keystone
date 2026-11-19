@@ -1,7 +1,10 @@
 import assert from 'node:assert/strict'
 import { describe, test } from 'node:test'
 import { dbProvider, setupTestSuite } from './utils.ts'
+import { query } from '../tests/api-tests/run-field.ts'
 import {
+  getListGraphQLNames,
+  type AccessItem,
   config,
   expectEqualItem,
   expectEqualItems,
@@ -16,6 +19,7 @@ describe(`field.access.filterable tests (${dbProvider})`, () => {
   const suite = setupTestSuite({ config })()
 
   for (const l of lists) {
+    const { itemQueryName, listQueryName, listQueryCountName } = getListGraphQLNames(l)
     const itemQuery = `id ${l.fields.map(x => x.name).join(' ')}`
 
     // field access tests
@@ -26,7 +30,7 @@ describe(`field.access.filterable tests (${dbProvider})`, () => {
           const seeded = await seed(l, context)
 
           // test list.access.*.query
-          const findPromise = context.query[l.name].findOne({
+          const findPromise = query(context)[itemQueryName]<AccessItem | null>({
             where: makeWhereUniqueFilter([f], seeded),
             query: itemQuery,
           })
@@ -59,7 +63,7 @@ describe(`field.access.filterable tests (${dbProvider})`, () => {
         const seeded = await seedMany(l, context)
 
         // test list.access.*.query
-        const findPromise = context.query[l.name].findMany({
+        const findPromise = query(context)[listQueryName]<AccessItem[]>({
           where: makeWhereFilter([f], seeded),
           query: itemQuery,
         })
@@ -91,7 +95,7 @@ describe(`field.access.filterable tests (${dbProvider})`, () => {
         const seeded = await seedMany(l, context)
 
         // test list.access.*.query
-        const countPromise = context.query[l.name].count({
+        const countPromise = query(context)[listQueryCountName]<number>({
           where: makeWhereFilter([f], seeded),
         })
 
