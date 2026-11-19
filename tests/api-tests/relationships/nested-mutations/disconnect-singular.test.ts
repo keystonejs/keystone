@@ -5,6 +5,7 @@ import { list } from '@keystone-6/core'
 import { setupTestRunner } from '@keystone-6/api-tests/test-runner'
 import { allOperations, allowAll } from '@keystone-6/core/access'
 import { expectGraphQLValidationError } from '../../utils.ts'
+import { mutation, query } from '../../run-field.ts'
 
 const alphanumGenerator = gen.alphaNumString.notEmpty()
 
@@ -56,7 +57,10 @@ describe('no access control', () => {
       })
 
       // Create an item to update
-      const createEvent = await context.query.Event.createOne({
+      const createEvent = await mutation(context).createEvent<{
+        id: string
+        group: { id: string }
+      }>({
         data: { title: 'A thing', group: { connect: { id: createGroup.id } } },
         query: 'id group { id }',
       })
@@ -66,7 +70,7 @@ describe('no access control', () => {
       expect(createEvent.group.id.toString()).toBe(createGroup.id)
 
       // Update the item and link the relationship field
-      const event = await context.query.Event.updateOne({
+      const event = await mutation(context).updateEvent({
         where: { id: createEvent.id },
         data: { group: { disconnect: true } },
         query: 'id group { id }',
@@ -75,7 +79,7 @@ describe('no access control', () => {
       expect(event).toMatchObject({ id: expect.any(String), group: null })
 
       // Avoid false-positives by checking the database directly
-      const eventData = await context.query.Event.findOne({
+      const eventData = await query(context).event({
         where: { id: createEvent.id },
         query: 'id group { id }',
       })
@@ -114,7 +118,7 @@ describe('no access control', () => {
       const createEvent = await context.db.Event.createOne({ data: {}, select: { id: true } })
 
       // Create an item that does the linking
-      const event = await context.query.Event.updateOne({
+      const event = await mutation(context).updateEvent({
         where: { id: createEvent.id.toString() },
         data: { group: { disconnect: true } },
         query: 'id group { id }',
@@ -139,7 +143,10 @@ describe('with access control', () => {
         })
 
         // Create an item to update
-        const createEvent = await context.sudo().query.EventToGroupNoRead.createOne({
+        const createEvent = await mutation(context.sudo()).createEventToGroupNoRead<{
+          id: string
+          group: { id: string }
+        }>({
           data: { group: { connect: { id: createGroup.id } } },
           query: 'id group { id }',
         })
@@ -149,13 +156,17 @@ describe('with access control', () => {
         expect(createEvent.group.id.toString()).toBe(createGroup.id)
 
         // Update the item and link the relationship field
-        await context.query.EventToGroupNoRead.updateOne({
+        await mutation(context).updateEventToGroupNoRead({
           where: { id: createEvent.id },
           data: { group: { disconnect: true } },
+          query: 'id',
         })
 
         // Avoid false-positives by checking the database directly
-        const eventData = await context.sudo().query.EventToGroupNoRead.findOne({
+        const eventData = await query(context.sudo()).eventToGroupNoRead<{
+          id: string
+          group: { id: string } | null
+        } | null>({
           where: { id: createEvent.id },
           query: 'id group { id }',
         })

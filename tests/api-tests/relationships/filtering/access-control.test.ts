@@ -4,6 +4,7 @@ import { text, relationship } from '@keystone-6/core/fields'
 import { list } from '@keystone-6/core'
 import { setupTestRunner } from '@keystone-6/api-tests/test-runner'
 import { allowAll } from '@keystone-6/core/access'
+import { query } from '../../run-field.ts'
 
 const alphanumGenerator = gen.alphaNumString.notEmpty()
 
@@ -69,7 +70,7 @@ describe('relationship filtering with access control', () => {
       })
 
       // Create an item that does the linking
-      const item = await context.query.UserToPostLimitedRead.findOne({
+      const item = await query(context).userToPostLimitedRead({
         where: { id: user.id.toString() },
         query: 'id username posts { id author { id username } }',
       })
@@ -108,10 +109,8 @@ describe('relationship filtering with access control', () => {
       })
 
       // Create an item that does the linking
-      const item = await context.query.UserToPostLimitedRead.findOne({
+      const item = await query(context).userToPostLimitedRead({
         where: { id: user.id.toString() },
-        // Knowingly filter to an ID I don't have read access to
-        // to see if the filter is correctly "AND"d with the access control
         query: `id username posts(where: { id: { in: ["${postIds[2]}"] } }) { id }`,
       })
 

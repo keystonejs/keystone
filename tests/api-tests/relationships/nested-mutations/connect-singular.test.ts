@@ -5,6 +5,7 @@ import { list } from '@keystone-6/core'
 import { setupTestRunner } from '@keystone-6/api-tests/test-runner'
 import { allOperations, allowAll } from '@keystone-6/core/access'
 import { expectSingleRelationshipError } from '../../utils.ts'
+import { mutation, query } from '../../run-field.ts'
 
 const runner = setupTestRunner({
   config: {
@@ -116,8 +117,9 @@ describe('no access control', () => {
       })
 
       // Create an item that does the linking
-      const event = await context.query.Event.createOne({
+      const event = await mutation(context).createEvent({
         data: { title: 'A thing', group: { connect: { id: createGroup.id } } },
+        query: 'id',
       })
 
       expect(event).toMatchObject({ id: expect.any(String) })
@@ -142,7 +144,7 @@ describe('no access control', () => {
       })
 
       // Update the item and link the relationship field
-      const _event = await context.query.Event.updateOne({
+      const _event = await mutation(context).updateEvent({
         where: { id: event.id.toString() },
         data: { title: 'A thing', group: { connect: { id: createGroup.id } } },
         query: 'id group { id name }',
@@ -265,7 +267,7 @@ describe('with access control', () => {
             expect(id).toBeTruthy()
 
             // Create an item that does the linking
-            const data = await context.query[`EventTo${group.name}`].createOne({
+            const data = await mutation(context)[`createEventTo${group.name}`]({
               data: { title: 'A thing', group: { connect: { id } } },
               query: 'id group { id }',
             })
@@ -293,7 +295,10 @@ describe('with access control', () => {
             expect(eventModel.id).toBeTruthy()
 
             // Update the item and link the relationship field
-            const data = await context.query[`EventTo${group.name}`].updateOne({
+            const data = await mutation(context)[`updateEventTo${group.name}`]<{
+              id: string
+              group: { id: string; name: string | null }
+            }>({
               where: { id: eventModel.id.toString() },
               data: { title: 'A thing', group: { connect: { id: groupModel.id } } },
               query: 'id group { id name }',
@@ -305,13 +310,16 @@ describe('with access control', () => {
             })
 
             // See that it actually stored the group ID on the Event record
-            const event = await context.sudo().query[`EventTo${group.name}`].findOne({
+            const event = await query(context.sudo())[`eventTo${group.name}`]<{
+              id: string
+              group: { id: string; name: string | null } | null
+            } | null>({
               where: { id: data.id },
               query: 'id group { id name }',
             })
             expect(event).toBeTruthy()
             expect(event!.group).toBeTruthy()
-            expect(event!.group.name).toBe(groupName)
+            expect(event!.group?.name).toBe(groupName)
           })
         )
       } else {

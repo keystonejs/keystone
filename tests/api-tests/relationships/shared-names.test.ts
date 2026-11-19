@@ -4,6 +4,7 @@ import { list } from '@keystone-6/core'
 import { setupTestRunner } from '@keystone-6/api-tests/test-runner'
 import { allowAll } from '@keystone-6/core/access'
 import type { ContextFromRunner } from '../utils.ts'
+import { query } from '../run-field.ts'
 
 type IdType = any
 
@@ -133,7 +134,7 @@ test(
   'Query',
   runner(async ({ context }) => {
     await createInitialData(context)
-    const employees = await context.query.Employee.findMany({
+    const employees = await query(context).employees<{ id: string; name: string | null }[]>({
       where: { company: { employees: { some: { role: { name: { equals: 'RoleA' } } } } } },
       query: 'id name',
     })

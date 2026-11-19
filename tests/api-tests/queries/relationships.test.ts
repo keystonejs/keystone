@@ -6,6 +6,7 @@ import { list } from '@keystone-6/core'
 import { setupTestRunner } from '@keystone-6/api-tests/test-runner'
 import { allowAll } from '@keystone-6/core/access'
 import type { ListKeyFromRunner } from '../utils.ts'
+import { query } from '../run-field.ts'
 
 const alphanumGenerator = gen.alphaNumString.notEmpty()
 
@@ -53,7 +54,7 @@ describe('Querying with relationship filters', () => {
         })
 
         // Create an item that does the linking
-        const allPosts = await context.query.Post.findMany({
+        const allPosts = await query(context).posts({
           where: { author: { name: { contains: 'J' } } },
           query: 'id title',
         })
@@ -83,7 +84,7 @@ describe('Querying with relationship filters', () => {
         })
 
         // Create an item that does the linking
-        const _posts = await context.query.Post.findMany({
+        const _posts = await query(context).posts({
           where: { author: { name: { contains: 'J' } } },
           query: 'id title author { id name }',
         })
@@ -127,7 +128,7 @@ describe('Querying with relationship filters', () => {
         const { users } = await setup(create)
 
         // EVERY
-        const _users = await context.query.User.findMany({
+        const _users = await query(context).users({
           where: { feed: { every: { title: { contains: 'J' } } } },
           query: 'id name feed { id title }',
         })
@@ -144,7 +145,7 @@ describe('Querying with relationship filters', () => {
         const { users } = await setup(create)
 
         // SOME
-        const _users = await context.query.User.findMany({
+        const _users = await query(context).users({
           where: { feed: { some: { title: { contains: 'J' } } } },
           query: 'id feed(orderBy: { title: asc }) { title }',
         })
@@ -167,7 +168,7 @@ describe('Querying with relationship filters', () => {
         const { users } = await setup(create)
 
         // NONE
-        const _users = await context.query.User.findMany({
+        const _users = await query(context).users({
           where: { feed: { none: { title: { contains: 'J' } } } },
           query: 'id name feed { id title }',
         })
@@ -208,7 +209,7 @@ describe('Querying with relationship filters', () => {
         const { users } = await setup(create)
 
         // EVERY
-        const _users = await context.query.User.findMany({
+        const _users = await query(context).users({
           where: { feed: { every: { title: { contains: 'J' } } } },
           query: 'id feed { id title }',
         })
@@ -227,7 +228,7 @@ describe('Querying with relationship filters', () => {
         const { users } = await setup(create)
 
         // SOME
-        const _users = await context.query.User.findMany({
+        const _users = await query(context).users({
           where: { feed: { some: { title: { contains: 'J' } } } },
           query: 'id name feed(orderBy: { title: asc }) { id title }',
         })
@@ -247,7 +248,7 @@ describe('Querying with relationship filters', () => {
         const { users } = await setup(create)
 
         // NONE
-        const _users = await context.query.User.findMany({
+        const _users = await query(context).users({
           where: { feed: { none: { title: { contains: 'J' } } } },
           query: 'id feed { title }',
         })
@@ -281,7 +282,7 @@ describe('Querying with relationship filters', () => {
         const { users } = await setup(create)
 
         // EVERY
-        const _users = await context.query.User.findMany({
+        const _users = await query(context).users({
           where: { feed: { every: { title: { contains: 'J' } } } },
           query: 'id feed { id title }',
         })
@@ -303,7 +304,7 @@ describe('Querying with relationship filters', () => {
         const { users } = await setup(create)
 
         // SOME
-        const _users = await context.query.User.findMany({
+        const _users = await query(context).users({
           where: { feed: { some: { author: { id: { equals: users[0].id } } } } },
           query: 'id name feed { id title }',
         })
@@ -319,7 +320,7 @@ describe('Querying with relationship filters', () => {
         const { users } = await setup(create)
 
         // NONE
-        const _users = await context.query.User.findMany({
+        const _users = await query(context).users({
           where: { feed: { none: { title: { contains: 'J' } } } },
           query: 'id feed { title }',
         })

@@ -3,15 +3,14 @@ import type { GraphQLField } from 'graphql/index.js'
 
 type Context = Pick<KeystoneContext, 'graphql'>
 type Operation = 'query' | 'mutation'
-type FieldArgs = Record<string, unknown>
-type Fields = Record<string, <T = unknown>(args?: FieldArgs, selection?: string) => Promise<T>>
+type FieldArgs = { query?: string; [name: string]: unknown }
+type Fields = Record<string, <T = unknown>(args?: FieldArgs) => Promise<T>>
 
 async function runField<T>(
   context: Context,
   operation: Operation,
   field: GraphQLField<unknown, unknown>,
-  args: FieldArgs = {},
-  selection?: string
+  { query: selection, ...args }: FieldArgs = {}
 ): Promise<T> {
   const variables = Object.fromEntries(
     Object.entries(args).filter(([, value]) => value !== undefined)
@@ -50,9 +49,9 @@ function operationFields(context: Context, operation: Operation): Fields {
         // Promise resolution probes for a then method.
         if (!field && name === 'then') return undefined
 
-        return async <T>(args?: FieldArgs, selection?: string) => {
+        return async <T>(args?: FieldArgs) => {
           if (!field) throw new Error(`Unknown ${operation} field "${name}"`)
-          return runField<T>(context, operation, field, args, selection)
+          return runField<T>(context, operation, field, args)
         }
       },
     }

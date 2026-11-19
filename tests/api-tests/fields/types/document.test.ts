@@ -3,6 +3,9 @@ import { text } from '@keystone-6/core/fields'
 import { document } from '@keystone-6/fields-document'
 import { list } from '@keystone-6/core'
 import { component, fields } from '@keystone-6/fields-document/component-blocks'
+import { query } from '../../run-field.ts'
+
+type PostDocument = { content: { document: unknown } }
 import { allowAll } from '@keystone-6/core/access'
 
 import { setupTestEnv, setupTestRunner } from '../../test-runner.ts'
@@ -181,7 +184,7 @@ describe('Document field type', () => {
     runner(async ({ context }) => {
       const { post, content } = await initData({ context })
 
-      const _post = await context.query.Post.findOne({
+      const _post = await query(context).post<PostDocument>({
         where: { id: post.id.toString() },
         query: 'content { document }',
       })
@@ -194,7 +197,7 @@ describe('Document field type', () => {
     runner(async ({ context }) => {
       const { post, content } = await initData({ context })
 
-      const _post = await context.query.Post.findOne({
+      const _post = await query(context).post<PostDocument>({
         where: { id: post.id.toString() },
         query: 'content { document(hydrateRelationships: false) }',
       })
@@ -207,7 +210,7 @@ describe('Document field type', () => {
     runner(async ({ context }) => {
       const { alice, bob, charlie, post, content } = await initData({ context })
 
-      const _post = await context.query.Post.findOne({
+      const _post = await query(context).post<PostDocument>({
         where: { id: post.id.toString() },
         query: 'content { document(hydrateRelationships: true) }',
       })
@@ -231,8 +234,8 @@ describe('Document field type', () => {
     'hydrateRelationships: true - dangling reference',
     runner(async ({ context }) => {
       const { alice, bob, charlie, post, content } = await initData({ context })
-      await context.query.Author.deleteOne({ where: { id: bob.id.toString() } })
-      const _post = await context.query.Post.findOne({
+      await context.db.Author.deleteOne({ where: { id: bob.id.toString() } })
+      const _post = await query(context).post<PostDocument>({
         where: { id: post.id.toString() },
         query: 'content { document(hydrateRelationships: true) }',
       })
@@ -254,7 +257,7 @@ describe('Document field type', () => {
     runner(async ({ context }) => {
       const { alice, charlie, dave, bio } = await initData({ context })
 
-      const _dave = await context.query.Author.findOne({
+      const _dave = await query(context).author<{ bio: { document: unknown } }>({
         where: { id: dave.id.toString() },
         query: 'bio { document(hydrateRelationships: true) }',
       })

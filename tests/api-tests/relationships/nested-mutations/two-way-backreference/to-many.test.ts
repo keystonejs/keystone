@@ -5,6 +5,7 @@ import { list } from '@keystone-6/core'
 import { setupTestRunner } from '@keystone-6/api-tests/test-runner'
 import { allowAll } from '@keystone-6/core/access'
 import type { ContextFromRunner } from '../../../utils.ts'
+import { mutation, query } from '../../../run-field.ts'
 
 const alphanumGenerator = gen.alphaNumString.notEmpty()
 
@@ -34,7 +35,7 @@ const runner = setupTestRunner({
 })
 
 const getTeacher = async (context: ContextFromRunner<typeof runner>, teacherId: IdType) =>
-  context.query.Teacher.findOne({
+  query(context).teacher<{ id: string; students: { id: string }[] }>({
     where: { id: teacherId },
     query: 'id students { id }',
   })
@@ -92,7 +93,10 @@ describe('update many to many relationship back reference', () => {
         expect(toStr(teacher2.students)).toHaveLength(0)
 
         // Run the query to disconnect the teacher from student
-        let newStudent = await context.query.Student.createOne({
+        let newStudent = await mutation(context).createStudent<{
+          id: string
+          teachers: { id: string }[]
+        }>({
           data: { teachers: { connect: [{ id: teacher1.id }, { id: teacher2.id }] } },
           query: 'id teachers { id }',
         })
@@ -145,7 +149,7 @@ describe('update many to many relationship back reference', () => {
         expect(toStr(teacher2.students)).toHaveLength(0)
 
         // Run the query to disconnect the teacher from student
-        await context.query.Student.updateOne({
+        await mutation(context).updateStudent({
           where: { id: student1.id },
           data: { teachers: { connect: [{ id: teacher1.id }, { id: teacher2.id }] } },
           query: 'id teachers { id }',
@@ -174,7 +178,10 @@ describe('update many to many relationship back reference', () => {
         const teacherName2 = sampleOne(alphanumGenerator)
 
         // Run the query to disconnect the teacher from student
-        let newStudent = await context.query.Student.createOne({
+        let newStudent = await mutation(context).createStudent<{
+          id: string
+          teachers: { id: string }[]
+        }>({
           data: { teachers: { create: [{ name: teacherName1 }, { name: teacherName2 }] } },
           query: 'id teachers(orderBy: { id: asc }) { id }',
         })
@@ -203,7 +210,10 @@ describe('update many to many relationship back reference', () => {
         const teacherName2 = sampleOne(alphanumGenerator)
 
         // Run the query to disconnect the teacher from student
-        const _student = await context.query.Student.updateOne({
+        const _student = await mutation(context).updateStudent<{
+          id: string
+          teachers: { id: string }[]
+        }>({
           where: { id: studentId.toString() },
           data: { teachers: { create: [{ name: teacherName1 }, { name: teacherName2 }] } },
           query: 'id teachers { id }',
@@ -269,7 +279,7 @@ describe('update many to many relationship back reference', () => {
       compareIds(teacher2.students, [student1, student2])
 
       // Run the query to disconnect the teacher from student
-      await context.query.Student.updateOne({
+      await mutation(context).updateStudent({
         where: { id: student1.id },
         data: { teachers: { disconnect: [{ id: teacher1.id }] } },
         query: 'id teachers { id }',
@@ -335,7 +345,7 @@ describe('update many to many relationship back reference', () => {
       compareIds(teacher2.students, [student1, student2])
 
       // Run the query to disconnect the teacher from student
-      await context.query.Student.updateOne({
+      await mutation(context).updateStudent({
         where: { id: student1.id },
         data: { teachers: { set: [] } },
         query: 'id teachers { id }',
@@ -402,7 +412,7 @@ test(
     compareIds(teacher2.students, [student1, student2])
 
     // Run the query to delete the student
-    await context.query.Student.deleteOne({ where: { id: student1.id } })
+    await mutation(context).deleteStudent({ where: { id: student1.id }, query: 'id' })
     teacher1 = await getTeacher(context, teacher1.id)
     teacher2 = await getTeacher(context, teacher2.id)
     student1 = await getStudent(context, student1.id)

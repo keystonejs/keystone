@@ -5,6 +5,7 @@ import { list } from '@keystone-6/core'
 import { setupTestRunner } from '@keystone-6/api-tests/test-runner'
 import { allowAll } from '@keystone-6/core/access'
 import type { ContextFromRunner } from '../utils.ts'
+import { mutation, query } from '../run-field.ts'
 
 const alphanumGenerator = gen.alphaNumString.notEmpty()
 
@@ -48,7 +49,19 @@ const createCompanyAndLocation = async (context: ContextFromRunner<typeof runner
     select: { id: true },
   })
 
-  return context.query.Owner.createOne({
+  return mutation(context).createOwner<{
+    id: string
+    name: string | null
+    companies: {
+      id: string
+      name: string | null
+      location: {
+        id: string
+        name: string | null
+        custodians: { id: string; name: string | null }[]
+      }
+    }[]
+  }>({
     data: {
       name: sampleOne(alphanumGenerator),
       companies: {
@@ -132,7 +145,9 @@ describe(`One-to-one relationships`, () => {
         await createInitialData(context)
         const owner = await createCompanyAndLocation(context)
         const name1 = owner.companies[0].location.custodians[0].name
-        const owners = await context.query.Owner.findMany({
+        const owners = await query(context).owners<
+          { id: string; companies: { location: { custodians: { name: string | null }[] } }[] }[]
+        >({
           where: {
             companies: {
               some: { location: { custodians: { some: { name: { equals: name1 } } } } },
@@ -150,7 +165,9 @@ describe(`One-to-one relationships`, () => {
         await createInitialData(context)
         const owner = await createCompanyAndLocation(context)
         const name1 = owner.name
-        const custodians = await context.query.Custodian.findMany({
+        const custodians = await query(context).custodians<
+          { id: string; locations: { company: { owners: { name: string | null }[] } }[] }[]
+        >({
           where: {
             locations: { some: { company: { owners: { some: { name: { equals: name1 } } } } } },
           },
@@ -165,7 +182,9 @@ describe(`One-to-one relationships`, () => {
         await createInitialData(context)
         const owner = await createCompanyAndLocation(context)
         const name1 = owner.name
-        const owners = await context.query.Owner.findMany({
+        const owners = await query(context).owners<
+          { id: string; companies: { location: { custodians: { name: string | null }[] } }[] }[]
+        >({
           where: {
             companies: {
               some: {
@@ -194,7 +213,9 @@ describe(`One-to-one relationships`, () => {
         const owner = await createCompanyAndLocation(context)
         const name1 = owner.companies[0].location.custodians[0].name
 
-        const custodians = await context.query.Custodian.findMany({
+        const custodians = await query(context).custodians<
+          { id: string; locations: { company: { owners: { name: string | null }[] } }[] }[]
+        >({
           where: {
             locations: {
               some: {

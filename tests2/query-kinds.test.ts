@@ -4,6 +4,7 @@ import { describe, test } from 'node:test'
 import { list } from '@keystone-6/core'
 import { allowAll, denyAll } from '@keystone-6/core/access'
 import { relationship, text } from '@keystone-6/core/fields'
+import { query } from '../tests/api-tests/run-field.ts'
 import { dbProvider, setupTestSuite } from './utils.ts'
 
 const config = {
@@ -196,14 +197,18 @@ describe(`query kinds (${dbProvider})`, () => {
       },
       select: { id: true },
     })
-    const query = 'filterOne { value } filterMany { value } filterManyCount'
-    const result = await context.query.Parent.findOne({
+    type RelatedItem = { value: string | null }
+    const result = await query(context).parent<{
+      filterOne: RelatedItem | null
+      filterMany: RelatedItem[]
+      filterManyCount: number
+    } | null>({
       where: { id: parent.id.toString() },
-      query,
+      query: 'filterOne { value } filterMany { value } filterManyCount',
     })
-    assert.equal(result?.filterOne.value, 'one')
+    assert.equal(result?.filterOne?.value, 'one')
     assert.deepEqual(
-      result?.filterMany.map((item: { value: string }) => item.value),
+      result?.filterMany.map(item => item.value),
       ['many']
     )
     assert.equal(result?.filterManyCount, 2)
@@ -213,7 +218,7 @@ describe(`query kinds (${dbProvider})`, () => {
     })
     assert.deepEqual(
       {
-        ...(await context.query.Parent.findOne({
+        ...(await query(context).parent<{ filterOne: RelatedItem | null } | null>({
           where: { id: parent.id.toString() },
           query: 'filterOne { value }',
         })),
