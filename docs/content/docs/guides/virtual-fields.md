@@ -100,25 +100,36 @@ The `select` keys are Prisma item keys, including columns such as `authorId` or 
 
 We can use the `item` and `context` arguments to query data in our Keystone system.
 For example, if we have a blog with `Author` and `Post` lists, it might be convenient to have an `authorName` field on the `Post` list.
-We can do this with a `virtual` field which queries for the related `author` and returns their name.
+We can do this with a `virtual` field that reads the related author through `context.graphql.run` and returns their name.
+The example uses the `graphql()` function from a [gql.tada setup](../context/overview#typed-graphql-documents).
 
 ```typescript
+import { graphql } from './tada'
+
+const PostAuthor = graphql(`
+  query PostAuthor($postId: ID!) {
+    authors(where: { posts: { some: { id: { equals: $postId } } } }, take: 1) {
+      name
+    }
+  }
+`)
+
 export default config({
   lists: {
     Post: list({
       fields: {
         content: text(),
-        author: relationship({ ref: 'Author', many: false }),
+        author: relationship({ ref: 'Author.posts', many: false }),
         authorName: virtual({
           field: g.itemField({
             select: {},
             type: g.String,
             async resolve(item, args, context) {
-              const { author } = await context.query.Post.findOne({
-                where: { id: item.id.toString() },
-                query: 'author { name }',
+              const { authors } = await context.graphql.run({
+                query: PostAuthor,
+                variables: { postId: item.id.toString() },
               })
-              return author && author.name
+              return authors?.[0]?.name ?? null
             },
           }),
         }),
@@ -127,11 +138,16 @@ export default config({
     Author: list({
       fields: {
         name: text({ validation: { isRequired: true } }),
+        posts: relationship({ ref: 'Post.author', many: true }),
       },
     }),
   },
 })
 ```
+
+{% hint kind="tip" %}
+This particular example isn't very useful but you can do other transformations or fetch data from somewhere else in a virtual field
+{% /hint %}
 
 ## GraphQL arguments
 
@@ -304,18 +320,12 @@ export const lists = {
             select: {},
             type: lists.Post.types.output,
             async resolve(item, args, context) {
-              const { posts } = await context.query.Author.findOne({
-                where: { id: item.id.toString() },
-                query: `posts(
-                    orderBy: { publishDate: desc }
-                    take: 1
-                  ) { id }`,
+              const [post] = await context.db.Post.findMany({
+                where: { author: { id: { equals: item.id.toString() } } },
+                orderBy: { publishDate: 'desc' },
+                take: 1,
               })
-              if (posts.length > 0) {
-                return context.db.Post.findOne({
-                  where: { id: posts[0].id },
-                })
-              }
+              return post ?? null
             },
           }),
         ui: { query: '{ title publishDate }' },

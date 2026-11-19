@@ -45,9 +45,9 @@ Shows you how to write tests against the GraphQL API to your Keystone system. Bu
 Shows you how to write code to interact with Keystone without using the standard `@keystone-6/core/scripts/cli` tools.
 {% /well %}
 {% well
-heading="Query API Reference"
-href="/docs/context/query" %}
-A programmatic API for running CRUD operations against your GraphQL API. For each list in your system you get an API at `context.query.<listName>`.
+heading="Database API Reference"
+href="/docs/context/db-items" %}
+Use `context.db` to run CRUD operations with Keystone's access control and hooks.
 {% /well %}
 {% well
 heading="Context API Reference"
