@@ -6,6 +6,7 @@ import { setupTestRunner } from '@keystone-6/api-tests/test-runner'
 import type { KeystoneContext } from '@keystone-6/core/types'
 import { allowAll } from '@keystone-6/core/access'
 import type { ContextFromRunner } from '../../utils.ts'
+import { mutation, query } from '../../run-field.ts'
 
 type IdType = any
 
@@ -25,7 +26,11 @@ const createInitialData = async (context: ContextFromRunner<typeof runner>) => {
 }
 
 const createUserAndFriend = async (context: ContextFromRunner<typeof runner>) => {
-  const user = await context.query.User.createOne({
+  const user = await mutation(context).createUser<{
+    id: string
+    name: string | null
+    friend: { id: string; name: string | null; friendOf: { id: string } }
+  }>({
     data: {
       name: sampleOne(alphanumGenerator),
       friend: { create: { name: sampleOne(alphanumGenerator) } },
@@ -82,8 +87,9 @@ describe(`One-to-one relationships`, () => {
       runner(async ({ context }) => {
         await createInitialData(context)
         const { user, friend } = await createUserAndFriend(context)
-        const users = await context.query.User.findMany({
+        const users = await query(context).users<{ id: string }[]>({
           where: { friend: { name: { equals: friend.name } } },
+          query: 'id',
         })
         expect(users.length).toEqual(1)
         expect(users[0].id).toEqual(user.id)
@@ -95,8 +101,9 @@ describe(`One-to-one relationships`, () => {
       runner(async ({ context }) => {
         await createInitialData(context)
         const { user, friend } = await createUserAndFriend(context)
-        const users = await context.query.User.findMany({
+        const users = await query(context).users<{ id: string }[]>({
           where: { friendOf: { name: { equals: user.name } } },
+          query: 'id',
         })
         expect(users.length).toEqual(1)
         expect(users[0].id).toEqual(friend.id)
@@ -107,7 +114,10 @@ describe(`One-to-one relationships`, () => {
       runner(async ({ context }) => {
         await createInitialData(context)
         await createUserAndFriend(context)
-        const users = await context.query.User.findMany({ where: { friend: null } })
+        const users = await query(context).users<{ id: string }[]>({
+          where: { friend: null },
+          query: 'id',
+        })
         expect(users.length).toEqual(4)
       })
     )
@@ -116,7 +126,10 @@ describe(`One-to-one relationships`, () => {
       runner(async ({ context }) => {
         await createInitialData(context)
         await createUserAndFriend(context)
-        const users = await context.query.User.findMany({ where: { friendOf: null } })
+        const users = await query(context).users<{ id: string }[]>({
+          where: { friendOf: null },
+          query: 'id',
+        })
         expect(users.length).toEqual(4)
       })
     )
@@ -125,7 +138,10 @@ describe(`One-to-one relationships`, () => {
       runner(async ({ context }) => {
         await createInitialData(context)
         await createUserAndFriend(context)
-        const users = await context.query.User.findMany({ where: { NOT: { friend: null } } })
+        const users = await query(context).users<{ id: string }[]>({
+          where: { NOT: { friend: null } },
+          query: 'id',
+        })
         expect(users.length).toEqual(1)
       })
     )
@@ -134,7 +150,10 @@ describe(`One-to-one relationships`, () => {
       runner(async ({ context }) => {
         await createInitialData(context)
         await createUserAndFriend(context)
-        const users = await context.query.User.findMany({ where: { NOT: { friendOf: null } } })
+        const users = await query(context).users<{ id: string }[]>({
+          where: { NOT: { friendOf: null } },
+          query: 'id',
+        })
         expect(users.length).toEqual(1)
       })
     )
@@ -143,7 +162,7 @@ describe(`One-to-one relationships`, () => {
       'Count',
       runner(async ({ context }) => {
         await createInitialData(context)
-        const count = await context.query.User.count()
+        const count = await query(context).usersCount()
         expect(count).toEqual(3)
       })
     )
@@ -153,7 +172,7 @@ describe(`One-to-one relationships`, () => {
       runner(async ({ context }) => {
         await createInitialData(context)
         const { friend } = await createUserAndFriend(context)
-        const count = await context.query.User.count({
+        const count = await query(context).usersCount({
           where: { friend: { name: { equals: friend.name } } },
         })
         expect(count).toEqual(1)
@@ -165,7 +184,7 @@ describe(`One-to-one relationships`, () => {
       runner(async ({ context }) => {
         await createInitialData(context)
         const { user } = await createUserAndFriend(context)
-        const count = await context.query.User.count({
+        const count = await query(context).usersCount({
           where: { friendOf: { name: { equals: user.name } } },
         })
         expect(count).toEqual(1)
@@ -176,7 +195,7 @@ describe(`One-to-one relationships`, () => {
       runner(async ({ context }) => {
         await createInitialData(context)
         await createUserAndFriend(context)
-        const count = await context.query.User.count({ where: { friend: null } })
+        const count = await query(context).usersCount({ where: { friend: null } })
         expect(count).toEqual(4)
       })
     )
@@ -186,7 +205,7 @@ describe(`One-to-one relationships`, () => {
       runner(async ({ context }) => {
         await createInitialData(context)
         await createUserAndFriend(context)
-        const count = await context.query.User.count({ where: { friendOf: null } })
+        const count = await query(context).usersCount({ where: { friendOf: null } })
         expect(count).toEqual(4)
       })
     )
@@ -198,7 +217,10 @@ describe(`One-to-one relationships`, () => {
       runner(async ({ context }) => {
         const { users } = await createInitialData(context)
         const user = users[0]
-        const _user = await context.query.User.createOne({
+        const _user = await mutation(context).createUser<{
+          id: string
+          friend: { id: string; friendOf: { id: string } }
+        }>({
           data: { friend: { connect: { id: user.id } } },
           query: 'id friend { id friendOf { id } }',
         })
@@ -216,7 +238,10 @@ describe(`One-to-one relationships`, () => {
       'With create',
       runner(async ({ context }) => {
         const friendName = sampleOne(alphanumGenerator)
-        const user = await context.query.User.createOne({
+        const user = await mutation(context).createUser<{
+          id: string
+          friend: { id: string; friendOf: { id: string } }
+        }>({
           data: { friend: { create: { name: friendName } } },
           query: 'id friend { id friendOf { id } }',
         })
@@ -236,7 +261,10 @@ describe(`One-to-one relationships`, () => {
         const user = users[0]
         const friendName = sampleOne(alphanumGenerator)
 
-        const _user = await context.query.User.createOne({
+        const _user = await mutation(context).createUser<{
+          id: string
+          friend: { id: string; friendOf: { id: string } }
+        }>({
           data: {
             friend: { create: { name: friendName, friendOf: { connect: { id: user.id } } } },
           },
@@ -248,7 +276,7 @@ describe(`One-to-one relationships`, () => {
         expect(User.friend.id.toString()).toBe(Friend.id.toString())
         expect(Friend.friendOf.id.toString()).toBe(User.id.toString())
 
-        const _users = (await context.query.User.findMany({
+        const _users = (await query(context).users({
           query: 'id friend { id friendOf { id } }',
         })) as { id: IdType; friend: { id: IdType; friendOf: { id: IdType } } }[]
         // The nested company should not have a location
@@ -267,7 +295,10 @@ describe(`One-to-one relationships`, () => {
         const friendName = sampleOne(alphanumGenerator)
         const friendOfName = sampleOne(alphanumGenerator)
 
-        const _user = await context.query.User.createOne({
+        const _user = await mutation(context).createUser<{
+          id: string
+          friend: { id: string; friendOf: { id: string } }
+        }>({
           data: {
             friend: {
               create: { name: friendName, friendOf: { create: { name: friendOfName } } },
@@ -282,7 +313,7 @@ describe(`One-to-one relationships`, () => {
         expect(Friend.friendOf.id.toString()).toBe(User.id.toString())
 
         // The nested company should not have a location
-        const users = (await context.query.User.findMany({
+        const users = (await query(context).users({
           query: 'id friend { id friendOf { id }}',
         })) as {
           id: IdType
@@ -300,7 +331,7 @@ describe(`One-to-one relationships`, () => {
     test(
       'With null',
       runner(async ({ context }) => {
-        const _user = await context.query.User.createOne({
+        const _user = await mutation(context).createUser<{ id: string; friend: { id: string } }>({
           data: { friend: null },
           query: 'id friend { id  }',
         })
@@ -323,7 +354,7 @@ describe(`One-to-one relationships`, () => {
         expect(user.friend).not.toBe(expect.anything())
         expect(friend.friendOf).not.toBe(expect.anything())
 
-        await context.query.User.updateOne({
+        await mutation(context).updateUser({
           where: { id: user.id },
           data: { friend: { connect: { id: friend.id } } },
           query: 'id friend { id }',
@@ -342,7 +373,10 @@ describe(`One-to-one relationships`, () => {
         const { users } = await createInitialData(context)
         const user = users[0]
         const friendName = sampleOne(alphanumGenerator)
-        const _user = await context.query.User.updateOne({
+        const _user = await mutation(context).updateUser<{
+          id: string
+          friend: { id: string; name: string | null }
+        }>({
           where: { id: user.id.toString() },
           data: { friend: { create: { name: friendName } } },
           query: 'id friend { id name }',
@@ -363,7 +397,10 @@ describe(`One-to-one relationships`, () => {
         const { user, friend } = await createUserAndFriend(context)
 
         // Run the query to disconnect the location from company
-        const _user = await context.query.User.updateOne({
+        const _user = await mutation(context).updateUser<{
+          id: string
+          friend: { id: string; name: string | null }
+        }>({
           where: { id: user.id },
           data: { friend: { disconnect: true } },
           query: 'id friend { id name }',
@@ -386,7 +423,10 @@ describe(`One-to-one relationships`, () => {
         const { user, friend } = await createUserAndFriend(context)
 
         // Run the query with a null operation
-        const _user = await context.query.User.updateOne({
+        const _user = await mutation(context).updateUser<{
+          id: string
+          friend: { id: string; name: string | null }
+        }>({
           where: { id: user.id },
           data: { friend: null },
           query: 'id friend { id name }',
@@ -408,7 +448,10 @@ describe(`One-to-one relationships`, () => {
         const { user, friend } = await createUserAndFriend(context)
 
         // Run the query to disconnect the location from company
-        const _user = await context.query.User.deleteOne({ where: { id: user.id } })
+        const _user = await mutation(context).deleteUser<{ id: string }>({
+          where: { id: user.id },
+          query: 'id',
+        })
         expect(_user?.id).toBe(user.id)
 
         // Check the link has been broken

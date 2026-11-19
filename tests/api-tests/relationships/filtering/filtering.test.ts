@@ -3,6 +3,7 @@ import { text, relationship } from '@keystone-6/core/fields'
 import { list } from '@keystone-6/core'
 import { setupTestRunner } from '@keystone-6/api-tests/test-runner'
 import { allowAll } from '@keystone-6/core/access'
+import { query } from '../../run-field.ts'
 
 type IdType = any
 
@@ -43,7 +44,7 @@ describe('relationship filtering', () => {
         data: { company: { connect: { id: otherCompany.id } } },
       })
 
-      const users = await context.query.User.findMany({
+      const users = await query(context).users({
         where: {
           AND: [
             { company: { name: { contains: 'in' } } },
@@ -78,7 +79,7 @@ describe('relationship filtering', () => {
         data: { company: { connect: { id: otherCompany.id } } },
       })
 
-      const users = await context.query.User.findMany({
+      const users = await query(context).users({
         where: {
           OR: [
             { company: { name: { contains: 'in' } } },
@@ -109,7 +110,7 @@ describe('relationship filtering', () => {
       // Create a dummy user to make sure we're actually filtering it out
       await context.db.User.createOne({ data: {} })
 
-      const users = (await context.query.User.findMany({
+      const users = (await query(context).users({
         where: {
           AND: [
             { posts: { some: { content: { contains: 'hi' } } } },
@@ -142,7 +143,7 @@ describe('relationship filtering', () => {
       // Create a dummy user to make sure we're actually filtering it out
       await context.db.User.createOne({ data: {} })
 
-      const users = (await context.query.User.findMany({
+      const users = (await query(context).users({
         where: {
           OR: [
             { posts: { some: { content: { contains: 'o w' } } } },
@@ -229,7 +230,7 @@ describe('relationship filtering', () => {
         company: { id: IdType; name: string }
         posts: { content: string }[]
       }[]
-      const users = (await context.query.User.findMany({
+      const users = (await query(context).users({
         where: {
           company: { name: { equals: adsCompany.name } },
           posts: { every: { content: { equals: 'spam' } } },
@@ -242,7 +243,7 @@ describe('relationship filtering', () => {
       expect(users.map(u => u.posts.every(p => p.content === 'spam'))).toEqual([true, true])
 
       // adsCompany users with no spam
-      const users2 = (await context.query.User.findMany({
+      const users2 = (await query(context).users({
         where: {
           company: { name: { equals: adsCompany.name } },
           posts: { none: { content: { equals: 'spam' } } },
@@ -256,7 +257,7 @@ describe('relationship filtering', () => {
       expect(users2.map(u => u.posts.every(p => p.content !== 'spam'))).toEqual([true, true])
 
       // adsCompany users with some spam
-      const users3 = (await context.query.User.findMany({
+      const users3 = (await query(context).users({
         where: {
           company: { name: { equals: adsCompany.name } },
           posts: { some: { content: { equals: 'spam' } } },

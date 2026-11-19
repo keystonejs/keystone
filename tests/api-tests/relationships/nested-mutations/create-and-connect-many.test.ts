@@ -5,6 +5,7 @@ import { list } from '@keystone-6/core'
 import { setupTestRunner } from '@keystone-6/api-tests/test-runner'
 import { allOperations, allowAll } from '@keystone-6/core/access'
 import { expectSingleRelationshipError } from '../../utils.ts'
+import { mutation, query } from '../../run-field.ts'
 
 const alphanumGenerator = gen.alphaNumString.notEmpty()
 
@@ -75,7 +76,7 @@ describe('no access control', () => {
 
       // Create an item that does the linking
       type T = { id: IdType; notes: { id: IdType; content: string }[] }
-      const user = (await context.query.User.createOne({
+      const user = (await mutation(context).createUser({
         data: {
           username: 'A thing',
           notes: { connect: [{ id: createNote.id }], create: [{ content: noteContent2 }] },
@@ -92,7 +93,7 @@ describe('no access control', () => {
       })
 
       // Sanity check that the items are actually created
-      const allNotes = await context.query.Note.findMany({
+      const allNotes = await query(context).notes({
         where: { id: { in: user.notes.map(({ id }) => id) } },
         query: 'id content',
       })
@@ -121,7 +122,7 @@ describe('no access control', () => {
 
       // Update the item and link the relationship field
       type T = { id: IdType; notes: { id: IdType; content: string }[] }
-      const user = (await context.query.User.updateOne({
+      const user = (await mutation(context).updateUser({
         where: { id: createUser.id.toString() },
         data: {
           username: 'A thing',
@@ -139,7 +140,7 @@ describe('no access control', () => {
       })
 
       // Sanity check that the items are actually created
-      const allNotes = await context.query.Note.findMany({
+      const allNotes = await query(context).notes({
         where: { id: { in: user.notes.map(({ id }) => id) } },
         query: 'id content',
       })

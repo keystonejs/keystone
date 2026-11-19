@@ -5,6 +5,7 @@ import { list } from '@keystone-6/core'
 import { setupTestRunner } from '@keystone-6/api-tests/test-runner'
 import { allowAll, allOperations } from '@keystone-6/core/access'
 import { expectGraphQLValidationError, expectSingleRelationshipError } from '../../utils.ts'
+import { mutation, query } from '../../run-field.ts'
 
 const alphanumGenerator = gen.alphaNumString.notEmpty()
 
@@ -86,7 +87,7 @@ describe('no access control', () => {
       })
 
       // Update the item and link the relationship field
-      const user = await context.query.User.updateOne({
+      const user = await mutation(context).updateUser({
         where: { id: createUser.id.toString() },
         data: { username: 'A thing', notes: { disconnect: [{ id: createNote2.id }] } },
         query: 'id notes { id content }',
@@ -193,7 +194,10 @@ describe('with access control', () => {
           )
         }
 
-        const data = await context.sudo().query.UserToNotesNoRead.findOne({
+        const data = await query(context.sudo()).userToNotesNoRead<{
+          id: string
+          notes: { id: string }[]
+        }>({
           where: { id: createUser.id.toString() },
           query: 'id notes { id }',
         })

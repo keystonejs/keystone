@@ -3,6 +3,7 @@ import { text, relationship } from '@keystone-6/core/fields'
 import { setupTestRunner } from '@keystone-6/api-tests/test-runner'
 import { list } from '@keystone-6/core'
 import { allowAll } from '@keystone-6/core/access'
+import { query } from '../../run-field.ts'
 
 type IdType = any
 
@@ -39,7 +40,7 @@ describe('relationship filtering', () => {
         select: { id: true },
       })
 
-      const users = (await context.query.User.findMany({
+      const users = (await query(context).users({
         query: `id posts (where: { content: { contains: "hi" } }){ id content }`,
       })) as { id: IdType; posts: { id: IdType; content: string }[] }[]
       expect(users).toHaveLength(2)
@@ -66,7 +67,7 @@ describe('relationship filtering', () => {
         select: { id: true },
       })
 
-      const users = await context.query.User.findMany({
+      const users = await query(context).users({
         query: 'id posts(take: 1, orderBy: { content: asc }) { id }',
       })
       expect(users).toContainEqual({ id: user.id, posts: [ids[0]] })
@@ -90,7 +91,7 @@ describe('relationship filtering', () => {
         select: { id: true },
       })
 
-      const users = await context.query.User.findMany({
+      const users = await query(context).users({
         query:
           'id posts(where: { AND: [{ content: { contains: "hi" } }, { content: { contains: "lo" } }] }){ id }',
       })
@@ -116,7 +117,7 @@ describe('relationship filtering', () => {
         select: { id: true },
       })
 
-      const users = await context.query.User.findMany({
+      const users = await query(context).users({
         query:
           'id posts(where: { OR: [{ content: { contains: "i w" } }, { content: { contains: "? O" } }] }){ id content }',
       })
@@ -136,7 +137,7 @@ describe('relationship filtering', () => {
     runner(async ({ context }) => {
       await context.db.User.createOne({ data: {} })
 
-      const users = await context.query.User.findMany({
+      const users = await query(context).users({
         where: { posts: { some: { content: { contains: 'foo' } } } },
         query: 'posts { id }',
       })
@@ -162,7 +163,7 @@ describe('relationship meta filtering', () => {
         select: { id: true },
       })
 
-      const users = await context.query.User.findMany({ query: 'id postsCount' })
+      const users = await query(context).users({ query: 'id postsCount' })
       expect(users).toHaveLength(2)
       expect(users).toContainEqual({ id: user.id, postsCount: 3 })
       expect(users).toContainEqual({ id: user2.id, postsCount: 1 })
@@ -185,7 +186,7 @@ describe('relationship meta filtering', () => {
         select: { id: true },
       })
 
-      const users = await context.query.User.findMany({
+      const users = await query(context).users({
         query: 'id postsCount(where: { content: { contains: "hi" } })',
       })
       expect(users).toHaveLength(2)
@@ -210,7 +211,7 @@ describe('relationship meta filtering', () => {
         select: { id: true },
       })
 
-      const users = await context.query.User.findMany({
+      const users = await query(context).users({
         query: `id postsCount(where: { AND: [{ content: { contains: "hi" } }, { content: { contains: "lo" } }] })`,
       })
 
@@ -236,7 +237,7 @@ describe('relationship meta filtering', () => {
         select: { id: true },
       })
 
-      const users = await context.query.User.findMany({
+      const users = await query(context).users({
         query:
           'id postsCount(where: { OR: [{ content: { contains: "i w" } }, { content: { contains: "? O" } }] })',
       })

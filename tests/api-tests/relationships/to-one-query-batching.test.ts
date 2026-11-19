@@ -4,6 +4,7 @@ import { allowAll } from '@keystone-6/core/access'
 import { relationship, text } from '@keystone-6/core/fields'
 import { setupTestRunner } from '../test-runner.ts'
 import { dbProvider, monitorLogs, prismaClientOptions, waitFor } from '../utils.ts'
+import { mutation, query } from '../run-field.ts'
 
 const runner = setupTestRunner({
   identifier: 'toqb',
@@ -41,13 +42,14 @@ test(
   runner(async ({ context }) => {
     let monitor = monitorLogs()
     try {
-      await context.query.User.createMany({
+      await mutation(context).createUsers({
         data: Array.from({ length: 10 }, (_, i) => ({
           name: `User ${i}`,
           posts: {
             create: [{ title: `Post from User ${i}` }, { title: `Secret post from User ${i}` }],
           },
         })),
+        query: 'id',
       })
       await waitFor(() => {
         expect(monitor.logs).toHaveLength(
@@ -65,9 +67,9 @@ test(
     try {
       monitor = monitorLogs()
       expect(
-        await context.query.Post.findMany({
-          query: 'title author { name }',
+        await query(context).posts({
           orderBy: { title: 'asc' },
+          query: 'title author { name }',
         })
       ).toEqual(
         Array.from({ length: 10 }, (_, i) => ({

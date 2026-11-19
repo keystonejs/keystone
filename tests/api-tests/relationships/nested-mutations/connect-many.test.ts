@@ -5,6 +5,7 @@ import { list } from '@keystone-6/core'
 import { setupTestRunner } from '@keystone-6/api-tests/test-runner'
 import { allOperations, allowAll } from '@keystone-6/core/access'
 import { expectSingleRelationshipError } from '../../utils.ts'
+import { mutation } from '../../run-field.ts'
 
 const alphanumGenerator = gen.alphaNumString.notEmpty()
 
@@ -71,7 +72,7 @@ describe('no access control', () => {
       })
 
       // Create an item that does the linking
-      const user = await context.query.User.createOne({
+      const user = await mutation(context).createUser({
         data: { username: 'A thing', notes: { connect: [{ id: createNote.id }] } },
         query: 'id notes { id }',
       })
@@ -79,7 +80,7 @@ describe('no access control', () => {
       expect(user).toMatchObject({ id: expect.any(String), notes: expect.any(Array) })
 
       // Create an item that does the linking
-      const user1 = await context.query.User.createOne({
+      const user1 = await mutation(context).createUser({
         data: {
           username: 'A thing',
           notes: { connect: [{ id: createNote.id }, { id: createNote.id }] },
@@ -90,7 +91,7 @@ describe('no access control', () => {
       expect(user1).toMatchObject({ id: expect.any(String), notes: expect.any(Array) })
 
       // Test an empty list of related notes
-      const user2 = await context.query.User.createOne({
+      const user2 = await mutation(context).createUser({
         data: { username: 'A thing', notes: { connect: [] } },
         query: 'id notes { id }',
       })
@@ -116,11 +117,12 @@ describe('no access control', () => {
       })
 
       // Create an item that does the linking
-      const users = await context.query.User.createMany({
+      const users = await mutation(context).createUsers({
         data: [
           { username: 'A thing 1', notes: { connect: [{ id: createNote.id }] } },
           { username: 'A thing 2', notes: { connect: [{ id: createNote2.id }] } },
         ],
+        query: 'id',
       })
 
       expect(users).toMatchObject([{ id: expect.any(String) }, { id: expect.any(String) }])
@@ -150,7 +152,7 @@ describe('no access control', () => {
       })
 
       // Update the item and link the relationship field
-      const user = await context.query.User.updateOne({
+      const user = await mutation(context).updateUser({
         where: { id: createUser.id.toString() },
         data: { username: 'A thing', notes: { connect: [{ id: createNote.id }] } },
         query: 'id notes { id content }',
@@ -162,7 +164,7 @@ describe('no access control', () => {
       })
 
       // Update the item and link multiple relationship fields
-      const _user = await context.query.User.updateOne({
+      const _user = await mutation(context).updateUser({
         where: { id: createUser.id.toString() },
         data: {
           username: 'A thing',
@@ -203,7 +205,7 @@ describe('no access control', () => {
       })
 
       // Update the item and link the relationship field
-      const user = await context.query.User.updateOne({
+      const user = await mutation(context).updateUser({
         where: { id: createUser.id.toString() },
         data: { username: 'A thing', notes: { connect: [{ id: createNote2.id }] } },
         query: 'id notes { id content }',
@@ -248,7 +250,7 @@ describe('no access control', () => {
         select: { id: true },
       })
 
-      const users = await context.query.User.updateMany({
+      const users = await mutation(context).updateUsers({
         data: [
           {
             where: { id: createUser.id.toString() },
@@ -446,8 +448,9 @@ describe('with access control', () => {
         })
 
         // Create an item that does the linking
-        const data = await context.query.UserToNotesNoCreate.createOne({
+        const data = await mutation(context).createUserToNotesNoCreate({
           data: { username: 'A thing', notes: { connect: [{ id: createNoteNoCreate.id }] } },
+          query: 'id',
         })
 
         expect(data).toMatchObject({ id: expect.any(String) })
@@ -472,9 +475,10 @@ describe('with access control', () => {
         })
 
         // Update the item and link the relationship field
-        const data = await context.query.UserToNotesNoCreate.updateOne({
+        const data = await mutation(context).updateUserToNotesNoCreate({
           where: { id: createUser.id.toString() },
           data: { username: 'A thing', notes: { connect: [{ id: createNote.id }] } },
+          query: 'id',
         })
 
         expect(data).toMatchObject({ id: expect.any(String) })

@@ -5,6 +5,7 @@ import { allOperations, allowAll } from '@keystone-6/core/access'
 import { relationship, text } from '@keystone-6/core/fields'
 import { gen, sampleOne } from 'testcheck'
 import { expectSingleRelationshipError } from '../../utils.ts'
+import { mutation, query } from '../../run-field.ts'
 
 const alphanumGenerator = gen.alphaNumString.notEmpty()
 
@@ -86,7 +87,7 @@ describe('no access control', () => {
       })
 
       // Update the item and link the relationship field
-      const user = await context.query.User.updateOne({
+      const user = await mutation(context).updateUser({
         where: { id: createUser.id.toString() },
         data: { username: 'A thing', notes: { set: [] } },
         query: 'id notes { id content }',
@@ -113,15 +114,19 @@ describe('no access control', () => {
       })
 
       // Create an item to update
-      const createUser = await context.query.User.createOne({
+      const createUser = await mutation(context).createUser<{ id: string }>({
         data: {
           username: 'A thing',
           notes: { set: [{ id: createNote.id }, { id: createNote2.id }] },
         },
+        query: 'id',
       })
 
       // Update the item and link the relationship field
-      const user = await context.query.User.findOne({
+      const user = await query(context).user<{
+        id: string
+        notes: { id: string; content: string | null }[]
+      }>({
         where: { id: createUser.id },
         query: 'id notes { id content }',
       })
@@ -153,7 +158,7 @@ describe('no access control', () => {
       })
 
       // Update the item and link the relationship field
-      const user = await context.query.User.updateOne({
+      const user = await mutation(context).updateUser<{ id: string; notes: { id: string }[] }>({
         where: { id: createUser.id.toString() },
         data: {
           username: 'A thing',
@@ -227,12 +232,16 @@ describe('with access control', () => {
         })
 
         // Update the item and link the relationship field
-        await context.query.UserToNotesNoRead.updateOne({
+        await mutation(context).updateUserToNotesNoRead({
           where: { id: createUser.id.toString() },
           data: { username: 'A thing', notes: { set: [] } },
+          query: 'id',
         })
 
-        const data = await context.sudo().query.UserToNotesNoRead.findOne({
+        const data = await query(context.sudo()).userToNotesNoRead<{
+          id: string
+          notes: { id: string }[]
+        }>({
           where: { id: createUser.id.toString() },
           query: 'id notes { id }',
         })
