@@ -1,7 +1,10 @@
 import assert from 'node:assert/strict'
 import { describe, test } from 'node:test'
 import { dbProvider, setupTestSuite } from './utils.ts'
+import { mutation } from '../tests/api-tests/run-field.ts'
 import {
+  getListGraphQLNames,
+  type AccessItem,
   config,
   lists,
   expectEqualItem,
@@ -16,6 +19,7 @@ describe(`*.access.update tests (${dbProvider})`, () => {
   const suite = setupTestSuite({ config })()
 
   for (const l of lists) {
+    const { updateMutationName, updateManyMutationName } = getListGraphQLNames(l)
     const itemQuery = `id ${l.fields.map(x => x.name).join(' ')}`
 
     test(`update ${l.name}`, async () => {
@@ -24,7 +28,7 @@ describe(`*.access.update tests (${dbProvider})`, () => {
       const target = makeItem(l, 'update')
 
       // test list.access.*.update
-      const updatePromise = context.query[l.name].updateOne({
+      const updatePromise = mutation(context)[updateMutationName]<AccessItem | null>({
         where: { id: seeded.id },
         data: target,
         query: itemQuery,
@@ -53,7 +57,7 @@ describe(`*.access.update tests (${dbProvider})`, () => {
       }))
 
       // test list.access.*.update
-      const updatePromise = context.query[l.name].updateMany({
+      const updatePromise = mutation(context)[updateManyMutationName]<AccessItem[]>({
         data: target,
         query: itemQuery,
       })
@@ -89,7 +93,7 @@ describe(`*.access.update tests (${dbProvider})`, () => {
         const target = { [f.name]: randomString() }
 
         // test list.access.*.update
-        const updatePromise = context.query[l.name].updateOne({
+        const updatePromise = mutation(context)[updateMutationName]<AccessItem | null>({
           where: { id: seeded.id },
           data: target,
           query: fieldQuery,
@@ -121,7 +125,7 @@ describe(`*.access.update tests (${dbProvider})`, () => {
         const target = seeded.map(({ id }) => ({ id, [f.name]: randomString() }))
 
         // test list.access.*.update
-        const updatePromise = context.query[l.name].updateMany({
+        const updatePromise = mutation(context)[updateManyMutationName]<AccessItem[]>({
           data: target.map(({ id, ...data }) => ({
             where: { id },
             data,

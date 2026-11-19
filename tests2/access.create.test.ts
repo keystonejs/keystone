@@ -1,7 +1,10 @@
 import assert from 'node:assert/strict'
 import { describe, test } from 'node:test'
 import { dbProvider, setupTestSuite } from './utils.ts'
+import { mutation } from '../tests/api-tests/run-field.ts'
 import {
+  getListGraphQLNames,
+  type AccessItem,
   config,
   countUniqueItems,
   expectEqualItem,
@@ -16,6 +19,7 @@ describe(`*.access.create tests (${dbProvider})`, () => {
   const suite = setupTestSuite({ config })()
 
   for (const l of lists) {
+    const { createMutationName, createManyMutationName } = getListGraphQLNames(l)
     const itemQuery = `id ${l.fields.map(x => x.name).join(' ')}`
 
     test(`createOne ${l.name}`, async () => {
@@ -23,7 +27,7 @@ describe(`*.access.create tests (${dbProvider})`, () => {
       const target = makeItem(l, 'create')
 
       // test list.access.*.create
-      const createPromise = context.query[l.name].createOne({
+      const createPromise = mutation(context)[createMutationName]<AccessItem>({
         data: target,
         query: itemQuery,
       })
@@ -52,7 +56,7 @@ describe(`*.access.create tests (${dbProvider})`, () => {
       const target = [...Array(randomCount())].map(_ => makeItem(l, 'create'))
 
       // test list.access.*.create
-      const createPromise = context.query[l.name].createMany({
+      const createPromise = mutation(context)[createManyMutationName]<AccessItem[]>({
         data: target,
         query: itemQuery,
       })
@@ -97,7 +101,7 @@ describe(`*.access.create tests (${dbProvider})`, () => {
         const target = { [f.name]: randomString() }
 
         // test list.access.*.create
-        const createPromise = context.query[l.name].createOne({
+        const createPromise = mutation(context)[createMutationName]<AccessItem>({
           data: target,
           query: fieldQuery,
         })
@@ -126,7 +130,7 @@ describe(`*.access.create tests (${dbProvider})`, () => {
         const target = [...Array(randomCount())].map(_ => ({ [f.name]: randomString() }))
 
         // test list.access.*.create
-        const createPromise = context.query[l.name].createMany({
+        const createPromise = mutation(context)[createManyMutationName]<AccessItem[]>({
           data: target,
           query: fieldQuery,
         })

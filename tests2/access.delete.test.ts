@@ -1,12 +1,23 @@
 import assert from 'node:assert/strict'
 import { describe, test } from 'node:test'
 import { dbProvider, setupTestSuite } from './utils.ts'
-import { config, lists, expectEqualItem, expectEqualItems, seed, seedMany } from './utils2.ts'
+import { mutation } from '../tests/api-tests/run-field.ts'
+import {
+  getListGraphQLNames,
+  type AccessItem,
+  config,
+  lists,
+  expectEqualItem,
+  expectEqualItems,
+  seed,
+  seedMany,
+} from './utils2.ts'
 
 describe(`*.access.delete tests (${dbProvider})`, () => {
   const suite = setupTestSuite({ config })()
 
   for (const l of lists) {
+    const { deleteMutationName, deleteManyMutationName } = getListGraphQLNames(l)
     const itemQuery = `id ${l.fields.map(x => x.name).join(' ')}`
 
     test(`deleteOne ${l.name}`, async () => {
@@ -14,7 +25,7 @@ describe(`*.access.delete tests (${dbProvider})`, () => {
       const seeded = await seed(l, context)
 
       // test list.access.*.delete
-      const deletePromise = context.query[l.name].deleteOne({
+      const deletePromise = mutation(context)[deleteMutationName]<AccessItem | null>({
         where: { id: seeded.id },
         query: itemQuery,
       })
@@ -45,7 +56,7 @@ describe(`*.access.delete tests (${dbProvider})`, () => {
       const seeded = await seedMany(l, context)
 
       // test list.access.*.delete
-      const deletePromise = context.query[l.name].deleteMany({
+      const deletePromise = mutation(context)[deleteManyMutationName]<AccessItem[]>({
         where: seeded.map(({ id }) => ({
           id,
         })),
@@ -88,7 +99,7 @@ describe(`*.access.delete tests (${dbProvider})`, () => {
         const seeded = await seed(l, context)
 
         // test list.access.*.delete
-        const item = await context.query[l.name].deleteOne({
+        const item = await mutation(context)[deleteMutationName]<AccessItem | null>({
           where: { id: seeded.id },
           query: fieldQuery,
         })
@@ -102,7 +113,7 @@ describe(`*.access.delete tests (${dbProvider})`, () => {
         const seeded = await seedMany(l, context)
 
         // test list.access.*.query
-        const items = await context.query[l.name].deleteMany({
+        const items = await mutation(context)[deleteManyMutationName]<AccessItem[]>({
           where: seeded.map(({ id }) => ({
             id,
           })),

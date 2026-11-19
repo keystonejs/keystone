@@ -4,6 +4,7 @@ import { randomUUID } from 'node:crypto'
 import { list } from '@keystone-6/core'
 import { allowAll, denyAll } from '@keystone-6/core/access'
 import { text } from '@keystone-6/core/fields'
+import { getGqlNames } from '../packages/core/src/types/utils.ts'
 
 export function makeName(
   value: boolean | Record<string, boolean>,
@@ -199,6 +200,12 @@ export type List = {
   graphql: {
     plural: string
   }
+}
+
+export type AccessItem = { id: string; [field: string]: string | null }
+
+export function getListGraphQLNames({ name, graphql }: List) {
+  return getGqlNames({ singular: name, plural: graphql.plural })
 }
 
 export function* makeList({

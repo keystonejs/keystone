@@ -1,7 +1,10 @@
 import assert from 'node:assert/strict'
 import { describe, test } from 'node:test'
 import { dbProvider, setupTestSuite } from './utils.ts'
+import { mutation, query } from '../tests/api-tests/run-field.ts'
 import {
+  getListGraphQLNames,
+  type AccessItem,
   config,
   expectEqualItem,
   expectEqualItems,
@@ -27,6 +30,13 @@ describe(`field.access.filterable tests (filters > 1) (${dbProvider})`, () => {
   const suite = setupTestSuite({ config })()
 
   for (const l of lists) {
+    const {
+      itemQueryName,
+      listQueryName,
+      listQueryCountName,
+      updateMutationName,
+      deleteMutationName,
+    } = getListGraphQLNames(l)
     const itemQuery = `id ${l.fields.map(x => x.name).join(' ')}`
 
     for (const f1 of l.fields) {
@@ -46,7 +56,7 @@ describe(`field.access.filterable tests (filters > 1) (${dbProvider})`, () => {
             const where = makeWhereUniqueFilter(fields, seeded)
 
             // test list.access.*.query
-            const findPromise = context.query[l.name].findOne({
+            const findPromise = query(context)[itemQueryName]<AccessItem | null>({
               where,
               query: itemQuery,
             })
@@ -84,7 +94,7 @@ describe(`field.access.filterable tests (filters > 1) (${dbProvider})`, () => {
           // assert.equal(count).toBe(1)
 
           // test list.access.*.query
-          const findPromise = context.query[l.name].findMany({
+          const findPromise = query(context)[listQueryName]<AccessItem[]>({
             where,
             query: itemQuery,
           })
@@ -117,7 +127,7 @@ describe(`field.access.filterable tests (filters > 1) (${dbProvider})`, () => {
           const where = makeWhereAndFilter(fields, seeded)
 
           // test list.access.*.query
-          const findPromise = context.query[l.name].findMany({
+          const findPromise = query(context)[listQueryName]<AccessItem[]>({
             where,
             query: itemQuery,
           })
@@ -150,7 +160,7 @@ describe(`field.access.filterable tests (filters > 1) (${dbProvider})`, () => {
           const where = makeWhereFilter(fields, seeded)
 
           // test list.access.*.query
-          const findPromise = context.query[l.name].findMany({
+          const findPromise = query(context)[listQueryName]<AccessItem[]>({
             where,
             query: itemQuery,
           })
@@ -183,7 +193,7 @@ describe(`field.access.filterable tests (filters > 1) (${dbProvider})`, () => {
           const where = makeWhereFilter(fields, seeded)
 
           // test list.access.*.query
-          const countPromise = context.query[l.name].count({ where })
+          const countPromise = query(context)[listQueryCountName]<number>({ where })
 
           // access.read.filter checks happen after list access filters
           if (!l.expect.query.count && l.expect.type !== 'filter') {
@@ -210,7 +220,7 @@ describe(`field.access.filterable tests (filters > 1) (${dbProvider})`, () => {
             const target = { [updatable.name]: randomString() }
 
             // test list.access.*.update
-            const updatePromise = context.query[l.name].updateOne({
+            const updatePromise = mutation(context)[updateMutationName]<AccessItem | null>({
               where: makeWhereUniqueFilter(fields, seeded),
               data: target,
               query: updateQuery,
@@ -246,7 +256,7 @@ describe(`field.access.filterable tests (filters > 1) (${dbProvider})`, () => {
             const seeded = await seed(l, context)
 
             // test list.access.*.delete
-            const deletePromise = context.query[l.name].deleteOne({
+            const deletePromise = mutation(context)[deleteMutationName]<AccessItem | null>({
               where: makeWhereUniqueFilter(fields, seeded),
               query: itemQuery,
             })
