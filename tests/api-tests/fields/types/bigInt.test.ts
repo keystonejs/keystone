@@ -52,7 +52,12 @@ describe('bigInt validation bounds', () => {
               ? context.query.Test.createOne({ data: { value }, query: 'value' })
               : context.query.Test.updateOne({
                   where: {
-                    id: (await context.query.Test.createOne({ data: { value: '500' } })).id,
+                    id: (
+                      await context.db.Test.createOne({
+                        data: { value: '500' },
+                        select: { id: true },
+                      })
+                    ).id.toString(),
                   },
                   data: { value },
                   query: 'value',

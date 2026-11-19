@@ -58,7 +58,7 @@ for (const modulePath of testModules) {
       test(
         'uniqueness is enforced over multiple mutations',
         runner(async ({ context }) => {
-          await context.query.Test.createOne({
+          await context.db.Test.createOne({
             data: { testField: mod.exampleValue(matrixValue) },
           })
 

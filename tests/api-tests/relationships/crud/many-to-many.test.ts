@@ -12,19 +12,21 @@ type IdType = any
 const alphanumGenerator = gen.alphaNumString.notEmpty()
 
 const createInitialData = async (context: ContextFromRunner<typeof runner>) => {
-  const companies = await context.query.Company.createMany({
+  const companies = await context.db.Company.createMany({
     data: [
       { name: sampleOne(alphanumGenerator) },
       { name: sampleOne(alphanumGenerator) },
       { name: sampleOne(alphanumGenerator) },
     ],
+    select: { id: true },
   })
-  const locations = await context.query.Location.createMany({
+  const locations = await context.db.Location.createMany({
     data: [
       { name: sampleOne(alphanumGenerator) },
       { name: sampleOne(alphanumGenerator) },
       { name: sampleOne(alphanumGenerator) },
     ],
+    select: { id: true },
   })
   return { locations, companies }
 }
@@ -70,9 +72,9 @@ const getCompanyAndLocation = async (
 
 const createReadData = async (context: ContextFromRunner<typeof runner>) => {
   // create locations [A, A, B, B, C, C];
-  const locations = await context.query.Location.createMany({
+  const locations = await context.db.Location.createMany({
     data: ['A', 'A', 'B', 'B', 'C', 'C'].map(name => ({ name })),
-    query: 'id name',
+    select: { id: true, name: true },
   })
   await Promise.all(
     [
@@ -86,9 +88,8 @@ const createReadData = async (context: ContextFromRunner<typeof runner>) => {
       [2], //  -> [B]
       [], //  -> []
     ].map(async locationIdxs => {
-      await context.query.Company.createOne({
+      await context.db.Company.createOne({
         data: { locations: { connect: locationIdxs.map(i => ({ id: locations[i].id })) } },
-        query: 'id locations { name }',
       })
     })
   )
@@ -421,7 +422,7 @@ describe(`Many-to-many relationships`, () => {
         const company = companies[0]
         const locationName = sampleOne(alphanumGenerator)
         const _company = await context.query.Company.updateOne({
-          where: { id: company.id },
+          where: { id: company.id.toString() },
           data: { locations: { create: [{ name: locationName }] } },
           query: 'id locations { id name }',
         })

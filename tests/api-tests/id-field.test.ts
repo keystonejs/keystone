@@ -157,8 +157,12 @@ for (const fixture of fixtures) {
     test(
       `findOne works`,
       runner(async ({ context }) => {
-        const { id } = await context.query.User.createOne({ data: { name: 'something' } })
-        await context.query.User.createOne({ data: { name: 'another' } })
+        const { id: dbId } = await context.db.User.createOne({
+          data: { name: 'something' },
+          select: { id: true },
+        })
+        await context.db.User.createOne({ data: { name: 'another' } })
+        const id = dbId.toString()
         const item = await context.query.User.findOne({ where: { id } })
         expect(item.id).toBe(id)
       })
@@ -167,8 +171,12 @@ for (const fixture of fixtures) {
     test(
       `findMany works`,
       runner(async ({ context }) => {
-        const { id } = await context.query.User.createOne({ data: { name: 'something' } })
-        await context.query.User.createOne({ data: { name: 'another' } })
+        const { id: dbId } = await context.db.User.createOne({
+          data: { name: 'something' },
+          select: { id: true },
+        })
+        await context.db.User.createOne({ data: { name: 'another' } })
+        const id = dbId.toString()
         const items = await context.query.User.findMany({ where: { id: { equals: id } } })
         expect(items).toHaveLength(1)
         expect(items[0].id).toBe(id)
@@ -225,8 +233,9 @@ describe('case insensitive id filters', () => {
     test(
       'searching for uppercased uuid works',
       runner(async ({ context }) => {
-        const { id } = (await context.query.User.createOne({
+        const { id } = (await context.db.User.createOne({
           data: { name: 'something' },
+          select: { id: true },
         })) as { id: string }
         const { id: fromFound } = await context.query.User.findOne({
           where: { id: id.toUpperCase() },

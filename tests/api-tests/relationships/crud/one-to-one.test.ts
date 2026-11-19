@@ -12,20 +12,22 @@ type IdType = any
 const alphanumGenerator = gen.alphaNumString.notEmpty()
 
 const createInitialData = async (context: ContextFromRunner<typeof runner>) => {
-  const companies = await context.query.Company.createMany({
+  const companies = await context.db.Company.createMany({
     data: [
       { name: sampleOne(alphanumGenerator) },
       { name: sampleOne(alphanumGenerator) },
       { name: sampleOne(alphanumGenerator) },
     ],
+    select: { id: true },
   })
-  const locations = await context.query.Location.createMany({
+  const locations = await context.db.Location.createMany({
     data: [
       { name: sampleOne(alphanumGenerator) },
       { name: sampleOne(alphanumGenerator) },
       { name: sampleOne(alphanumGenerator) },
       { name: sampleOne(alphanumGenerator) },
     ],
+    select: { id: true },
   })
   return { locations, companies }
 }
@@ -483,8 +485,9 @@ describe(`One-to-one relationships`, () => {
       'Dual create A',
       runner(async ({ context }) => {
         // Create a Location
-        const location = await context.query.Location.createOne({
+        const location = await context.db.Location.createOne({
           data: { name: sampleOne(alphanumGenerator) },
+          select: { id: true },
         })
 
         // Create a Company pointing to Location
@@ -528,8 +531,9 @@ describe(`One-to-one relationships`, () => {
       'Dual create B',
       runner(async ({ context }) => {
         // Create a Company
-        const company = await context.query.Company.createOne({
+        const company = await context.db.Company.createOne({
           data: { name: sampleOne(alphanumGenerator) },
+          select: { id: true },
         })
 
         // Create a Location pointing to Company
@@ -648,7 +652,7 @@ describe(`One-to-one relationships`, () => {
         const company = companies[0]
         const locationName = sampleOne(alphanumGenerator)
         const _company = await context.query.Company.updateOne({
-          where: { id: company.id },
+          where: { id: company.id.toString() },
           data: { location: { create: { name: locationName } } },
           query: 'id location { id name }',
         })
@@ -672,7 +676,7 @@ describe(`One-to-one relationships`, () => {
         const location = locations[0]
         const companyName = sampleOne(alphanumGenerator)
         const _location = await context.query.Location.updateOne({
-          where: { id: location.id },
+          where: { id: location.id.toString() },
           data: { company: { create: { name: companyName } } },
           query: 'id company { id name }',
         })
@@ -698,7 +702,7 @@ describe(`One-to-one relationships`, () => {
         // Update company.location to be a new thing.
         const locationName = sampleOne(alphanumGenerator)
         const _company = await context.query.Company.updateOne({
-          where: { id: company.id },
+          where: { id: company.id.toString() },
           data: { location: { create: { name: locationName } } },
           query: 'id location { id name }',
         })
@@ -717,7 +721,7 @@ describe(`One-to-one relationships`, () => {
         await (async () => {
           const locationName = sampleOne(alphanumGenerator)
           const _company = await context.query.Company.updateOne({
-            where: { id: company.id },
+            where: { id: company.id.toString() },
             data: { location: { create: { name: locationName } } },
             query: 'id location { id name }',
           })
@@ -747,7 +751,7 @@ describe(`One-to-one relationships`, () => {
         const location = locations[0]
         const companyName = sampleOne(alphanumGenerator)
         const _location = await context.query.Location.updateOne({
-          where: { id: location.id },
+          where: { id: location.id.toString() },
           data: { company: { create: { name: companyName } } },
           query: 'id company { id name }',
         })
@@ -766,7 +770,7 @@ describe(`One-to-one relationships`, () => {
         await (async () => {
           const companyName = sampleOne(alphanumGenerator)
           const _location = await context.query.Location.updateOne({
-            where: { id: location.id },
+            where: { id: location.id.toString() },
             data: { company: { create: { name: companyName } } },
             query: 'id company { id name }',
           })

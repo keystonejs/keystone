@@ -39,7 +39,7 @@ for (const modulePath of testModules) {
       runner(async ({ context, ...rest }) => {
         // populate the database before running the tests
         for (const data of mod.initItems(matrixValue, context)) {
-          await context.query[listKey].createOne({ data })
+          await context.db[listKey].createOne({ data })
         }
         return testFn({
           context,

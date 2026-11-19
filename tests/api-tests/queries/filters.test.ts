@@ -206,7 +206,7 @@ describe('filtering on relationships', () => {
   test(
     'findMany returns all items with empty relationship query value',
     runner(async ({ context }) => {
-      await context.query.SecondaryList.createOne({
+      await context.db.SecondaryList.createOne({
         data: { otherUsers: { create: [{ noDash: 'a' }, { noDash: 'b' }] } },
       })
       const { data, errors } = await context.graphql.raw({
@@ -226,7 +226,10 @@ describe('searching by unique fields', () => {
   test(
     'findOne works on a unique text field',
     runner(async ({ context }) => {
-      const item = await context.query.User.createOne({ data: { email: 'test@example.com' } })
+      const item = await context.db.User.createOne({
+        data: { email: 'test@example.com' },
+        select: { id: true },
+      })
       const { data, errors } = await context.graphql.raw({
         query: '{ user(where: { email: "test@example.com" }) { id email } }',
       })
@@ -238,7 +241,10 @@ describe('searching by unique fields', () => {
   test(
     'findOne works on multiple unique fields',
     runner(async ({ context }) => {
-      const item = await context.query.User.createOne({ data: { email: 'test@example.com' } })
+      const item = await context.db.User.createOne({
+        data: { email: 'test@example.com' },
+        select: { id: true },
+      })
       const { data, errors } = await context.graphql.raw({
         query: `{ user(where: { id: "${item.id}" email: "test@example.com" }) { id email } }`,
       })
@@ -251,7 +257,7 @@ describe('searching by unique fields', () => {
   test(
     'findOne returns the first item for null if a value exists',
     runner(async ({ context }) => {
-      const item = await context.query.User.createOne({ data: { email: null } })
+      const item = await context.db.User.createOne({ data: { email: null }, select: { id: true } })
       const { data, errors } = await context.graphql.raw({
         query: '{ user(where: { email: null }) { id email } }',
       })
@@ -263,7 +269,7 @@ describe('searching by unique fields', () => {
   test(
     'findOne returns the unique item when filtering with multiple values',
     runner(async ({ context }) => {
-      const item = await context.query.User.createOne({ data: { email: null } })
+      const item = await context.db.User.createOne({ data: { email: null }, select: { id: true } })
       const { data, errors } = await context.graphql.raw({
         query: `{ user(where: { id: "${item.id}" email: null }) { id email } }`,
       })
@@ -275,7 +281,7 @@ describe('searching by unique fields', () => {
   test(
     'findOne returns null if missing',
     runner(async ({ context }) => {
-      await context.query.User.createOne({ data: { email: 'test@example.com' } })
+      await context.db.User.createOne({ data: { email: 'test@example.com' } })
       const { data, errors } = await context.graphql.raw({
         query: '{ user(where: { email: "unknown@example.com" }) { id email } }',
       })
@@ -424,7 +430,7 @@ describe('isFilterable with cursor', () => {
   test(
     'cursor with isFilterable: () => false is denied',
     runner(async ({ context }) => {
-      await context.query.User.createOne({
+      await context.db.User.createOne({
         data: { uniqueButNotFilterable: 'secret-value' },
       })
       const { data, errors } = await context.graphql.raw({
@@ -444,8 +450,9 @@ describe('isFilterable with cursor', () => {
   test(
     'cursor with isFilterable: true is allowed',
     runner(async ({ context }) => {
-      const item = await context.query.User.createOne({
+      const item = await context.db.User.createOne({
         data: { email: 'cursor-allowed@example.com' },
+        select: { id: true },
       })
       const { data, errors } = await context.graphql.raw({
         query: '{ users(cursor: { email: "cursor-allowed@example.com" }, take: 1) { id } }',

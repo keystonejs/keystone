@@ -38,17 +38,18 @@ describe('Querying with relationship filters', () => {
       'with data',
       runner(async ({ context }) => {
         // Create an item to link against
-        const users = await context.query.User.createMany({
+        const users = await context.db.User.createMany({
           data: [{ name: 'Jess' }, { name: 'Johanna' }, { name: 'Sam' }],
+          select: { id: true },
         })
-        const posts = await context.query.Post.createMany({
+        const posts = await context.db.Post.createMany({
           data: [
             { author: { connect: { id: users[0].id } }, title: sampleOne(alphanumGenerator) },
             { author: { connect: { id: users[1].id } }, title: sampleOne(alphanumGenerator) },
             { author: { connect: { id: users[2].id } }, title: sampleOne(alphanumGenerator) },
             { author: { connect: { id: users[0].id } }, title: sampleOne(alphanumGenerator) },
           ],
-          query: 'id title',
+          select: { id: true, title: true },
         })
 
         // Create an item that does the linking
@@ -69,13 +70,16 @@ describe('Querying with relationship filters', () => {
       'without data',
       runner(async ({ context }) => {
         // Create an item to link against
-        const user = await context.query.User.createOne({ data: { name: 'Jess' } })
-        const posts = await context.query.Post.createMany({
+        const user = await context.db.User.createOne({
+          data: { name: 'Jess' },
+          select: { id: true },
+        })
+        const posts = await context.db.Post.createMany({
           data: [
             { author: { connect: { id: user.id } }, title: sampleOne(alphanumGenerator) },
             { title: sampleOne(alphanumGenerator) },
           ],
-          query: 'id title',
+          select: { id: true, title: true },
         })
 
         // Create an item that does the linking
@@ -119,7 +123,7 @@ describe('Querying with relationship filters', () => {
       'every condition',
       runner(async ({ context }) => {
         const create = async (listKey: ListKey, data: any) =>
-          context.query[listKey].createOne({ data })
+          context.db[listKey].createOne({ data, select: { id: true } })
         const { users } = await setup(create)
 
         // EVERY
@@ -136,7 +140,7 @@ describe('Querying with relationship filters', () => {
       'some condition',
       runner(async ({ context }) => {
         const create = async (listKey: ListKey, data: any) =>
-          context.query[listKey].createOne({ data })
+          context.db[listKey].createOne({ data, select: { id: true } })
         const { users } = await setup(create)
 
         // SOME
@@ -159,7 +163,7 @@ describe('Querying with relationship filters', () => {
       'none condition',
       runner(async ({ context }) => {
         const create = async (listKey: ListKey, data: any) =>
-          context.query[listKey].createOne({ data })
+          context.db[listKey].createOne({ data, select: { id: true } })
         const { users } = await setup(create)
 
         // NONE
@@ -200,7 +204,7 @@ describe('Querying with relationship filters', () => {
       'every condition',
       runner(async ({ context }) => {
         const create = async (listKey: ListKey, data: any) =>
-          context.query[listKey].createOne({ data })
+          context.db[listKey].createOne({ data, select: { id: true } })
         const { users } = await setup(create)
 
         // EVERY
@@ -219,7 +223,7 @@ describe('Querying with relationship filters', () => {
       'some condition',
       runner(async ({ context }) => {
         const create = async (listKey: ListKey, data: any) =>
-          context.query[listKey].createOne({ data })
+          context.db[listKey].createOne({ data, select: { id: true } })
         const { users } = await setup(create)
 
         // SOME
@@ -239,7 +243,7 @@ describe('Querying with relationship filters', () => {
       'none condition',
       runner(async ({ context }) => {
         const create = async (listKey: ListKey, data: any) =>
-          context.query[listKey].createOne({ data })
+          context.db[listKey].createOne({ data, select: { id: true } })
         const { users } = await setup(create)
 
         // NONE
@@ -273,7 +277,7 @@ describe('Querying with relationship filters', () => {
       'every condition',
       runner(async ({ context }) => {
         const create = async (listKey: ListKey, data: any) =>
-          context.query[listKey].createOne({ data })
+          context.db[listKey].createOne({ data, select: { id: true } })
         const { users } = await setup(create)
 
         // EVERY
@@ -295,7 +299,7 @@ describe('Querying with relationship filters', () => {
       'some condition',
       runner(async ({ context }) => {
         const create = async (listKey: ListKey, data: any) =>
-          context.query[listKey].createOne({ data })
+          context.db[listKey].createOne({ data, select: { id: true } })
         const { users } = await setup(create)
 
         // SOME
@@ -311,7 +315,7 @@ describe('Querying with relationship filters', () => {
       'none condition',
       runner(async ({ context }) => {
         const create = async (listKey: ListKey, data: any) =>
-          context.query[listKey].createOne({ data })
+          context.db[listKey].createOne({ data, select: { id: true } })
         const { users } = await setup(create)
 
         // NONE

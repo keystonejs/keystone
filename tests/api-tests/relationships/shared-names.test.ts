@@ -8,15 +8,15 @@ import type { ContextFromRunner } from '../utils.ts'
 type IdType = any
 
 const createInitialData = async (context: ContextFromRunner<typeof runner>) => {
-  const roles = (await context.query.Role.createMany({
+  const roles = (await context.db.Role.createMany({
     data: [{ name: 'RoleA' }, { name: 'RoleB' }, { name: 'RoleC' }],
-    query: 'id name',
+    select: { id: true, name: true },
   })) as { id: IdType; name: string }[]
-  const companies = (await context.query.Company.createMany({
+  const companies = (await context.db.Company.createMany({
     data: [{ name: 'CompanyA' }, { name: 'CompanyB' }, { name: 'CompanyC' }],
-    query: 'id name',
+    select: { id: true, name: true },
   })) as { id: IdType; name: string }[]
-  const employees = (await context.query.Employee.createMany({
+  const employees = (await context.db.Employee.createMany({
     data: [
       {
         name: 'EmployeeA',
@@ -34,9 +34,9 @@ const createInitialData = async (context: ContextFromRunner<typeof runner>) => {
         role: { connect: { id: roles.find(({ name }) => name === 'RoleC')!.id } },
       },
     ],
-    query: 'id name',
+    select: { id: true, name: true },
   })) as { id: IdType; name: string }[]
-  await context.query.Location.createMany({
+  await context.db.Location.createMany({
     data: [
       {
         name: 'LocationA',
@@ -63,9 +63,9 @@ const createInitialData = async (context: ContextFromRunner<typeof runner>) => {
         },
       },
     ],
-    query: 'id name',
+    select: { id: true, name: true },
   })
-  await context.query.Role.updateMany({
+  await context.db.Role.updateMany({
     data: [
       {
         where: { id: roles.find(({ name }) => name === 'RoleA')!.id },

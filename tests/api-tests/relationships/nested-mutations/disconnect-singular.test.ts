@@ -50,7 +50,10 @@ describe('no access control', () => {
     runner(async ({ context }) => {
       const groupName = `foo${sampleOne(alphanumGenerator)}`
 
-      const createGroup = await context.query.Group.createOne({ data: { name: groupName } })
+      const createGroup = await context.db.Group.createOne({
+        data: { name: groupName },
+        select: { id: true },
+      })
 
       // Create an item to update
       const createEvent = await context.query.Event.createOne({
@@ -108,11 +111,11 @@ describe('no access control', () => {
     'silently succeeds if no item to disconnect during update',
     runner(async ({ context }) => {
       // Create an item to link against
-      const createEvent = await context.query.Event.createOne({ data: {} })
+      const createEvent = await context.db.Event.createOne({ data: {}, select: { id: true } })
 
       // Create an item that does the linking
       const event = await context.query.Event.updateOne({
-        where: { id: createEvent.id },
+        where: { id: createEvent.id.toString() },
         data: { group: { disconnect: true } },
         query: 'id group { id }',
       })
@@ -130,8 +133,9 @@ describe('with access control', () => {
         const groupName = sampleOne(alphanumGenerator)
 
         // Create an item to link against
-        const createGroup = await context.sudo().query.GroupNoRead.createOne({
+        const createGroup = await context.sudo().db.GroupNoRead.createOne({
           data: { name: groupName },
+          select: { id: true },
         })
 
         // Create an item to update

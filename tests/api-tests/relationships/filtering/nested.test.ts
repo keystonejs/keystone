@@ -26,15 +26,17 @@ describe('relationship filtering', () => {
   test(
     'nested to-many relationships can be filtered',
     runner(async ({ context }) => {
-      const ids = await context.query.Post.createMany({
+      const ids = await context.db.Post.createMany({
         data: [{ content: 'Hello world' }, { content: 'hi world' }, { content: 'Hello? Or hi?' }],
+        select: { id: true },
       })
 
-      const [user, user2] = await context.query.User.createMany({
+      const [user, user2] = await context.db.User.createMany({
         data: [
           { posts: { connect: ids } },
           { posts: { connect: [ids[0]] } }, // Create a dummy user to make sure we're actually filtering it out
         ],
+        select: { id: true },
       })
 
       const users = (await context.query.User.findMany({
@@ -51,15 +53,17 @@ describe('relationship filtering', () => {
   test(
     'nested to-many relationships can be limited',
     runner(async ({ context }) => {
-      const ids = await context.query.Post.createMany({
+      const ids = await context.db.Post.createMany({
         data: [{ content: 'Hello world' }, { content: 'hi world' }, { content: 'Hellox Or hi?' }],
+        select: { id: true },
       })
 
-      const [user, user2] = await context.query.User.createMany({
+      const [user, user2] = await context.db.User.createMany({
         data: [
           { posts: { connect: ids } },
           { posts: { connect: [ids[0]] } }, // Create a dummy user to make sure we're actually filtering it out
         ],
+        select: { id: true },
       })
 
       const users = await context.query.User.findMany({
@@ -73,15 +77,17 @@ describe('relationship filtering', () => {
   test(
     'nested to-many relationships can be filtered within AND clause',
     runner(async ({ context }) => {
-      const ids = await context.query.Post.createMany({
+      const ids = await context.db.Post.createMany({
         data: [{ content: 'Hello world' }, { content: 'hi world' }, { content: 'Hello? Or hi?' }],
+        select: { id: true },
       })
 
-      const [user, user2] = await context.query.User.createMany({
+      const [user, user2] = await context.db.User.createMany({
         data: [
           { posts: { connect: ids } },
           { posts: { connect: [ids[0]] } }, // Create a dummy user to make sure we're actually filtering it out
         ],
+        select: { id: true },
       })
 
       const users = await context.query.User.findMany({
@@ -97,15 +103,17 @@ describe('relationship filtering', () => {
   test(
     'nested to-many relationships can be filtered within OR clause',
     runner(async ({ context }) => {
-      const ids = await context.query.Post.createMany({
+      const ids = await context.db.Post.createMany({
         data: [{ content: 'Hello world' }, { content: 'hi world' }, { content: 'Hello? Or hi?' }],
+        select: { id: true },
       })
 
-      const [user, user2] = await context.query.User.createMany({
+      const [user, user2] = await context.db.User.createMany({
         data: [
           { posts: { connect: ids } },
           { posts: { connect: [ids[0]] } }, // Create a dummy user to make sure we're actually filtering it out
         ],
+        select: { id: true },
       })
 
       const users = await context.query.User.findMany({
@@ -126,7 +134,7 @@ describe('relationship filtering', () => {
   test(
     'Filtering out all items by nested field should return []',
     runner(async ({ context }) => {
-      await context.query.User.createOne({ data: {} })
+      await context.db.User.createOne({ data: {} })
 
       const users = await context.query.User.findMany({
         where: { posts: { some: { content: { contains: 'foo' } } } },
@@ -141,15 +149,17 @@ describe('relationship meta filtering', () => {
   test(
     'nested to-many relationships return meta info',
     runner(async ({ context }) => {
-      const ids = await context.query.Post.createMany({
+      const ids = await context.db.Post.createMany({
         data: [{ content: 'Hello world' }, { content: 'hi world' }, { content: 'Hello? Or hi?' }],
+        select: { id: true },
       })
 
-      const [user, user2] = await context.query.User.createMany({
+      const [user, user2] = await context.db.User.createMany({
         data: [
           { posts: { connect: ids } },
           { posts: { connect: [ids[0]] } }, // Create a dummy user to make sure we're actually filtering it out
         ],
+        select: { id: true },
       })
 
       const users = await context.query.User.findMany({ query: 'id postsCount' })
@@ -162,15 +172,17 @@ describe('relationship meta filtering', () => {
   test(
     'nested to-many relationship meta can be filtered',
     runner(async ({ context }) => {
-      const ids = await context.query.Post.createMany({
+      const ids = await context.db.Post.createMany({
         data: [{ content: 'Hello world' }, { content: 'hi world' }, { content: 'Hello? Or hi?' }],
+        select: { id: true },
       })
 
-      const [user, user2] = await context.query.User.createMany({
+      const [user, user2] = await context.db.User.createMany({
         data: [
           { posts: { connect: ids } },
           { posts: { connect: [ids[0]] } }, // Create a dummy user to make sure we're actually filtering it out
         ],
+        select: { id: true },
       })
 
       const users = await context.query.User.findMany({
@@ -185,15 +197,17 @@ describe('relationship meta filtering', () => {
   test(
     'nested to-many relationship meta can be filtered within AND clause',
     runner(async ({ context }) => {
-      const ids = await context.query.Post.createMany({
+      const ids = await context.db.Post.createMany({
         data: [{ content: 'Hello world' }, { content: 'hi world' }, { content: 'Hello? Or hi?' }],
+        select: { id: true },
       })
 
-      const [user, user2] = await context.query.User.createMany({
+      const [user, user2] = await context.db.User.createMany({
         data: [
           { posts: { connect: ids } },
           { posts: { connect: [ids[0]] } }, // Create a dummy user to make sure we're actually filtering it out
         ],
+        select: { id: true },
       })
 
       const users = await context.query.User.findMany({
@@ -209,15 +223,17 @@ describe('relationship meta filtering', () => {
   test(
     'nested to-many relationship meta can be filtered within OR clause',
     runner(async ({ context }) => {
-      const ids = await context.query.Post.createMany({
+      const ids = await context.db.Post.createMany({
         data: [{ content: 'Hello world' }, { content: 'hi world' }, { content: 'Hello? Or hi?' }],
+        select: { id: true },
       })
 
-      const [user, user2] = await context.query.User.createMany({
+      const [user, user2] = await context.db.User.createMany({
         data: [
           { posts: { connect: ids } },
           { posts: { connect: [ids[0]] } }, // Create a dummy user to make sure we're actually filtering it out
         ],
+        select: { id: true },
       })
 
       const users = await context.query.User.findMany({

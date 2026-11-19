@@ -68,7 +68,10 @@ describe('no access control', () => {
       const noteContent2 = sampleOne(alphanumGenerator)
 
       // Create an item to link against
-      const createNote = await context.query.Note.createOne({ data: { content: noteContent } })
+      const createNote = await context.db.Note.createOne({
+        data: { content: noteContent },
+        select: { id: true },
+      })
 
       // Create an item that does the linking
       type T = { id: IdType; notes: { id: IdType; content: string }[] }
@@ -105,15 +108,21 @@ describe('no access control', () => {
       const noteContent2 = sampleOne(alphanumGenerator)
 
       // Create an item to link against
-      const createNote = await context.query.Note.createOne({ data: { content: noteContent } })
+      const createNote = await context.db.Note.createOne({
+        data: { content: noteContent },
+        select: { id: true },
+      })
 
       // Create an item to update
-      const createUser = await context.query.User.createOne({ data: { username: 'A thing' } })
+      const createUser = await context.db.User.createOne({
+        data: { username: 'A thing' },
+        select: { id: true },
+      })
 
       // Update the item and link the relationship field
       type T = { id: IdType; notes: { id: IdType; content: string }[] }
       const user = (await context.query.User.updateOne({
-        where: { id: createUser.id },
+        where: { id: createUser.id.toString() },
         data: {
           username: 'A thing',
           notes: { connect: [{ id: createNote.id }], create: [{ content: noteContent2 }] },
@@ -171,8 +180,9 @@ describe('with access control', () => {
         const noteContent2 = sampleOne(alphanumGenerator)
 
         // Create an item to link against
-        const createNoteNoRead = await context.sudo().query.NoteNoRead.createOne({
+        const createNoteNoRead = await context.sudo().db.NoteNoRead.createOne({
           data: { content: noteContent },
+          select: { id: true },
         })
 
         // Create an item that does the linking
@@ -209,13 +219,15 @@ describe('with access control', () => {
         const noteContent2 = sampleOne(alphanumGenerator)
 
         // Create an item to link against
-        const createNote = await context.sudo().query.NoteNoRead.createOne({
+        const createNote = await context.sudo().db.NoteNoRead.createOne({
           data: { content: noteContent },
+          select: { id: true },
         })
 
         // Create an item to update
-        const createUser = await context.query.UserToNotesNoRead.createOne({
+        const createUser = await context.db.UserToNotesNoRead.createOne({
           data: { username: 'A thing' },
+          select: { id: true },
         })
 
         // Update the item and link the relationship field
