@@ -6,6 +6,7 @@ import { text } from '@keystone-6/core/fields'
 import { setupTestRunner } from '@keystone-6/api-tests/test-runner'
 import { allowAll } from '@keystone-6/core/access'
 import { dbProvider, expectValidationError } from '../utils.ts'
+import { mutation } from '../run-field.ts'
 
 const testModules = globSync(`tests/api-tests/fields/types/fixtures/**/test-fixtures.{js,ts}`).map(
   modulePath => resolve(modulePath)
@@ -152,7 +153,7 @@ for (const modulePath of testModules) {
             },
             select: { id: true },
           })
-          const data = await context.query.Test.updateOne({
+          const data = await mutation(context).updateTest<{ id: string; name: string | null }>({
             where: { id: data0.id.toString() },
             data: { name: 'updated test entry' },
             query: 'id name',

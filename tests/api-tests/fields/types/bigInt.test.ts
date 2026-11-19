@@ -4,6 +4,7 @@ import { allowAll } from '@keystone-6/core/access'
 import { bigInt } from '@keystone-6/core/fields'
 import { setupTestRunner } from '../../test-runner.ts'
 import { orderableFilterTests, filterTests, uniqueEqualityFilterTest } from './utils.ts'
+import { mutation } from '../../run-field.ts'
 
 for (const isNullable of [true, false]) {
   describe(`bigInt with isNullable: ${isNullable}`, () => {
@@ -49,8 +50,8 @@ describe('bigInt validation bounds', () => {
         runner(async ({ context }) => {
           const result =
             operation === 'create'
-              ? context.query.Test.createOne({ data: { value }, query: 'value' })
-              : context.query.Test.updateOne({
+              ? mutation(context).createTest({ data: { value }, query: 'value' })
+              : mutation(context).updateTest({
                   where: {
                     id: (
                       await context.db.Test.createOne({

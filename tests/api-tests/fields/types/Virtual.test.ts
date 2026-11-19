@@ -3,6 +3,9 @@ import { integer, relationship, text, virtual } from '@keystone-6/core/fields'
 import { type BaseFields, list, g } from '@keystone-6/core'
 import { setupTestEnv, setupTestRunner } from '@keystone-6/api-tests/test-runner'
 import { allowAll } from '@keystone-6/core/access'
+import { mutation } from '../../run-field.ts'
+
+type AuthorResult = { author: { __typename: 'Person' | 'Organisation'; name: string | null } }
 
 function makeRunner(fields: BaseFields<any>) {
   return setupTestRunner({
@@ -33,10 +36,12 @@ describe('Virtual field type', () => {
         }),
       }),
     })(async ({ context }) => {
-      const data = await context.query.Post.createOne({
-        data: { value: 1 },
-        query: 'value foo',
-      })
+      const data = await mutation(context).createPost<{ value: number | null; foo: number | null }>(
+        {
+          data: { value: 1 },
+          query: 'value foo',
+        }
+      )
       expect(data.value).toEqual(1)
       expect(data.foo).toEqual(42)
     })
@@ -56,10 +61,12 @@ describe('Virtual field type', () => {
         }),
       }),
     })(async ({ context }) => {
-      const data = await context.query.Post.createOne({
-        data: { value: 1 },
-        query: 'value foo(x: 10, y: 20)',
-      })
+      const data = await mutation(context).createPost<{ value: number | null; foo: number | null }>(
+        {
+          data: { value: 1 },
+          query: 'value foo(x: 10, y: 20)',
+        }
+      )
       expect(data.value).toEqual(1)
       expect(data.foo).toEqual(200)
     })
@@ -124,7 +131,7 @@ describe('Virtual field type', () => {
         },
       },
     })(async ({ context }) => {
-      const data = await context.query.Post.createOne({
+      const data = await mutation(context).createPost<AuthorResult>({
         data: { personAuthor: { create: { name: 'person author' } } },
         query: `
                 author {
@@ -140,7 +147,7 @@ describe('Virtual field type', () => {
       })
       expect(data.author.name).toEqual('person author')
       expect(data.author.__typename).toEqual('Person')
-      const data2 = await context.query.Post.createOne({
+      const data2 = await mutation(context).createPost<AuthorResult>({
         data: { organisationAuthor: { create: { name: 'organisation author' } } },
         query: `
                 author {
