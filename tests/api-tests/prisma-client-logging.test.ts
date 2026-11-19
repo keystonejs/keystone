@@ -30,7 +30,7 @@ test(
   runner(true)(async ({ context }) => {
     const monitor = monitorLogs()
     try {
-      expect(await context.query.User.findMany()).toEqual([])
+      expect(await context.db.User.findMany()).toEqual([])
       await waitFor(() => {
         expect(monitor.logs).toEqual([
           [expect.stringContaining('prisma:query'), expect.stringContaining('SELECT ')],
@@ -47,7 +47,7 @@ test(
   runner(false)(async ({ context }) => {
     const monitor = monitorLogs()
     try {
-      expect(await context.query.User.findMany()).toEqual([])
+      expect(await context.db.User.findMany()).toEqual([])
       expect(monitor.logs).toHaveLength(0)
     } finally {
       monitor.cleanup()
