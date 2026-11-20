@@ -2,7 +2,6 @@ import { GInputObjectType, type GNullableInputType } from '@graphql-ts/schema'
 import type { GraphQLNamedType, GraphQLResolveInfo } from 'graphql/index.js'
 
 import type { BaseItem, KeystoneContext } from '../../../types/index.ts'
-import type { UniquePrismaFilter } from '../../../types/prisma.ts'
 import { g } from '../../../types/schema/index.ts'
 import { withSpan } from '../../otel.ts'
 import {
@@ -13,7 +12,6 @@ import {
   getAccessFilters,
   getOperationAccess,
 } from '../access-control.ts'
-import { checkFilterOrderAccess } from '../access-control.ts'
 import {
   accessDeniedError,
   extensionError,
@@ -22,7 +20,7 @@ import {
 } from '../graphql-errors.ts'
 import { runSideEffectOnlyHook, validate } from '../hooks.ts'
 import type { InitialisedAction, InitialisedList } from '../initialise-lists.ts'
-import { mapUniqueWhereToWhere, traverse } from '../queries/resolvers.ts'
+import { accessControlledFilter, resolveUniqueWhereWithAccess } from '../queries/resolvers.ts'
 import { selectExistingItem, selectMutationResult } from './select.ts'
 import type { ResolvedDBField } from '../resolve-relationships.ts'
 import {
@@ -30,12 +28,7 @@ import {
   getDBFieldKeyForFieldOnMultiField,
   promiseAllRejectWithAllErrors,
 } from '../utils.ts'
-import {
-  type InputFilter,
-  type UniqueInputFilter,
-  resolveUniqueWhereInput,
-  resolveWhereInput,
-} from '../where-inputs.ts'
+import type { InputFilter, UniqueInputFilter } from '../where-inputs.ts'
 import {
   RelationshipErrors,
   resolveRelateToManyForCreateInput,
@@ -49,7 +42,7 @@ import {
 async function getFilteredItem(
   list: InitialisedList,
   context: KeystoneContext,
-  uniqueWhere: UniquePrismaFilter,
+  inputWhere: UniqueInputFilter,
   accessFilters: boolean | InputFilter,
   operation: 'update' | 'delete',
   inputData: Record<string, unknown>
@@ -59,15 +52,8 @@ async function getFilteredItem(
     throw accessDeniedError(cannotForItem(operation, list))
   }
 
-  // merge the filter access control and try to get the item
-  let where = mapUniqueWhereToWhere(uniqueWhere, list)
-
-  await checkFilterOrderAccess([...traverse(list, where as any)], context, 'filter')
-
-  if (typeof accessFilters === 'object') {
-    where = { AND: [where, await resolveWhereInput(accessFilters, list, context)] }
-  }
-
+  const resolvedWhere = await resolveUniqueWhereWithAccess(inputWhere, list, context)
+  const where = await accessControlledFilter(list, context, resolvedWhere, accessFilters)
   const item = await context.prisma[list.listKey].findFirst({
     where,
     select: selectExistingItem(list, operation, inputData),
@@ -160,14 +146,11 @@ async function updateSingle__(
   return await withSpan(
     `update ${list.graphql.names.outputTypeNameLower}`,
     async span => {
-      // validate and resolve the input filter
-      const uniqueWhere = await resolveUniqueWhereInput(where, list, context)
-
       // filter and item access control - throws an AccessDeniedError if not allowed
       const item = await getFilteredItem(
         list,
         context,
-        uniqueWhere!,
+        where,
         accessFilters,
         'update',
         inputData ?? {}
@@ -213,12 +196,9 @@ async function deleteSingle__(
   return await withSpan(
     `delete ${list.graphql.names.outputTypeNameLower}`,
     async span => {
-      // validate and resolve the input filter
-      const uniqueWhere = await resolveUniqueWhereInput(where, list, context)
-
       // filter and item access control throw an AccessDeniedError if not allowed
       // apply access.filter.* controls
-      const item = await getFilteredItem(list, context, uniqueWhere!, accessFilters, 'delete', {})
+      const item = await getFilteredItem(list, context, where, accessFilters, 'delete', {})
 
       await enforceListLevelAccessControl(context, 'delete', list, {}, item)
       // WARNING: no field level access control for delete operations

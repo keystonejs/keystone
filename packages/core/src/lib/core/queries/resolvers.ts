@@ -34,10 +34,34 @@ function selectForQuery(
   return select
 }
 
-// we want to put the value we get back from the field's unique where resolver into an equals
-// rather than directly passing the value as the filter (even though Prisma supports that), we use equals
-// because we want to disallow fields from providing an arbitrary filter
-export function mapUniqueWhereToWhere(uniqueWhere: UniquePrismaFilter, list: InitialisedList) {
+export async function resolveUniqueWhereWithAccess(
+  inputWhere: UniqueInputFilter,
+  list: InitialisedList,
+  context: KeystoneContext
+): Promise<PrismaFilter> {
+  await checkFilterOrderAccess([...traverseUniqueWhere(list, inputWhere)], context, 'filter')
+  const uniqueWhere = await resolveUniqueWhereInput(inputWhere, list, context)
+  return mapUniqueWhereToWhere(uniqueWhere, list)
+}
+
+function* traverseUniqueWhere(
+  list: InitialisedList,
+  uniqueWhere: UniqueInputFilter | null
+): Generator<{ fieldKey: string; list: InitialisedList }, void, unknown> {
+  for (const [fieldKey, value] of Object.entries(uniqueWhere ?? {})) {
+    yield { fieldKey, list }
+    const { dbField, input } = list.fields[fieldKey]
+    if (dbField.kind !== 'relation') continue
+
+    const relatedList = list.lists[dbField.list]
+    if (input?.uniqueWhere?.arg.type === relatedList.graphql.types.uniqueWhere) {
+      yield* traverseUniqueWhere(relatedList, value)
+    }
+  }
+}
+
+// Wrap scalar values in equals so a unique resolver's result is used as a value.
+function mapUniqueWhereToWhere(uniqueWhere: UniquePrismaFilter, list: InitialisedList) {
   const where: PrismaFilter = {}
   for (const key in uniqueWhere) {
     if (list.fields[key].dbField.kind === 'relation') {
@@ -50,9 +74,9 @@ export function mapUniqueWhereToWhere(uniqueWhere: UniquePrismaFilter, list: Ini
   return where
 }
 
-export function* traverse(
+function* traverse(
   list: InitialisedList,
-  inputFilter: InputFilter | UniqueInputFilter
+  inputFilter: InputFilter
 ): Generator<{ fieldKey: string; list: InitialisedList }, void, unknown> {
   for (const fieldKey in inputFilter) {
     const value = inputFilter[fieldKey]
@@ -104,14 +128,10 @@ export async function findOne(
   if (accessFilters === false) return null
 
   // validate and resolve the input filter
-  const uniqueWhere = await resolveUniqueWhereInput(args.where, list, context)
-  const resolvedWhere = mapUniqueWhereToWhere(uniqueWhere, list)
+  const resolvedWhere = await resolveUniqueWhereWithAccess(args.where, list, context)
 
   // findOne requires at least one filter
   if (Object.keys(resolvedWhere).length === 0) return null
-
-  // check filter access
-  await checkFilterOrderAccess([...traverse(list, args.where)], context, 'filter')
 
   // apply access control
   const filter = await accessControlledFilter(list, context, resolvedWhere, accessFilters)
