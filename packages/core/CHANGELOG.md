@@ -1,5 +1,13 @@
 # @keystone-6/core
 
+## 8.3.1
+
+### Patch Changes
+
+- [#10090](https://github.com/keystonejs/keystone/pull/10090) [`6bd9674`](https://github.com/keystonejs/keystone/commit/6bd9674028014b7f4100d04010a998da892240a2) Thanks [@emmatown](https://github.com/emmatown)! - Fixes repeated form submissions in create view creating multiple items
+
+- [#10099](https://github.com/keystonejs/keystone/pull/10099) [`848e34a`](https://github.com/keystonejs/keystone/commit/848e34a9498f190df7b0c9b2fe44bd6fc922342a) Thanks [@AnkitJhadev](https://github.com/AnkitJhadev)! - Fixes `DateTime` and `CalendarDay` GraphQL scalars accepting impossible dates like `2021-02-30`, which were silently saved as a different date (e.g. `2021-03-02`)
+
 ## 8.3.0
 
 ### Minor Changes
