@@ -2,6 +2,7 @@ import { GInputObjectType, type GNullableInputType } from '@graphql-ts/schema'
 import type { GraphQLNamedType, GraphQLResolveInfo } from 'graphql/index.js'
 
 import type { BaseItem, KeystoneContext } from '../../../types/index.ts'
+import type { PrismaFilter } from '../../../types/prisma.ts'
 import { g } from '../../../types/schema/index.ts'
 import { withSpan } from '../../otel.ts'
 import {
@@ -9,8 +10,8 @@ import {
   cannotForItem,
   enforceFieldLevelAccessControl,
   enforceListLevelAccessControl,
-  getAccessFilters,
-  getOperationAccess,
+  getCreateOperationAccess,
+  getMutationOperationAndFilterAccess,
 } from '../access-control.ts'
 import {
   accessDeniedError,
@@ -28,7 +29,7 @@ import {
   getDBFieldKeyForFieldOnMultiField,
   promiseAllRejectWithAllErrors,
 } from '../utils.ts'
-import type { InputFilter, UniqueInputFilter } from '../where-inputs.ts'
+import type { UniqueInputFilter } from '../where-inputs.ts'
 import {
   RelationshipErrors,
   resolveRelateToManyForCreateInput,
@@ -43,7 +44,7 @@ async function getFilteredItem(
   list: InitialisedList,
   context: KeystoneContext,
   inputWhere: UniqueInputFilter,
-  accessFilters: boolean | InputFilter,
+  accessFilters: boolean | PrismaFilter,
   operation: 'update' | 'delete',
   inputData: Record<string, unknown>
 ) {
@@ -53,7 +54,7 @@ async function getFilteredItem(
   }
 
   const resolvedWhere = await resolveUniqueWhereWithAccess(inputWhere, list, context)
-  const where = await accessControlledFilter(list, context, resolvedWhere, accessFilters)
+  const where = accessControlledFilter(resolvedWhere, accessFilters)
   const item = await context.prisma[list.listKey].findFirst({
     where,
     select: selectExistingItem(list, operation, inputData),
@@ -67,11 +68,14 @@ async function createSingle__(
   inputData: Record<string, unknown>,
   list: InitialisedList,
   context: KeystoneContext,
+  operationAccess: boolean,
   info: GraphQLResolveInfo | undefined
 ) {
   return await withSpan(
     `create ${list.graphql.names.outputTypeNameLower}`,
     async span => {
+      if (!operationAccess) throw accessDeniedError(cannotForItem('create', list))
+
       // throw an accessDeniedError if not allowed
       await enforceListLevelAccessControl(context, 'create', list, inputData, undefined)
       await enforceFieldLevelAccessControl(context, 'create', list, inputData, undefined)
@@ -110,11 +114,16 @@ export class NestedMutationState {
   async create(data: Record<string, unknown>, list: InitialisedList) {
     const context = this.#context
 
-    const operationAccess = await getOperationAccess(list, context, 'create')
-    if (!operationAccess) throw accessDeniedError(cannotForItem('create', list))
+    const operationAccess = await getCreateOperationAccess(list, context)
 
     // before operation AND operation
-    const { item, afterOperation } = await createSingle__(data, list, context, undefined)
+    const { item, afterOperation } = await createSingle__(
+      data,
+      list,
+      context,
+      operationAccess,
+      undefined
+    )
 
     // after operation
     this.#afterOperations.push(() => afterOperation(item))
@@ -140,7 +149,7 @@ async function updateSingle__(
   { where, data: inputData }: UpdateInput,
   list: InitialisedList,
   context: KeystoneContext,
-  accessFilters: boolean | InputFilter,
+  accessFilters: boolean | PrismaFilter,
   info: GraphQLResolveInfo
 ) {
   return await withSpan(
@@ -190,7 +199,7 @@ async function deleteSingle__(
   where: UniqueInputFilter,
   list: InitialisedList,
   context: KeystoneContext,
-  accessFilters: boolean | InputFilter,
+  accessFilters: boolean | PrismaFilter,
   info: GraphQLResolveInfo
 ) {
   return await withSpan(
@@ -242,11 +251,14 @@ async function actionSingle__(
   context: KeystoneContext,
   list: InitialisedList,
   action: InitialisedAction,
-  { where, args }: ActionInput
+  { where, args }: ActionInput,
+  operationAccess: boolean
 ) {
   return await withSpan(
     action.otel,
     async span => {
+      if (!operationAccess) throw accessDeniedError(cannotActionForItem(action, list))
+
       // no before operation hook for actions
 
       // operation
@@ -276,14 +288,15 @@ async function createOne(
   context: KeystoneContext,
   info: GraphQLResolveInfo
 ) {
-  const operationAccess = await getOperationAccess(list, context, 'create')
-  if (!operationAccess) throw accessDeniedError(cannotForItem('create', list))
+  const operationAccess = await getCreateOperationAccess(list, context)
 
-  // get list-level access control filters
-  //   NOTHING - no filters for create operations
-
-  // operation
-  const { item, afterOperation } = await createSingle__(inputData ?? {}, list, context, info)
+  const { item, afterOperation } = await createSingle__(
+    inputData ?? {},
+    list,
+    context,
+    operationAccess,
+    info
+  )
 
   // after operation // TODO: move to createSingle__
   await afterOperation(item)
@@ -297,19 +310,16 @@ async function createMany(
   context: KeystoneContext,
   info: GraphQLResolveInfo
 ) {
-  const operationAccess = await getOperationAccess(list, context, 'create')
-  // WARNING: we do not short-circuit here, we throw for each
-
-  // get list-level access control filters
-  //   NOTHING - no filters for create operations
+  const operationAccess = await getCreateOperationAccess(list, context)
 
   return inputDatas.map(async inputData => {
-    // throw for each attempt
-    if (!operationAccess) throw accessDeniedError(cannotForItem('create', list))
-
-    // operation
-    const { item, afterOperation } = await createSingle__(inputData ?? {}, list, context, info)
-
+    const { item, afterOperation } = await createSingle__(
+      inputData ?? {},
+      list,
+      context,
+      operationAccess,
+      info
+    )
     // after operation // TODO: move to createSingle__
     await afterOperation(item)
 
@@ -323,11 +333,7 @@ async function updateOne(
   context: KeystoneContext,
   info: GraphQLResolveInfo
 ) {
-  const operationAccess = await getOperationAccess(list, context, 'update')
-  if (!operationAccess) throw accessDeniedError(cannotForItem('update', list))
-
-  // get list-level access control filters
-  const accessFilters = await getAccessFilters(list, context, 'update')
+  const accessFilters = await getMutationOperationAndFilterAccess(list, context, 'update')
 
   return updateSingle__(updateInput, list, context, accessFilters, info)
 }
@@ -338,18 +344,11 @@ async function updateMany(
   context: KeystoneContext,
   info: GraphQLResolveInfo
 ) {
-  const operationAccess = await getOperationAccess(list, context, 'update')
-  // WARNING: we do not short-circuit here, we throw for each
+  const accessFilters = await getMutationOperationAndFilterAccess(list, context, 'update')
 
-  // get list-level access control filters
-  const accessFilters = await getAccessFilters(list, context, 'update')
-
-  return updateManyInput.map(async updateInput => {
-    // throw for each attempt
-    if (!operationAccess) throw accessDeniedError(cannotForItem('update', list))
-
-    return updateSingle__(updateInput, list, context, accessFilters, info)
-  })
+  return updateManyInput.map(updateInput =>
+    updateSingle__(updateInput, list, context, accessFilters, info)
+  )
 }
 
 async function deleteOne(
@@ -358,11 +357,7 @@ async function deleteOne(
   context: KeystoneContext,
   info: GraphQLResolveInfo
 ) {
-  const operationAccess = await getOperationAccess(list, context, 'delete')
-  if (!operationAccess) throw accessDeniedError(cannotForItem('delete', list))
-
-  // get list-level access control filters
-  const accessFilters = await getAccessFilters(list, context, 'delete')
+  const accessFilters = await getMutationOperationAndFilterAccess(list, context, 'delete')
 
   return deleteSingle__(where, list, context, accessFilters, info)
 }
@@ -373,18 +368,9 @@ async function deleteMany(
   context: KeystoneContext,
   info: GraphQLResolveInfo
 ) {
-  const operationAccess = await getOperationAccess(list, context, 'delete')
-  // WARNING: we do not short-circuit here, we throw for each
+  const accessFilters = await getMutationOperationAndFilterAccess(list, context, 'delete')
 
-  // get list-level access control filters
-  const accessFilters = await getAccessFilters(list, context, 'delete')
-
-  return wheres.map(async where => {
-    // throw for each attempt
-    if (!operationAccess) throw accessDeniedError(cannotForItem('delete', list))
-
-    return deleteSingle__(where, list, context, accessFilters, info)
-  })
+  return wheres.map(where => deleteSingle__(where, list, context, accessFilters, info))
 }
 
 async function actionOne(
@@ -399,12 +385,8 @@ async function actionOne(
     listKey: list.listKey,
     actionKey: action.actionKey,
   })
-  if (!operationAccess) throw accessDeniedError(cannotActionForItem(action, list))
 
-  // get list-level access control filters
-  //   NOTHING - no filters for action operations
-
-  return actionSingle__(context, list, action, input)
+  return actionSingle__(context, list, action, input, operationAccess)
 }
 
 async function actionMany(
@@ -419,17 +401,10 @@ async function actionMany(
     listKey: list.listKey,
     actionKey: action.actionKey,
   })
-  // WARNING: we do not short-circuit here, we throw for each
 
-  // get list-level access control filters
-  //   NOTHING - no filters for action operations
-
-  return inputs.map(async ({ where, ...args }) => {
-    // throw for each attempt
-    if (!operationAccess) throw accessDeniedError(cannotActionForItem(action, list))
-
-    return actionSingle__(context, list, action, { where, args })
-  })
+  return inputs.map(({ where, ...args }) =>
+    actionSingle__(context, list, action, { where, args }, operationAccess)
+  )
 }
 
 async function getResolvedData(

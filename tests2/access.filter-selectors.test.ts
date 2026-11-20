@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict'
 import { describe, test } from 'node:test'
 
-import { g, list } from '@keystone-6/core'
+import { action, g, list } from '@keystone-6/core'
 import { allowAll, denyAll } from '@keystone-6/core/access'
 import { integer, relationship, text } from '@keystone-6/core/fields'
 import type { KeystoneContext } from '@keystone-6/core/types'
@@ -9,6 +9,16 @@ import { mutation, query } from '../tests/api-tests/run-field.ts'
 import { dbProvider, setupTestSuite } from './utils.ts'
 
 const apis = ['graphql', 'db'] as const
+
+function mutationOperationAccess({ session }: Pick<KeystoneContext, 'session'>) {
+  session?.accessCalls?.push('operation')
+  return !session?.denyOperation
+}
+
+function mutationFilterAccess({ session }: Pick<KeystoneContext, 'session'>) {
+  session?.accessCalls?.push('filter')
+  return true
+}
 
 function postAPI(context: KeystoneContext, api: (typeof apis)[number]) {
   if (api === 'db') return context.db.Post
@@ -52,9 +62,43 @@ describe(`selector field access (${dbProvider})`, () => {
           },
         }),
         Post: list({
-          access: allowAll,
+          access: {
+            operation: mutationOperationAccess,
+            filter: { update: mutationFilterAccess, delete: mutationFilterAccess },
+          },
+          actions: {
+            publish: action({
+              access: mutationOperationAccess,
+              ui: { label: 'Publish' },
+              resolve: ({ where }, context) => context.db.Post.findOne({ where }),
+            }),
+          },
           fields: {
-            title: text(),
+            title: meta => {
+              const field = text({
+                access: {
+                  read: {
+                    item: allowAll,
+                    filter: ({ session }) => !session?.denyTitleFilter,
+                    order: allowAll,
+                  },
+                },
+              })(meta)
+              const where = field.input!.where!
+              return {
+                ...field,
+                input: {
+                  ...field.input,
+                  where: {
+                    ...where,
+                    resolve(_value, context) {
+                      context.session?.accessCalls?.push('resolve')
+                      throw new Error('Cannot resolve access filter')
+                    },
+                  },
+                },
+              }
+            },
             author: meta => {
               const field = relationship({ ref: 'Author.post' })(meta)
               const uniqueWhere = field.input!.uniqueWhere!
@@ -164,6 +208,52 @@ describe(`selector field access (${dbProvider})`, () => {
         restricted.findOne({ where }),
         /You cannot filter that Post.*authorByAlias/
       )
+    }
+  })
+
+  test('checks field filter access before resolving list and count filters', async () => {
+    const { context } = await seeded
+    const accessCalls: string[] = []
+    const post = context.withSession({ denyTitleFilter: true, accessCalls }).db.Post
+    const where = { title: { equals: 'Post' } }
+    const deniedTitle = /You cannot filter that Post.*title/
+
+    await assert.rejects(post.findMany({ where }), deniedTitle)
+    await assert.rejects(post.count({ where }), deniedTitle)
+    assert.deepEqual(accessCalls, ['operation', 'operation'])
+  })
+
+  test('checks bulk access once and reports denials per item', async () => {
+    const { context, post } = await seeded
+    const where = `{ id: ${JSON.stringify(post.id)} }`
+    const update = `{ where: ${where}, data: { title: "Updated" } }`
+    const actionInput = `{ where: ${where} }`
+    const mutations = [
+      'createPosts(data: [{ title: "One" }, { title: "Two" }])',
+      `updatePosts(data: [${update}, ${update}])`,
+      `deletePosts(where: [${where}, ${where}])`,
+      `publishPosts(data: [${actionInput}, ${actionInput}])`,
+    ]
+
+    for (const field of mutations) {
+      const accessCalls: string[] = []
+      const { data, errors } = await context
+        .withSession({ denyOperation: true, accessCalls })
+        .graphql.raw<{ result: null[] }, Record<string, never>>({
+          query: `mutation { result: ${field} { id } }`,
+        })
+
+      assert.deepEqual(accessCalls, ['operation'])
+      assert.deepEqual(data?.result, [null, null])
+      assert.ok(errors)
+      assert.deepEqual(
+        errors.map(error => error.path),
+        [
+          ['result', 0],
+          ['result', 1],
+        ]
+      )
+      for (const error of errors) assert.match(error.message, /Access denied/)
     }
   })
 })

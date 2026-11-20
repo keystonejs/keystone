@@ -23,6 +23,7 @@ import type {
   QueryOperationKind,
   UpdateListItemAccessControl,
 } from '../../types/index.ts'
+import type { PrismaFilter } from '../../types/prisma.ts'
 import { coerceAndValidateForGraphQLInput } from '../coerceAndValidateForGraphQLInput.ts'
 import {
   accessDeniedError,
@@ -35,6 +36,7 @@ import {
   type InputFilter,
   type UniqueInputFilter,
   resolveUniqueWhereInput,
+  resolveWhereInput,
 } from './where-inputs.ts'
 
 export function cannotForItem(operation: string, list: InitialisedList) {
@@ -109,7 +111,20 @@ function validateFieldReadAccess(result: unknown, listKey: string, fieldKey: str
   return result
 }
 
-export async function getOperationAccess(
+export function getCreateOperationAccess(list: InitialisedList, context: KeystoneContext) {
+  return getOperationAccess(list, context, 'create')
+}
+
+export async function getMutationOperationAndFilterAccess(
+  list: InitialisedList,
+  context: KeystoneContext,
+  operation: 'update' | 'delete'
+): Promise<boolean | PrismaFilter> {
+  const operationAccess = await getOperationAccess(list, context, operation)
+  return operationAccess ? getAccessFilters(list, context, operation) : false
+}
+
+async function getOperationAccess(
   list: InitialisedList,
   context: KeystoneContext,
   operation: 'create' | 'update' | 'delete'
@@ -156,11 +171,11 @@ export async function getOperationAccess(
   return result
 }
 
-export async function getOperationQueryAccess<Kind extends QueryOperationKind>(
+export async function getQueryOperationAndFilterAccess<Kind extends QueryOperationKind>(
   list: InitialisedList,
   context: KeystoneContext,
   kind: Kind
-) {
+): Promise<boolean | PrismaFilter> {
   if (context.__internal.sudo) return true
 
   const { listKey } = list
@@ -185,16 +200,17 @@ export async function getOperationQueryAccess<Kind extends QueryOperationKind>(
     ])
   }
 
-  return result
+  return result ? getAccessFilters(list, context, 'query', kind) : false
 }
 
-export async function getAccessFilters<Kind extends QueryOperationKind>(
+async function getAccessFilters<Kind extends QueryOperationKind>(
   list: InitialisedList,
   context: KeystoneContext,
   ...[operation, kind]: ['query', Kind] | ['update' | 'delete']
-): Promise<boolean | InputFilter> {
+): Promise<boolean | PrismaFilter> {
   if (context.__internal.sudo) return true
 
+  let input: InputFilter
   try {
     let filters
     if (operation === 'query') {
@@ -227,13 +243,15 @@ export async function getAccessFilters<Kind extends QueryOperationKind>(
     const schema = context.sudo().graphql.schema
     const whereInput = assertInputObjectType(schema.getType(list.graphql.names.whereInputName))
     const result = coerceAndValidateForGraphQLInput(schema, whereInput, filters)
-    if (result.kind === 'valid') return result.value
-    throw result.error
+    if (result.kind !== 'valid') throw result.error
+    input = result.value
   } catch (error: any) {
     throw extensionError('Access control', [
       { error, tag: `${list.listKey}.access.filter.${operation}${kind ? `.${kind}` : ''}` },
     ])
   }
+
+  return resolveWhereInput(input, list, context)
 }
 
 export async function enforceListLevelAccessControl(
