@@ -32,7 +32,11 @@ import {
   formatKeys,
 } from './graphql-errors.ts'
 import type { InitialisedAction, InitialisedList } from './initialise-lists.ts'
-import { type InputFilter, type UniqueInputFilter, resolveWhereInput } from './where-inputs.ts'
+import {
+  type InputFilter,
+  type UniqueInputFilter,
+  resolveAccessFilterWhereInput,
+} from './where-inputs.ts'
 
 export function cannotForItem(operation: string, list: InitialisedList) {
   if (operation === 'create')
@@ -246,7 +250,7 @@ async function getAccessFilters<Kind extends QueryOperationKind>(
     ])
   }
 
-  return resolveWhereInput(input, list, context)
+  return resolveAccessFilterWhereInput(input, list, context)
 }
 
 export async function enforceListLevelAccessControl(

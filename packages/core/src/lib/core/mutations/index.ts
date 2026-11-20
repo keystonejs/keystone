@@ -54,6 +54,8 @@ async function getFilteredItem(
   }
 
   const resolvedWhere = await resolveUniqueWhereWithAccess(inputWhere, list, context)
+  if (resolvedWhere === false) throw accessDeniedError(cannotForItem(operation, list))
+
   const where = accessControlledFilter(resolvedWhere, accessFilters)
   const item = await context.prisma[list.listKey].findFirst({
     where,
