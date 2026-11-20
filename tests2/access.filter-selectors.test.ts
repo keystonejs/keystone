@@ -149,6 +149,10 @@ describe(`selector field access (${dbProvider})`, () => {
             },
           },
         }),
+        Tag: list({
+          access: allowAll,
+          fields: { post: relationship({ ref: 'Post' }) },
+        }),
       },
     },
   })()
@@ -255,5 +259,24 @@ describe(`selector field access (${dbProvider})`, () => {
       )
       for (const error of errors) assert.match(error.message, /Access denied/)
     }
+  })
+
+  test('checks connect selectors before resolving relationship fields', async () => {
+    const { context } = await seeded
+    const resolvedSelectors: unknown[] = []
+    const restricted = context.withSession({ denyNameFilter: true, resolvedSelectors })
+
+    await assert.rejects(
+      restricted.db.Tag.createOne({
+        data: { post: { connect: { author: { name: 'Alice' } } } },
+      }),
+      /You cannot connect that Post/
+    )
+    assert.deepEqual(resolvedSelectors, [])
+
+    await assert.rejects(
+      context.db.Tag.createOne({ data: { post: { connect: { id: '' } } } }),
+      /Input error: Only a string can be passed to id filters/
+    )
   })
 })
