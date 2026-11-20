@@ -18,16 +18,38 @@ export async function resolveUniqueWhereInput(
   list: InitialisedList,
   context: KeystoneContext
 ): Promise<UniquePrismaFilter> {
+  // an empty unique where, or a null value in one, would select an arbitrary item
+  if (Object.keys(inputFilter).length === 0) {
+    throw userInputError(
+      `At least one key must be passed to ${list.graphql.types.uniqueWhere.name}`
+    )
+  }
   const where: UniquePrismaFilter = {}
   for (const key in inputFilter) {
     const value = inputFilter[key]
-
-    const resolver = list.fields[key].input!.uniqueWhere!.resolve
-    if (resolver !== undefined) {
-      where[key] = await resolver(value, context)
-    } else {
-      where[key] = value
+    if (value === null) {
+      throw userInputError(
+        `The key "${key}" in ${list.graphql.types.uniqueWhere.name} cannot be set to null`
+      )
     }
+    const { dbField, input } = list.fields[key]
+    const resolver = input!.uniqueWhere!.resolve
+    const resolved = resolver
+      ? await resolver(
+          value,
+          context,
+          dbField.kind === 'relation'
+            ? (foreignInput: UniqueInputFilter) =>
+                resolveUniqueWhereInput(foreignInput, list.lists[dbField.list], context)
+            : undefined
+        )
+      : value
+    if (resolved == null) {
+      throw userInputError(
+        `The key "${key}" in ${list.graphql.types.uniqueWhere.name} must resolve to a non-null value`
+      )
+    }
+    where[key] = resolved
   }
 
   return where

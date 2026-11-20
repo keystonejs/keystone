@@ -116,8 +116,7 @@ export function equalityFilterTests(
 
 export function uniqueEqualityFilterTest(
   field: FieldTypeFunc<BaseListTypeInfo>,
-  values: readonly unknown[],
-  isNullable: boolean
+  values: readonly unknown[]
 ) {
   const runner = filterTestRunner(field)
   test(
@@ -138,16 +137,14 @@ export function uniqueEqualityFilterTest(
       )
     })
   )
-  if (isNullable) {
-    test(
-      'unique filter with null returns null',
-      runner(async ({ context }) => {
-        const result = await query(context).test({
-          where: { testField: null },
-          query: 'index',
-        })
-        expect(result).toEqual(null)
-      })
-    )
-  }
+  test(
+    'unique filter with null throws',
+    runner(async ({ context }) => {
+      await expect(
+        query(context).test({ where: { testField: null }, query: 'index' })
+      ).rejects.toThrow(
+        'Input error: The key "testField" in TestWhereUniqueInput cannot be set to null'
+      )
+    })
+  )
 }
