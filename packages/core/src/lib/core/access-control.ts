@@ -1,4 +1,4 @@
-import { assertInputObjectType } from 'graphql/index.js'
+import { assertInputObjectType, GraphQLError } from 'graphql/index.js'
 
 import { allowAll } from '../../access.ts'
 import type {
@@ -32,12 +32,7 @@ import {
   formatKeys,
 } from './graphql-errors.ts'
 import type { InitialisedAction, InitialisedList } from './initialise-lists.ts'
-import {
-  type InputFilter,
-  type UniqueInputFilter,
-  resolveUniqueWhereInput,
-  resolveWhereInput,
-} from './where-inputs.ts'
+import { type InputFilter, type UniqueInputFilter, resolveWhereInput } from './where-inputs.ts'
 
 export function cannotForItem(operation: string, list: InitialisedList) {
   if (operation === 'create')
@@ -605,17 +600,18 @@ export async function checkUniqueItemExists(
   context: KeystoneContext,
   operation: string
 ) {
-  // Validate and resolve the input filter
-  const uniqueWhere = await resolveUniqueWhereInput(uniqueInput, foreignList, context)
-
-  // Check whether the item exists (from this users POV).
+  // Check field permissions and find the item visible to the caller.
+  let item: BaseItem | null
   try {
-    const item = await context.db[foreignList.listKey].findOne({
+    item = await context.db[foreignList.listKey].findOne({
       where: uniqueInput,
       select: { id: true },
     })
-    if (item !== null) return uniqueWhere
-  } catch (err) {}
+  } catch (err) {
+    if (err instanceof GraphQLError && err.extensions.code === 'KS_USER_INPUT_ERROR') throw err
+    item = null
+  }
 
-  throw accessDeniedError(cannotForItem(operation, foreignList))
+  if (item === null) throw accessDeniedError(cannotForItem(operation, foreignList))
+  return { id: item.id }
 }
