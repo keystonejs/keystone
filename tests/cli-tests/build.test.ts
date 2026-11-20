@@ -104,3 +104,36 @@ test('process.env.NODE_ENV is production in production', async () => {
   })
   startResult.kill()
 })
+
+test.each(['SIGINT', 'SIGTERM'] as const)('start shuts down gracefully on %s', async signal => {
+  const cwd = await testdir({
+    ...symlinkKeystoneDeps,
+    ...schemas,
+    'keystone.ts': await readFile(`${__dirname}/fixtures/log-shutdown.ts`, 'utf8'),
+  })
+  await cliMock(cwd, ['build', '--no-ui'])
+
+  const startResult = execa('node', [cliBinPath, 'start'], {
+    reject: false,
+    all: true,
+    cwd,
+    env: {
+      PORT: '0',
+      NEXT_TELEMETRY_DISABLED: '1',
+    } as any,
+  })
+  let output = ''
+  await new Promise<void>(resolve => {
+    startResult.all!.on('data', data => {
+      output += data
+      if (output.includes('Server listening')) resolve()
+    })
+  })
+  startResult.kill(signal)
+
+  const result = await startResult
+  expect(result.exitCode, output + result.all).toBe(0)
+  expect(result.all).toContain(`Received ${signal}, shutting down`)
+  expect(result.all).toContain('CLI-TESTS-HTTP-SERVER-CLOSED')
+  expect(result.all).toContain('Keystone stopped')
+})

@@ -159,6 +159,8 @@ This command starts Keystone in **production** mode. It requires a build to have
 
 It will not generate or apply any database migrations - these should be run during the **build** or **release** phase of your production deployment.
 
+Keystone shuts down gracefully when the process receives `SIGINT` or `SIGTERM` (for example when a container or pod is stopped): it stops accepting new connections, waits for in-flight requests to complete, stops Apollo Server and disconnects the Prisma Client before exiting. Sending the signal a second time while shutting down exits immediately.
+
 ### start flags
 
 - `--no-server` - Don't start the Express server
