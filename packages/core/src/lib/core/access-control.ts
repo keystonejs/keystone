@@ -32,12 +32,7 @@ import {
   formatKeys,
 } from './graphql-errors.ts'
 import type { InitialisedAction, InitialisedList } from './initialise-lists.ts'
-import {
-  type InputFilter,
-  type UniqueInputFilter,
-  resolveUniqueWhereInput,
-  resolveWhereInput,
-} from './where-inputs.ts'
+import { type InputFilter, type UniqueInputFilter, resolveWhereInput } from './where-inputs.ts'
 
 export function cannotForItem(operation: string, list: InitialisedList) {
   if (operation === 'create')
@@ -605,17 +600,11 @@ export async function checkUniqueItemExists(
   context: KeystoneContext,
   operation: string
 ) {
-  // Validate and resolve the input filter
-  const uniqueWhere = await resolveUniqueWhereInput(uniqueInput, foreignList, context)
+  const item = await context.db[foreignList.listKey].findOne({
+    where: uniqueInput,
+    select: { id: true },
+  })
 
-  // Check whether the item exists (from this users POV).
-  try {
-    const item = await context.db[foreignList.listKey].findOne({
-      where: uniqueInput,
-      select: { id: true },
-    })
-    if (item !== null) return uniqueWhere
-  } catch (err) {}
-
-  throw accessDeniedError(cannotForItem(operation, foreignList))
+  if (item === null) throw accessDeniedError(cannotForItem(operation, foreignList))
+  return { id: item.id }
 }
