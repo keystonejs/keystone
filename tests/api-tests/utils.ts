@@ -167,7 +167,7 @@ export const expectSingleResolverError = (
     {
       path: [path],
       messages: [`${fieldPath}: ${message}`],
-      debug: [{ message, stacktrace: expect.stringMatching(new RegExp(`Error: ${message}\n`)) }],
+      debug: [{ message, stacktrace: expect.stringContaining(`Error: ${message}\n`) }],
     },
   ])
 
@@ -194,7 +194,7 @@ export function expectSingleRelationshipError(
     {
       path: [path],
       messages: [`${fieldPath}: ${message}`],
-      debug: [{ message, stacktrace: expect.stringMatching(new RegExp(`Error: ${message}\n`)) }],
+      debug: [{ message, stacktrace: expect.stringContaining(`Error: ${message}\n`) }],
     },
   ])
 }
