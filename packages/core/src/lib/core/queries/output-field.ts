@@ -9,7 +9,7 @@ import type {
   KeystoneContext,
   NextFieldType,
 } from '../../../types/index.ts'
-import { getAccessFilters, getReadFieldAccess, getOperationQueryAccess } from '../access-control.ts'
+import { getQueryOperationAndFilterAccess, getReadFieldAccess } from '../access-control.ts'
 import type { InitialisedList } from '../initialise-lists.ts'
 import type { ResolvedDBField, ResolvedRelationDBField } from '../resolve-relationships.ts'
 import { type IdType, getDBFieldKeyForFieldOnMultiField, weakMemoize } from '../utils.ts'
@@ -227,22 +227,12 @@ async function fetchRelatedItems(
   idFieldKey: string,
   toFetch: readonly IdType[]
 ) {
-  const operationAccess = await getOperationQueryAccess(foreignList, context, 'one')
-  if (!operationAccess) {
-    return new Map<IdType, BaseItem>()
-  }
-
-  const accessFilters = await getAccessFilters(foreignList, context, 'query', 'one')
+  const accessFilters = await getQueryOperationAndFilterAccess(foreignList, context, 'one')
   if (accessFilters === false) {
     return new Map<IdType, BaseItem>()
   }
 
-  const resolvedWhere = await accessControlledFilter(
-    foreignList,
-    context,
-    { [idFieldKey]: { in: toFetch } },
-    accessFilters
-  )
+  const resolvedWhere = accessControlledFilter({ [idFieldKey]: { in: toFetch } }, accessFilters)
 
   const results = await context.prisma[foreignList.listKey].findMany({
     where: resolvedWhere,
