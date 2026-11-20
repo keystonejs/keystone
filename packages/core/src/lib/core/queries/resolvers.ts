@@ -160,9 +160,19 @@ export async function findMany(
   // Check access to the user-supplied filters before invoking their resolvers.
   await checkFilterOrderAccess([...traverse(list, where)], context, 'filter')
 
-  // check filter access for cursor
+  // validate and resolve the cursor, checking filter access before running field resolvers
+  let resolvedCursor: UniquePrismaFilter | undefined
   if (cursor) {
-    await checkFilterOrderAccess([...traverse(list, cursor)], context, 'filter')
+    const fields = Object.keys(cursor).map(fieldKey => ({ fieldKey, list }))
+    for (const { fieldKey } of fields) {
+      if (list.fields[fieldKey].dbField.kind === 'relation') {
+        throw userInputError(
+          `The relationship field "${list.listKey}.${fieldKey}" cannot be used in a cursor`
+        )
+      }
+    }
+    await checkFilterOrderAccess(fields, context, 'filter')
+    resolvedCursor = await resolveUniqueWhereInput(cursor, list, context)
   }
 
   const resolvedWhere = await resolveWhereInput(where, list, context)
@@ -177,16 +187,20 @@ export async function findMany(
     orderBy,
     take: take ?? undefined,
     skip,
-    cursor: cursor ?? undefined,
+    cursor: resolvedCursor,
     select: selectForQuery(list, select),
   })
   let results: BaseItem[]
-  if (cursor && accessFilters !== true) {
+  if (resolvedCursor && accessFilters !== true) {
+    const cursorWhere = Object.fromEntries(
+      Object.entries(resolvedCursor).map(([key, value]) => [key, { equals: value }])
+    )
+
     // Prisma locates the cursor without the list's access filter. Check its visibility
     // concurrently with fetching the page, and discard the page if the cursor is hidden.
     const [cursorItem, items] = await Promise.all([
       context.prisma[list.listKey].findFirst({
-        where: accessControlledFilter(mapUniqueWhereToWhere(cursor, list), accessFilters),
+        where: accessControlledFilter(cursorWhere, accessFilters),
         select: { id: true },
       }),
       query,
