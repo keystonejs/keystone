@@ -58,7 +58,11 @@ jobs:
       - uses: ./.github/actions/ci-setup
 
       - name: Unit tests
-        run: DATABASE_URL=file:./test.db pnpm vitest run packages/core/tests/telemetry.test.ts tests/cli-tests
+        run: >-
+          DATABASE_URL=file:./test.db pnpm vitest run
+          packages/core/tests/telemetry.test.ts
+          packages/core/src/types/schema/scalars.test.ts
+          tests/cli-tests
 
   vitest:
     name: Package Unit Tests (Vitest)
