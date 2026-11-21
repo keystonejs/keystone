@@ -14,22 +14,24 @@
   "dependencies": {
     "@babel/runtime": "^7.24.7",
     "@keystar/ui": "catalog:",
-    "cloudinary": "^2.0.0"
+    "cloudinary": "^2.0.0",
+    "@keystone-6/fields-media-multipart": "workspace:^"
   },
   "peerDependencies": {
     "@keystone-6/core": "^8.2.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "@keystar/ui": "catalog:"
+    "@keystar/ui": "catalog:",
+    "graphql-upload": "^17.1.0"
   },
   "devDependencies": {
     "@keystone-6/core": "workspace:^",
     "@types/express": "catalog:",
     "@types/react": "catalog:",
     "graphql": "catalog:",
-    "graphql-upload": "^15.0.2",
     "react": "catalog:",
-    "react-dom": "catalog:"
+    "react-dom": "catalog:",
+    "graphql-upload": "^17.1.0"
   },
   "preconstruct": {
     "entrypoints": [

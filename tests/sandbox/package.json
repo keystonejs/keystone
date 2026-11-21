@@ -20,11 +20,14 @@
     "react": "catalog:",
     "react-dom": "catalog:",
     "better-sqlite3": "catalog:",
-    "pg": "catalog:"
+    "pg": "catalog:",
+    "@keystone-6/fields-media-multipart": "workspace:^",
+    "graphql-upload": "^17.1.0"
   },
   "repository": "https://github.com/keystonejs/keystone/tree/main/tests/sandbox",
   "devDependencies": {
     "prisma": "catalog:",
-    "typescript": "catalog:"
+    "typescript": "catalog:",
+    "@types/express": "catalog:"
   }
 }
