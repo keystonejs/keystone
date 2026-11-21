@@ -217,7 +217,7 @@ export function printPrismaSchema(
     listKey,
     {
       resolvedDbFields,
-      prisma: { mapping, extendPrismaSchema: extendPrismaListSchema },
+      prisma: { mapping, indexes, extendPrismaSchema: extendPrismaListSchema },
       isSingleton,
     },
   ] of Object.entries(lists)) {
@@ -238,6 +238,10 @@ export function printPrismaSchema(
           field.extendPrismaSchema ? field.extendPrismaSchema(fieldPrisma) : fieldPrisma
         )
       }
+    }
+
+    for (const { kind, fields } of indexes) {
+      listPrisma.push(`@@${kind}([${fields.join(', ')}])`)
     }
 
     if (mapping !== undefined) {
