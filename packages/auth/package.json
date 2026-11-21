@@ -15,7 +15,9 @@
   "dependencies": {
     "@babel/runtime": "^7.24.7",
     "@keystar/ui": "catalog:",
+    "cookie": "^1.0.0",
     "graphql": "catalog:",
+    "jose": "^6.0.0",
     "react-aria": "catalog:"
   },
   "devDependencies": {

@@ -122,7 +122,6 @@ const [alice, bob] = await context.db.Person.createMany({
     { name: 'Alice', email: 'alice@example.com', password: 'super-secret' },
     { name: 'Bob', email: 'bob@example.com', password: 'super-secret' },
   ],
-  select: { id: true },
 })
 
 // Create a task assigned to Alice
@@ -137,7 +136,7 @@ const task = await context.db.Task.createOne({
 })
 
 // Check that we can't update the task when logged in as Bob
-const bobContext = context.withSession({ itemId: bob.id.toString(), data: {} })
+const bobContext = context.withSession({ user: bob })
 const { data, errors } = await bobContext.graphql.raw({
   query: graphql(`
     mutation CompleteTask($id: ID!) {
