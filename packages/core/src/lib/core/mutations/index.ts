@@ -5,6 +5,7 @@ import type { BaseItem, KeystoneContext } from '../../../types/index.ts'
 import type { PrismaFilter } from '../../../types/prisma.ts'
 import { g } from '../../../types/schema/index.ts'
 import { withSpan } from '../../otel.ts'
+import { registerTransactionHooks } from '../../context/transaction-hooks.ts'
 import {
   cannotActionForItem,
   cannotForItem,
@@ -79,12 +80,8 @@ async function createSingle__(
       // throw an accessDeniedError if not allowed
       await enforceListLevelAccessControl(context, 'create', list, inputData, undefined)
       await enforceFieldLevelAccessControl(context, 'create', list, inputData, undefined)
-      const { beforeOperation, afterOperation, data } = await resolveInputForCreateOrUpdate(
-        list,
-        context,
-        inputData,
-        undefined
-      )
+      const { beforeOperation, afterOperation, registerTransaction, data } =
+        await resolveInputForCreateOrUpdate(list, context, inputData, undefined)
 
       // before operation
       await beforeOperation()
@@ -94,6 +91,7 @@ async function createSingle__(
         data: list.isSingleton ? { ...data, id: 1 } : data,
         select: selectMutationResult(list, 'create', inputData, info),
       })
+      registerTransaction(result)
 
       span.setAttribute('keystone.result.id', result?.id ?? '')
       return { item: result, afterOperation }
@@ -168,12 +166,8 @@ async function updateSingle__(
       // throw an accessDeniedError if not allowed
       await enforceListLevelAccessControl(context, 'update', list, inputData ?? {}, item)
       await enforceFieldLevelAccessControl(context, 'update', list, inputData ?? {}, item)
-      const { beforeOperation, afterOperation, data } = await resolveInputForCreateOrUpdate(
-        list,
-        context,
-        inputData ?? {},
-        item
-      )
+      const { beforeOperation, afterOperation, registerTransaction, data } =
+        await resolveInputForCreateOrUpdate(list, context, inputData ?? {}, item)
 
       // before operation
       await beforeOperation()
@@ -184,6 +178,7 @@ async function updateSingle__(
         data,
         select: selectMutationResult(list, 'update', inputData ?? {}, info),
       })
+      registerTransaction(result)
       span.setAttribute('keystone.result.id', result?.id ?? '')
 
       // after operation
@@ -231,6 +226,12 @@ async function deleteSingle__(
       const result = await context.prisma[list.listKey].delete({
         where: { id: item.id },
         select: selectMutationResult(list, 'delete', {}, info),
+      })
+
+      registerTransactionHooks(list, {
+        ...hookArgs,
+        item: undefined,
+        originalItem: item,
       })
       span.setAttribute('keystone.result.id', result?.id ?? '')
 
@@ -590,6 +591,9 @@ async function resolveInputForCreateOrUpdate(
   // and the afterOperation hook to be applied
   return {
     data: transformForPrismaClient(list, context, hookArgs.resolvedData),
+    registerTransaction: (updatedItem: BaseItem) => {
+      registerTransactionHooks(list, { ...hookArgs, item: updatedItem })
+    },
     beforeOperation: async () => {
       // before operation
       await runSideEffectOnlyHook(list, 'beforeOperation', hookArgs)
