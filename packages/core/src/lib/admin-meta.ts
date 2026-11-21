@@ -80,6 +80,7 @@ type ListMetaSource_ = {
   groups: {
     label: EmptyResolver<string>
     description: EmptyResolver<string>
+    defaultOpen: boolean
     fields: FieldMetaSource[]
   }[]
   actions: ActionMetaSource[]
@@ -351,6 +352,7 @@ export function createAdminMeta(
       listMeta.groups.push({
         label: normalizeMaybeSessionFunction(group.label),
         description: normalizeMaybeSessionFunction(group.description),
+        defaultOpen: group.ui?.defaultOpen ?? true,
         fields: group.fields.map(
           fieldKey => adminMetaRoot.listsByKey[listKey].fieldsByKey[fieldKey]
         ),

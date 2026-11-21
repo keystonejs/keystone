@@ -340,6 +340,7 @@ enum QueryMode {
 type KeystoneAdminUIFieldGroupMeta {
   label: String!
   description: String
+  defaultOpen: Boolean!
   fields: [KeystoneAdminUIFieldMeta!]!
 }
 
