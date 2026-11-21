@@ -178,7 +178,7 @@ The way to think about access control is –
 In other words: **Step 1** load data about the current user; **Step 2** use that data to limit what they can do.
 {% /hint %}
 
-You define access control for each List (and field) individually; the rules you specify will always be run, even when the list is being queried or mutated through a relationship.
+Access control is configured per list and per field. Querying related items applies the related list’s `query` access control, and a nested `create` applies the related list’s `create` access control. Connecting, disconnecting or replacing items in a relationship applies `create`/`update` access control on the side targeted by the mutation. See [Updating a two-sided relationship](./relationships#updating-a-two-sided-relationship) for an example.
 
 ### Posts Example
 

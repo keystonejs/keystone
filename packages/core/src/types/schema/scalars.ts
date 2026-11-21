@@ -127,8 +127,25 @@ export const BigInt = new GraphQLScalarType({
 const RFC_3339_REGEX =
   /^(\d{4}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])T([01][0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9]|60))(\.\d{1,})?(([Z])|([+|-]([01][0-9]|2[0-3]):[0-5][0-9]))$/
 
+function isLeapYear(year: number) {
+  return (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0
+}
+
+const DAYS_IN_MONTH = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+
+// the regexes only check that the day is between 01 and 31,
+// this checks that the day actually exists in the given month and year
+// (otherwise e.g. new Date('2021-02-30') silently rolls over to 2021-03-02)
+function isValidCalendarDate(input: string) {
+  const year = Number(input.slice(0, 4))
+  const month = Number(input.slice(5, 7))
+  const day = Number(input.slice(8, 10))
+  const daysInMonth = month === 2 && isLeapYear(year) ? 29 : DAYS_IN_MONTH[month - 1]
+  return day <= daysInMonth
+}
+
 function parseDate(input: string): Date {
-  if (!RFC_3339_REGEX.test(input)) {
+  if (!RFC_3339_REGEX.test(input) || !isValidCalendarDate(input)) {
     throw new GraphQLError(
       'DateTime scalars must be in the form of a full ISO 8601 date-time string'
     )
@@ -158,7 +175,12 @@ export const DateTime = new GraphQLScalarType({
     return parseDate(value.value)
   },
   parseValue(value: unknown) {
-    if (value instanceof Date) return value
+    if (value instanceof Date) {
+      if (isNaN(value.valueOf())) {
+        throw new GraphQLError('DateTime scalars must be valid dates')
+      }
+      return value
+    }
     if (typeof value !== 'string') {
       throw new GraphQLError('DateTime only accepts values as strings')
     }
@@ -169,7 +191,7 @@ export const DateTime = new GraphQLScalarType({
 const RFC_3339_FULL_DATE_REGEX = /^\d{4}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$/
 
 function validateCalendarDay(input: string) {
-  if (!RFC_3339_FULL_DATE_REGEX.test(input)) {
+  if (!RFC_3339_FULL_DATE_REGEX.test(input) || !isValidCalendarDate(input)) {
     throw new GraphQLError('CalendarDay scalars must be in the form of a full-date ISO 8601 string')
   }
 }

@@ -49,8 +49,6 @@ export function extendGraphqlSchema(baseSchema: GraphQLSchema) {
 
           // Note we use `context.db.Post` here as we have a return type
           // of [Post], and this API provides results in the correct format.
-          // If you accidentally use `context.query.Post` here you can expect problems
-          // when accessing the fields in your GraphQL client.
           return context.db.Post.findMany({
             where: { author: { id: { equals: id } }, publishDate: { gt: cutoff } },
           }) as Promise<Lists.Post.Item[]> // TODO: nexus doesn't like <readonly Post[]>

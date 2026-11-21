@@ -5,6 +5,7 @@ import { list } from '@keystone-6/core'
 import { setupTestRunner } from '@keystone-6/api-tests/test-runner'
 import { allOperations, allowAll } from '@keystone-6/core/access'
 import { expectSingleRelationshipError } from '../../utils.ts'
+import { mutation, query } from '../../run-field.ts'
 
 const alphanumGenerator = gen.alphaNumString.notEmpty()
 
@@ -91,7 +92,7 @@ test(
   'afterOperation is called for nested creates',
   runner2(async ({ context }) => {
     // Update an item that does the nested create
-    const item = await context.query.User.createOne({
+    const item = await mutation(context).createUser({
       data: { username: 'something', notes: { create: [{ content: 'some content' }] } },
       query: 'username notes {content}',
     })
@@ -108,7 +109,7 @@ describe('no access control', () => {
       const noteContent3 = `c${sampleOne(alphanumGenerator)}`
 
       // Create an item that does the nested create
-      const user = await context.query.User.createOne({
+      const user = await mutation(context).createUser({
         data: { username: 'A thing', notes: { create: [{ content: noteContent }] } },
         query: 'id notes(orderBy: { content: asc }) { id content }',
       })
@@ -121,7 +122,7 @@ describe('no access control', () => {
       // Create an item that does the nested create
       type T = { id: IdType; notes: { id: IdType; content: string }[] }
 
-      const user1 = (await context.query.User.createOne({
+      const user1 = (await mutation(context).createUser({
         data: {
           username: 'A thing',
           notes: { create: [{ content: noteContent2 }, { content: noteContent3 }] },
@@ -138,13 +139,14 @@ describe('no access control', () => {
       })
 
       // Sanity check that the items are actually created
-      const notes = await context.query.Note.findMany({
+      const notes = await query(context).notes({
         where: { id: { in: user1.notes.map(({ id }) => id) } },
+        query: 'id',
       })
       expect(notes).toHaveLength(user1.notes.length)
 
       // Test an empty list of related notes
-      const user2 = await context.query.User.createOne({
+      const user2 = await mutation(context).createUser({
         data: { username: 'A thing', notes: { create: [] } },
         query: 'id notes { id }',
       })
@@ -160,11 +162,14 @@ describe('no access control', () => {
       const noteContent3 = `c${sampleOne(alphanumGenerator)}`
 
       // Create an item to update
-      const createUser = await context.query.User.createOne({ data: { username: 'A thing' } })
+      const createUser = await context.db.User.createOne({
+        data: { username: 'A thing' },
+        select: { id: true },
+      })
 
       // Update an item that does the nested create
-      const user = await context.query.User.updateOne({
-        where: { id: createUser.id },
+      const user = await mutation(context).updateUser({
+        where: { id: createUser.id.toString() },
         data: { username: 'A thing', notes: { create: [{ content: noteContent }] } },
         query: 'id notes { id content }',
       })
@@ -175,8 +180,8 @@ describe('no access control', () => {
       })
 
       type T = { id: IdType; notes: { id: IdType; content: string }[] }
-      const _user = (await context.query.User.updateOne({
-        where: { id: createUser.id },
+      const _user = (await mutation(context).updateUser({
+        where: { id: createUser.id.toString() },
         data: {
           username: 'A thing',
           notes: { create: [{ content: noteContent2 }, { content: noteContent3 }] },
@@ -194,8 +199,9 @@ describe('no access control', () => {
       })
 
       // Sanity check that the items are actually created
-      const notes = await context.query.Note.findMany({
+      const notes = await query(context).notes({
         where: { id: { in: _user.notes.map(({ id }) => id) } },
+        query: 'id',
       })
       expect(notes).toHaveLength(_user.notes.length)
     })
@@ -259,8 +265,9 @@ describe('with access control', () => {
         const noteContent = sampleOne(alphanumGenerator)
 
         // Create an item to update
-        const createUser = await context.query.UserToNotesNoRead.createOne({
+        const createUser = await context.db.UserToNotesNoRead.createOne({
           data: { username: 'A thing' },
+          select: { id: true },
         })
 
         // Update an item that does the nested create
@@ -315,11 +322,13 @@ describe('with access control', () => {
         )
 
         // Confirm it didn't insert either of the records anyway
-        const allNoteNoCreates = await context.query.NoteNoCreate.findMany({
+        const allNoteNoCreates = await query(context).noteNoCreates({
           where: { content: { equals: noteContent } },
+          query: 'id',
         })
-        const allUserToNotesNoCreates = await context.query.UserToNotesNoCreate.findMany({
+        const allUserToNotesNoCreates = await query(context).userToNotesNoCreates({
           where: { username: { equals: userName } },
+          query: 'id',
         })
         expect(allNoteNoCreates).toMatchObject([])
         expect(allUserToNotesNoCreates).toMatchObject([])
@@ -332,8 +341,9 @@ describe('with access control', () => {
         const noteContent = sampleOne(alphanumGenerator)
 
         // Create an item to update
-        const createUserToNotesNoCreate = await context.query.UserToNotesNoCreate.createOne({
+        const createUserToNotesNoCreate = await context.db.UserToNotesNoCreate.createOne({
           data: { username: 'A thing' },
+          select: { id: true },
         })
 
         // Update an item that does the nested create
@@ -363,8 +373,9 @@ describe('with access control', () => {
         )
 
         // Confirm it didn't insert the record anyway
-        const items = await context.query.NoteNoCreate.findMany({
+        const items = await query(context).noteNoCreates({
           where: { content: { equals: noteContent } },
+          query: 'id',
         })
         expect(items).toMatchObject([])
       })

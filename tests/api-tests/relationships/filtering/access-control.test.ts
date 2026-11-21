@@ -4,6 +4,7 @@ import { text, relationship } from '@keystone-6/core/fields'
 import { list } from '@keystone-6/core'
 import { setupTestRunner } from '@keystone-6/api-tests/test-runner'
 import { allowAll } from '@keystone-6/core/access'
+import { query } from '../../run-field.ts'
 
 const alphanumGenerator = gen.alphaNumString.notEmpty()
 
@@ -50,8 +51,9 @@ describe('relationship filtering with access control', () => {
       const posts = await Promise.all(
         postNames.map(name => {
           const postContent = sampleOne(alphanumGenerator)
-          return context.sudo().query.PostLimitedRead.createOne({
+          return context.sudo().db.PostLimitedRead.createOne({
             data: { content: postContent, name },
+            select: { id: true },
           })
         })
       )
@@ -59,16 +61,17 @@ describe('relationship filtering with access control', () => {
       // Create a user that owns 2 posts which are different from the one
       // specified in the read access control filter
       const username = sampleOne(alphanumGenerator)
-      const user = await context.sudo().query.UserToPostLimitedRead.createOne({
+      const user = await context.sudo().db.UserToPostLimitedRead.createOne({
         data: {
           username,
           posts: { connect: [{ id: postIds[1] }, { id: postIds[2] }] },
         },
+        select: { id: true },
       })
 
       // Create an item that does the linking
-      const item = await context.query.UserToPostLimitedRead.findOne({
-        where: { id: user.id },
+      const item = await query(context).userToPostLimitedRead({
+        where: { id: user.id.toString() },
         query: 'id username posts { id author { id username } }',
       })
 
@@ -87,8 +90,9 @@ describe('relationship filtering with access control', () => {
       const posts = await Promise.all(
         postNames.map(name => {
           const postContent = sampleOne(alphanumGenerator)
-          return context.sudo().query.PostLimitedRead.createOne({
+          return context.sudo().db.PostLimitedRead.createOne({
             data: { content: postContent, name },
+            select: { id: true },
           })
         })
       )
@@ -96,18 +100,17 @@ describe('relationship filtering with access control', () => {
       // Create a user that owns 2 posts which are different from the one
       // specified in the read access control filter
       const username = sampleOne(alphanumGenerator)
-      const user = await context.sudo().query.UserToPostLimitedRead.createOne({
+      const user = await context.sudo().db.UserToPostLimitedRead.createOne({
         data: {
           username,
           posts: { connect: [{ id: postIds[1] }, { id: postIds[2] }] },
         },
+        select: { id: true },
       })
 
       // Create an item that does the linking
-      const item = await context.query.UserToPostLimitedRead.findOne({
-        where: { id: user.id },
-        // Knowingly filter to an ID I don't have read access to
-        // to see if the filter is correctly "AND"d with the access control
+      const item = await query(context).userToPostLimitedRead({
+        where: { id: user.id.toString() },
         query: `id username posts(where: { id: { in: ["${postIds[2]}"] } }) { id }`,
       })
 

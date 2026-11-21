@@ -172,9 +172,9 @@ const users = await context.db.User.deleteMany({
 
 {% related-content %}
 {% well
-heading="Query API Reference"
-href="/docs/context/query" %}
-A programmatic API for running CRUD operations against your GraphQL API. For each list in your system you get an API at `context.query.<listName>`.
+heading="GraphQL Helpers"
+href="/docs/context/overview#graph-ql-helpers" %}
+Use `context.graphql.run` or `context.graphql.raw` to execute GraphQL operations with a selection set.
 {% /well %}
 {% well
 heading="Context API Reference"

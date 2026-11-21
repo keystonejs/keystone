@@ -28,13 +28,14 @@ export default NextAuth({
       const sudoContext = (await getKeystoneContext()).sudo()
 
       // check if the user exists in keystone
-      const author = await sudoContext.query.Author.findOne({
+      const author = await sudoContext.db.Author.findOne({
         where: { authId: user.id },
+        select: { id: true },
       })
 
       // if not, sign up
       if (!author) {
-        await sudoContext.query.Author.createOne({
+        await sudoContext.db.Author.createOne({
           data: {
             authId: user.id,
             name: user.name,

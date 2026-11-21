@@ -9,6 +9,9 @@ import { text } from '@keystone-6/core/fields'
 import type { KeystoneContext } from '@keystone-6/core/types'
 
 import { dbProvider, expectSingleResolverError, expectValidationError } from '../utils.ts'
+import { mutation, query as queryField } from '../run-field.ts'
+
+type FieldItem = { id: string; name: string | null } & Record<string, any>
 
 const testModules = globSync(`tests/api-tests/fields/types/fixtures/**/test-fixtures.{js,ts}`).map(
   modulePath => resolve(modulePath)
@@ -39,7 +42,7 @@ for (const modulePath of testModules) {
       runner(async ({ context, ...rest }) => {
         // populate the database before running the tests
         for (const data of mod.initItems(matrixValue, context)) {
-          await context.query[listKey].createOne({ data })
+          await context.db[listKey].createOne({ data })
         }
         return testFn({
           context,
@@ -128,11 +131,11 @@ for (const modulePath of testModules) {
           wrappedFn: (args: {
             context: KeystoneContext
             listKey: string
-            items: readonly Record<string, any>[]
+            items: readonly FieldItem[]
           }) => void | Promise<void>
         ) => {
           return async ({ context, listKey }: { context: KeystoneContext; listKey: string }) => {
-            const items = await context.query[listKey].findMany({
+            const items = await queryField(context).tests<readonly FieldItem[]>({
               orderBy: { name: 'asc' },
               query,
             })
@@ -146,8 +149,8 @@ for (const modulePath of testModules) {
           test(
             'Create',
             keystoneTestWrapper(
-              withHelpers(async ({ context, listKey }) => {
-                const data = await context.query[listKey].createOne({
+              withHelpers(async ({ context }) => {
+                const data = await mutation(context).createTest<FieldItem>({
                   data: { name: 'Newly created', [fieldName]: exampleValue(matrixValue) },
                   query,
                 })
@@ -164,8 +167,8 @@ for (const modulePath of testModules) {
           test(
             'Read',
             keystoneTestWrapper(
-              withHelpers(async ({ context, listKey, items }) => {
-                const data = await context.query[listKey].findOne({
+              withHelpers(async ({ context, items }) => {
+                const data = await queryField(context).test<FieldItem | null>({
                   where: { id: items[0].id },
                   query,
                 })
@@ -183,8 +186,8 @@ for (const modulePath of testModules) {
             test(
               'Updating the value',
               keystoneTestWrapper(
-                withHelpers(async ({ context, items, listKey }) => {
-                  const data = await context.query[listKey].updateOne({
+                withHelpers(async ({ context, items }) => {
+                  const data = await mutation(context).updateTest<FieldItem | null>({
                     where: { id: items[0].id },
                     data: { [fieldName]: exampleValue2(matrixValue) },
                     query,
@@ -239,8 +242,8 @@ for (const modulePath of testModules) {
             test(
               'Updating without this field',
               keystoneTestWrapper(
-                withHelpers(async ({ context, items, listKey }) => {
-                  const data = await context.query[listKey].updateOne({
+                withHelpers(async ({ context, items }) => {
+                  const data = await mutation(context).updateTest<FieldItem | null>({
                     where: { id: items[0].id },
                     data: { name: 'Updated value' },
                     query,
@@ -260,8 +263,8 @@ for (const modulePath of testModules) {
           test(
             'Delete',
             keystoneTestWrapper(
-              withHelpers(async ({ context, items, listKey }) => {
-                const data = await context.query[listKey].deleteOne({
+              withHelpers(async ({ context, items }) => {
+                const data = await mutation(context).deleteTest<FieldItem | null>({
                   where: { id: items[0].id },
                   query,
                 })
@@ -271,7 +274,7 @@ for (const modulePath of testModules) {
                   subfieldName ? items[0][fieldName][subfieldName] : items[0][fieldName]
                 )
 
-                const allItems = await context.query[listKey].findMany({ query })
+                const allItems = await queryField(context).tests({ query })
                 expect(allItems).toEqual(expect.not.arrayContaining([data]))
               })
             )

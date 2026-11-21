@@ -1,12 +1,23 @@
 import assert from 'node:assert/strict'
 import { describe, test } from 'node:test'
 import { dbProvider, setupTestSuite } from './utils.ts'
-import { config, expectEqualItem, expectEqualItems, lists, seed, seedMany } from './utils2.ts'
+import { query } from '../tests/api-tests/run-field.ts'
+import {
+  getListGraphQLNames,
+  type AccessItem,
+  config,
+  expectEqualItem,
+  expectEqualItems,
+  lists,
+  seed,
+  seedMany,
+} from './utils2.ts'
 
 describe(`*.access.[query/read] tests (${dbProvider})`, () => {
   const suite = setupTestSuite({ config })()
 
   for (const l of lists) {
+    const { itemQueryName, listQueryName, listQueryCountName } = getListGraphQLNames(l)
     const itemQuery = `id ${l.fields.map(x => x.name).join(' ')}`
 
     test(`findOne ${l.name}`, async () => {
@@ -14,7 +25,7 @@ describe(`*.access.[query/read] tests (${dbProvider})`, () => {
       const seeded = await seed(l, context)
 
       // test list.access.operation.query.one
-      const item = await context.query[l.name].findOne({
+      const item = await query(context)[itemQueryName]<AccessItem | null>({
         where: { id: seeded.id },
         query: itemQuery,
       })
@@ -33,7 +44,7 @@ describe(`*.access.[query/read] tests (${dbProvider})`, () => {
       const seeded = await seedMany(l, context)
 
       // test list.access.operation.query.many
-      const items = await context.query[l.name].findMany({
+      const items = await query(context)[listQueryName]<AccessItem[]>({
         where: {
           id: {
             in: seeded.map(s => s.id),
@@ -56,7 +67,7 @@ describe(`*.access.[query/read] tests (${dbProvider})`, () => {
       const seeded = await seedMany(l, context)
 
       // test list.access.operation.query.count
-      const count = await context.query[l.name].count({
+      const count = await query(context)[listQueryCountName]<number>({
         where: {
           id: {
             in: seeded.map(s => s.id),
@@ -80,7 +91,7 @@ describe(`*.access.[query/read] tests (${dbProvider})`, () => {
         const seeded = await seed(l, context)
 
         // test list.access.*.query
-        const item = await context.query[l.name].findOne({
+        const item = await query(context)[itemQueryName]<AccessItem | null>({
           where: { id: seeded.id },
           query: fieldQuery,
         })
@@ -99,7 +110,7 @@ describe(`*.access.[query/read] tests (${dbProvider})`, () => {
         const seeded = await seedMany(l, context)
 
         // test list.access.*.query
-        const items = await context.query[l.name].findMany({
+        const items = await query(context)[listQueryName]<AccessItem[]>({
           where: {
             id: {
               in: seeded.map(x => x.id),

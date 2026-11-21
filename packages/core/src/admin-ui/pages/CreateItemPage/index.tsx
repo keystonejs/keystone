@@ -12,6 +12,7 @@ import { BaseToolbar, ColumnLayout, ItemPageHeader } from '../ItemPage/common.ts
 export function CreateItemPage({ listKey }: { listKey: string }) {
   const list = useList(listKey)
   const createItem = useCreateItem(list)
+  const isPending = createItem.state !== 'editing'
   const navigate = useNavigate()
 
   return (
@@ -43,19 +44,13 @@ export function CreateItemPage({ listKey }: { listKey: string }) {
           }}
           style={{ display: 'contents' }}
         >
-          {/*
-            Workaround for react-aria "bug" where pressing enter in a form field
-            moves focus to the submit button.
-            See: https://github.com/adobe/react-spectrum/issues/5940
-          */}
-          <button type="submit" style={{ display: 'none' }} />
           <VStack gap="large" gridArea="main" marginTop="xlarge" minWidth={0}>
             <GraphQLErrorNotice errors={[createItem.error]} />
             <Fields {...createItem.props} />
           </VStack>
 
           <BaseToolbar>
-            <Button isPending={createItem.state === 'loading'} prominence="high" type="submit">
+            <Button isPending={isPending} prominence="high" type="submit">
               Create
             </Button>
           </BaseToolbar>

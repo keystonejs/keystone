@@ -330,15 +330,26 @@ export default config<TypeInfo>({
 })
 ```
 
-You could also use it to add custom REST endpoints to your server, by creating a context for the request and using the Query API Keystone provides:
+You can also add custom REST endpoints by creating a context for the request and calling `context.graphql.run`.
+This example uses the `graphql()` function from a [gql.tada setup](../context/overview#typed-graphql-documents).
 
 ```ts
+import { graphql } from './tada'
+
+const Users = graphql(`
+  query Users {
+    users {
+      id
+    }
+  }
+`)
+
 export default config<TypeInfo>({
   server: {
     extendExpressApp: (app, commonContext) => {
       app.get('/api/users', async (req, res) => {
         const context = await commonContext.withRequest(req, res)
-        const users = await context.query.User.findMany()
+        const { users } = await context.graphql.run({ query: Users })
         res.json(users)
       })
     },

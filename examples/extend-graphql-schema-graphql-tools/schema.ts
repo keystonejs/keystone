@@ -64,8 +64,6 @@ export function extendGraphqlSchema(baseSchema: GraphQLSchema) {
         publishPost: (root, { id }, context: Context) => {
           // Note we use `context.db.Post` here as we have a return type
           // of Post, and this API provides results in the correct format.
-          // If you accidentally use `context.query.Post` here you can expect problems
-          // when accessing the fields in your GraphQL client.
           return context.db.Post.updateOne({
             where: { id },
             data: { status: 'published', publishDate: new Date().toUTCString() },
@@ -93,8 +91,6 @@ export function extendGraphqlSchema(baseSchema: GraphQLSchema) {
 
           // Note we use `context.db.Post` here as we have a return type
           // of [Post], and this API provides results in the correct format.
-          // If you accidentally use `context.query.Post` here you can expect problems
-          // when accessing the fields in your GraphQL client.
           return context.db.Post.findMany({
             where: { author: { id: { equals: id } }, publishDate: { gt: cutoff } },
           })
@@ -118,12 +114,12 @@ export function extendGraphqlSchema(baseSchema: GraphQLSchema) {
           return post
         },
         draft: (val, args, context: Context) => {
-          return context.query.Post.count({
+          return context.db.Post.count({
             where: { author: { id: { equals: val.authorId } }, status: { equals: 'draft' } },
           })
         },
         published: (val, args, context: Context) => {
-          return context.query.Post.count({
+          return context.db.Post.count({
             where: { author: { id: { equals: val.authorId } }, status: { equals: 'published' } },
           })
         },

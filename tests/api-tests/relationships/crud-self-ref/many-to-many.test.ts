@@ -6,25 +6,30 @@ import { setupTestRunner } from '@keystone-6/api-tests/test-runner'
 import type { KeystoneContext } from '@keystone-6/core/types'
 import { allowAll } from '@keystone-6/core/access'
 import type { ContextFromRunner } from '../../utils.ts'
+import { mutation, query } from '../../run-field.ts'
 
 type IdType = any
 
 const alphanumGenerator = gen.alphaNumString.notEmpty()
 
 const createInitialData = async (context: ContextFromRunner<typeof runner>) => {
-  const users = await context.query.User.createMany({
+  const users = await context.db.User.createMany({
     data: [
       { name: sampleOne(alphanumGenerator) },
       { name: sampleOne(alphanumGenerator) },
       { name: sampleOne(alphanumGenerator) },
     ],
+    select: { id: true },
   })
 
   return { users }
 }
 
 const createUserAndFriend = async (context: ContextFromRunner<typeof runner>) => {
-  const user = await context.query.User.createOne({
+  const user = await mutation(context).createUser<{
+    id: string
+    friends: { id: string; friendOf: { id: string }[] }[]
+  }>({
     data: { friends: { create: [{ name: sampleOne(alphanumGenerator) }] } },
     query: 'id friends { id friendOf { id } }',
   })
@@ -57,9 +62,9 @@ const getUserAndFriend = async (context: KeystoneContext, userId: IdType, friend
 
 const createReadData = async (context: ContextFromRunner<typeof runner>) => {
   // create locations [A, A, B, B, C, C];
-  const createUsers = await context.query.User.createMany({
+  const createUsers = await context.db.User.createMany({
     data: ['A', 'A', 'B', 'B', 'C', 'C', 'D', 'D', 'E'].map(name => ({ name })),
-    query: 'id name',
+    select: { id: true, name: true },
   })
 
   await Promise.all(
@@ -75,10 +80,9 @@ const createReadData = async (context: ContextFromRunner<typeof runner>) => {
       [], //  -> []
     ].map(async (locationIdxs, j) => {
       const ids = locationIdxs.map(i => ({ id: createUsers[i].id }))
-      await context.query.User.updateOne({
-        where: { id: createUsers[j].id },
+      await context.db.User.updateOne({
+        where: { id: createUsers[j].id.toString() },
         data: { friends: { connect: ids } },
-        query: 'id friends { name }',
       })
     })
   )
@@ -112,8 +116,9 @@ describe(`Many-to-many relationships`, () => {
             ['C', 3],
             ['D', 0],
           ].map(async ([name, count]) => {
-            const _users = await context.query.User.findMany({
+            const _users = await query(context).users<{ id: string }[]>({
               where: { friends: { some: { name: { equals: name } } } },
+              query: 'id',
             })
             expect(_users.length).toEqual(count)
           })
@@ -131,8 +136,9 @@ describe(`Many-to-many relationships`, () => {
             ['C', 6],
             ['D', 9],
           ].map(async ([name, count]) => {
-            const _users = await context.query.User.findMany({
+            const _users = await query(context).users<{ id: string }[]>({
               where: { friends: { none: { name: { equals: name } } } },
+              query: 'id',
             })
             expect(_users.length).toEqual(count)
           })
@@ -150,8 +156,9 @@ describe(`Many-to-many relationships`, () => {
             ['C', 1],
             ['D', 1],
           ].map(async ([name, count]) => {
-            const users = await context.query.User.findMany({
+            const users = await query(context).users<{ id: string }[]>({
               where: { friends: { every: { name: { equals: name } } } },
+              query: 'id',
             })
             expect(users.length).toEqual(count)
           })
@@ -165,7 +172,7 @@ describe(`Many-to-many relationships`, () => {
       'Count',
       runner(async ({ context }) => {
         await createInitialData(context)
-        const count = await context.query.User.count()
+        const count = await query(context).usersCount()
         expect(count).toEqual(3)
       })
     )
@@ -177,7 +184,7 @@ describe(`Many-to-many relationships`, () => {
       runner(async ({ context }) => {
         const { users } = await createInitialData(context)
         const friend = users[0]
-        const user = await context.query.User.createOne({
+        const user = await mutation(context).createUser<{ id: string; friends: { id: string }[] }>({
           data: { friends: { connect: [{ id: friend.id }] } },
           query: 'id friends { id }',
         })
@@ -196,7 +203,7 @@ describe(`Many-to-many relationships`, () => {
       'With create',
       runner(async ({ context }) => {
         const locationName = sampleOne(alphanumGenerator)
-        const user = await context.query.User.createOne({
+        const user = await mutation(context).createUser<{ id: string; friends: { id: string }[] }>({
           data: { friends: { create: [{ name: locationName }] } },
           query: 'id friends { id }',
         })
@@ -216,7 +223,10 @@ describe(`Many-to-many relationships`, () => {
         const user = users[0]
         const friendName = sampleOne(alphanumGenerator)
 
-        const _user = await context.query.User.createOne({
+        const _user = await mutation(context).createUser<{
+          id: string
+          friends: { id: string; friendOf: { id: string }[] }[]
+        }>({
           data: {
             friends: {
               create: [{ name: friendName, friendOf: { connect: [{ id: user.id }] } }],
@@ -230,7 +240,7 @@ describe(`Many-to-many relationships`, () => {
         expect(User.friends.map(({ id }) => id.toString())).toEqual([Friend.id.toString()])
         expect(Friend.friendOf.length).toEqual(2)
 
-        const _users = (await context.query.User.findMany({
+        const _users = (await query(context).users({
           query: ' id friends { id friendOf { id } }',
         })) as { id: IdType; friends: any[] }[]
         // Both companies should have a location, and the location should have two companies
@@ -250,7 +260,10 @@ describe(`Many-to-many relationships`, () => {
       runner(async ({ context }) => {
         const friendName = sampleOne(alphanumGenerator)
         const userName = sampleOne(alphanumGenerator)
-        const user = await context.query.User.createOne({
+        const user = await mutation(context).createUser<{
+          id: string
+          friends: { id: string; friendOf: { id: string }[] }[]
+        }>({
           data: {
             friends: {
               create: [{ name: friendName, friendOf: { create: [{ name: userName }] } }],
@@ -266,7 +279,7 @@ describe(`Many-to-many relationships`, () => {
         expect(Friend.friendOf.length).toEqual(2)
 
         // Both companies should have a location, and the location should have two companies
-        const users = (await context.query.User.findMany({
+        const users = (await query(context).users({
           query: 'id friends { id friendOf { id } }',
         })) as { id: IdType; friends: any[] }[]
         const linkedUserIds = users
@@ -289,7 +302,7 @@ describe(`Many-to-many relationships`, () => {
     test(
       'With null',
       runner(async ({ context }) => {
-        const user = await context.query.User.createOne({
+        const user = await mutation(context).createUser<{ id: string; friends: { id: string }[] }>({
           data: { friends: null },
           query: 'id friends { id }',
         })
@@ -312,7 +325,7 @@ describe(`Many-to-many relationships`, () => {
         expect(user.friends).not.toBe(expect.anything())
         expect(friend.friendOf).not.toBe(expect.anything())
 
-        await context.query.User.updateOne({
+        await mutation(context).updateUser({
           where: { id: user.id },
           data: { friends: { connect: [{ id: friend.id }] } },
           query: 'id friends { id }',
@@ -332,8 +345,11 @@ describe(`Many-to-many relationships`, () => {
         const user = users[0]
         const locationName = sampleOne(alphanumGenerator)
 
-        const _user = await context.query.User.updateOne({
-          where: { id: user.id },
+        const _user = await mutation(context).updateUser<{
+          id: string
+          friends: { id: string; name: string | null }[]
+        }>({
+          where: { id: user.id.toString() },
           data: { friends: { create: [{ name: locationName }] } },
           query: 'id friends { id name }',
         })
@@ -353,7 +369,10 @@ describe(`Many-to-many relationships`, () => {
         const { user, friend } = await createUserAndFriend(context)
 
         // Run the query to disconnect the location from company
-        const _user = await context.query.User.updateOne({
+        const _user = await mutation(context).updateUser<{
+          id: string
+          friends: { id: string; name: string | null }[]
+        }>({
           where: { id: user.id },
           data: { friends: { disconnect: [{ id: friend.id }] } },
           query: 'id friends { id name }',
@@ -375,7 +394,10 @@ describe(`Many-to-many relationships`, () => {
         const { user, friend } = await createUserAndFriend(context)
 
         // Run the query to disconnect the location from company
-        const _user = await context.query.User.updateOne({
+        const _user = await mutation(context).updateUser<{
+          id: string
+          friends: { id: string; name: string | null }[]
+        }>({
           where: { id: user.id },
           data: { friends: { set: [] } },
           query: 'id friends { id name }',
@@ -397,7 +419,10 @@ describe(`Many-to-many relationships`, () => {
         const { user, friend } = await createUserAndFriend(context)
 
         // Run the query with a null operation
-        const _user = await context.query.User.updateOne({
+        const _user = await mutation(context).updateUser<{
+          id: string
+          friends: { id: string; name: string | null }[]
+        }>({
           where: { id: user.id },
           data: { friends: null },
           query: 'id friends { id name }',
@@ -419,7 +444,10 @@ describe(`Many-to-many relationships`, () => {
         const { user, friend } = await createUserAndFriend(context)
 
         // Run the query to disconnect the location from company
-        const _user = await context.query.User.deleteOne({ where: { id: user.id } })
+        const _user = await mutation(context).deleteUser<{ id: string }>({
+          where: { id: user.id },
+          query: 'id',
+        })
         expect(_user?.id).toBe(user.id)
 
         // Check the link has been broken

@@ -5,6 +5,7 @@ import type { BaseFields } from '@keystone-6/core/types'
 import { allowAll } from '@keystone-6/core/access'
 
 import { setupTestRunner } from './test-runner.ts'
+import { mutation } from './run-field.ts'
 
 function setupList(fields: BaseFields<any>) {
   return setupTestRunner({
@@ -23,7 +24,7 @@ describe('defaultValue field config', () => {
   test(
     'text with isNullable: true has no default by default',
     setupList({ name: text({ db: { isNullable: true } }) })(async ({ context }) => {
-      const result = await context.query.User.createOne({ data: {}, query: 'name' })
+      const result = await mutation(context).createUser({ data: {}, query: 'name' })
       expect(result).toMatchObject({ name: null })
     })
   )
@@ -31,7 +32,7 @@ describe('defaultValue field config', () => {
   test(
     'Sets a scalar as a default',
     setupList({ name: text({ defaultValue: 'hello' }) })(async ({ context }) => {
-      const result = await context.query.User.createOne({ data: {}, query: 'name' })
+      const result = await mutation(context).createUser({ data: {}, query: 'name' })
       expect(result).toMatchObject({ name: 'hello' })
     })
   )

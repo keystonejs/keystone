@@ -1,6 +1,7 @@
 import { expect, test } from 'vitest'
 import { timestamp } from '@keystone-6/core/fields'
 import type { DatabaseProvider, KeystoneContext } from '@keystone-6/core/types'
+import { query } from '../../../../run-field.ts'
 
 export const name = 'Timestamp'
 export const typeFunction = timestamp
@@ -42,7 +43,7 @@ export const filterTests = (withKeystone: (args: any) => any) => {
     expected: any,
     orderBy: Record<string, 'asc' | 'desc'> = { name: 'asc' }
   ) =>
-    expect(await context.query.Test.findMany({ where, orderBy, query: 'name lastOnline' })).toEqual(
+    expect(await query(context).tests({ where, orderBy, query: 'name lastOnline' })).toEqual(
       expected
     )
 

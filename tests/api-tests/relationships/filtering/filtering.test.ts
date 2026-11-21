@@ -3,6 +3,7 @@ import { text, relationship } from '@keystone-6/core/fields'
 import { list } from '@keystone-6/core'
 import { setupTestRunner } from '@keystone-6/api-tests/test-runner'
 import { allowAll } from '@keystone-6/core/access'
+import { query } from '../../run-field.ts'
 
 type IdType = any
 
@@ -26,17 +27,24 @@ describe('relationship filtering', () => {
   test(
     'nested to-single relationships can be filtered within AND clause',
     runner(async ({ context }) => {
-      const company = await context.query.Company.createOne({ data: { name: 'Thinkmill' } })
-      const otherCompany = await context.query.Company.createOne({ data: { name: 'Cete' } })
-
-      const user = await context.query.User.createOne({
-        data: { company: { connect: { id: company.id } } },
+      const company = await context.db.Company.createOne({
+        data: { name: 'Thinkmill' },
+        select: { id: true },
       })
-      await context.query.User.createOne({
+      const otherCompany = await context.db.Company.createOne({
+        data: { name: 'Cete' },
+        select: { id: true },
+      })
+
+      const user = await context.db.User.createOne({
+        data: { company: { connect: { id: company.id } } },
+        select: { id: true },
+      })
+      await context.db.User.createOne({
         data: { company: { connect: { id: otherCompany.id } } },
       })
 
-      const users = await context.query.User.findMany({
+      const users = await query(context).users({
         where: {
           AND: [
             { company: { name: { contains: 'in' } } },
@@ -54,17 +62,24 @@ describe('relationship filtering', () => {
   test(
     'nested to-single relationships can be filtered within OR clause',
     runner(async ({ context }) => {
-      const company = await context.query.Company.createOne({ data: { name: 'Thinkmill' } })
-      const otherCompany = await context.query.Company.createOne({ data: { name: 'Cete' } })
-
-      const user = await context.query.User.createOne({
-        data: { company: { connect: { id: company.id } } },
+      const company = await context.db.Company.createOne({
+        data: { name: 'Thinkmill' },
+        select: { id: true },
       })
-      await context.query.User.createOne({
+      const otherCompany = await context.db.Company.createOne({
+        data: { name: 'Cete' },
+        select: { id: true },
+      })
+
+      const user = await context.db.User.createOne({
+        data: { company: { connect: { id: company.id } } },
+        select: { id: true },
+      })
+      await context.db.User.createOne({
         data: { company: { connect: { id: otherCompany.id } } },
       })
 
-      const users = await context.query.User.findMany({
+      const users = await query(context).users({
         where: {
           OR: [
             { company: { name: { contains: 'in' } } },
@@ -83,18 +98,19 @@ describe('relationship filtering', () => {
     runner(async ({ context }) => {
       const ids = []
 
-      ids.push((await context.query.Post.createOne({ data: { content: 'Hello world' } })).id)
-      ids.push((await context.query.Post.createOne({ data: { content: 'hi world' } })).id)
-      ids.push((await context.query.Post.createOne({ data: { content: 'Hello? Or hi?' } })).id)
+      ids.push((await context.db.Post.createOne({ data: { content: 'Hello world' } })).id)
+      ids.push((await context.db.Post.createOne({ data: { content: 'hi world' } })).id)
+      ids.push((await context.db.Post.createOne({ data: { content: 'Hello? Or hi?' } })).id)
 
-      const user = await context.query.User.createOne({
+      const user = await context.db.User.createOne({
         data: { posts: { connect: ids.map(id => ({ id })) } },
+        select: { id: true },
       })
 
       // Create a dummy user to make sure we're actually filtering it out
-      await context.query.User.createOne({ data: {} })
+      await context.db.User.createOne({ data: {} })
 
-      const users = (await context.query.User.findMany({
+      const users = (await query(context).users({
         where: {
           AND: [
             { posts: { some: { content: { contains: 'hi' } } } },
@@ -115,18 +131,19 @@ describe('relationship filtering', () => {
     runner(async ({ context }) => {
       const ids = []
 
-      ids.push((await context.query.Post.createOne({ data: { content: 'Hello world' } })).id)
-      ids.push((await context.query.Post.createOne({ data: { content: 'hi world' } })).id)
-      ids.push((await context.query.Post.createOne({ data: { content: 'Hello? Or hi?' } })).id)
+      ids.push((await context.db.Post.createOne({ data: { content: 'Hello world' } })).id)
+      ids.push((await context.db.Post.createOne({ data: { content: 'hi world' } })).id)
+      ids.push((await context.db.Post.createOne({ data: { content: 'Hello? Or hi?' } })).id)
 
-      const user = await context.query.User.createOne({
+      const user = await context.db.User.createOne({
         data: { posts: { connect: ids.map(id => ({ id })) } },
+        select: { id: true },
       })
 
       // Create a dummy user to make sure we're actually filtering it out
-      await context.query.User.createOne({ data: {} })
+      await context.db.User.createOne({ data: {} })
 
-      const users = (await context.query.User.findMany({
+      const users = (await query(context).users({
         where: {
           OR: [
             { posts: { some: { content: { contains: 'o w' } } } },
@@ -145,50 +162,61 @@ describe('relationship filtering', () => {
   test(
     'many-to-many filtering composes with one-to-many filtering',
     runner(async ({ context }) => {
-      const adsCompany = await context.query.Company.createOne({
+      const adsCompany = await context.db.Company.createOne({
         data: { name: 'AdsAdsAds' },
-        query: 'id name',
+        select: { id: true, name: true },
       })
-      const otherCompany = await context.query.Company.createOne({
+      const otherCompany = await context.db.Company.createOne({
         data: { name: 'Thinkmill' },
-        query: 'id name',
+        select: { id: true, name: true },
       })
 
       // Content can have multiple authors
-      const spam1 = await context.query.Post.createOne({ data: { content: 'spam' } })
-      const spam2 = await context.query.Post.createOne({ data: { content: 'spam' } })
-      const content = await context.query.Post.createOne({
+      const spam1 = await context.db.Post.createOne({
+        data: { content: 'spam' },
+        select: { id: true },
+      })
+      const spam2 = await context.db.Post.createOne({
+        data: { content: 'spam' },
+        select: { id: true },
+      })
+      const content = await context.db.Post.createOne({
         data: { content: 'cute cat pics' },
+        select: { id: true },
       })
 
-      const spammyUser = await context.query.User.createOne({
+      const spammyUser = await context.db.User.createOne({
         data: {
           company: { connect: { id: adsCompany.id } },
           posts: { connect: [{ id: spam1.id }, { id: spam2.id }] },
         },
+        select: { id: true },
       })
-      const mixedUser = await context.query.User.createOne({
+      const mixedUser = await context.db.User.createOne({
         data: {
           company: { connect: { id: adsCompany.id } },
           posts: { connect: [{ id: spam1.id }, { id: content.id }] },
         },
+        select: { id: true },
       })
-      const nonSpammyUser = await context.query.User.createOne({
+      const nonSpammyUser = await context.db.User.createOne({
         data: {
           company: { connect: { id: adsCompany.id } },
           posts: { connect: [{ id: content.id }] },
         },
+        select: { id: true },
       })
-      const quietUser = await context.query.User.createOne({
+      const quietUser = await context.db.User.createOne({
         data: { company: { connect: { id: adsCompany.id } } },
+        select: { id: true },
       })
-      await context.query.User.createOne({
+      await context.db.User.createOne({
         data: {
           company: { connect: { id: otherCompany.id } },
           posts: { connect: [{ id: content.id }] },
         },
       })
-      await context.query.User.createOne({
+      await context.db.User.createOne({
         data: {
           company: { connect: { id: otherCompany.id } },
           posts: { connect: [{ id: spam1.id }] },
@@ -202,7 +230,7 @@ describe('relationship filtering', () => {
         company: { id: IdType; name: string }
         posts: { content: string }[]
       }[]
-      const users = (await context.query.User.findMany({
+      const users = (await query(context).users({
         where: {
           company: { name: { equals: adsCompany.name } },
           posts: { every: { content: { equals: 'spam' } } },
@@ -215,7 +243,7 @@ describe('relationship filtering', () => {
       expect(users.map(u => u.posts.every(p => p.content === 'spam'))).toEqual([true, true])
 
       // adsCompany users with no spam
-      const users2 = (await context.query.User.findMany({
+      const users2 = (await query(context).users({
         where: {
           company: { name: { equals: adsCompany.name } },
           posts: { none: { content: { equals: 'spam' } } },
@@ -229,7 +257,7 @@ describe('relationship filtering', () => {
       expect(users2.map(u => u.posts.every(p => p.content !== 'spam'))).toEqual([true, true])
 
       // adsCompany users with some spam
-      const users3 = (await context.query.User.findMany({
+      const users3 = (await query(context).users({
         where: {
           company: { name: { equals: adsCompany.name } },
           posts: { some: { content: { equals: 'spam' } } },

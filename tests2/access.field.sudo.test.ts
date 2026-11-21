@@ -4,6 +4,7 @@ import { describe, test } from 'node:test'
 import { list } from '@keystone-6/core'
 import { allowAll, denyAll } from '@keystone-6/core/access'
 import { text } from '@keystone-6/core/fields'
+import { query } from '../tests/api-tests/run-field.ts'
 import { dbProvider, setupTestSuite } from './utils.ts'
 
 describe(`field access sudo tests (${dbProvider})`, () => {
@@ -30,17 +31,18 @@ describe(`field access sudo tests (${dbProvider})`, () => {
 
   test('sudo bypasses field filter and order access', async () => {
     const { context } = await suite
-    const item = await context.sudo().query.Item.createOne({
+    const item = await context.sudo().db.Item.createOne({
       data: { value: 'value' },
-      query: 'id value',
+      select: { id: true, value: true },
     })
 
+    const results = await query(context.sudo()).items<{ id: string; value: string | null }[]>({
+      where: { value: { equals: item.value } },
+      orderBy: { value: 'asc' },
+      query: 'id value',
+    })
     assert.deepEqual(
-      await context.sudo().query.Item.findMany({
-        where: { value: { equals: item.value } },
-        orderBy: { value: 'asc' },
-        query: 'id value',
-      }),
+      results.map(result => ({ ...result })),
       [item]
     )
   })

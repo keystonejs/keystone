@@ -1,5 +1,6 @@
 import { expect, test } from 'vitest'
 import { password } from '@keystone-6/core/fields'
+import { mutation } from '../../../../run-field.ts'
 
 export const name = 'Password'
 export const typeFunction = password
@@ -45,8 +46,9 @@ export const crudTests = (keystoneTestWrapper: any) => {
     'setting a password below the length.min fails',
     keystoneTestWrapper(async ({ context }: { context: any }) => {
       await expect(
-        context.query.Test.createOne({
+        mutation(context).createTest({
           data: { password: '123' },
+          query: 'id',
         })
       ).rejects.toMatchInlineSnapshot(`
         [GraphQLError: You provided invalid data for this operation.
@@ -58,17 +60,20 @@ export const crudTests = (keystoneTestWrapper: any) => {
     'setting a common password fails',
     keystoneTestWrapper(async ({ context }: { context: any }) => {
       await expect(
-        context.query.Test.createOne({
+        mutation(context).createTest({
           data: { passwordRejectCommon: 'password' },
+          query: 'id',
         })
       ).rejects.toMatchInlineSnapshot(`
         [GraphQLError: You provided invalid data for this operation.
           - Test.passwordRejectCommon: value is too common and is not allowed]
       `)
-      const data = await context.query.Test.createOne({
-        data: { passwordRejectCommon: 'sdfinwedvhweqfoiuwdfnvjiewrijnf' },
-        query: `passwordRejectCommon {isSet}`,
-      })
+      const data = await mutation(context).createTest<{ passwordRejectCommon: { isSet: boolean } }>(
+        {
+          data: { passwordRejectCommon: 'sdfinwedvhweqfoiuwdfnvjiewrijnf' },
+          query: `passwordRejectCommon {isSet}`,
+        }
+      )
       expect(data.passwordRejectCommon.isSet).toBe(true)
     })
   )

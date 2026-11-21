@@ -6,6 +6,7 @@ import { text } from '@keystone-6/core/fields'
 import { setupTestEnv, setupTestRunner } from '@keystone-6/api-tests/test-runner'
 import { allowAll } from '@keystone-6/core/access'
 import { dbProvider } from '../utils.ts'
+import { mutation } from '../run-field.ts'
 
 const testModules = globSync(`tests/api-tests/fields/types/fixtures/**/test-fixtures.{js,ts}`).map(
   modulePath => resolve(modulePath)
@@ -58,7 +59,7 @@ for (const modulePath of testModules) {
       test(
         'uniqueness is enforced over multiple mutations',
         runner(async ({ context }) => {
-          await context.query.Test.createOne({
+          await context.db.Test.createOne({
             data: { testField: mod.exampleValue(matrixValue) },
           })
 
@@ -103,11 +104,12 @@ for (const modulePath of testModules) {
       test(
         'Configuring uniqueness on one field does not affect others',
         runner(async ({ context }) => {
-          const items = await context.query.Test.createMany({
+          const items = await mutation(context).createTests({
             data: [
               { testField: mod.exampleValue(matrixValue), name: 'jess' },
               { testField: mod.exampleValue2(matrixValue), name: 'jess' },
             ],
+            query: 'id',
           })
           expect(items).toHaveLength(2)
         })

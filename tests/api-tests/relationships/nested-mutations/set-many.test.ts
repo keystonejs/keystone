@@ -5,6 +5,7 @@ import { allOperations, allowAll } from '@keystone-6/core/access'
 import { relationship, text } from '@keystone-6/core/fields'
 import { gen, sampleOne } from 'testcheck'
 import { expectSingleRelationshipError } from '../../utils.ts'
+import { mutation, query } from '../../run-field.ts'
 
 const alphanumGenerator = gen.alphaNumString.notEmpty()
 
@@ -67,22 +68,27 @@ describe('no access control', () => {
       const noteContent2 = `foo${sampleOne(alphanumGenerator)}`
 
       // Create two items with content that can be matched
-      const createNote = await context.query.Note.createOne({ data: { content: noteContent } })
-      const createNote2 = await context.query.Note.createOne({
+      const createNote = await context.db.Note.createOne({
+        data: { content: noteContent },
+        select: { id: true },
+      })
+      const createNote2 = await context.db.Note.createOne({
         data: { content: noteContent2 },
+        select: { id: true },
       })
 
       // Create an item to update
-      const createUser = await context.query.User.createOne({
+      const createUser = await context.db.User.createOne({
         data: {
           username: 'A thing',
           notes: { connect: [{ id: createNote.id }, { id: createNote2.id }] },
         },
+        select: { id: true },
       })
 
       // Update the item and link the relationship field
-      const user = await context.query.User.updateOne({
-        where: { id: createUser.id },
+      const user = await mutation(context).updateUser({
+        where: { id: createUser.id.toString() },
         data: { username: 'A thing', notes: { set: [] } },
         query: 'id notes { id content }',
       })
@@ -98,21 +104,29 @@ describe('no access control', () => {
       const noteContent2 = `foo${sampleOne(alphanumGenerator)}`
 
       // Create two items with content that can be matched
-      const createNote = await context.query.Note.createOne({ data: { content: noteContent } })
-      const createNote2 = await context.query.Note.createOne({
+      const createNote = await context.db.Note.createOne({
+        data: { content: noteContent },
+        select: { id: true },
+      })
+      const createNote2 = await context.db.Note.createOne({
         data: { content: noteContent2 },
+        select: { id: true },
       })
 
       // Create an item to update
-      const createUser = await context.query.User.createOne({
+      const createUser = await mutation(context).createUser<{ id: string }>({
         data: {
           username: 'A thing',
           notes: { set: [{ id: createNote.id }, { id: createNote2.id }] },
         },
+        query: 'id',
       })
 
       // Update the item and link the relationship field
-      const user = await context.query.User.findOne({
+      const user = await query(context).user<{
+        id: string
+        notes: { id: string; content: string | null }[]
+      }>({
         where: { id: createUser.id },
         query: 'id notes { id content }',
       })
@@ -130,21 +144,22 @@ describe('no access control', () => {
   test(
     'set and connect removes all existing items and adds the items specified in set and connect',
     runner(async ({ context }) => {
-      const createNote = await context.query.Note.createOne({ data: {} })
-      const createNote2 = await context.query.Note.createOne({ data: {} })
-      const createNote3 = await context.query.Note.createOne({ data: {} })
+      const createNote = await context.db.Note.createOne({ data: {}, select: { id: true } })
+      const createNote2 = await context.db.Note.createOne({ data: {}, select: { id: true } })
+      const createNote3 = await context.db.Note.createOne({ data: {}, select: { id: true } })
 
       // Create an item to update
-      const createUser = await context.query.User.createOne({
+      const createUser = await context.db.User.createOne({
         data: {
           username: 'A thing',
           notes: { connect: [{ id: createNote.id }] },
         },
+        select: { id: true },
       })
 
       // Update the item and link the relationship field
-      const user = await context.query.User.updateOne({
-        where: { id: createUser.id },
+      const user = await mutation(context).updateUser<{ id: string; notes: { id: string }[] }>({
+        where: { id: createUser.id.toString() },
         data: {
           username: 'A thing',
           notes: { set: [{ id: createNote2.id }], connect: [{ id: createNote3.id }] },
@@ -161,14 +176,15 @@ describe('no access control', () => {
   test(
     'set and disconnect throws an error',
     runner(async ({ context }) => {
-      const createNote = await context.query.Note.createOne({ data: {} })
+      const createNote = await context.db.Note.createOne({ data: {}, select: { id: true } })
 
       // Create an item to update
-      const createUser = await context.query.User.createOne({
+      const createUser = await context.db.User.createOne({
         data: {
           username: 'A thing',
           notes: { connect: [{ id: createNote.id }] },
         },
+        select: { id: true },
       })
 
       // Update the item and link the relationship field
@@ -201,26 +217,32 @@ describe('with access control', () => {
         const noteContent = sampleOne(alphanumGenerator)
 
         // Create an item to link against
-        const createNote = await context.sudo().query.NoteNoRead.createOne({
+        const createNote = await context.sudo().db.NoteNoRead.createOne({
           data: { content: noteContent },
+          select: { id: true },
         })
 
         // Create an item to update
-        const createUser = await context.sudo().query.UserToNotesNoRead.createOne({
+        const createUser = await context.sudo().db.UserToNotesNoRead.createOne({
           data: {
             username: 'A thing',
             notes: { connect: [{ id: createNote.id }] },
           },
+          select: { id: true },
         })
 
         // Update the item and link the relationship field
-        await context.query.UserToNotesNoRead.updateOne({
-          where: { id: createUser.id },
+        await mutation(context).updateUserToNotesNoRead({
+          where: { id: createUser.id.toString() },
           data: { username: 'A thing', notes: { set: [] } },
+          query: 'id',
         })
 
-        const data = await context.sudo().query.UserToNotesNoRead.findOne({
-          where: { id: createUser.id },
+        const data = await query(context.sudo()).userToNotesNoRead<{
+          id: string
+          notes: { id: string }[]
+        }>({
+          where: { id: createUser.id.toString() },
           query: 'id notes { id }',
         })
         expect(data.notes).toHaveLength(0)

@@ -466,12 +466,12 @@ export function controller(
         return `${label.toLowerCase()} (${listFormatter.format(value || [''])})`
       },
       graphql: ({ type, value }) => {
-        if (type === 'empty' && !many) return { [config.fieldKey]: { equals: null } }
+        if (type === 'empty' && !many) return { [config.fieldKey]: null }
         if (type === 'empty' && many) return { [config.fieldKey]: { none: {} } }
-        if (type === 'not_empty' && !many) return { [config.fieldKey]: { not: { equals: null } } }
+        if (type === 'not_empty' && !many) return { NOT: { [config.fieldKey]: null } }
         if (type === 'not_empty' && many) return { [config.fieldKey]: { some: {} } }
         if (type === 'is') return { [config.fieldKey]: { id: { equals: value } } }
-        if (type === 'not_is') return { [config.fieldKey]: { not: { id: { equals: value } } } }
+        if (type === 'not_is') return { NOT: { [config.fieldKey]: { id: { equals: value } } } }
         if (type === 'some') return { [config.fieldKey]: { some: { id: { in: value } } } }
         if (type === 'not_some') return { [config.fieldKey]: { none: { id: { in: value } } } }
         return { [config.fieldKey]: { [type]: value } } // uh

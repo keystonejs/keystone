@@ -6,6 +6,9 @@ import { allOperations, allowAll } from '@keystone-6/core/access'
 
 import { setupTestRunner } from '../../test-runner.ts'
 import { expectGraphQLValidationError, expectSingleRelationshipError } from '../../utils.ts'
+import { mutation, query as queryField } from '../../run-field.ts'
+
+type EventWithGroup = { id: string; group: { id: string; name: string | null } | null }
 
 const runner = setupTestRunner({
   serve: true,
@@ -129,7 +132,10 @@ describe('no access control', () => {
       const groupName = sampleOne(gen.alphaNumString.notEmpty())
 
       // Create an item that does the nested create
-      const event = await context.query.Event.createOne({
+      const event = await mutation(context).createEvent<{
+        id: string
+        group: { id: string; name: string | null }
+      }>({
         data: { title: 'A thing', group: { create: { name: groupName } } },
         query: 'id group { id name }',
       })
@@ -139,7 +145,7 @@ describe('no access control', () => {
         group: { id: expect.any(String), name: groupName },
       })
 
-      const group = await context.query.Group.findOne({
+      const group = await queryField(context).group({
         where: { id: event.group.id },
         query: 'id name',
       })
@@ -153,11 +159,17 @@ describe('no access control', () => {
       const groupName = sampleOne(gen.alphaNumString.notEmpty())
 
       // Create an item to update
-      const createEvent = await context.query.Event.createOne({ data: { title: 'A thing' } })
+      const createEvent = await context.db.Event.createOne({
+        data: { title: 'A thing' },
+        select: { id: true },
+      })
 
       // Update an item that does the nested create
-      const event = await context.query.Event.updateOne({
-        where: { id: createEvent.id },
+      const event = await mutation(context).updateEvent<{
+        id: string
+        group: { id: string; name: string | null }
+      }>({
+        where: { id: createEvent.id.toString() },
         data: { title: 'A thing', group: { create: { name: groupName } } },
         query: 'id group { id name }',
       })
@@ -167,7 +179,7 @@ describe('no access control', () => {
         group: { id: expect.any(String), name: groupName },
       })
 
-      const group = await context.query.Group.findOne({
+      const group = await queryField(context).group({
         where: { id: event.group.id },
         query: 'id name',
       })
@@ -195,20 +207,23 @@ describe('with access control', () => {
             const groupName = sampleOne(gen.alphaNumString.notEmpty())
 
             // Create an item that does the nested create{
-            const data = await context.query[`EventTo${group.name}`].createOne({
+            const data = await mutation(context)[`createEventTo${group.name}`]<{ id: string }>({
               data: { title: 'A thing', group: { create: { name: groupName } } },
+              query: 'id',
             })
 
             expect(data).toMatchObject({ id: expect.any(String) })
 
             // See that it actually stored the group ID on the Event record
-            const event = await context.sudo().query[`EventTo${group.name}`].findOne({
+            const event = await queryField(context.sudo())[
+              `eventTo${group.name}`
+            ]<EventWithGroup | null>({
               where: { id: data.id },
               query: 'id group { id name }',
             })
             expect(event).toBeTruthy()
             expect(event!.group).toBeTruthy()
-            expect(event!.group.name).toBe(groupName)
+            expect(event!.group?.name).toBe(groupName)
           })
         )
 
@@ -218,26 +233,30 @@ describe('with access control', () => {
             const groupName = sampleOne(gen.alphaNumString.notEmpty())
 
             // Create an item to update
-            const eventModel = await context.query[`EventTo${group.name}`].createOne({
+            const eventModel = await context.db[`EventTo${group.name}`].createOne({
               data: { title: 'A thing' },
+              select: { id: true },
             })
 
             // Update an item that does the nested create
-            const data = await context.query[`EventTo${group.name}`].updateOne({
-              where: { id: eventModel.id },
+            const data = await mutation(context)[`updateEventTo${group.name}`]<{ id: string }>({
+              where: { id: eventModel.id.toString() },
               data: { title: 'A thing', group: { create: { name: groupName } } },
+              query: 'id',
             })
 
             expect(data).toMatchObject({ id: expect.any(String) })
 
             // See that it actually stored the group ID on the Event record
-            const event = await context.sudo().query[`EventTo${group.name}`].findOne({
+            const event = await queryField(context.sudo())[
+              `eventTo${group.name}`
+            ]<EventWithGroup | null>({
               where: { id: data.id },
               query: 'id group { id name }',
             })
             expect(event).toBeTruthy()
             expect(event!.group).toBeTruthy()
-            expect(event!.group.name).toBe(groupName)
+            expect(event!.group?.name).toBe(groupName)
           })
         )
       } else {
@@ -282,14 +301,16 @@ describe('with access control', () => {
               )
             }
             // Confirm it didn't insert either of the records anyway
-            const data1 = await context.sudo().query[group.name].findMany({
+            const data1 = await queryField(context.sudo())[
+              context.__internal.lists[group.name].graphql.names.listQueryName
+            ]({
               where: { name: { equals: groupName } },
               query: 'id name',
             })
             expect(data1).toMatchObject([])
 
             // Confirm it didn't insert either of the records anyway
-            const data2 = await context.sudo().query[`EventTo${group.name}`].findMany({
+            const data2 = await queryField(context.sudo())[`eventTo${group.name}s`]({
               where: { title: { equals: eventName } },
               query: 'id title',
             })
@@ -303,8 +324,9 @@ describe('with access control', () => {
             const groupName = sampleOne(gen.alphaNumString.notEmpty())
 
             // Create an item to update
-            const eventModel = await context.query[`EventTo${group.name}`].createOne({
+            const eventModel = await context.db[`EventTo${group.name}`].createOne({
               data: { title: 'A thing' },
+              select: { id: true },
             })
 
             // Update an item that does the nested create
@@ -344,7 +366,9 @@ describe('with access control', () => {
             }
 
             // Confirm it didn't insert the record anyway
-            const groups = await context.sudo().query[group.name].findMany({
+            const groups = await queryField(context.sudo())[
+              context.__internal.lists[group.name].graphql.names.listQueryName
+            ]({
               where: { name: { equals: groupName } },
               query: 'id name',
             })

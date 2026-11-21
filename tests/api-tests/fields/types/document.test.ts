@@ -3,6 +3,9 @@ import { text } from '@keystone-6/core/fields'
 import { document } from '@keystone-6/fields-document'
 import { list } from '@keystone-6/core'
 import { component, fields } from '@keystone-6/fields-document/component-blocks'
+import { query } from '../../run-field.ts'
+
+type PostDocument = { content: { document: unknown } }
 import { allowAll } from '@keystone-6/core/access'
 
 import { setupTestEnv, setupTestRunner } from '../../test-runner.ts'
@@ -58,8 +61,8 @@ const runner = setupTestRunner({
 })
 
 const initData = async ({ context }: { context: ContextFromRunner<typeof runner> }) => {
-  const alice = await context.query.Author.createOne({ data: { name: 'Alice' } })
-  const bob = await context.query.Author.createOne({
+  const alice = await context.db.Author.createOne({ data: { name: 'Alice' }, select: { id: true } })
+  const bob = await context.db.Author.createOne({
     data: {
       name: 'Bob',
       bio: [
@@ -78,8 +81,12 @@ const initData = async ({ context }: { context: ContextFromRunner<typeof runner>
         },
       ],
     },
+    select: { id: true },
   })
-  const charlie = await context.query.Author.createOne({ data: { name: 'Charlie' } })
+  const charlie = await context.db.Author.createOne({
+    data: { name: 'Charlie' },
+    select: { id: true },
+  })
   const bio = [
     {
       type: 'paragraph',
@@ -108,7 +115,10 @@ const initData = async ({ context }: { context: ContextFromRunner<typeof runner>
       ],
     },
   ]
-  const dave = await context.query.Author.createOne({ data: { name: 'Dave', bio } })
+  const dave = await context.db.Author.createOne({
+    data: { name: 'Dave', bio },
+    select: { id: true },
+  })
   type T = { id: string; label?: string; data?: Record<string, any> | null }
   const content = [
     {
@@ -164,7 +174,7 @@ const initData = async ({ context }: { context: ContextFromRunner<typeof runner>
       ],
     },
   ]
-  const post = await context.query.Post.createOne({ data: { content } })
+  const post = await context.db.Post.createOne({ data: { content }, select: { id: true } })
   return { alice, bob, charlie, dave, post, content, bio }
 }
 
@@ -174,8 +184,8 @@ describe('Document field type', () => {
     runner(async ({ context }) => {
       const { post, content } = await initData({ context })
 
-      const _post = await context.query.Post.findOne({
-        where: { id: post.id },
+      const _post = await query(context).post<PostDocument>({
+        where: { id: post.id.toString() },
         query: 'content { document }',
       })
       expect(_post.content.document).toEqual(content)
@@ -187,8 +197,8 @@ describe('Document field type', () => {
     runner(async ({ context }) => {
       const { post, content } = await initData({ context })
 
-      const _post = await context.query.Post.findOne({
-        where: { id: post.id },
+      const _post = await query(context).post<PostDocument>({
+        where: { id: post.id.toString() },
         query: 'content { document(hydrateRelationships: false) }',
       })
       expect(_post.content.document).toEqual(content)
@@ -200,18 +210,22 @@ describe('Document field type', () => {
     runner(async ({ context }) => {
       const { alice, bob, charlie, post, content } = await initData({ context })
 
-      const _post = await context.query.Post.findOne({
-        where: { id: post.id },
+      const _post = await query(context).post<PostDocument>({
+        where: { id: post.id.toString() },
         query: 'content { document(hydrateRelationships: true) }',
       })
       content[0].children[1].data = {
-        id: alice.id,
+        id: alice.id.toString(),
         label: 'Alice',
         data: { id: alice.id, name: 'Alice' },
       }
-      content[1].children[1].data = { id: bob.id, label: 'Bob', data: { id: bob.id, name: 'Bob' } }
+      content[1].children[1].data = {
+        id: bob.id.toString(),
+        label: 'Bob',
+        data: { id: bob.id, name: 'Bob' },
+      }
       // Access denied on charlie;
-      content[2].children[1].data = { id: charlie.id }
+      content[2].children[1].data = { id: charlie.id.toString() }
       expect(_post.content.document).toEqual(content)
     })
   )
@@ -220,20 +234,20 @@ describe('Document field type', () => {
     'hydrateRelationships: true - dangling reference',
     runner(async ({ context }) => {
       const { alice, bob, charlie, post, content } = await initData({ context })
-      await context.query.Author.deleteOne({ where: { id: bob.id } })
-      const _post = await context.query.Post.findOne({
-        where: { id: post.id },
+      await context.db.Author.deleteOne({ where: { id: bob.id.toString() } })
+      const _post = await query(context).post<PostDocument>({
+        where: { id: post.id.toString() },
         query: 'content { document(hydrateRelationships: true) }',
       })
       content[0].children[1].data = {
-        id: alice.id,
+        id: alice.id.toString(),
         label: 'Alice',
         data: { id: alice.id, name: 'Alice' },
       }
       // We expect the `data` field of the relationship to be undefined
-      content[1].children[1].data = { id: bob.id }
+      content[1].children[1].data = { id: bob.id.toString() }
       // Access denied on charlie;
-      content[2].children[1].data = { id: charlie.id }
+      content[2].children[1].data = { id: charlie.id.toString() }
       expect(_post.content.document).toEqual(content)
     })
   )
@@ -243,15 +257,15 @@ describe('Document field type', () => {
     runner(async ({ context }) => {
       const { alice, charlie, dave, bio } = await initData({ context })
 
-      const _dave = await context.query.Author.findOne({
-        where: { id: dave.id },
+      const _dave = await query(context).author<{ bio: { document: unknown } }>({
+        where: { id: dave.id.toString() },
         query: 'bio { document(hydrateRelationships: true) }',
       })
 
       // With no selection, we expect data to be an empty object
-      bio[0].children[1].data = { id: alice.id, label: 'Alice', data: {} }
+      bio[0].children[1].data = { id: alice.id.toString(), label: 'Alice', data: {} }
       // But still, and access-denied user will return data: undefined
-      bio[1].children[1].data = { id: charlie.id }
+      bio[1].children[1].data = { id: charlie.id.toString() }
 
       expect(_dave.bio.document).toEqual(bio)
     })
@@ -261,7 +275,7 @@ describe('Document field type', () => {
     'hydrateRelationships: true - selection has bad fields',
     runner(async ({ context, gqlSuper }) => {
       const { alice } = await initData({ context })
-      const badBob = await context.query.Author.createOne({
+      const badBob = await context.db.Author.createOne({
         data: {
           name: 'Bob',
           badBio: [
@@ -280,6 +294,7 @@ describe('Document field type', () => {
             },
           ],
         },
+        select: { id: true },
       })
 
       const { body } = await gqlSuper({

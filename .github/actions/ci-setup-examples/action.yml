@@ -2,10 +2,7 @@ name: 'CI setup (w/ examples)'
 runs:
   using: 'composite'
   steps:
-    - run: npm i -g corepack@0.31.0
-      shell: bash
-    - run: corepack enable
-      shell: bash
+    - uses: pnpm/action-setup@v6
 
     - uses: actions/setup-node@main
       with:

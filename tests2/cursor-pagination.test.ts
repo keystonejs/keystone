@@ -6,6 +6,7 @@ import { allowAll } from '@keystone-6/core/access'
 import { checkbox, relationship, text } from '@keystone-6/core/fields'
 import { dbProvider, setupTestSuite } from './utils.ts'
 import { findMany } from '../packages/core/src/lib/core/queries/resolvers.ts'
+import { query } from '../tests/api-tests/run-field.ts'
 
 describe(`cursor pagination access (${dbProvider})`, () => {
   const cacheResults: unknown[] = []
@@ -45,27 +46,28 @@ describe(`cursor pagination access (${dbProvider})`, () => {
     },
   })()
   const seeded = suite.then(async ({ context }) => {
-    const posts = await context.sudo().query.Post.createMany({
+    const posts = await context.sudo().db.Post.createMany({
       data: ['a-hidden', 'b-visible', 'c-hidden', 'd-visible', 'e-hidden'].map(value => ({
         value,
         visible: value.endsWith('visible'),
       })),
-      query: 'id value',
+      select: { id: true, value: true },
     })
-    const parent = await context.sudo().query.Parent.createOne({
+    const parent = await context.sudo().db.Parent.createOne({
       data: { posts: { connect: posts.map(({ id }) => ({ id })) } },
+      select: { id: true },
     })
     return { posts, parent }
   })
 
-  for (const api of ['graphql', 'query', 'db'] as const) {
+  for (const api of ['graphql', 'db'] as const) {
     for (const field of ['id', 'value'] as const) {
       for (const take of [10, -10]) {
         test(`${api}: hidden and missing ${field} cursors return empty pages (${take})`, async () => {
           const { context } = await suite
           const { posts } = await seeded
           const candidates = [
-            ...posts.filter(post => post.value.endsWith('hidden')),
+            ...posts.filter(post => String(post.value).endsWith('hidden')),
             { id: 'missing', value: 'missing' },
           ]
           for (const post of candidates) {
@@ -80,11 +82,10 @@ describe(`cursor pagination access (${dbProvider})`, () => {
                       variables: { cursor, take },
                     })) as { posts: unknown[] }
                   ).posts
-                : await context[api].Post.findMany({
+                : await context.db.Post.findMany({
                     cursor,
                     take,
                     orderBy: [{ value: 'asc' }],
-                    query: 'value',
                   })
             assert.deepEqual(results, [])
           }
@@ -97,7 +98,7 @@ describe(`cursor pagination access (${dbProvider})`, () => {
     test(`visible cursors preserve pagination and skip (${take})`, async () => {
       const { context } = await suite
       await seeded
-      const results = await context.query.Post.findMany({
+      const results = await query(context).posts<{ value: string | null }[]>({
         cursor: { value: take > 0 ? 'b-visible' : 'd-visible' },
         take,
         skip: 1,
@@ -128,7 +129,7 @@ describe(`cursor pagination access (${dbProvider})`, () => {
   test('cursor visibility is independent of the user where filter', async () => {
     const { context } = await suite
     await seeded
-    const results = await context.query.Post.findMany({
+    const results = await query(context).posts<{ value: string | null }[]>({
       cursor: { value: 'b-visible' },
       where: { value: { equals: 'd-visible' } },
       orderBy: [{ value: 'asc' }],
@@ -143,7 +144,7 @@ describe(`cursor pagination access (${dbProvider})`, () => {
   test('sudo can paginate from a hidden cursor', async () => {
     const { context } = await suite
     await seeded
-    const results = await context.sudo().query.Post.findMany({
+    const results = await query(context.sudo()).posts<{ value: string | null }[]>({
       cursor: { value: 'c-hidden' },
       take: 2,
       orderBy: [{ value: 'asc' }],
@@ -159,8 +160,9 @@ describe(`cursor pagination access (${dbProvider})`, () => {
     const { context } = await suite
     await seeded
     await assert.rejects(
-      context.withSession({ denyFilter: true }).query.Post.findMany({
+      query(context.withSession({ denyFilter: true })).posts({
         cursor: { value: 'b-visible' },
+        query: 'id',
       }),
       /Access denied: You cannot filter/
     )
@@ -178,7 +180,7 @@ describe(`cursor pagination access (${dbProvider})`, () => {
         const results = await findMany(
           {
             where: {},
-            cursor: { id: posts.find(post => post.value === value)!.id },
+            cursor: { id: posts.find(post => post.value === value)!.id.toString() },
             orderBy: [{ value: 'asc' }],
             take: 10,
             skip: 0,

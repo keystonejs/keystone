@@ -1,5 +1,10 @@
 import type { GField, GOutputType } from '@graphql-ts/schema'
-import { type GraphQLNamedType, GraphQLSchema, isObjectType } from 'graphql/index.js'
+import {
+  type GraphQLNamedType,
+  GraphQLSchema,
+  assertValidSchema,
+  isObjectType,
+} from 'graphql/index.js'
 
 import type { KeystoneConfig, KeystoneContext } from '../types/index.ts'
 import { g } from '../types/schema/index.ts'
@@ -97,5 +102,6 @@ export function createGraphQLSchema(
       `db.requireItemSelection needs declared item selections for GraphQL fields ${missing.join(', ')}`
     )
   }
+  assertValidSchema(schema)
   return schema
 }

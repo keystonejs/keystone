@@ -164,10 +164,10 @@ function ItemNotFound(props: PropsWithChildren) {
   )
 }
 
-function ResetButton(props: { onReset: () => void; hasChanges?: boolean }) {
+function ResetButton(props: { onReset: () => void; isDisabled: boolean }) {
   return (
     <DialogTrigger>
-      <Button tone="accent" isDisabled={!props.hasChanges}>
+      <Button tone="accent" isDisabled={props.isDisabled}>
         Reset
       </Button>
       <AlertDialog
@@ -268,12 +268,6 @@ function ItemForm({
   return (
     <Fragment>
       <form onSubmit={onSave} style={{ display: 'contents' }}>
-        {/*
-          Workaround for react-aria "bug" where pressing enter in a form field
-          moves focus to the submit button.
-          See: https://github.com/adobe/react-spectrum/issues/5940
-        */}
-        <button type="submit" style={{ display: 'none' }} />
         <VStack gap="large" gridArea="main" marginTop="xlarge" minWidth={0}>
           <GraphQLErrorNotice
             errors={
@@ -322,7 +316,7 @@ function ItemForm({
           >
             Save
           </Button>
-          <ResetButton hasChanges={hasChangedFields} onReset={resetValueState} />
+          <ResetButton isDisabled={isSaving || !hasChangedFields} onReset={resetValueState} />
           <Box flex />
           {!list.hideDelete ? (
             <DeleteButton list={list} itemId={itemId} itemLabel={itemLabel} />

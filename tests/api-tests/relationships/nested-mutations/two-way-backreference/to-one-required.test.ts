@@ -4,6 +4,7 @@ import { text, relationship } from '@keystone-6/core/fields'
 import { list } from '@keystone-6/core'
 import { setupTestRunner } from '@keystone-6/api-tests/test-runner'
 import { allowAll } from '@keystone-6/core/access'
+import { mutation, query } from '../../../run-field.ts'
 
 const alphanumGenerator = gen.alphaNumString.notEmpty()
 
@@ -35,7 +36,10 @@ describe('update one to one relationship back reference', () => {
     'nested create',
     runner(async ({ context }) => {
       const locationName = sampleOne(alphanumGenerator)
-      const _company = await context.query.Company.createOne({
+      const _company = await mutation(context).createCompany<{
+        id: string
+        location: { id: string }
+      }>({
         data: { location: { create: { name: locationName } } },
         query: 'id location { id }',
       })
@@ -43,7 +47,7 @@ describe('update one to one relationship back reference', () => {
       const companyId = _company.id
       const locationId = _company.location.id
 
-      const company = (await context.query.Company.findOne({
+      const company = (await query(context).company({
         where: { id: companyId },
         query: 'id location { id }',
       })) as { id: any; location: { id: any } }

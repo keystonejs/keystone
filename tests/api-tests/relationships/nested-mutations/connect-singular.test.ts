@@ -5,6 +5,7 @@ import { list } from '@keystone-6/core'
 import { setupTestRunner } from '@keystone-6/api-tests/test-runner'
 import { allOperations, allowAll } from '@keystone-6/core/access'
 import { expectSingleRelationshipError } from '../../utils.ts'
+import { mutation, query } from '../../run-field.ts'
 
 const runner = setupTestRunner({
   config: {
@@ -110,11 +111,15 @@ describe('no access control', () => {
       const groupName = sampleOne(gen.alphaNumString.notEmpty())
 
       // Create an item to link against
-      const createGroup = await context.query.Group.createOne({ data: { name: groupName } })
+      const createGroup = await context.db.Group.createOne({
+        data: { name: groupName },
+        select: { id: true },
+      })
 
       // Create an item that does the linking
-      const event = await context.query.Event.createOne({
+      const event = await mutation(context).createEvent({
         data: { title: 'A thing', group: { connect: { id: createGroup.id } } },
+        query: 'id',
       })
 
       expect(event).toMatchObject({ id: expect.any(String) })
@@ -127,14 +132,20 @@ describe('no access control', () => {
       const groupName = sampleOne(gen.alphaNumString.notEmpty())
 
       // Create an item to link against
-      const createGroup = await context.query.Group.createOne({ data: { name: groupName } })
+      const createGroup = await context.db.Group.createOne({
+        data: { name: groupName },
+        select: { id: true },
+      })
 
       // Create an item to update
-      const event = await context.query.Event.createOne({ data: { title: 'A thing' } })
+      const event = await context.db.Event.createOne({
+        data: { title: 'A thing' },
+        select: { id: true },
+      })
 
       // Update the item and link the relationship field
-      const _event = await context.query.Event.updateOne({
-        where: { id: event.id },
+      const _event = await mutation(context).updateEvent({
+        where: { id: event.id.toString() },
         data: { title: 'A thing', group: { connect: { id: createGroup.id } } },
         query: 'id group { id name }',
       })
@@ -179,7 +190,7 @@ describe('non-matching filter', () => {
       const FAKE_ID = 'cabc123'
 
       // Create an item to link against
-      const createEvent = await context.query.Event.createOne({ data: {} })
+      const createEvent = await context.db.Event.createOne({ data: {}, select: { id: true } })
 
       // Create an item that does the linking
       const { data, errors } = await context.graphql.raw({
@@ -207,7 +218,7 @@ describe('non-matching filter', () => {
     'errors on incomplete data',
     runner(async ({ context }) => {
       // Create an item to link against
-      const createEvent = await context.query.Event.createOne({ data: {} })
+      const createEvent = await context.db.Event.createOne({ data: {}, select: { id: true } })
 
       // Create an item that does the linking
       const { data, errors } = await context.graphql.raw({
@@ -249,13 +260,14 @@ describe('with access control', () => {
 
             // Create an item to link against
             // We can't use the graphQL query here (it's `create: () => false`)
-            const { id } = await context.sudo().query[group.name].createOne({
+            const { id } = await context.sudo().db[group.name].createOne({
               data: { name: groupName },
+              select: { id: true },
             })
             expect(id).toBeTruthy()
 
             // Create an item that does the linking
-            const data = await context.query[`EventTo${group.name}`].createOne({
+            const data = await mutation(context)[`createEventTo${group.name}`]({
               data: { title: 'A thing', group: { connect: { id } } },
               query: 'id group { id }',
             })
@@ -269,20 +281,25 @@ describe('with access control', () => {
             const groupName = sampleOne(gen.alphaNumString.notEmpty())
 
             // Create an item to link against
-            const groupModel = await context.sudo().query[group.name].createOne({
+            const groupModel = await context.sudo().db[group.name].createOne({
               data: { name: groupName },
+              select: { id: true },
             })
             expect(groupModel.id).toBeTruthy()
 
             // Create an item to update
-            const eventModel = await context.sudo().query[`EventTo${group.name}`].createOne({
+            const eventModel = await context.sudo().db[`EventTo${group.name}`].createOne({
               data: { title: 'A Thing' },
+              select: { id: true },
             })
             expect(eventModel.id).toBeTruthy()
 
             // Update the item and link the relationship field
-            const data = await context.query[`EventTo${group.name}`].updateOne({
-              where: { id: eventModel.id },
+            const data = await mutation(context)[`updateEventTo${group.name}`]<{
+              id: string
+              group: { id: string; name: string | null }
+            }>({
+              where: { id: eventModel.id.toString() },
               data: { title: 'A thing', group: { connect: { id: groupModel.id } } },
               query: 'id group { id name }',
             })
@@ -293,13 +310,16 @@ describe('with access control', () => {
             })
 
             // See that it actually stored the group ID on the Event record
-            const event = await context.sudo().query[`EventTo${group.name}`].findOne({
+            const event = await query(context.sudo())[`eventTo${group.name}`]<{
+              id: string
+              group: { id: string; name: string | null } | null
+            } | null>({
               where: { id: data.id },
               query: 'id group { id name }',
             })
             expect(event).toBeTruthy()
             expect(event!.group).toBeTruthy()
-            expect(event!.group.name).toBe(groupName)
+            expect(event!.group?.name).toBe(groupName)
           })
         )
       } else {
@@ -309,14 +329,16 @@ describe('with access control', () => {
             const groupName = sampleOne(gen.alphaNumString.notEmpty())
 
             // Create an item to link against
-            const groupModel = await context.sudo().query[group.name].createOne({
+            const groupModel = await context.sudo().db[group.name].createOne({
               data: { name: groupName },
+              select: { id: true },
             })
             expect(groupModel.id).toBeTruthy()
 
             // Create an item to update
-            const eventModel = await context.query[`EventTo${group.name}`].createOne({
+            const eventModel = await context.db[`EventTo${group.name}`].createOne({
               data: { title: 'A thing' },
+              select: { id: true },
             })
             expect(eventModel.id).toBeTruthy()
 
@@ -352,8 +374,9 @@ describe('with access control', () => {
             const groupName = sampleOne(gen.alphaNumString.notEmpty())
 
             // Create an item to link against
-            const { id } = await context.sudo().query[group.name].createOne({
+            const { id } = await context.sudo().db[group.name].createOne({
               data: { name: groupName },
+              select: { id: true },
             })
             expect(id).toBeTruthy()
 

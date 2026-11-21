@@ -16,13 +16,26 @@ beforeEach(async () => {
 })
 afterEach(async () => context.prisma.$disconnect())
 
-test('Create a User using context.query', async () => {
-  const person = await context.query.User.createOne({
-    data: { name: 'Alice', password: 'dont-use-me' },
-    query: 'id name password { isSet }',
+test('Create a User using context.graphql.run', async () => {
+  const {
+    createUser: person,
+  }: {
+    createUser: { name: string | null; password: { isSet: boolean } | null } | null
+  } = await context.graphql.run({
+    query: `
+      mutation ($data: UserCreateInput!) {
+        createUser(data: $data) {
+          name
+          password {
+            isSet
+          }
+        }
+      }
+    `,
+    variables: { data: { name: 'Alice', password: 'dont-use-me' } },
   })
-  assert.equal(person.name, 'Alice')
-  assert.equal(person.password.isSet, true)
+  assert.equal(person?.name, 'Alice')
+  assert.equal(person?.password?.isSet, true)
 })
 
 test('Check that trying to create user with no name (required field) fails', async () => {
@@ -43,30 +56,55 @@ test('Check that trying to create user with no name (required field) fails', asy
 
 test('Check access control by running updateTask as a specific user via context.withSession()', async () => {
   // seed a few users to test with
-  const [alice, bob] = await context.query.User.createMany({
+  const [alice, bob] = await context.db.User.createMany({
     data: [
       { name: 'Alice', password: 'dont-use-me' },
       { name: 'Bob', password: 'dont-use-me' },
     ],
-    query: 'id name',
+    select: { id: true, name: true },
   })
   assert.equal(alice.name, 'Alice')
   assert.equal(bob.name, 'Bob')
 
   // assign a task to Alice
-  const task = await context.query.Task.createOne({
-    data: {
-      label: 'Experiment with Keystone',
-      priority: 'high',
-      isComplete: false,
-      assignedTo: { connect: { id: alice.id } },
+  const {
+    createTask: task,
+  }: {
+    createTask: {
+      id: string
+      label: string | null
+      priority: string | null
+      isComplete: boolean | null
+      assignedTo: { name: string | null } | null
+    } | null
+  } = await context.graphql.run({
+    query: `
+      mutation ($data: TaskCreateInput!) {
+        createTask(data: $data) {
+          id
+          label
+          priority
+          isComplete
+          assignedTo {
+            name
+          }
+        }
+      }
+    `,
+    variables: {
+      data: {
+        label: 'Experiment with Keystone',
+        priority: 'high',
+        isComplete: false,
+        assignedTo: { connect: { id: alice.id } },
+      },
     },
-    query: 'id label priority isComplete assignedTo { name }',
   })
+  assert.ok(task)
   assert.equal(task.label, 'Experiment with Keystone')
   assert.equal(task.priority, 'high')
   assert.equal(task.isComplete, false)
-  assert.equal(task.assignedTo.name, 'Alice')
+  assert.equal(task.assignedTo?.name, 'Alice')
   await assert.rejects(
     async () => {
       await context.db.Task.updateOne({

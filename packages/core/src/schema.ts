@@ -196,8 +196,8 @@ let i = 0
 
 export type GroupInfo<ListTypeInfo extends BaseListTypeInfo> = {
   fields: string[]
-  label: string
-  description: string
+  label: MaybeSessionFunction<string, ListTypeInfo>
+  description: MaybeSessionFunction<string, ListTypeInfo>
   fieldDefaults: { ui?: GroupUIConfig<ListTypeInfo> } | undefined
 }
 
@@ -218,8 +218,10 @@ type GroupUIConfig<ListTypeInfo extends BaseListTypeInfo> = {
 }
 
 export function group<ListTypeInfo extends BaseListTypeInfo>(config: {
-  label: string
-  description?: string
+  /** Display label, or a synchronous/asynchronous function of the current request context. */
+  label: MaybeSessionFunction<string, ListTypeInfo>
+  /** Help text, or a synchronous/asynchronous function of the current request context. */
+  description?: MaybeSessionFunction<string, ListTypeInfo>
   fieldDefaults?: { ui?: GroupUIConfig<ListTypeInfo> }
   fields: BaseFields<ListTypeInfo>
 }) {

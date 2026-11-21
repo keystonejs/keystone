@@ -63,7 +63,7 @@ export function useCreateItem(list: ListMeta): CreateItemHookResult {
   usePreventNavigation(shouldPreventNavigationRef)
 
   return {
-    state: loading ? 'loading' : !returnedData?.item ? 'created' : 'editing',
+    state: loading ? 'loading' : returnedData?.item ? 'created' : 'editing',
     shouldPreventNavigation,
     error,
     props: {

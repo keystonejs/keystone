@@ -4,6 +4,7 @@ import { describe, test } from 'node:test'
 import { list } from '@keystone-6/core'
 import { allowAll, denyAll } from '@keystone-6/core/access'
 import { relationship, text } from '@keystone-6/core/fields'
+import { query } from '../tests/api-tests/run-field.ts'
 import { dbProvider, setupTestSuite } from './utils.ts'
 
 const config = {
@@ -129,18 +130,21 @@ describe(`query kinds (${dbProvider})`, () => {
 
   test('routes list and field access by kind', async () => {
     const { context } = await suite
-    const created = await context.sudo().query.AccessTarget.createOne({
+    const created = await context.sudo().db.AccessTarget.createOne({
       data: { value: 'a' },
-      query: 'id value',
+      select: { id: true, value: true },
     })
 
     assert.equal(
-      await context.query.AccessTarget.findOne({ where: { id: created.id }, query: 'id value' }),
+      await query(context).accessTarget({
+        where: { id: created.id.toString() },
+        query: 'id value',
+      }),
       null
     )
     assert.equal(
       (
-        await context.query.AccessTarget.findMany({
+        await query(context).accessTargets<unknown[]>({
           where: { value: { equals: 'a' } },
           orderBy: [{ value: 'asc' }],
           query: 'id value',
@@ -148,65 +152,90 @@ describe(`query kinds (${dbProvider})`, () => {
       ).length,
       1
     )
-    assert.equal(await context.query.AccessTarget.count(), 0)
+    assert.equal(await query(context).accessTargetsCount(), 0)
   })
 
   test('routes shared and separate query filters by kind', async () => {
     const { context } = await suite
+    const graphql = query(context)
+    type ItemValue = { value: string | null }
     for (const listKey of ['FilterTarget', 'SharedFilterTarget']) {
-      const items = await context.sudo().query[listKey].createMany({
+      const { itemQueryName, listQueryName, listQueryCountName } =
+        context.__internal.lists[listKey].graphql.names
+      const db = context.db[listKey]
+      const items = await context.sudo().db[listKey].createMany({
         data: ['one', 'many', 'count', 'count'].map(value => ({ value })),
-        query: 'id value',
+        select: { id: true, value: true },
       })
-      for (const api of [context.query, context.db]) {
-        assert.equal(
-          (await api[listKey].findOne({ where: { id: items[0].id }, query: 'id value' }))?.value,
-          'one'
-        )
-        assert.equal(await api[listKey].findOne({ where: { id: items[1].id } }), null)
+      for (const { findOne, findMany, count } of [
+        {
+          findOne: (id: string, query = 'id') =>
+            graphql[itemQueryName]<ItemValue | null>({ where: { id }, query }),
+          findMany: () => graphql[listQueryName]<ItemValue[]>({ query: 'id value' }),
+          count: () => graphql[listQueryCountName](),
+        },
+        {
+          findOne: (id: string) => db.findOne({ where: { id } }),
+          findMany: () => db.findMany(),
+          count: () => db.count(),
+        },
+      ]) {
+        assert.equal((await findOne(items[0].id.toString(), 'id value'))?.value, 'one')
+        assert.equal(await findOne(items[1].id.toString()), null)
         assert.deepEqual(
-          (await api[listKey].findMany({ query: 'id value' })).map(item => item.value),
+          (await findMany()).map(item => item.value),
           ['many']
         )
-        assert.equal(await api[listKey].count(), 2)
+        assert.equal(await count(), 2)
       }
-      assert.equal(await context.sudo().query[listKey].count(), 4)
+      assert.equal(await query(context.sudo())[listQueryCountName](), 4)
     }
-    const denied = context.withSession({ deny: true })
-    const [item] = await context.sudo().query.FilterTarget.findMany()
-    assert.equal(await denied.query.FilterTarget.findOne({ where: { id: item.id } }), null)
-    assert.deepEqual(await denied.query.FilterTarget.findMany(), [])
-    assert.equal(await denied.query.FilterTarget.count(), 0)
+    const denied = query(context.withSession({ deny: true }))
+    const [item] = await context.sudo().db.FilterTarget.findMany({ select: { id: true } })
+    assert.equal(
+      await denied.filterTarget({ where: { id: item.id.toString() }, query: 'id' }),
+      null
+    )
+    assert.deepEqual(await denied.filterTargets({ query: 'id' }), [])
+    assert.equal(await denied.filterTargetsCount(), 0)
   })
 
   test('routes relationship query filters by kind', async () => {
     const { context } = await suite
-    const items = await context.sudo().query.FilterTarget.createMany({
+    const items = await context.sudo().db.FilterTarget.createMany({
       data: ['one', 'many', 'count', 'count'].map(value => ({ value })),
-      query: 'id value',
+      select: { id: true, value: true },
     })
-    const parent = await context.sudo().query.Parent.createOne({
+    const parent = await context.sudo().db.Parent.createOne({
       data: {
         filterOne: { connect: { id: items[0].id } },
         filterMany: { connect: items.map(({ id }) => ({ id })) },
       },
+      select: { id: true },
     })
-    const query = 'filterOne { value } filterMany { value } filterManyCount'
-    const result = await context.query.Parent.findOne({ where: { id: parent.id }, query })
-    assert.equal(result?.filterOne.value, 'one')
+    type RelatedItem = { value: string | null }
+    const result = await query(context).parent<{
+      filterOne: RelatedItem | null
+      filterMany: RelatedItem[]
+      filterManyCount: number
+    } | null>({
+      where: { id: parent.id.toString() },
+      query: 'filterOne { value } filterMany { value } filterManyCount',
+    })
+    assert.equal(result?.filterOne?.value, 'one')
     assert.deepEqual(
-      result?.filterMany.map((item: { value: string }) => item.value),
+      result?.filterMany.map(item => item.value),
       ['many']
     )
     assert.equal(result?.filterManyCount, 2)
-    await context.sudo().query.Parent.updateOne({
-      where: { id: parent.id },
+    await context.sudo().db.Parent.updateOne({
+      where: { id: parent.id.toString() },
       data: { filterOne: { connect: { id: items[1].id } } },
     })
     assert.deepEqual(
       {
-        ...(await context.query.Parent.findOne({
-          where: { id: parent.id },
+        ...(await query(context).parent<{ filterOne: RelatedItem | null } | null>({
+          where: { id: parent.id.toString() },
           query: 'filterOne { value }',
         })),
       },

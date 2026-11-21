@@ -6,6 +6,7 @@ import { list } from '@keystone-6/core'
 import { setupTestRunner } from '@keystone-6/api-tests/test-runner'
 import { allowAll } from '@keystone-6/core/access'
 import type { ListKeyFromRunner } from '../utils.ts'
+import { query } from '../run-field.ts'
 
 const alphanumGenerator = gen.alphaNumString.notEmpty()
 
@@ -38,21 +39,22 @@ describe('Querying with relationship filters', () => {
       'with data',
       runner(async ({ context }) => {
         // Create an item to link against
-        const users = await context.query.User.createMany({
+        const users = await context.db.User.createMany({
           data: [{ name: 'Jess' }, { name: 'Johanna' }, { name: 'Sam' }],
+          select: { id: true },
         })
-        const posts = await context.query.Post.createMany({
+        const posts = await context.db.Post.createMany({
           data: [
             { author: { connect: { id: users[0].id } }, title: sampleOne(alphanumGenerator) },
             { author: { connect: { id: users[1].id } }, title: sampleOne(alphanumGenerator) },
             { author: { connect: { id: users[2].id } }, title: sampleOne(alphanumGenerator) },
             { author: { connect: { id: users[0].id } }, title: sampleOne(alphanumGenerator) },
           ],
-          query: 'id title',
+          select: { id: true, title: true },
         })
 
         // Create an item that does the linking
-        const allPosts = await context.query.Post.findMany({
+        const allPosts = await query(context).posts({
           where: { author: { name: { contains: 'J' } } },
           query: 'id title',
         })
@@ -69,17 +71,20 @@ describe('Querying with relationship filters', () => {
       'without data',
       runner(async ({ context }) => {
         // Create an item to link against
-        const user = await context.query.User.createOne({ data: { name: 'Jess' } })
-        const posts = await context.query.Post.createMany({
+        const user = await context.db.User.createOne({
+          data: { name: 'Jess' },
+          select: { id: true },
+        })
+        const posts = await context.db.Post.createMany({
           data: [
             { author: { connect: { id: user.id } }, title: sampleOne(alphanumGenerator) },
             { title: sampleOne(alphanumGenerator) },
           ],
-          query: 'id title',
+          select: { id: true, title: true },
         })
 
         // Create an item that does the linking
-        const _posts = await context.query.Post.findMany({
+        const _posts = await query(context).posts({
           where: { author: { name: { contains: 'J' } } },
           query: 'id title author { id name }',
         })
@@ -119,11 +124,11 @@ describe('Querying with relationship filters', () => {
       'every condition',
       runner(async ({ context }) => {
         const create = async (listKey: ListKey, data: any) =>
-          context.query[listKey].createOne({ data })
+          context.db[listKey].createOne({ data, select: { id: true } })
         const { users } = await setup(create)
 
         // EVERY
-        const _users = await context.query.User.findMany({
+        const _users = await query(context).users({
           where: { feed: { every: { title: { contains: 'J' } } } },
           query: 'id name feed { id title }',
         })
@@ -136,11 +141,11 @@ describe('Querying with relationship filters', () => {
       'some condition',
       runner(async ({ context }) => {
         const create = async (listKey: ListKey, data: any) =>
-          context.query[listKey].createOne({ data })
+          context.db[listKey].createOne({ data, select: { id: true } })
         const { users } = await setup(create)
 
         // SOME
-        const _users = await context.query.User.findMany({
+        const _users = await query(context).users({
           where: { feed: { some: { title: { contains: 'J' } } } },
           query: 'id feed(orderBy: { title: asc }) { title }',
         })
@@ -159,11 +164,11 @@ describe('Querying with relationship filters', () => {
       'none condition',
       runner(async ({ context }) => {
         const create = async (listKey: ListKey, data: any) =>
-          context.query[listKey].createOne({ data })
+          context.db[listKey].createOne({ data, select: { id: true } })
         const { users } = await setup(create)
 
         // NONE
-        const _users = await context.query.User.findMany({
+        const _users = await query(context).users({
           where: { feed: { none: { title: { contains: 'J' } } } },
           query: 'id name feed { id title }',
         })
@@ -200,11 +205,11 @@ describe('Querying with relationship filters', () => {
       'every condition',
       runner(async ({ context }) => {
         const create = async (listKey: ListKey, data: any) =>
-          context.query[listKey].createOne({ data })
+          context.db[listKey].createOne({ data, select: { id: true } })
         const { users } = await setup(create)
 
         // EVERY
-        const _users = await context.query.User.findMany({
+        const _users = await query(context).users({
           where: { feed: { every: { title: { contains: 'J' } } } },
           query: 'id feed { id title }',
         })
@@ -219,11 +224,11 @@ describe('Querying with relationship filters', () => {
       'some condition',
       runner(async ({ context }) => {
         const create = async (listKey: ListKey, data: any) =>
-          context.query[listKey].createOne({ data })
+          context.db[listKey].createOne({ data, select: { id: true } })
         const { users } = await setup(create)
 
         // SOME
-        const _users = await context.query.User.findMany({
+        const _users = await query(context).users({
           where: { feed: { some: { title: { contains: 'J' } } } },
           query: 'id name feed(orderBy: { title: asc }) { id title }',
         })
@@ -239,11 +244,11 @@ describe('Querying with relationship filters', () => {
       'none condition',
       runner(async ({ context }) => {
         const create = async (listKey: ListKey, data: any) =>
-          context.query[listKey].createOne({ data })
+          context.db[listKey].createOne({ data, select: { id: true } })
         const { users } = await setup(create)
 
         // NONE
-        const _users = await context.query.User.findMany({
+        const _users = await query(context).users({
           where: { feed: { none: { title: { contains: 'J' } } } },
           query: 'id feed { title }',
         })
@@ -273,11 +278,11 @@ describe('Querying with relationship filters', () => {
       'every condition',
       runner(async ({ context }) => {
         const create = async (listKey: ListKey, data: any) =>
-          context.query[listKey].createOne({ data })
+          context.db[listKey].createOne({ data, select: { id: true } })
         const { users } = await setup(create)
 
         // EVERY
-        const _users = await context.query.User.findMany({
+        const _users = await query(context).users({
           where: { feed: { every: { title: { contains: 'J' } } } },
           query: 'id feed { id title }',
         })
@@ -295,11 +300,11 @@ describe('Querying with relationship filters', () => {
       'some condition',
       runner(async ({ context }) => {
         const create = async (listKey: ListKey, data: any) =>
-          context.query[listKey].createOne({ data })
+          context.db[listKey].createOne({ data, select: { id: true } })
         const { users } = await setup(create)
 
         // SOME
-        const _users = await context.query.User.findMany({
+        const _users = await query(context).users({
           where: { feed: { some: { author: { id: { equals: users[0].id } } } } },
           query: 'id name feed { id title }',
         })
@@ -311,11 +316,11 @@ describe('Querying with relationship filters', () => {
       'none condition',
       runner(async ({ context }) => {
         const create = async (listKey: ListKey, data: any) =>
-          context.query[listKey].createOne({ data })
+          context.db[listKey].createOne({ data, select: { id: true } })
         const { users } = await setup(create)
 
         // NONE
-        const _users = await context.query.User.findMany({
+        const _users = await query(context).users({
           where: { feed: { none: { title: { contains: 'J' } } } },
           query: 'id feed { title }',
         })

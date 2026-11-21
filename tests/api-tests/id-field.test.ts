@@ -6,6 +6,7 @@ import { text } from '@keystone-6/core/fields'
 import { setupTestRunner } from '@keystone-6/api-tests/test-runner'
 import { validate as isUuid } from 'uuid'
 import { dbProvider, expectBadUserInput } from './utils.ts'
+import { mutation, query } from './run-field.ts'
 
 export function assertNever(arg: never) {
   throw new Error('expected to never be called but received: ' + JSON.stringify(arg))
@@ -130,7 +131,10 @@ for (const fixture of fixtures) {
     test(
       `Create defaults to the expected identifier type`,
       runner(async ({ context }) => {
-        const { id } = await context.query.User.createOne({ data: { name: 'something' } })
+        const { id } = await mutation(context).createUser<{ id: string }>({
+          data: { name: 'something' },
+          query: 'id',
+        })
         const dbItem = await context.db.User.findOne({ where: { id } })
 
         expect(dbItem).not.toBe(null)
@@ -157,9 +161,13 @@ for (const fixture of fixtures) {
     test(
       `findOne works`,
       runner(async ({ context }) => {
-        const { id } = await context.query.User.createOne({ data: { name: 'something' } })
-        await context.query.User.createOne({ data: { name: 'another' } })
-        const item = await context.query.User.findOne({ where: { id } })
+        const { id: dbId } = await context.db.User.createOne({
+          data: { name: 'something' },
+          select: { id: true },
+        })
+        await context.db.User.createOne({ data: { name: 'another' } })
+        const id = dbId.toString()
+        const item = await query(context).user<{ id: string }>({ where: { id }, query: 'id' })
         expect(item.id).toBe(id)
       })
     )
@@ -167,9 +175,16 @@ for (const fixture of fixtures) {
     test(
       `findMany works`,
       runner(async ({ context }) => {
-        const { id } = await context.query.User.createOne({ data: { name: 'something' } })
-        await context.query.User.createOne({ data: { name: 'another' } })
-        const items = await context.query.User.findMany({ where: { id: { equals: id } } })
+        const { id: dbId } = await context.db.User.createOne({
+          data: { name: 'something' },
+          select: { id: true },
+        })
+        await context.db.User.createOne({ data: { name: 'another' } })
+        const id = dbId.toString()
+        const items = await query(context).users<{ id: string }[]>({
+          where: { id: { equals: id } },
+          query: 'id',
+        })
         expect(items).toHaveLength(1)
         expect(items[0].id).toBe(id)
       })
@@ -178,7 +193,7 @@ for (const fixture of fixtures) {
     test(
       `findMany returns [] for a null notIn filter`,
       runner(async ({ context }) => {
-        const items = await context.query.User.findMany({ where: { id: { notIn: null } } })
+        const items = await query(context).users({ where: { id: { notIn: null } }, query: 'id' })
         expect(items).toStrictEqual([])
       })
     )
@@ -225,11 +240,13 @@ describe('case insensitive id filters', () => {
     test(
       'searching for uppercased uuid works',
       runner(async ({ context }) => {
-        const { id } = (await context.query.User.createOne({
+        const { id } = (await context.db.User.createOne({
           data: { name: 'something' },
+          select: { id: true },
         })) as { id: string }
-        const { id: fromFound } = await context.query.User.findOne({
+        const { id: fromFound } = await query(context).user<{ id: string }>({
           where: { id: id.toUpperCase() },
+          query: 'id',
         })
         // it returns lower-cased
         expect(fromFound).toBe(id)
