@@ -20,7 +20,7 @@ const context = {
   // Database API
   db,
 
-  // HTTP request object
+  // HTTP headers
   req,
   res,
 
@@ -38,7 +38,7 @@ const context = {
   // New context creators
   sudo,
   internal,
-  withRequest,
+  withHeaders,
   withSession,
 
   // Transactions
@@ -49,10 +49,11 @@ const context = {
 }
 ```
 
-### HTTP request object
+### HTTP headers
 
-`req`: The [IncomingMessage](https://nodejs.org/api/http.html#class-httpincomingmessage) object from the HTTP request.
-`res`: The [ServerResponse](https://nodejs.org/api/http.html#class-httpserverresponse) object for the HTTP request.
+`req`: A WHATWG [`Headers`](https://developer.mozilla.org/en-US/docs/Web/API/Headers) object containing the incoming request headers.
+
+`res`: A WHATWG `Headers` object for outgoing response headers. It can be undefined for read-only contexts.
 
 ### Query API
 
@@ -106,7 +107,7 @@ See the [session API](../config/session#session-context) for more details.
 
 `session`: The current session data object.
 
-`sessionStrategy`: an object containing functions(`get`, `start` and `end`) that manipulate a session. See the [session API](../config/session#session-context) for more details.
+`sessionStrategy`: an object containing functions (`get`, `start` and `end`) that manipulate a session. See the [session API](../config/session#session-context) for more details.
 
 ### New context creators
 
@@ -116,7 +117,9 @@ Keystone applies access control using the current context and its session. The f
 
 `internal()`: A function which returns a new `Context` object that bypasses `graphql.omit` on lists and fields, allowing you to query and mutate data that is otherwise omitted from the GraphQL API.
 
-`withRequest(req, res)`: A function which returns a new `Context` object with the `.session` determined by your `sessionStrategy.get` function.
+`withHeaders(req, res?)`: Creates a context from WHATWG `Headers` and loads its session using `sessionStrategy.get`. Request headers are cloned; response headers are shared with the returned context and its derived contexts. Omitting `res` creates a read-only context for response headers, so session cookies cannot be set.
+
+Keystone's built-in server copies outgoing headers to the HTTP response automatically. In custom integrations, supply a mutable `Headers` object as `res` and copy its contents to response headers before sending the response. Preserve separate `Set-Cookie` values with `res.getSetCookie()` rather than combining them into one header.
 
 `withSession(newSession)`: A function which returns a new `Context` object with the `.session` object replaced by the `newSession` argument.
 
