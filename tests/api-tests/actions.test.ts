@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { action, g, list } from '@keystone-6/core'
 import { allowAll } from '@keystone-6/core/access'
-import { text } from '@keystone-6/core/fields'
+import { integer, text } from '@keystone-6/core/fields'
 
 import { adminMetaQuery } from '../../packages/core/src/admin-ui/admin-meta-graphql.ts'
 import { setupTestRunner } from './test-runner.ts'
@@ -13,6 +13,8 @@ const runner = setupTestRunner({
         access: allowAll,
         fields: {
           title: text(),
+          // only used to look up the integer views hash in the admin meta test below
+          count: integer(),
         },
         actions: {
           rename: action({
@@ -20,7 +22,15 @@ const runner = setupTestRunner({
             args: {
               title: {
                 graphql: g.arg({ type: g.String }),
-                ui: { source: { field: text({ validation: { isRequired: true } }) } },
+                ui: {
+                  source: {
+                    field: text({
+                      validation: { isRequired: true },
+                      // a different module to the text field's own views, so customViews can't match views by accident
+                      ui: { views: '@keystone-6/core/fields/types/integer/views' },
+                    }),
+                  },
+                },
               },
               previousTitle: {
                 graphql: g.arg({ type: g.String }),
@@ -81,7 +91,7 @@ describe('actions', () => {
     runner(async ({ context }) => {
       const data = (await context.sudo().graphql.run({ query: adminMetaQuery })) as any
       const task = data.keystone.adminMeta.lists.find((list: any) => list.key === 'Task')
-      expect(task.actions[0].graphql.arguments).toMatchObject([
+      expect(JSON.parse(JSON.stringify(task.actions[0].graphql.arguments))).toMatchObject([
         {
           name: 'title',
           type: 'String',
@@ -89,6 +99,8 @@ describe('actions', () => {
             field: {
               key: 'title',
               label: 'Title',
+              views: task.fields.find((field: any) => field.key === 'title').views,
+              customViews: task.fields.find((field: any) => field.key === 'count').views,
             },
           },
         },

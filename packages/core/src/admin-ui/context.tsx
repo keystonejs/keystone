@@ -99,20 +99,35 @@ function InternalKeystoneProvider({
         groups: [],
       }
 
+      function getFieldViews(fieldKey: string, hash: string, option: 'views' | 'ui.views') {
+        const views = fieldViews[hash]
+        if (views === undefined) {
+          throw new Error(
+            `The ${option} for the field at ${listData.key}.${fieldKey} (${hash}) is missing from the Admin UI build. ` +
+              `The Admin UI may be out of date with your Keystone config, try restarting \`keystone dev\` or rebuilding the Admin UI`
+          )
+        }
+        return views
+      }
+
       function hydrateField(field: (typeof listData.fields)[number]) {
+        const fieldViewsSource = getFieldViews(field.key, field.views, 'views')
         for (const exportName of requiredExports) {
-          if ((fieldViews[field.viewsIndex] as any)[exportName] === undefined) {
+          if ((fieldViewsSource as any)[exportName] === undefined) {
             throw new Error(
               `The view for the field at ${listData.key}.${field.key} is missing the ${exportName} export`
             )
           }
         }
 
-        const views = { ...fieldViews[field.viewsIndex] }
+        const views = { ...fieldViewsSource }
         const customViews: Record<string, any> = {}
-        if (field.customViewsIndex !== null) {
-          const customViewsSource: FieldViews[number] & Record<string, any> =
-            fieldViews[field.customViewsIndex]
+        if (field.customViews !== null) {
+          const customViewsSource: FieldViews[string] & Record<string, any> = getFieldViews(
+            field.key,
+            field.customViews,
+            'ui.views'
+          )
           const allowedExportsOnCustomViews = new Set(views.allowedExportsOnCustomViews)
           for (const exportName in customViewsSource) {
             if (allowedExportsOnCustomViews.has(exportName)) {
