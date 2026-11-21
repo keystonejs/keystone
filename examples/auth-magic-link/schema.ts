@@ -1,10 +1,10 @@
 import { gWithContext, list } from '@keystone-6/core'
 import { allowAll, denyAll } from '@keystone-6/core/access'
-import { password, text, timestamp } from '@keystone-6/core/fields'
+import { text, timestamp } from '@keystone-6/core/fields'
+import { jwtSessions, password } from '@keystone-6/auth'
 import type { Lists, Context, Session } from './generated/keystone/types'
 
 import { randomBytes } from 'node:crypto'
-import { jwtSessions } from '@keystone-6/auth'
 
 const g = gWithContext<Context>()
 type g<T> = gWithContext.infer<T>

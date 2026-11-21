@@ -9,8 +9,8 @@ For examples of how to use authentication in your system please see the [authent
 
 ```typescript
 import { config, list } from '@keystone-6/core'
-import { text, password, checkbox } from '@keystone-6/core/fields'
-import { createAuth, jwtSessions } from '@keystone-6/auth'
+import { text, checkbox } from '@keystone-6/core/fields'
+import { createAuth, jwtSessions, password } from '@keystone-6/auth'
 
 const sessionStrategy = jwtSessions()
 
@@ -105,7 +105,7 @@ Keystone provides two reference implementations of session strategies that can b
 - `jwtSessions`
 - `storedSessions`
 
-### JWT
+#### JWT
 
 With `jwtSessions`, session cookies are signed as JSON Web Tokens using HMAC SHA-256 (HS256).
 
