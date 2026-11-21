@@ -23,14 +23,14 @@ const someContext: KeystoneContext<{
   dbProvider: 'sqlite'
 }> = undefined!
 
-someContext.query.Singleton.findOne({})
-someContext.query.Singleton.findOne({ where: { id: '1' } })
+someContext.db.Singleton.findOne({})
+someContext.db.Singleton.findOne({ where: { id: '1' } })
 // @ts-expect-error
-someContext.query.List.findOne({})
-someContext.query.List.findOne({ where: { id: '1' } })
+someContext.db.List.findOne({})
+someContext.db.List.findOne({ where: { id: '1' } })
 // @ts-expect-error
-someContext.query.ListOrSingleton.findOne({})
-someContext.query.ListOrSingleton.findOne({ where: { id: '1' } })
+someContext.db.ListOrSingleton.findOne({})
+someContext.db.ListOrSingleton.findOne({ where: { id: '1' } })
 
 type TypeInfoForProvider<Provider extends DatabaseProvider> = {
   lists: Record<string, BaseListTypeInfo>
