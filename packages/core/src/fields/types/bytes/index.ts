@@ -7,6 +7,7 @@ import {
 } from '../../../types/index.ts'
 import { g } from '../../../index.ts'
 import { makeValidateHook, defaultIsRequired } from '../../non-null-graphql.ts'
+import { filters } from '../../filters/index.ts'
 import { weakMemoize } from '../../../lib/core/utils.ts'
 import { GraphQLError } from 'graphql/index.js'
 import type {
@@ -175,6 +176,7 @@ export function bytes<ListTypeInfo extends BaseListTypeInfo>(
           arg: g.arg({
             type: mode === 'optional' ? getNullableFilterType(scalar) : getFilterType(scalar),
           }),
+          resolve: mode === 'optional' ? filters.resolveCommon : undefined,
         },
         create: {
           arg: g.arg({
