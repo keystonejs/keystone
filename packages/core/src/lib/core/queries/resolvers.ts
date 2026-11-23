@@ -6,7 +6,7 @@ import type {
   KeystoneContext,
   OrderDirection,
 } from '../../../types/index.ts'
-import type { PrismaFilter, UniquePrismaFilter } from '../../../types/prisma.ts'
+import type { PrismaFilter } from '../../../types/prisma.ts'
 
 import { checkFilterOrderAccess, getQueryOperationAndFilterAccess } from '../access-control.ts'
 import {
@@ -15,6 +15,7 @@ import {
   resolveUniqueWhereInput,
   resolveWhereInput,
   accessControlledFilter,
+  mapUniqueWhereToWhere,
 } from '../where-inputs.ts'
 
 import { limitsExceededError, userInputError } from '../graphql-errors.ts'
@@ -58,20 +59,6 @@ function* traverseUniqueWhere(
       yield* traverseUniqueWhere(relatedList, value)
     }
   }
-}
-
-// Wrap scalar values in equals so a unique resolver's result is used as a value.
-function mapUniqueWhereToWhere(uniqueWhere: UniquePrismaFilter, list: InitialisedList) {
-  const where: PrismaFilter = {}
-  for (const key in uniqueWhere) {
-    if (list.fields[key].dbField.kind === 'relation') {
-      const foreignList = list.lists[list.fields[key].dbField.list]
-      where[key] = mapUniqueWhereToWhere(uniqueWhere[key], foreignList)
-      continue
-    }
-    where[key] = { equals: uniqueWhere[key] }
-  }
-  return where
 }
 
 function* traverse(
