@@ -2,6 +2,7 @@ import type { GraphQLResolveInfo } from 'graphql/index.js'
 
 import { addSelection } from '../../../types/item-selection.ts'
 import { callbackReadsItemField } from '../../../types/item-callback.ts'
+import { getSideEffectHook } from '../hooks.ts'
 import type { InitialisedList } from '../initialise-lists.ts'
 import { addCallbackFields, addItemField, selectFromInfoForList } from '../queries/select.ts'
 
@@ -19,10 +20,11 @@ export type MutationSelections = {
 
 function addHook(
   select: Record<string, true>,
-  callback: Function,
+  callback: Function | undefined,
   list: InitialisedList,
   fieldKey?: string
 ) {
+  if (!callback) return true
   if (!addCallbackFields(select, callback, list)) return false
   if (fieldKey && callbackReadsItemField(callback)) {
     return addItemField(select, fieldKey, list)
@@ -72,8 +74,17 @@ export function mutationSelections(list: InitialisedList): MutationSelections {
     const missing: string[] = []
     let needsFullItem = !addCallbackFields(base, list.access.item[operation], list)
     if (needsFullItem) missing.push(`access.item.${operation}`)
-    for (const hook of ['validate', 'beforeOperation', 'afterOperation'] as const) {
-      const callback = list.hooks[hook][operation]
+    for (const hook of [
+      'validate',
+      'beforeOperation',
+      'afterOperation',
+      'transaction.afterCommit',
+      'transaction.afterRollback',
+    ] as const) {
+      const callback =
+        hook === 'validate'
+          ? list.hooks.validate[operation]
+          : getSideEffectHook(list.hooks, hook, operation)
       if (!addHook(base, callback, list)) {
         needsFullItem = true
         missing.push(`hooks.${hook}.${operation}`)
@@ -99,11 +110,16 @@ export function mutationSelections(list: InitialisedList): MutationSelections {
         fieldNeedsFullItem = true
         missing.push(`fields.${key}.access.update`)
       }
-      for (const hook of ['beforeOperation', 'afterOperation'] as const) {
+      for (const hook of [
+        'beforeOperation',
+        'afterOperation',
+        'transaction.afterCommit',
+        'transaction.afterRollback',
+      ] as const) {
         if (
           !addHook(
             operation === 'delete' ? base : conditional,
-            field.hooks[hook][operation],
+            getSideEffectHook(field.hooks, hook, operation),
             list,
             key
           )
@@ -120,13 +136,31 @@ export function mutationSelections(list: InitialisedList): MutationSelections {
   const result = (operation: 'create' | 'update'): ConditionalSelection => {
     const base: Record<string, true> = {}
     const missing: string[] = []
-    const baseFull = !addHook(base, list.hooks.afterOperation[operation], list)
-    if (baseFull) missing.push(`hooks.afterOperation.${operation}`)
+    let baseFull = false
+    for (const hook of [
+      'afterOperation',
+      'transaction.afterCommit',
+      'transaction.afterRollback',
+    ] as const) {
+      if (!addHook(base, getSideEffectHook(list.hooks, hook, operation), list)) {
+        baseFull = true
+        missing.push(`hooks.${hook}.${operation}`)
+      }
+    }
     const byField = new Map<string, Selection>()
     for (const [key, field] of Object.entries(list.fields)) {
       const selected: Record<string, true> = {}
-      const declared = addHook(selected, field.hooks.afterOperation[operation], list, key)
-      if (!declared) missing.push(`fields.${key}.hooks.afterOperation.${operation}`)
+      let declared = true
+      for (const hook of [
+        'afterOperation',
+        'transaction.afterCommit',
+        'transaction.afterRollback',
+      ] as const) {
+        if (!addHook(selected, getSideEffectHook(field.hooks, hook, operation), list, key)) {
+          declared = false
+          missing.push(`fields.${key}.hooks.${hook}.${operation}`)
+        }
+      }
       byField.set(key, declared ? selected : undefined)
     }
     return { base: baseFull ? undefined : base, byField, missing }
