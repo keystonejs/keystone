@@ -107,6 +107,7 @@ export type FieldMeta = {
 export type FieldGroupMeta = {
   label: string
   description: string
+  defaultOpen: boolean
   fields: FieldMeta[]
 }
 

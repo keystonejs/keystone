@@ -157,6 +157,7 @@ function InternalKeystoneProvider({
         lists[listData.key].groups.push({
           label: group.label,
           description: group.description,
+          defaultOpen: group.defaultOpen,
           fields: group.fields.map(field => lists[listData.key].fields[field.key]),
         })
       }

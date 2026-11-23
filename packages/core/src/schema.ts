@@ -198,6 +198,10 @@ export type GroupInfo<ListTypeInfo extends BaseListTypeInfo> = {
   fields: string[]
   label: MaybeSessionFunction<string, ListTypeInfo>
   description: MaybeSessionFunction<string, ListTypeInfo>
+  ui?: {
+    /** Whether the group starts expanded in the Admin UI. Defaults to true. */
+    defaultOpen?: boolean
+  }
   fieldDefaults: { ui?: GroupUIConfig<ListTypeInfo> } | undefined
 }
 
@@ -222,6 +226,7 @@ export function group<ListTypeInfo extends BaseListTypeInfo>(config: {
   label: MaybeSessionFunction<string, ListTypeInfo>
   /** Help text, or a synchronous/asynchronous function of the current request context. */
   description?: MaybeSessionFunction<string, ListTypeInfo>
+  ui?: GroupInfo<ListTypeInfo>['ui']
   fieldDefaults?: { ui?: GroupUIConfig<ListTypeInfo> }
   fields: BaseFields<ListTypeInfo>
 }) {
@@ -235,6 +240,7 @@ export function group<ListTypeInfo extends BaseListTypeInfo>(config: {
       fields: keys,
       label: config.label,
       description: config.description ?? '',
+      ui: config.ui,
       fieldDefaults: config.fieldDefaults,
     } satisfies GroupInfo<ListTypeInfo>,
     ...config.fields,
