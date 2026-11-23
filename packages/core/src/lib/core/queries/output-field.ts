@@ -13,8 +13,8 @@ import { getQueryOperationAndFilterAccess, getReadFieldAccess } from '../access-
 import type { InitialisedList } from '../initialise-lists.ts'
 import type { ResolvedDBField, ResolvedRelationDBField } from '../resolve-relationships.ts'
 import { type IdType, getDBFieldKeyForFieldOnMultiField, weakMemoize } from '../utils.ts'
+import { accessControlledFilter } from '../where-inputs.ts'
 import * as queries from './resolvers.ts'
-import { accessControlledFilter } from './resolvers.ts'
 import { addSelection } from '../../../types/item-selection.ts'
 import { getOutputFieldRequirements } from './select.ts'
 

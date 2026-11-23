@@ -33,6 +33,13 @@ export async function resolveUniqueWhereInput(
   return where
 }
 
+export function accessControlledFilter(
+  resolvedWhere: PrismaFilter,
+  accessFilters: true | PrismaFilter
+): PrismaFilter {
+  return accessFilters === true ? resolvedWhere : { AND: [resolvedWhere, accessFilters] }
+}
+
 export async function resolveWhereInput(
   inputFilter: InputFilter,
   list: InitialisedList,
