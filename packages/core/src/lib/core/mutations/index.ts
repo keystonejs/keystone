@@ -21,7 +21,7 @@ import {
 } from '../graphql-errors.ts'
 import { runSideEffectOnlyHook, validate } from '../hooks.ts'
 import type { InitialisedAction, InitialisedList } from '../initialise-lists.ts'
-import { accessControlledFilter, resolveUniqueWhereWithAccess } from '../queries/resolvers.ts'
+import { resolveUniqueWhereWithAccess } from '../queries/resolvers.ts'
 import { selectExistingItem, selectMutationResult } from './select.ts'
 import type { ResolvedDBField } from '../resolve-relationships.ts'
 import {
@@ -29,7 +29,7 @@ import {
   getDBFieldKeyForFieldOnMultiField,
   promiseAllRejectWithAllErrors,
 } from '../utils.ts'
-import type { UniqueInputFilter } from '../where-inputs.ts'
+import { accessControlledFilter, type UniqueInputFilter } from '../where-inputs.ts'
 import {
   RelationshipErrors,
   resolveRelateToManyForCreateInput,

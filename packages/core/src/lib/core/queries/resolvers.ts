@@ -14,6 +14,7 @@ import {
   type InputFilter,
   resolveUniqueWhereInput,
   resolveWhereInput,
+  accessControlledFilter,
 } from '../where-inputs.ts'
 
 import { limitsExceededError, userInputError } from '../graphql-errors.ts'
@@ -97,13 +98,6 @@ function* traverse(
       }
     }
   }
-}
-
-export function accessControlledFilter(
-  resolvedWhere: PrismaFilter,
-  accessFilters: true | PrismaFilter
-): PrismaFilter {
-  return accessFilters === true ? resolvedWhere : { AND: [resolvedWhere, accessFilters] }
 }
 
 export async function findOne(
