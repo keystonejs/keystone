@@ -33,6 +33,20 @@ export async function resolveUniqueWhereInput(
   return where
 }
 
+// Wrap scalar values in equals so a unique resolver's result is used as a value.
+export function mapUniqueWhereToWhere(uniqueWhere: UniquePrismaFilter, list: InitialisedList) {
+  const where: PrismaFilter = {}
+  for (const key in uniqueWhere) {
+    if (list.fields[key].dbField.kind === 'relation') {
+      const foreignList = list.lists[list.fields[key].dbField.list]
+      where[key] = mapUniqueWhereToWhere(uniqueWhere[key], foreignList)
+      continue
+    }
+    where[key] = { equals: uniqueWhere[key] }
+  }
+  return where
+}
+
 export function accessControlledFilter(
   resolvedWhere: PrismaFilter,
   accessFilters: true | PrismaFilter
