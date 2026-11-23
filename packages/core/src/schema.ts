@@ -11,7 +11,6 @@ import type {
   IdFieldConfig,
   KeystoneConfig,
   KeystoneConfigPre,
-  KeystoneContext,
   ListConfig,
   ListGraphQLConfig,
   MaybeItemFunctionWithFilter,
@@ -108,11 +107,6 @@ function listsWithDefaults(config: KeystoneConfigPre, defaultIdField: IdFieldCon
   ]) satisfies KeystoneConfig['lists']
 }
 
-function defaultIsAccessAllowed({ session, sessionStrategy }: KeystoneContext) {
-  if (!sessionStrategy) return true
-  return session !== undefined
-}
-
 async function noop() {}
 function identity<T>(x: T) {
   return x
@@ -172,18 +166,19 @@ export function config<TypeInfo extends BaseKeystoneTypeInfo>(
     },
     server: {
       ...config.server,
-      maxFileSize: config.server?.maxFileSize ?? 200 * 1024 * 1024, // 200 MiB
       extendExpressApp: config.server?.extendExpressApp ?? noop,
       extendHttpServer: config.server?.extendHttpServer ?? noop,
       cors,
       options: httpOptions,
     },
-    session: config.session,
+    getSession: config.getSession,
     telemetry: config.telemetry ?? true,
     ui: {
       ...config.ui,
       basePath: config.ui?.basePath ?? '',
-      isAccessAllowed: config.ui?.isAccessAllowed ?? defaultIsAccessAllowed,
+      isAccessAllowed:
+        config.ui?.isAccessAllowed ??
+        (config.getSession ? ({ session }) => session !== undefined : () => true),
       isDisabled: config.ui?.isDisabled ?? false,
       getAdditionalFiles: config.ui?.getAdditionalFiles ?? (() => []),
       pageMiddleware: config.ui?.pageMiddleware ?? noop,

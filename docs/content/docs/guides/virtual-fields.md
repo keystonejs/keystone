@@ -68,7 +68,7 @@ The `virtual` field accepts a configuration option called `field`, which is a `g
 
 In our example, `select: {}` declares that the resolver reads no item columns beyond `id`. The option `type: g.String` specifies the GraphQL type of our virtual field, and `resolve() { ... }` defines the [GraphQL resolver](https://graphql.org/learn/execution/#root-fields-resolvers) to be executed when this field is queried.
 
-The `g` API provides support for the built in GraphQL scalar types `Int`, `Float`, `String`, `Boolean`, and `ID`, as well as the Keystone custom scalars `Upload` and `JSON`.
+The `g` API provides support for the built in GraphQL scalar types `Int`, `Float`, `String`, `Boolean`, and `ID`, as well as the Keystone custom scalar `JSON`.
 
 ## Resolver arguments
 

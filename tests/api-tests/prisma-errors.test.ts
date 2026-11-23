@@ -15,13 +15,6 @@ const extendGraphqlSchema = g.extend(base => ({
         return context.db.User.createOne({ data: { name: 'User' } })
       },
     }),
-    createUserViaContextQuery: g.field({
-      type: base.object('User'),
-      async resolve(_, __, context: KeystoneContext) {
-        const user = await context.query.User.createOne({ data: { name: 'User' } })
-        return context.db.User.findOne({ where: { id: user.id } })
-      },
-    }),
     createUserViaGraphQLRun: g.field({
       type: base.object('User'),
       async resolve(_, __, context: KeystoneContext) {
@@ -72,12 +65,7 @@ for (const name of ['with custom formatError', 'without custom formatError'] as 
     }
     const runner = (debug: boolean) => (debug ? runners.enabled : runners.disabled)
 
-    for (const query of [
-      'createUser',
-      'createUserViaContextDb',
-      'createUserViaContextQuery',
-      'createUserViaGraphQLRun',
-    ]) {
+    for (const query of ['createUser', 'createUserViaContextDb', 'createUserViaGraphQLRun']) {
       test(
         `details of prisma error are shown in debug when debug is enabled with ${query}`,
         runner(true)(async ({ gql }) => {
@@ -118,12 +106,7 @@ for (const name of ['with custom formatError', 'without custom formatError'] as 
       )
     }
 
-    for (const query of [
-      'createUser',
-      'createUserViaContextDb',
-      'createUserViaContextQuery',
-      'createUserViaGraphQLRun',
-    ]) {
+    for (const query of ['createUser', 'createUserViaContextDb', 'createUserViaGraphQLRun']) {
       test(
         `no details of prisma error are shown beyond that it's a prima error when debug is disabled with ${query}`,
         runner(false)(async ({ gql }) => {

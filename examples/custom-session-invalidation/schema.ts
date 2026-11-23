@@ -1,6 +1,7 @@
 import { list } from '@keystone-6/core'
 import { allowAll, denyAll, unfiltered } from '@keystone-6/core/access'
-import { text, password, timestamp } from '@keystone-6/core/fields'
+import { text, timestamp } from '@keystone-6/core/fields'
+import { password } from '@keystone-6/auth'
 import type { Lists, Session } from './generated/keystone/types'
 
 // WARNING: this example is for demonstration purposes only
@@ -10,12 +11,7 @@ import type { Lists, Session } from './generated/keystone/types'
 // needs to be compatible with withAuth
 declare module './generated/keystone/types' {
   interface Session {
-    listKey: string
-    itemId: string
-    data: {
-      passwordChangedAt: string
-    }
-    startedAt: number
+    user: Lists.User.Item
   }
 }
 
@@ -30,7 +26,7 @@ function isSameUserFilter({ session }: { session?: Session }) {
   // the authenticated user can only see themselves
   return {
     id: {
-      equals: session.itemId,
+      equals: session.user.id,
     },
   }
 }
@@ -60,7 +56,7 @@ export const lists = {
         },
       }),
 
-      // the user's password, used as the secret field for authentication
+      // the user's password, used for authentication
       password: password({
         validation: {
           isRequired: true,

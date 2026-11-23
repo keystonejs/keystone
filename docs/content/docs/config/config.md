@@ -32,7 +32,7 @@ export default config({
   server: {
     /* ... */
   },
-  session: {
+  getSession: async () => {
     /* ... */
   },
   graphql: {
@@ -271,7 +271,6 @@ Options:
   If left undefined `cors` will not be used.
 - `port` (default: `3000` ): The port your Express server will listen on.
 - `options` (default: `undefined`): The [`http.createServer`](https://nodejs.org/api/http.html#httpcreateserveroptions-requestlistener) options used by Node.
-- `maxFileSize` (default: `200 * 1024 * 1024`): The maximum file size allowed for uploads. If left undefined, defaults to `200 MiB`
 - `extendExpressApp` (default: `undefined`): Allows you to extend the express app that Keystone creates.
 - `extendHttpServer` (default: `undefined`): Allows you to extend the node `http` server that runs Keystone.
 
@@ -280,7 +279,6 @@ export default config<TypeInfo>({
   server: {
     cors: { origin: ['http://localhost:7777'], credentials: true },
     port: 3000,
-    maxFileSize: 200 * 1024 * 1024,
     extendExpressApp: async (app, commonContext) => {
       /* ... */
     },
@@ -348,8 +346,22 @@ export default config<TypeInfo>({
   server: {
     extendExpressApp: (app, commonContext) => {
       app.get('/api/users', async (req, res) => {
-        const context = await commonContext.withRequest(req, res)
+        const requestHeaders = new Headers()
+        for (const [name, value] of Object.entries(req.headers)) {
+          if (value === undefined) continue
+          for (const entry of Array.isArray(value) ? value : [value]) {
+            requestHeaders.append(name, entry)
+          }
+        }
+        const responseHeaders = new Headers()
+        const context = await commonContext.withHeaders(requestHeaders, responseHeaders)
         const { users } = await context.graphql.run({ query: Users })
+        for (const [name, value] of responseHeaders) {
+          if (name !== 'set-cookie') res.setHeader(name, value)
+        }
+        for (const cookie of responseHeaders.getSetCookie()) {
+          res.appendHeader('set-cookie', cookie)
+        }
         res.json(users)
       })
     },
@@ -392,24 +404,21 @@ export default config<TypeInfo>({
 
 _Note_: when using `keystone dev`, `extendHttpServer` is only called once on startup - you will need to restart your process for any updates
 
-## session
+## getSession
 
-The `session` config option allows you to configure session management of your Keystone system.
-
-In general you will use `SessionStrategy` objects from the `@keystone-6/core/session` package, rather than writing this yourself.
+The `getSession` option receives a context containing `req` and optional `res` WHATWG `Headers`, and returns a non-null session object or `undefined`.
 
 ```typescript
-import { statelessSessions } from '@keystone-6/core/session'
-
 export default config<TypeInfo>({
-  session: statelessSessions({
-    /* ... */
-  }),
+  async getSession({ context }) {
+    const token = context.req?.get('authorization')
+    return token ? { token } : undefined
+  },
   /* ... */
 })
 ```
 
-See the [Session API](./session) for more details on how to configure session management in Keystone.
+See the [Session API](./session) for more about `getSession`, the [Authentication API](./auth#sessions) for built-in session strategies, and [`withHeaders`](../context/overview#new-context-creators) for creating request contexts.
 
 ## graphql
 

@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import { statelessSessions } from '@keystone-6/core/session'
+import { jwtSessions } from '@keystone-6/auth'
 import type { KeystoneContext } from '@keystone-6/core/types'
 
 import { Passport } from 'passport'
@@ -7,12 +7,14 @@ import type { VerifyCallback } from 'passport-oauth2'
 import { Strategy, type StrategyOptions, type Profile } from 'passport-github2'
 
 import type { Author } from './generated/prisma/client'
-import type { Session, TypeInfo } from './generated/keystone/types'
+import type { TypeInfo } from './generated/keystone/types'
 
 declare module './generated/keystone/types' {
-  export interface Session extends Author {}
+  export interface Session {
+    author: Author
+  }
 }
-export const session = statelessSessions<Session>({
+export const sessionStrategy = jwtSessions<{ sub: string }>({
   maxAge: 60 * 60 * 24 * 30,
   secret: process.env.SESSION_SECRET!,
 })
@@ -59,13 +61,23 @@ export function passportMiddleware(commonContext: KeystoneContext<TypeInfo>): Ro
       return
     }
 
-    const context = await commonContext.withRequest(req, res)
+    const responseHeaders = new Headers()
+    const context = await commonContext.withHeaders(
+      new Headers(
+        Object.entries(req.headers).flatMap(([key, value]): [string, string][] => {
+          if (value === undefined) return []
+          return Array.isArray(value) ? value.map(inner => [key, inner]) : [[key, value]]
+        })
+      ),
+      responseHeaders
+    )
 
     // starts the session, and sets the cookie on context.res
-    await context.sessionStrategy?.start({
+    await sessionStrategy.start({
       context,
-      data: req.user,
+      data: { sub: req.user.id },
     })
+    for (const value of responseHeaders.getSetCookie()) res.appendHeader('Set-Cookie', value)
 
     res.redirect('/auth/session')
   })
@@ -73,8 +85,14 @@ export function passportMiddleware(commonContext: KeystoneContext<TypeInfo>): Ro
   // show the current session object
   //   WARNING: this is for demonstration purposes only, probably dont do this
   router.get('/auth/session', async (req, res) => {
-    const context = await commonContext.withRequest(req, res)
-
+    const context = await commonContext.withHeaders(
+      new Headers(
+        Object.entries(req.headers).flatMap(([key, value]): [string, string][] => {
+          if (value === undefined) return []
+          return Array.isArray(value) ? value.map(inner => [key, inner]) : [[key, value]]
+        })
+      )
+    )
     res.setHeader('Content-Type', 'application/json')
     res.send(JSON.stringify(context.session))
     res.end()

@@ -1,25 +1,11 @@
+import type { Session } from './generated/keystone/types'
+
 declare module './generated/keystone/types' {
   export interface Session {
-    itemId: string
-    listKey: string
-    data: {
-      name: string
-      role: {
-        id: string
-        name: string
-        canCreateTodos: boolean
-        canManageAllTodos: boolean
-        canSeeOtherPeople: boolean
-        canEditOtherPeople: boolean
-        canManagePeople: boolean
-        canManageRoles: boolean
-        canUseAdminUI: boolean
-      }
-    }
+    user: Lists.User.Item
+    role: Lists.Role.Item | null
   }
 }
-
-import type { Session } from './generated/keystone/types'
 
 type AccessArgs = {
   session?: Session
@@ -35,10 +21,10 @@ export function isSignedIn({ session }: AccessArgs) {
   permission boolean set to true
 */
 export const permissions = {
-  canCreateTodos: ({ session }: AccessArgs) => session?.data.role?.canCreateTodos ?? false,
-  canManageAllTodos: ({ session }: AccessArgs) => session?.data.role?.canManageAllTodos ?? false,
-  canManagePeople: ({ session }: AccessArgs) => session?.data.role?.canManagePeople ?? false,
-  canManageRoles: ({ session }: AccessArgs) => session?.data.role?.canManageRoles ?? false,
+  canCreateTodos: ({ session }: AccessArgs) => session?.role?.canCreateTodos ?? false,
+  canManageAllTodos: ({ session }: AccessArgs) => session?.role?.canManageAllTodos ?? false,
+  canManagePeople: ({ session }: AccessArgs) => session?.role?.canManagePeople ?? false,
+  canManageRoles: ({ session }: AccessArgs) => session?.role?.canManageRoles ?? false,
   // TODO: add canViewAdminUI
 }
 
@@ -50,11 +36,11 @@ export const rules = {
   canReadTodos: ({ session }: AccessArgs) => {
     if (!session) return false
 
-    if (session.data.role?.canManageAllTodos) {
+    if (session.role?.canManageAllTodos) {
       // can see all todos that are: assigned to them, or not private
       return {
         OR: [
-          { assignedTo: { id: { equals: session.itemId } } },
+          { assignedTo: { id: { equals: session.user.id } } },
           { assignedTo: null, isPrivate: { equals: true } },
           { NOT: { isPrivate: { equals: true } } },
         ],
@@ -62,33 +48,33 @@ export const rules = {
     }
 
     // default to only seeing your own todos
-    return { assignedTo: { id: { equals: session.itemId } } }
+    return { assignedTo: { id: { equals: session.user.id } } }
   },
   canManageTodos: ({ session }: AccessArgs) => {
     if (!session) return false
 
     // can manage every todo?
-    if (session.data.role?.canManageAllTodos) return true
+    if (session.role?.canManageAllTodos) return true
 
     // default to only managing your own todos
-    return { assignedTo: { id: { equals: session.itemId } } }
+    return { assignedTo: { id: { equals: session.user.id } } }
   },
   canReadPeople: ({ session }: AccessArgs) => {
     if (!session) return false
 
     // can see everyone?
-    if (session.data.role?.canSeeOtherPeople) return true
+    if (session.role?.canSeeOtherPeople) return true
 
     // default to only seeing yourself
-    return { id: { equals: session.itemId } }
+    return { id: { equals: session.user.id } }
   },
   canUpdatePeople: ({ session }: AccessArgs) => {
     if (!session) return false
 
     // can update everyone?
-    if (session.data.role?.canEditOtherPeople) return true
+    if (session.role?.canEditOtherPeople) return true
 
     // default to only updating yourself
-    return { id: { equals: session.itemId } }
+    return { id: { equals: session.user.id } }
   },
 }

@@ -24,7 +24,6 @@ import {
   json,
   float,
   decimal,
-  password,
   select,
   multiselect,
   text,
@@ -36,11 +35,11 @@ import {
 
   // Virtual type
   virtual,
-
-  // File types
-  file,
-  image,
 } from '@keystone-6/core/fields'
+import { password } from '@keystone-6/auth'
+
+// File types
+import { file, image } from '@keystone-6/fields-media-multipart'
 
 // Complex types
 import { document } from '@keystone-6/fields-document'
@@ -121,7 +120,7 @@ Options:
 
     ```typescript
     fieldMode: ({ context }) => {
-      if (context.session?.data.role !== 'admin') return 'hidden'
+      if (context.session?.user.role !== 'admin') return 'hidden'
       return {
         hidden: { status: { equals: 'archived' } },
       }

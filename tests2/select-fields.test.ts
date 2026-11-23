@@ -3,6 +3,7 @@ import { test } from 'node:test'
 
 import { cloudinaryImage } from '../packages/cloudinary/src/index.ts'
 import { document, structure } from '../packages/fields-document/src/index.ts'
+import { file, image } from '../packages/fields-media-multipart/src/index.ts'
 import { action, g, selectFromInfo, list, selectItem } from '@keystone-6/core'
 import { fieldType, type BaseItem, type FieldTypeFunc } from '@keystone-6/core/types'
 import { allowAll, denyAll } from '@keystone-6/core/access'
@@ -12,19 +13,17 @@ import {
   calendarDay,
   checkbox,
   decimal,
-  file,
   float,
-  image,
   integer,
   json,
   multiselect,
-  password,
   relationship,
   select,
   text,
   timestamp,
   virtual,
 } from '@keystone-6/core/fields'
+import { password } from '@keystone-6/auth'
 import { dbProvider, setupTestEnv, setupTestSuite } from './utils.ts'
 
 const selfSelections: (Readonly<Partial<Record<string, true>>> | undefined)[] = []
@@ -1722,7 +1721,7 @@ test('merged field hooks select both custom and built-in item fields', async () 
       aText: true,
       aFile_filename: true,
       aFile_filesize: true,
-      ...(call.operation === 'findFirst' ? { aStructure: true } : {}),
+      ...(call.operation === 'findFirst' ? { aStructure: true, aPassword: true } : {}),
     })
   }
 })

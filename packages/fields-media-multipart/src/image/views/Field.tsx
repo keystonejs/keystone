@@ -16,7 +16,7 @@ import { css, tokenSchema, transition } from '@keystar/ui/style'
 import { Text } from '@keystar/ui/typography'
 
 import { type controller, validateImage } from './index.tsx'
-import type { FieldProps } from '../../../../types/index.ts'
+import type { FieldProps } from '@keystone-6/core/types'
 import { formatBytes, useTrimStartStyles } from '../../file/views/Field.tsx'
 import type { ImageValue } from './index.tsx'
 

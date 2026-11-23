@@ -4,6 +4,7 @@ import fs from 'node:fs/promises'
 import { createRequire } from 'node:module'
 import nodePath from 'node:path'
 import { pathToFileURL } from 'node:url'
+import { esmInterop } from './esm-interop.ts'
 
 function identity(x: BuildOptions) {
   return x
@@ -71,6 +72,7 @@ async function getEsbuildConfigForEntry(
       {
         name: 'external-node_modules',
         setup(build) {
+          const interop = esmInterop(build, resolveDir)
           build.onResolve(
             {
               namespace: 'file',
@@ -92,6 +94,8 @@ async function getEsbuildConfigForEntry(
                 // even though they're symlinked into node_modules
                 resolved.path.includes('node_modules')
               ) {
+                const esmExternal = await interop.resolveExternal(path, resolved.path, args)
+                if (esmExternal) return esmExternal
                 const resolvedFromOutputMaybeEsm = await build.resolve(path, {
                   resolveDir,
                   importer,
@@ -123,6 +127,8 @@ async function getEsbuildConfigForEntry(
                 // since imports to @keystone-6/core will be in node_modules
                 path.startsWith('@keystone-6/core')
               ) {
+                // interop.resolveExternal would also be correct
+                // but @keystone-6/core has no default exports so this is safe and faster
                 return { path, external: true }
               }
               return resolved
