@@ -13,8 +13,9 @@ We have a working backend for a collection of interconnected posts and authors (
 //keystone.ts
 import { list, config } from '@keystone-6/core'
 import { PrismaBetterSqlite3 } from '@prisma/adapter-better-sqlite3'
-import { password, text, timestamp, select, relationship } from '@keystone-6/core/fields'
-import { withAuth, session } from './auth'
+import { text, timestamp, select, relationship } from '@keystone-6/core/fields'
+import { password } from '@keystone-6/auth'
+import { withAuth, sessionStrategy } from './auth'
 
 const lists = {
   User: list({
@@ -51,9 +52,14 @@ export default config(
       }),
     },
     lists,
-    session,
+    async getSession({ context }) {
+      const data = await sessionStrategy.get({ context })
+      if (!data) return
+      const user = await context.sudo().db.User.findOne({ where: { id: data.sub } })
+      return user ? { user } : undefined
+    },
     ui: {
-      isAccessAllowed: context => !!context.session?.data,
+      isAccessAllowed: context => !!context.session?.user,
     },
   })
 )
@@ -73,13 +79,14 @@ npm install @keystone-6/fields-document
 
 Next, we add the document field to our `post` list:
 
-```ts{5,29}[9-15,32-500]
+```ts{6,30}[10-16,33-500]
 // keystone.ts
 import { list, config } from '@keystone-6/core';
 import { PrismaBetterSqlite3 } from '@prisma/adapter-better-sqlite3';
-import { password, text, timestamp, select, relationship } from '@keystone-6/core/fields';
+import { text, timestamp, select, relationship } from '@keystone-6/core/fields';
+import { password } from '@keystone-6/auth';
 import { document } from '@keystone-6/fields-document';
-import { withAuth, session } from './auth';
+import { withAuth, sessionStrategy } from './auth';
 
 const lists = {
   User: list({
@@ -116,8 +123,13 @@ export default config(
       }),
     },
     lists,
-    session,
-    ui: { isAccessAllowed: (context) => !!context.session?.data },
+    async getSession({ context }) {
+      const data = await sessionStrategy.get({ context })
+      if (!data) return
+      const user = await context.sudo().db.User.findOne({ where: { id: data.sub } })
+      return user ? { user } : undefined
+    },
+    ui: { isAccessAllowed: (context) => !!context.session?.user },
   })
 );
 ```
@@ -138,13 +150,14 @@ Let’s start by adding four [formatting](/docs/guides/document-fields#formattin
 - dividers
 - layouts
 
-```ts{29-40}[1-7,9-15,18-28,43-500]
+```ts{30-41}[1-8,10-16,19-29,44-500]
 // keystone.ts
 import { list, config } from '@keystone-6/core';
 import { PrismaBetterSqlite3 } from '@prisma/adapter-better-sqlite3';
-import { password, text, timestamp, select, relationship } from '@keystone-6/core/fields';
+import { text, timestamp, select, relationship } from '@keystone-6/core/fields';
+import { password } from '@keystone-6/auth';
 import { document } from '@keystone-6/fields-document';
-import { withAuth, session } from './auth';
+import { withAuth, sessionStrategy } from './auth';
 
 const lists = {
   User: list({
@@ -192,8 +205,13 @@ export default config(
       }),
     },
     lists,
-    session,
-    ui: { isAccessAllowed: (context) => !!context.session?.data },
+    async getSession({ context }) {
+      const data = await sessionStrategy.get({ context })
+      if (!data) return
+      const user = await context.sudo().db.User.findOne({ where: { id: data.sub } })
+      return user ? { user } : undefined
+    },
+    ui: { isAccessAllowed: (context) => !!context.session?.user },
   })
 );
 ```
@@ -210,9 +228,10 @@ For a full guide on using the document field, including rendering this in your o
 // keystone.ts
 import { list, config } from '@keystone-6/core'
 import { PrismaBetterSqlite3 } from '@prisma/adapter-better-sqlite3'
-import { password, text, timestamp, select, relationship } from '@keystone-6/core/fields'
+import { text, timestamp, select, relationship } from '@keystone-6/core/fields'
+import { password } from '@keystone-6/auth'
 import { document } from '@keystone-6/fields-document'
-import { withAuth, session } from './auth'
+import { withAuth, sessionStrategy } from './auth'
 
 const lists = {
   User: list({
@@ -260,8 +279,13 @@ export default config(
       }),
     },
     lists,
-    session,
-    ui: { isAccessAllowed: context => !!context.session?.data },
+    async getSession({ context }) {
+      const data = await sessionStrategy.get({ context })
+      if (!data) return
+      const user = await context.sudo().db.User.findOne({ where: { id: data.sub } })
+      return user ? { user } : undefined
+    },
+    ui: { isAccessAllowed: context => !!context.session?.user },
   })
 )
 ```

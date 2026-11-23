@@ -1,6 +1,4 @@
 import { expect, test, vi } from 'vitest'
-import { IncomingMessage } from 'node:http'
-import { Socket } from 'node:net'
 import { action, g, group, list } from '@keystone-6/core'
 import type { KeystoneContext } from '@keystone-6/core/types'
 import { allowAll } from '@keystone-6/core/access'
@@ -71,7 +69,7 @@ test(
                   label: 'Id',
                   description: '',
                   search: null,
-                  viewsIndex: 0,
+                  views: '472cab590460d9aab9ab2b250ffe34d5fcc1530a88bf20db9e2da035c449f666',
                   createView: {
                     fieldMode: 'hidden',
                     isRequired: false,
@@ -81,7 +79,7 @@ test(
                   listView: {
                     fieldMode: 'hidden',
                   },
-                  customViewsIndex: null,
+                  customViews: null,
                   fieldMeta: {
                     kind: 'cuid',
                     type: 'String',
@@ -106,7 +104,7 @@ test(
                   listView: {
                     fieldMode: 'read',
                   },
-                  customViewsIndex: null,
+                  customViews: null,
                   fieldMeta: {
                     defaultValue: '',
                     displayMode: 'input',
@@ -127,14 +125,14 @@ test(
                     isRequired: false,
                   },
                   search: dbProvider === 'postgresql' ? 'insensitive' : 'default',
-                  viewsIndex: 1,
+                  views: '91de783a04fbf4c5191380fe69d6b7ae911bbbc94f3389b5e36319d4f1c8b39f',
                 },
                 {
                   key: 'something',
                   label: 'Something',
                   description: '',
                   search: null,
-                  viewsIndex: 2,
+                  views: '788536f5869e3304072f0ddbbacc03a411ed4c745d8f4cc9420be139edac854f',
                   createView: {
                     fieldMode: 'hidden',
                     isRequired: false,
@@ -144,7 +142,7 @@ test(
                   listView: {
                     fieldMode: 'hidden',
                   },
-                  customViewsIndex: null,
+                  customViews: null,
                   fieldMeta: {
                     defaultValue: null,
                     validation: {
@@ -498,7 +496,7 @@ function metadataLocale(context: KeystoneContext) {
 
 const dynamicListLabel = vi.fn(({ context }: { context: KeystoneContext }) => {
   if (metadataLocale(context) === 'error') throw new Error('Label resolution failed')
-  return `${context.req?.headers['x-admin-locale'] ?? metadataLocale(context)}:Articles`
+  return `${context.req?.get('x-admin-locale') ?? metadataLocale(context)}:Articles`
 })
 
 const dynamicTextRunner = setupTestRunner({
@@ -673,9 +671,8 @@ for (const kind of ['static', 'dynamic']) {
 test(
   'presentation callbacks can read request headers',
   dynamicTextRunner(async ({ context }) => {
-    const req = new IncomingMessage(new Socket())
-    req.headers['x-admin-locale'] = 'fr'
-    const queryContext = (await context.withRequest(req)).sudo()
+    const req = new Headers({ 'x-admin-locale': 'fr' })
+    const queryContext = (await context.withHeaders(req)).sudo()
     const data = await queryContext.graphql.run({
       query: '{ keystone { adminMeta { list(key: "Article") { label } } } }',
     })

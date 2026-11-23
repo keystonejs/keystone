@@ -1,6 +1,7 @@
 import { list } from '@keystone-6/core'
 import { allOperations, denyAll } from '@keystone-6/core/access'
-import { checkbox, password, relationship, text } from '@keystone-6/core/fields'
+import { checkbox, relationship, text } from '@keystone-6/core/fields'
+import { password } from '@keystone-6/auth'
 
 import type { Lists } from './generated/keystone/types'
 import { isSignedIn as hasSession, permissions, rules } from './access'
@@ -48,7 +49,7 @@ export const lists: Lists = {
               if (!resolvedData.assignedTo && context.session) {
                 // Always default new todo items to the current user; this is important because users
                 // without canManageAllTodos don't see this field when creating new items
-                return { connect: { id: context.session.itemId } }
+                return { connect: { id: context.session.user.id } }
               }
               return resolvedData.assignedTo
             },
@@ -74,10 +75,10 @@ export const lists: Lists = {
         itemView: {
           fieldMode: ({ session, item }: any) => {
             // canEditOtherPeople can edit other people
-            if (session?.data.role?.canEditOtherPeople) return 'edit'
+            if (session?.role?.canEditOtherPeople) return 'edit'
 
             // edit themselves
-            if (session?.itemId === item?.id) return 'edit'
+            if (session?.user.id === item?.id) return 'edit'
 
             // else, default all fields to read mode
             return 'read'
@@ -102,13 +103,13 @@ export const lists: Lists = {
           isRequired: true,
         },
       }),
-      // the user's password, used as the secret field for authentication
+      // the user's password, used for authentication
       //   should not be publicly visible
       password: password({
         access: {
           read: denyAll,
           update: ({ session, item }) =>
-            permissions.canManagePeople({ session }) || session?.itemId === item.id,
+            permissions.canManagePeople({ session }) || session?.user.id === item.id,
         },
         validation: { isRequired: true },
       }),
@@ -133,7 +134,7 @@ export const lists: Lists = {
 
           // you can only update this field with canManageAllTodos, or for yourself
           update: ({ session, item }) =>
-            permissions.canManageAllTodos({ session }) || session?.itemId === item.id,
+            permissions.canManageAllTodos({ session }) || session?.user.id === item.id,
         },
         ui: {
           createView: {

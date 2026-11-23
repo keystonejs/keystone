@@ -1,17 +1,9 @@
 import { list } from '@keystone-6/core'
-import { checkbox, password, relationship, text, timestamp } from '@keystone-6/core/fields'
+import { checkbox, relationship, text, timestamp } from '@keystone-6/core/fields'
+import { password } from '@keystone-6/auth'
 import { select } from '@keystone-6/core/fields'
 import { allowAll } from '@keystone-6/core/access'
 import type { Lists, Session } from './generated/keystone/types'
-
-// needs to be compatible with withAuth
-declare module './generated/keystone/types' {
-  interface Session {
-    listKey: string
-    itemId: string
-    data: {}
-  }
-}
 
 function isAssignedUserFilter({ session }: { session?: Session }) {
   // you need to have a session
@@ -21,7 +13,7 @@ function isAssignedUserFilter({ session }: { session?: Session }) {
   return {
     assignedTo: {
       id: {
-        equals: session.itemId,
+        equals: session.user.id,
       },
     },
   }

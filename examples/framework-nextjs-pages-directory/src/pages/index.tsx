@@ -65,8 +65,15 @@ const Home: NextPage = ({ users }: InferGetServerSidePropsType<typeof getServerS
   )
 }
 
-export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
-  const context = await keystoneContext.withRequest(req, res)
+export const getServerSideProps: GetServerSideProps = async ({ req }) => {
+  const context = await keystoneContext.withHeaders(
+    new Headers(
+      Object.entries(req.headers).flatMap(([key, value]): [string, string][] => {
+        if (value === undefined) return []
+        return Array.isArray(value) ? value.map(inner => [key, inner]) : [[key, value]]
+      })
+    )
+  )
   const { users }: { users: User[] } = await context.graphql.run({
     query: '{ users { id name about } }',
   })

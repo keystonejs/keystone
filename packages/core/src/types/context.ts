@@ -1,15 +1,12 @@
-import type { IncomingMessage, ServerResponse } from 'http'
 import type { DocumentNode, ExecutionResult, GraphQLSchema } from 'graphql/index.js'
 import type { TypedDocumentNode } from '@graphql-typed-document-node/core'
 import type { InitialisedList } from '../lib/core/initialise-lists.ts'
-import type { SessionStrategy } from './session.ts'
 import type { BaseKeystoneTypeInfo, BaseListTypeInfo } from './type-info.ts'
 import type { MaybePromise } from './utils.ts'
 import type { FieldSelection, SelectedItem } from './item-selection.ts'
 
 export type KeystoneContext<TypeInfo extends BaseKeystoneTypeInfo = BaseKeystoneTypeInfo> = {
   db: KeystoneDbAPI<TypeInfo['lists']>
-  query: KeystoneListsAPI<TypeInfo['lists']>
   graphql: KeystoneGraphQLAPI
   prisma: TypeInfo['prisma']
   // note this using the method syntax is important because we want TypeInfo['dbProvider'] to be bivariant, not contravariant
@@ -28,11 +25,10 @@ export type KeystoneContext<TypeInfo extends BaseKeystoneTypeInfo = BaseKeystone
     }
   ): Promise<T>
 
-  req?: IncomingMessage
-  res?: ServerResponse
-  sessionStrategy?: SessionStrategy<TypeInfo['session'], TypeInfo>
+  req?: Headers
+  res?: Headers
   session?: TypeInfo['session']
-  withRequest: (req: IncomingMessage, res?: ServerResponse) => Promise<KeystoneContext<TypeInfo>>
+  withHeaders: (req: Headers, res?: Headers) => Promise<KeystoneContext<TypeInfo>>
   withSession: (session?: TypeInfo['session']) => KeystoneContext<TypeInfo>
 
   // privilege escalation
@@ -58,61 +54,6 @@ type UniqueWhereInput<ListTypeInfo extends BaseListTypeInfo> =
   false extends ListTypeInfo['isSingleton']
     ? { readonly where: ListTypeInfo['inputs']['uniqueWhere'] }
     : { readonly where?: ListTypeInfo['inputs']['uniqueWhere'] }
-
-type ListAPI<ListTypeInfo extends BaseListTypeInfo> = {
-  findMany(
-    args?: {
-      readonly where?: ListTypeInfo['inputs']['where']
-      readonly take?: number
-      readonly skip?: number
-      readonly orderBy?:
-        | ListTypeInfo['inputs']['orderBy']
-        | readonly ListTypeInfo['inputs']['orderBy'][]
-      readonly cursor?: ListTypeInfo['inputs']['uniqueWhere']
-    } & ResolveFields
-  ): Promise<readonly Record<string, any>[]>
-  findOne(args: UniqueWhereInput<ListTypeInfo> & ResolveFields): Promise<Record<string, any>>
-  count(args?: { readonly where?: ListTypeInfo['inputs']['where'] }): Promise<number>
-  updateOne(
-    args: UniqueWhereInput<ListTypeInfo> & {
-      readonly data: ListTypeInfo['inputs']['update']
-    } & ResolveFields
-  ): Promise<Record<string, any>>
-  updateMany(
-    args: {
-      readonly data: readonly (UniqueWhereInput<ListTypeInfo> & {
-        readonly data: ListTypeInfo['inputs']['update']
-      })[]
-    } & ResolveFields
-  ): Promise<Record<string, any>[]>
-  createOne(
-    args: { readonly data: ListTypeInfo['inputs']['create'] } & ResolveFields
-  ): Promise<Record<string, any>>
-  createMany(
-    args: {
-      readonly data: readonly ListTypeInfo['inputs']['create'][]
-    } & ResolveFields
-  ): Promise<Record<string, any>[]>
-  deleteOne(
-    args: UniqueWhereInput<ListTypeInfo> & ResolveFields
-  ): Promise<Record<string, any> | null>
-  deleteMany(
-    args: {
-      readonly where: readonly ListTypeInfo['inputs']['uniqueWhere'][]
-    } & ResolveFields
-  ): Promise<Record<string, any>[]>
-}
-
-export type KeystoneListsAPI<ListsTypeInfo extends Record<string, BaseListTypeInfo>> = {
-  [Key in keyof ListsTypeInfo]: ListAPI<ListsTypeInfo[Key]>
-}
-
-type ResolveFields = {
-  /**
-   * @default 'id'
-   */
-  readonly query?: string
-}
 
 type DbSelection<Item> = FieldSelection<Item>
 type ExactDbSelection<Item, Selection> = Selection extends undefined

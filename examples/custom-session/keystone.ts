@@ -1,36 +1,7 @@
 import { PrismaBetterSqlite3 } from '@prisma/adapter-better-sqlite3'
 import { config } from '@keystone-6/core'
 import { lists } from './schema'
-import type { Context, TypeInfo, Session } from './generated/keystone/types'
-
-const sillySessionStrategy = {
-  async get({ context }: { context: Context }): Promise<Session | undefined> {
-    if (!context.req) return
-
-    // WARNING: for demonstrative purposes only, this has no authentication
-    //   use `Cookie:user=clh9v6pcn0000sbhm9u0j6in0` for Alice (admin)
-    //   use `Cookie:user=clh9v762w0002sbhmhhyc0340` for Bob
-    //
-    // in practice, you should use authentication for your sessions, such as OAuth or JWT
-    const { cookie = '' } = context.req.headers
-    const [cookieName, id] = cookie.split('=')
-    if (cookieName !== 'user') return
-
-    const who = await context.sudo().db.User.findOne({ where: { id } })
-    if (!who) return
-    return {
-      id,
-      admin: who.admin,
-    }
-  },
-
-  // we don't need these unless we want to support the functions
-  //   context.sessionStrategy.start
-  //   context.sessionStrategy.end
-  //
-  async start() {},
-  async end() {},
-}
+import type { Context, TypeInfo } from './generated/keystone/types'
 
 export default config<TypeInfo>({
   db: {
@@ -42,5 +13,23 @@ export default config<TypeInfo>({
     }),
   },
   lists,
-  session: sillySessionStrategy,
+  async getSession({ context }: { context: Context }) {
+    if (!context.req) return
+
+    // WARNING: for demonstrative purposes only, this has no authentication
+    //   use `Cookie:user=clh9v6pcn0000sbhm9u0j6in0` for Alice (admin)
+    //   use `Cookie:user=clh9v762w0002sbhmhhyc0340` for Bob
+    //
+    // in practice, you should use authentication for your sessions, such as OAuth or JWT
+    const cookie = context.req.get('cookie') ?? ''
+    const [cookieName, id] = cookie.split('=')
+    if (cookieName !== 'user') return
+
+    const who = await context.sudo().db.User.findOne({ where: { id } })
+    if (!who) return
+    return {
+      id,
+      admin: who.admin,
+    }
+  },
 })

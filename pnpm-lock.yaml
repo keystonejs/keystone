@@ -286,6 +286,9 @@ importers:
       '@keystone-6/core':
         specifier: workspace:^
         version: link:../../packages/core
+      '@keystone-6/fields-media-multipart':
+        specifier: workspace:^
+        version: link:../../packages/fields-media-multipart
       '@prisma/adapter-better-sqlite3':
         specifier: 'catalog:'
         version: 7.9.0
@@ -301,6 +304,9 @@ importers:
       express:
         specifier: 'catalog:'
         version: 5.2.1(supports-color@7.2.0)
+      graphql-upload:
+        specifier: ^17.1.0
+        version: 17.1.0(@types/express@5.0.6)(graphql@16.14.2)
       next:
         specifier: 'catalog:'
         version: 16.2.10(@babel/core@7.29.0(supports-color@7.2.0))(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
@@ -338,6 +344,9 @@ importers:
       '@keystone-6/core':
         specifier: workspace:^
         version: link:../../packages/core
+      '@keystone-6/fields-media-multipart':
+        specifier: workspace:^
+        version: link:../../packages/fields-media-multipart
       '@prisma/adapter-better-sqlite3':
         specifier: 'catalog:'
         version: 7.9.0
@@ -353,6 +362,9 @@ importers:
       dotenv:
         specifier: ^16.0.0
         version: 16.6.1
+      graphql-upload:
+        specifier: ^17.1.0
+        version: 17.1.0(@types/express@5.0.6)(graphql@16.14.2)
       next:
         specifier: 'catalog:'
         version: 16.2.10(@babel/core@7.29.0(supports-color@7.2.0))(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
@@ -366,6 +378,9 @@ importers:
       '@types/bytes':
         specifier: ^3.1.1
         version: 3.1.5
+      '@types/express':
+        specifier: 'catalog:'
+        version: 5.0.6
       prisma:
         specifier: 'catalog:'
         version: 7.9.0(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(better-sqlite3@12.11.1)(magicast@0.3.5)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(typescript@6.0.3)
@@ -390,6 +405,9 @@ importers:
       better-sqlite3:
         specifier: 'catalog:'
         version: 12.11.1
+      dumb-passwords:
+        specifier: ^0.2.1
+        version: 0.2.1
       next:
         specifier: 'catalog:'
         version: 16.2.10(@babel/core@7.29.0(supports-color@7.2.0))(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
@@ -538,6 +556,9 @@ importers:
       dotenv:
         specifier: ^16.0.0
         version: 16.6.1
+      graphql-upload:
+        specifier: ^17.1.0
+        version: 17.1.0(@types/express@5.0.6)(graphql@16.14.2)
       next:
         specifier: 'catalog:'
         version: 16.2.10(@babel/core@7.29.0(supports-color@7.2.0))(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
@@ -548,6 +569,9 @@ importers:
         specifier: 'catalog:'
         version: 19.2.5(react@19.2.5)
     devDependencies:
+      '@types/express':
+        specifier: 'catalog:'
+        version: 5.0.6
       prisma:
         specifier: 'catalog:'
         version: 7.9.0(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(better-sqlite3@12.11.1)(magicast@0.3.5)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(typescript@6.0.3)
@@ -909,6 +933,9 @@ importers:
       better-sqlite3:
         specifier: 'catalog:'
         version: 12.11.1
+      cookie:
+        specifier: ^1.0.0
+        version: 1.1.1
       next:
         specifier: 'catalog:'
         version: 16.2.10(@babel/core@7.29.0(supports-color@7.2.0))(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
@@ -931,6 +958,9 @@ importers:
 
   examples/custom-session-passport:
     dependencies:
+      '@keystone-6/auth':
+        specifier: workspace:^
+        version: link:../../packages/auth
       '@keystone-6/core':
         specifier: workspace:^
         version: link:../../packages/core
@@ -2683,9 +2713,18 @@ importers:
       '@keystar/ui':
         specifier: 'catalog:'
         version: 0.10.0(next@16.2.10(@babel/core@7.29.0(supports-color@7.2.0))(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react-aria@3.50.0(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react-dom@19.2.5(react@19.2.5))(react-stately@3.48.0(react@19.2.5))(react@19.2.5)
+      bcryptjs:
+        specifier: ^3.0.0
+        version: 3.0.3
+      cookie:
+        specifier: ^1.0.0
+        version: 1.1.1
       graphql:
         specifier: 'catalog:'
         version: 16.14.2
+      jose:
+        specifier: ^6.0.0
+        version: 6.2.10
       react-aria:
         specifier: 'catalog:'
         version: 3.50.0(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
@@ -2708,6 +2747,9 @@ importers:
       '@keystar/ui':
         specifier: 'catalog:'
         version: 0.10.0(next@16.2.10(@babel/core@7.29.0(supports-color@7.2.0))(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react-aria@3.50.0(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react-dom@19.2.5(react@19.2.5))(react-stately@3.48.0(react@19.2.5))(react@19.2.5)
+      '@keystone-6/fields-media-multipart':
+        specifier: workspace:^
+        version: link:../fields-media-multipart
       cloudinary:
         specifier: ^2.0.0
         version: 2.10.0
@@ -2725,8 +2767,8 @@ importers:
         specifier: 'catalog:'
         version: 16.14.2
       graphql-upload:
-        specifier: ^15.0.2
-        version: 15.0.2(@types/express@5.0.6)(graphql@16.14.2)
+        specifier: ^17.1.0
+        version: 17.1.0(@types/express@5.0.6)(graphql@16.14.2)
       react:
         specifier: 'catalog:'
         version: 19.2.5
@@ -2760,9 +2802,6 @@ importers:
       '@graphql-typed-document-node/core':
         specifier: ^3.1.2
         version: 3.2.0(graphql@16.14.2)
-      '@hapi/iron':
-        specifier: ^7.0.0
-        version: 7.0.1
       '@internationalized/date':
         specifier: ^3.12.2
         version: 3.12.2
@@ -2781,36 +2820,24 @@ importers:
       apollo-upload-client:
         specifier: ^19.0.0
         version: 19.0.0(@apollo/client@4.1.9(graphql-ws@6.0.8(graphql@16.14.2)(ws@8.20.0))(graphql@16.14.2)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(rxjs@7.8.2))(graphql@16.14.2)(rxjs@7.8.2)
-      bcryptjs:
-        specifier: ^3.0.0
-        version: 3.0.3
       better-sqlite3:
         specifier: ^12.6.0
         version: 12.11.1
       body-parser:
         specifier: ^2.3.0
         version: 2.3.0(supports-color@7.2.0)
-      bytes:
-        specifier: ^3.1.1
-        version: 3.1.2
       ci-info:
         specifier: ^4.0.0
         version: 4.4.0
       conf:
         specifier: ^15.1.0
         version: 15.1.0
-      cookie:
-        specifier: ^1.0.0
-        version: 1.1.1
       cors:
         specifier: ^2.8.5
         version: 2.8.6
       decimal.js:
         specifier: ^10.4.1
         version: 10.6.0
-      dumb-passwords:
-        specifier: ^0.2.1
-        version: 0.2.1
       esbuild:
         specifier: ^0.28.0
         version: 0.28.1
@@ -2823,12 +2850,6 @@ importers:
       graphql:
         specifier: 'catalog:'
         version: 16.14.2
-      graphql-upload:
-        specifier: ^15.0.2
-        version: 15.0.2(@types/express@5.0.6)(graphql@16.14.2)
-      image-size:
-        specifier: ^2.0.0
-        version: 2.0.2
       mariadb:
         specifier: ^3.4.5
         version: 3.5.3
@@ -2866,9 +2887,6 @@ importers:
       '@types/body-parser':
         specifier: ^1.19.2
         version: 1.19.6
-      '@types/bytes':
-        specifier: ^3.1.1
-        version: 3.1.5
       '@types/cors':
         specifier: ^2.8.13
         version: 2.8.19
@@ -3006,6 +3024,46 @@ importers:
         specifier: ^0.100.0
         version: 0.100.0(slate@0.120.0)
 
+  packages/fields-media-multipart:
+    dependencies:
+      '@babel/runtime':
+        specifier: ^7.24.7
+        version: 7.29.2
+      '@keystar/ui':
+        specifier: 'catalog:'
+        version: 0.10.0(next@16.2.10(@babel/core@7.29.0(supports-color@7.2.0))(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react-aria@3.50.0(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react-dom@19.2.5(react@19.2.5))(react-stately@3.48.0(react@19.2.5))(react@19.2.5)
+      bytes:
+        specifier: ^3.1.1
+        version: 3.1.2
+      image-size:
+        specifier: ^2.0.0
+        version: 2.0.2
+      react-aria:
+        specifier: 'catalog:'
+        version: 3.50.0(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
+    devDependencies:
+      '@keystone-6/core':
+        specifier: workspace:^
+        version: link:../core
+      '@types/bytes':
+        specifier: ^3.1.1
+        version: 3.1.5
+      '@types/react':
+        specifier: 'catalog:'
+        version: 19.2.14
+      graphql:
+        specifier: 'catalog:'
+        version: 16.14.2
+      graphql-upload:
+        specifier: ^17.1.0
+        version: 17.1.0(@types/express@5.0.6)(graphql@16.14.2)
+      react:
+        specifier: 'catalog:'
+        version: 19.2.5
+      react-dom:
+        specifier: 'catalog:'
+        version: 19.2.5(react@19.2.5)
+
   prisma-utils:
     devDependencies:
       '@prisma/client':
@@ -3063,9 +3121,6 @@ importers:
       '@apollo/cache-control-types':
         specifier: ^1.0.2
         version: 1.0.3(graphql@16.14.2)
-      '@hapi/iron':
-        specifier: ^7.0.0
-        version: 7.0.1
       '@keystone-6/api-tests':
         specifier: workspace:^
         version: 'link:'
@@ -3078,6 +3133,9 @@ importers:
       '@keystone-6/fields-document':
         specifier: workspace:^
         version: link:../../packages/fields-document
+      '@keystone-6/fields-media-multipart':
+        specifier: workspace:^
+        version: link:../../packages/fields-media-multipart
       '@prisma/adapter-better-sqlite3':
         specifier: 'catalog:'
         version: 7.9.0
@@ -3118,8 +3176,8 @@ importers:
         specifier: 'catalog:'
         version: 16.14.2
       graphql-upload:
-        specifier: ^15.0.2
-        version: 15.0.2(@types/express@5.0.6)(graphql@16.14.2)
+        specifier: ^17.1.0
+        version: 17.1.0(@types/express@5.0.6)(graphql@16.14.2)
       mariadb:
         specifier: 'catalog:'
         version: 3.4.5
@@ -3172,9 +3230,6 @@ importers:
       '@apollo/cache-control-types':
         specifier: ^1.0.2
         version: 1.0.3(graphql@16.14.2)
-      '@hapi/iron':
-        specifier: ^7.0.0
-        version: 7.0.1
       '@keystone-6/auth':
         specifier: workspace:^
         version: link:../../packages/auth
@@ -3250,6 +3305,9 @@ importers:
       '@keystone-6/fields-document':
         specifier: workspace:^
         version: link:../../packages/fields-document
+      '@keystone-6/fields-media-multipart':
+        specifier: workspace:^
+        version: link:../../packages/fields-media-multipart
       '@prisma/adapter-better-sqlite3':
         specifier: 'catalog:'
         version: 7.9.0
@@ -3262,6 +3320,9 @@ importers:
       better-sqlite3:
         specifier: 'catalog:'
         version: 12.11.1
+      graphql-upload:
+        specifier: ^17.1.0
+        version: 17.1.0(@types/express@5.0.6)(graphql@16.14.2)
       next:
         specifier: 'catalog:'
         version: 16.2.10(@babel/core@7.29.0(supports-color@7.2.0))(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
@@ -3275,6 +3336,9 @@ importers:
         specifier: 'catalog:'
         version: 19.2.5(react@19.2.5)
     devDependencies:
+      '@types/express':
+        specifier: 'catalog:'
+        version: 5.0.6
       prisma:
         specifier: 'catalog:'
         version: 7.9.0(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(better-sqlite3@12.11.1)(magicast@0.3.5)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(typescript@6.0.3)
@@ -3376,6 +3440,10 @@ importers:
         version: 6.0.3
 
   tests2:
+    dependencies:
+      '@keystone-6/auth':
+        specifier: workspace:^
+        version: link:../packages/auth
     devDependencies:
       '@keystone-6/core':
         specifier: workspace:^
@@ -5612,25 +5680,6 @@ packages:
   '@graphql-yoga/typed-event-target@1.0.0':
     resolution: {integrity: sha512-Mqni6AEvl3VbpMtKw+TIjc9qS9a8hKhiAjFtqX488yq5oJtj9TkNlFTIacAVS3vnPiswNsmDiQqvwUOcJgi1DA==}
 
-  '@hapi/b64@6.0.1':
-    resolution: {integrity: sha512-ZvjX4JQReUmBheeCq+S9YavcnMMHWqx3S0jHNXWIM1kQDxB9cyfSycpVvjfrKcIS8Mh5N3hmu/YKo4Iag9g2Kw==}
-
-  '@hapi/boom@10.0.1':
-    resolution: {integrity: sha512-ERcCZaEjdH3OgSJlyjVk8pHIFeus91CjKP3v+MpgBNp5IvGzP2l/bRiD78nqYcKPaZdbKkK5vDBVPd2ohHBlsA==}
-
-  '@hapi/bourne@3.0.0':
-    resolution: {integrity: sha512-Waj1cwPXJDucOib4a3bAISsKJVb15MKi9IvmTI/7ssVEm6sywXGjVJDhl6/umt1pK1ZS7PacXU3A1PmFKHEZ2w==}
-
-  '@hapi/cryptiles@6.0.3':
-    resolution: {integrity: sha512-r6VKalpbMHz4ci3gFjFysBmhwCg70RpYZy6OkjEpdXzAYnYFX5XsW7n4YMJvuIYpnMwLxGUjK/cBhA7X3JDvXw==}
-    engines: {node: '>=14.0.0'}
-
-  '@hapi/hoek@11.0.7':
-    resolution: {integrity: sha512-HV5undWkKzcB4RZUusqOpcgxOaq6VOAH7zhhIr2g3G8NF/MlFO75SjOr2NfuSx0Mh40+1FqCkagKLJRykUWoFQ==}
-
-  '@hapi/iron@7.0.1':
-    resolution: {integrity: sha512-tEZnrOujKpS6jLKliyWBl3A9PaE+ppuL/+gkbyPPDb/l2KSKQyH4lhMkVb+sBhwN+qaxxlig01JRqB8dk/mPxQ==}
-
   '@humanwhocodes/config-array@0.13.0':
     resolution: {integrity: sha512-DZLEEqFWQFiyK6h5YIeynKx7JlvCYWL0cImfSRXZ9l4Sg2efkFGTuFf6vzXjK1cq6IYkU+Eg/JizXw+TD2vRNw==}
     engines: {node: '>=10.10.0'}
@@ -7046,7 +7095,9 @@ packages:
   '@smithy/smithy-client@4.12.13':
     resolution: {integrity: sha512-y/Pcj1V9+qG98gyu1gvftHB7rDpdh+7kIBIggs55yGm3JdtBV8GT8IFF3a1qxZ79QnaJHX9GXzvBG6tAd+czJA==}
     engines: {node: '>=18.0.0'}
-    deprecated: Deprecated due to a bug in custom logger data redaction. See https://github.com/aws/aws-sdk-js-v3/issues/8393.
+    deprecated: |-
+      Deprecated due to a bug in custom logger data redaction. Upgrade to the latest version. If you used a custom logger with
+        this version, review your logs and rotate any credentials or other secrets. See https://github.com/aws/aws-sdk-js-v3/issues/8393.
 
   '@smithy/types@4.14.1':
     resolution: {integrity: sha512-59b5HtSVrVR/eYNei3BUj3DCPKD/G7EtDDe7OEJE7i7FtQFugYo6MxbotS8mVJkLNVf8gYaAlEBwwtJ9HzhWSg==}
@@ -7304,14 +7355,8 @@ packages:
   '@types/estree@1.0.8':
     resolution: {integrity: sha512-dWHzHa2WqEXI/O1E9OjrocMTKJl2mSrEolh1Iomrv6U+JuNwaHXsXx9bLu5gG7BUWFIN0skIQJQ/L1rIex4X6w==}
 
-  '@types/express-serve-static-core@4.19.8':
-    resolution: {integrity: sha512-02S5fmqeoKzVZCHPZid4b8JH2eM5HzQLZWN2FohQEy/0eXTq8VXZfSN6Pcr3F6N9R/vNrj7cpgbhjie6m/1tCA==}
-
   '@types/express-serve-static-core@5.1.2':
     resolution: {integrity: sha512-d3KvEXBSo/lOAMc2u6fkyDHBvetBHeqD7wm/AcXfLpSOQwlmG9D/aQ0SFswVjv05p7ullQS7Mjohj6/VdbZuTg==}
-
-  '@types/express@4.17.25':
-    resolution: {integrity: sha512-dVd04UKsfpINUnK0yBoYHDF3xu7xVH4BuDotC/xGuycx4CgbP48X/KF/586bcObxT0HENHXEU8Nqtu6NR+eKhw==}
 
   '@types/express@5.0.6':
     resolution: {integrity: sha512-sKYVuV7Sv9fbPIt/442koC7+IIwK5olP1KWeD88e/idgoJqDm3JV/YUiPwkoKK92ylff2MGxSz1CSjsXelx0YA==}
@@ -7381,9 +7426,6 @@ packages:
 
   '@types/mdurl@2.0.0':
     resolution: {integrity: sha512-RGdgjQUZba5p6QEFAVx2OGb8rQDL/cPRG7GiedRzMcJ1tYnUANBncjbSB1NRGwbvjcPeikRABz2nshyPk1bhWg==}
-
-  '@types/mime@1.3.5':
-    resolution: {integrity: sha512-/pyBZWSLD2n0dcHE3hq8s8ZvcETHtEuF+3E7XVt0Ig2nvsVQXdghHVcEkIWjy9A0wKfTn97a/PSDYohKIlnP/w==}
 
   '@types/mime@2.0.3':
     resolution: {integrity: sha512-Jus9s4CDbqwocc5pOAnh8ShfrnMcPHuJYzVcSUU7lrh8Ni5HuIqX3oilL86p3dlTrk0LzHRCgA/GQ7uNCw6l2Q==}
@@ -7460,14 +7502,8 @@ packages:
   '@types/semver@7.7.1':
     resolution: {integrity: sha512-FmgJfu+MOcQ370SD0ev7EI8TlCAfKYU+B4m5T3yXc1CiRN94g/SZPtsCkk506aUDtlMnFZvasDwHHUcZUEaYuA==}
 
-  '@types/send@0.17.6':
-    resolution: {integrity: sha512-Uqt8rPBE8SY0RK8JB1EzVOIZ32uqy8HwdxCnoCOsYrvnswqmFZ/k+9Ikidlk/ImhsdvBsloHbAlewb2IEBV/Og==}
-
   '@types/send@1.2.1':
     resolution: {integrity: sha512-arsCikDvlU99zl1g69TcAB3mzZPpxgw0UQnaHeC1Nwb015xp8bknZv5rIfri9xTOcMuaVgvabfIRA7PSZVuZIQ==}
-
-  '@types/serve-static@1.15.10':
-    resolution: {integrity: sha512-tRs1dB+g8Itk72rlSI2ZrW6vZg0YrLI81iQSTkMmOqnqCaNr/8Ek4VwWcN5vZgCYWbg/JJSGBlUaYGAOP73qBw==}
 
   '@types/serve-static@2.2.0':
     resolution: {integrity: sha512-8mam4H1NHLtu7nmtalF7eyBH14QyOASmcxHhSfEoRyr0nP/YdoesEtU+uSRvMe96TW/HPTtkoKqQLl53N7UXMQ==}
@@ -9093,9 +9129,9 @@ packages:
     resolution: {integrity: sha512-Rx/WycZ60HOaqLKAi6cHRKKI7zxWbJ31MhntmtwMoaTeF7XFH9hhBp8vITaMidfljRQ6eYWCKkaTK+ykVJHP2A==}
     engines: {node: '>= 0.8'}
 
-  fs-capacitor@6.2.0:
-    resolution: {integrity: sha512-nKcE1UduoSKX27NSZlg879LdQc94OtbOsEmKMN2MBNudXREvijRKx2GEBsTMTfws+BrbkJoEuynbGSVRSpauvw==}
-    engines: {node: '>=10'}
+  fs-capacitor@8.0.0:
+    resolution: {integrity: sha512-+Lk6iSKajdGw+7XYxUkwIzreJ2G1JFlYOdnKJv5PzwFLVsoJYBpCuS7WPIUSNT1IbQaEWT1nhYU63Ud03DyzLA==}
+    engines: {node: ^14.17.0 || >=16.0.0}
 
   fs-constants@1.0.0:
     resolution: {integrity: sha512-y6OAwoSIf7FyjMIv94u+b5rdheZEjzR63GTyZJm5qh4Bi+2YgwLCcI/fPFZkL5PSixOt6ZNKm+w+Hfp/Bciwow==}
@@ -9295,13 +9331,13 @@ packages:
     peerDependencies:
       graphql: ^0.9.0 || ^0.10.0 || ^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0 || ^16.0.0
 
-  graphql-upload@15.0.2:
-    resolution: {integrity: sha512-ufJAkZJBKWRDD/4wJR3VZMy9QWTwqIYIciPtCEF5fCNgWF+V1p7uIgz+bP2YYLiS4OJBhCKR8rnqE/Wg3XPUiw==}
-    engines: {node: ^14.17.0 || ^16.0.0 || >= 18.0.0}
+  graphql-upload@17.1.0:
+    resolution: {integrity: sha512-VRpD3eTaQhObz/ulGg0N083pobqkXWTjpIu+FzUZniaviQ5GWSyr9/R+Gp34tAhEcPVoTElJsp/3mdeGZPAQJw==}
+    engines: {node: ^18.18.0 || ^20.9.0 || >=22.0.0}
     peerDependencies:
-      '@types/express': ^4.0.29
-      '@types/koa': ^2.11.4
-      graphql: ^16.3.0
+      '@types/express': ^4.0.29 || ^5.0.0
+      '@types/koa': ^2.11.4 || ^3.0.0
+      graphql: ^16.3.0 || ^17.0.0
     peerDependenciesMeta:
       '@types/express':
         optional: true
@@ -9497,6 +9533,7 @@ packages:
   image-size@2.0.2:
     resolution: {integrity: sha512-IRqXKlaXwgSMAMtpNzZa1ZAe8m+Sa1770Dhk8VkSsP9LS+iHD62Zd8FQKs8fbPiagBE7BzoFX23cxFnwshpV6w==}
     engines: {node: '>=16.x'}
+    deprecated: Use latest 2.x please
     hasBin: true
 
   immer@9.0.21:
@@ -15697,30 +15734,6 @@ snapshots:
       '@repeaterjs/repeater': 3.0.6
       tslib: 2.8.1
 
-  '@hapi/b64@6.0.1':
-    dependencies:
-      '@hapi/hoek': 11.0.7
-
-  '@hapi/boom@10.0.1':
-    dependencies:
-      '@hapi/hoek': 11.0.7
-
-  '@hapi/bourne@3.0.0': {}
-
-  '@hapi/cryptiles@6.0.3':
-    dependencies:
-      '@hapi/boom': 10.0.1
-
-  '@hapi/hoek@11.0.7': {}
-
-  '@hapi/iron@7.0.1':
-    dependencies:
-      '@hapi/b64': 6.0.1
-      '@hapi/boom': 10.0.1
-      '@hapi/bourne': 3.0.0
-      '@hapi/cryptiles': 6.0.3
-      '@hapi/hoek': 11.0.7
-
   '@humanwhocodes/config-array@0.13.0(supports-color@7.2.0)':
     dependencies:
       '@humanwhocodes/object-schema': 2.0.3
@@ -17553,26 +17566,12 @@ snapshots:
 
   '@types/estree@1.0.8': {}
 
-  '@types/express-serve-static-core@4.19.8':
-    dependencies:
-      '@types/node': 24.12.2
-      '@types/qs': 6.15.0
-      '@types/range-parser': 1.2.7
-      '@types/send': 1.2.1
-
   '@types/express-serve-static-core@5.1.2':
     dependencies:
       '@types/node': 24.12.2
       '@types/qs': 6.15.0
       '@types/range-parser': 1.2.7
       '@types/send': 1.2.1
-
-  '@types/express@4.17.25':
-    dependencies:
-      '@types/body-parser': 1.19.6
-      '@types/express-serve-static-core': 4.19.8
-      '@types/qs': 6.15.0
-      '@types/serve-static': 1.15.10
 
   '@types/express@5.0.6':
     dependencies:
@@ -17645,8 +17644,6 @@ snapshots:
   '@types/mdurl@2.0.0':
     optional: true
 
-  '@types/mime@1.3.5': {}
-
   '@types/mime@2.0.3': {}
 
   '@types/minimatch@6.0.0':
@@ -17675,19 +17672,19 @@ snapshots:
 
   '@types/passport-github2@1.2.9':
     dependencies:
-      '@types/express': 4.17.25
+      '@types/express': 5.0.6
       '@types/passport': 1.0.17
       '@types/passport-oauth2': 1.8.0
 
   '@types/passport-oauth2@1.8.0':
     dependencies:
-      '@types/express': 4.17.25
+      '@types/express': 5.0.6
       '@types/oauth': 0.9.6
       '@types/passport': 1.0.17
 
   '@types/passport@1.0.17':
     dependencies:
-      '@types/express': 4.17.25
+      '@types/express': 5.0.6
 
   '@types/pg@8.20.0':
     dependencies:
@@ -17725,20 +17722,9 @@ snapshots:
 
   '@types/semver@7.7.1': {}
 
-  '@types/send@0.17.6':
-    dependencies:
-      '@types/mime': 1.3.5
-      '@types/node': 24.12.2
-
   '@types/send@1.2.1':
     dependencies:
       '@types/node': 24.12.2
-
-  '@types/serve-static@1.15.10':
-    dependencies:
-      '@types/http-errors': 2.0.5
-      '@types/node': 24.12.2
-      '@types/send': 0.17.6
 
   '@types/serve-static@2.2.0':
     dependencies:
@@ -19779,7 +19765,7 @@ snapshots:
 
   fresh@2.0.0: {}
 
-  fs-capacitor@6.2.0: {}
+  fs-capacitor@8.0.0: {}
 
   fs-constants@1.0.0: {}
 
@@ -20029,13 +20015,13 @@ snapshots:
       graphql: 16.14.2
       tslib: 2.8.1
 
-  graphql-upload@15.0.2(@types/express@5.0.6)(graphql@16.14.2):
+  graphql-upload@17.1.0(@types/express@5.0.6)(graphql@16.14.2):
     dependencies:
       '@types/busboy': 1.5.4
       '@types/node': 24.12.2
       '@types/object-path': 0.11.4
       busboy: 1.6.0
-      fs-capacitor: 6.2.0
+      fs-capacitor: 8.0.0
       graphql: 16.14.2
       http-errors: 2.0.1
       object-path: 0.11.8

@@ -1,4 +1,3 @@
-import type { IncomingMessage, ServerResponse } from 'http'
 import {
   type DocumentNode,
   type ExecutionResult,
@@ -11,7 +10,7 @@ import {
 import type { KeystoneContext, KeystoneGraphQLAPI, KeystoneConfig } from '../../types/index.ts'
 
 import type { InitialisedList } from '../core/initialise-lists.ts'
-import { getDbFactory, getQueryFactory } from './api.ts'
+import { getDbFactory } from './api.ts'
 
 const documentValidationCache = new WeakMap<GraphQLSchema, WeakSet<DocumentNode>>()
 
@@ -36,6 +35,15 @@ export function createContext({
   }
   prismaModelSelections: Record<string, Record<string, true>>
 }) {
+  async function resolveSession(context: KeystoneContext) {
+    const session = await config.getSession?.({ context })
+
+    if (session !== undefined && (session === null || typeof session !== 'object')) {
+      throw new TypeError('getSession must return a non-null object or undefined')
+    }
+    return session
+  }
+
   const dbFactories: Record<string, ReturnType<typeof getDbFactory>> = {}
   for (const [listKey, list] of Object.entries(lists)) {
     dbFactories[listKey] = getDbFactory(list, graphQLSchemas.public, prismaModelSelections[listKey])
@@ -50,16 +58,6 @@ export function createContext({
     )
   }
 
-  const queryFactories: Record<string, ReturnType<typeof getQueryFactory>> = {}
-  for (const [listKey, list] of Object.entries(lists)) {
-    queryFactories[listKey] = getQueryFactory(list, graphQLSchemas.public)
-  }
-
-  const queryFactoriesInternal: Record<string, ReturnType<typeof getQueryFactory>> = {}
-  for (const [listKey, list] of Object.entries(lists)) {
-    queryFactoriesInternal[listKey] = getQueryFactory(list, graphQLSchemas.internal)
-  }
-
   const construct = ({
     prisma,
     req,
@@ -69,8 +67,8 @@ export function createContext({
     sudo,
   }: {
     prisma: any
-    req?: IncomingMessage
-    res?: ServerResponse
+    req?: Headers
+    res?: Headers
     session?: unknown
     internal: boolean
     sudo: boolean
@@ -112,7 +110,6 @@ export function createContext({
     const context: KeystoneContext = {
       prisma,
       db: {},
-      query: {},
       graphql: { raw: rawGraphQL, run: runGraphQL, schema },
 
       transaction: async (f, opts) => {
@@ -132,21 +129,18 @@ export function createContext({
 
       req,
       res,
-      sessionStrategy: config.session,
       ...(session ? { session } : {}),
 
-      withRequest: async (newReq, newRes) => {
+      withHeaders: async (newReq, newRes) => {
         const newContext = construct({
           prisma,
-          req: newReq,
+          req: new Headers(newReq),
           res: newRes,
           session,
           internal,
           sudo,
         })
-        return newContext.withSession(
-          (await config.session?.get({ context: newContext })) ?? undefined
-        )
+        return newContext.withSession(await resolveSession(newContext))
       },
 
       withSession: session => {
@@ -167,11 +161,9 @@ export function createContext({
     }
 
     const _dbFactories = internal ? dbFactoriesInternal : dbFactories
-    const _queryFactories = internal ? queryFactoriesInternal : queryFactories
 
     for (const listKey of Object.keys(lists)) {
       context.db[listKey] = _dbFactories[listKey](context)
-      context.query[listKey] = _queryFactories[listKey](context)
     }
 
     return context
