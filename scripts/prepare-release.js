@@ -219,13 +219,18 @@ async function fetchData(tag) {
 
 function formatPackagesChanged(packages) {
   return `The following packages have been updated
+
 %%%
 ${packages.join('\n')}
 %%%`.replace(/%/g, '`')
 }
 
 function formatChange({ packages, summary, pull, user }) {
-  return `- \`[${packages.join(', ')}]\` ${summary}${pull ? ` (#${pull})` : ''} @${user}`
+  const [firstLine, ...continuation] = summary.split(/\r?\n/)
+  return [
+    `- \`[${packages.join(', ')}]\` ${firstLine}${pull ? ` (#${pull})` : ''} @${user}`,
+    ...continuation.map(line => (line ? `  ${line}` : '')),
+  ].join('\n')
 }
 
 function formatCVE({ id, href, upstream, description }) {
@@ -270,24 +275,26 @@ async function generateGitHubReleaseText(previousTag, releaseTag) {
   const fixes = changes.filter(x => x.type === 'patch').sort(sortByCommit)
 
   if (breaking.length) {
-    output.push(...[`#### Breaking Changes`, ...breaking.map(formatChange), ``])
+    output.push(`#### Breaking Changes`, ``, ...breaking.map(formatChange), ``)
   }
 
   if (features.length) {
-    output.push(...[`#### New Features`, ...features.map(formatChange), ``])
+    output.push(`#### New Features`, ``, ...features.map(formatChange), ``)
   }
 
   if (fixes.length) {
-    output.push(...[`#### Bug Fixes`, ...fixes.map(formatChange), ``])
+    output.push(`#### Bug Fixes`, ``, ...fixes.map(formatChange), ``)
   }
 
   if (cves.length) {
     output.push(
       ...[
         `#### :rotating_light: Security Updates`,
+        ``,
         `We have identified and fixed ${cves.length}${
           cves.some(x => x.upstream) ? ' upstream' : ''
         } security ${cves.length === 1 ? 'vulnerability' : 'vulnerabilities'}`,
+        ``,
         ...cves.map(formatCVE),
         ``,
       ]
@@ -300,12 +307,13 @@ async function generateGitHubReleaseText(previousTag, releaseTag) {
   if (first.length) {
     const listf = groupPullsByUser(first)
 
-    output.push(`#### :seedling: New Contributors`)
+    output.push(`#### :seedling: New Contributors`, ``)
     output.push(
-      `Thanks to the following developers for making their first contributions to the project!`
+      `Thanks to the following developers for making their first contributions to the project!`,
+      ``
     )
     output.push(
-      ...listf.map(({ user, pulls }) => `- @${user} (${pulls.map(formatLink).join(',')})`)
+      ...listf.map(({ user, pulls }) => `- @${user} (${pulls.map(formatLink).join(', ')})`)
     )
     output.push(``)
   }
@@ -313,16 +321,16 @@ async function generateGitHubReleaseText(previousTag, releaseTag) {
   if (unattributed.length) {
     const listu = groupPullsByUser(unattributed)
 
-    output.push(`#### :blue_heart: Acknowledgements `)
+    output.push(`#### :blue_heart: Acknowledgements`, ``)
     output.push(
       `Lastly, thanks to ${listu
-        .map(({ user, pulls }) => `@${user} (${pulls.map(formatLink).join(',')})`)
+        .map(({ user, pulls }) => `@${user} (${pulls.map(formatLink).join(', ')})`)
         .join(', ')} for changes not shown above, but none-the-less appreciated.`
     )
     output.push(``)
   }
 
-  output.push(`#### :eyes: Review`)
+  output.push(`#### :eyes: Review`, ``)
   output.push(
     `See https://github.com/${repo}/compare/${previousTag}...${releaseTag} to compare with our previous release.`
   )
