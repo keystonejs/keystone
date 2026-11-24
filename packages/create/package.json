@@ -1,6 +1,6 @@
 {
   "name": "create-keystone-app",
-  "version": "11.0.2",
+  "version": "0.0.0-rc-20261124040852",
   "license": "MIT",
   "type": "module",
   "repository": "https://github.com/keystonejs/keystone/tree/main/packages/create",

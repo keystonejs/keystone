@@ -1,5 +1,30 @@
 # @keystone-6/auth
 
+## 0.0.0-rc-20261124040852
+
+### Major Changes
+
+- [#10029](https://github.com/keystonejs/keystone/pull/10029) [`bf94693`](https://github.com/keystonejs/keystone/commit/bf94693a926f3417c7ee06733f330892d9c1c893) Thanks [@emmatown](https://github.com/emmatown)! - Replaces the `session` Keystone config option with `getSession`. `context.sessionStrategy` has been removed, and the `SessionStrategy` type is no longer exported from `@keystone-6/core/types`.
+
+- [#10029](https://github.com/keystonejs/keystone/pull/10029) [`bf94693`](https://github.com/keystonejs/keystone/commit/bf94693a926f3417c7ee06733f330892d9c1c893) Thanks [@emmatown](https://github.com/emmatown)! - `createAuth` now requires `sessionStrategy` and `getAuthenticatedItemId` options. `createAuth` no longer loads the authenticated item into the session, so the `sessionData` option has been removed and sessions are no longer shaped as `{ itemId, data }`. Provide `getSession` in your Keystone config and return whatever session your application needs.
+
+- [#10029](https://github.com/keystonejs/keystone/pull/10029) [`bf94693`](https://github.com/keystonejs/keystone/commit/bf94693a926f3417c7ee06733f330892d9c1c893) Thanks [@emmatown](https://github.com/emmatown)! - Moves the `@keystone-6/core/session` exports to `@keystone-6/auth`. The `statelessSessions` strategy has been replaced with `jwtSessions` which uses HS256 JWTs and the `sub` claim for the authenticated item ID. The `SessionStore` and `SessionStoreFunction` types are now exported from `@keystone-6/auth`.
+
+  Unlike `statelessSessions`, which encrypted the session, `jwtSessions` only signs it: the session payload can be read by anyone holding the cookie, so only store data that is safe for the client to see, or use `storedSessions`. If you need encrypted sessions, you can use a different session implementation.
+
+- [#10029](https://github.com/keystonejs/keystone/pull/10029) [`bf94693`](https://github.com/keystonejs/keystone/commit/bf94693a926f3417c7ee06733f330892d9c1c893) Thanks [@emmatown](https://github.com/emmatown)! - Renames password authentication mutation to always `authenticateWithPassword` with `identity` and `password` arguments. The result types are now `AuthenticationWithPasswordResult`, `AuthenticationWithPasswordSuccess`, and `AuthenticationWithPasswordFailure`.
+
+- [#10029](https://github.com/keystonejs/keystone/pull/10029) [`bf94693`](https://github.com/keystonejs/keystone/commit/bf94693a926f3417c7ee06733f330892d9c1c893) Thanks [@emmatown](https://github.com/emmatown)! - Renames `secretField` on `createAuth` to `passwordField`
+
+### Minor Changes
+
+- [#10070](https://github.com/keystonejs/keystone/pull/10070) [`c588c70`](https://github.com/keystonejs/keystone/commit/c588c704d764ea1290f538e8204168206a0e665c) Thanks [@emmatown](https://github.com/emmatown)! - Moves `password` field from `@keystone-6/core/fields` to `@keystone-6/auth`. Removes `validation.rejectCommon`, use a validate hook instead.
+
+### Patch Changes
+
+- Updated dependencies [[`bf94693`](https://github.com/keystonejs/keystone/commit/bf94693a926f3417c7ee06733f330892d9c1c893), [`16384df`](https://github.com/keystonejs/keystone/commit/16384dfe699e2b32c86b09e2f83c22f2a8dfd2ce), [`cfea2f6`](https://github.com/keystonejs/keystone/commit/cfea2f6ae567e533cc3f20601ff3a30d4b842808), [`bf94693`](https://github.com/keystonejs/keystone/commit/bf94693a926f3417c7ee06733f330892d9c1c893), [`e0764ef`](https://github.com/keystonejs/keystone/commit/e0764efd38b540fc766bfbe3c8e0148d7362f885), [`c588c70`](https://github.com/keystonejs/keystone/commit/c588c704d764ea1290f538e8204168206a0e665c), [`5fc6725`](https://github.com/keystonejs/keystone/commit/5fc6725f75cd77e9bf7203ad0e32cba38c0c2526), [`25c9f7f`](https://github.com/keystonejs/keystone/commit/25c9f7f37580db026fae4f72a25dc7b6ab52069b), [`761b28b`](https://github.com/keystonejs/keystone/commit/761b28bd70bcf5286cfaef0813321b4200785e47), [`6bd9674`](https://github.com/keystonejs/keystone/commit/6bd9674028014b7f4100d04010a998da892240a2), [`ae31195`](https://github.com/keystonejs/keystone/commit/ae3119537920aeaa460ff63e63e8df929a2bc173), [`5b83c17`](https://github.com/keystonejs/keystone/commit/5b83c17940b9a493389abe0a3b03256236c72673), [`583acfa`](https://github.com/keystonejs/keystone/commit/583acfa419f41a89af93403bea7f15fadef19480), [`5fc6725`](https://github.com/keystonejs/keystone/commit/5fc6725f75cd77e9bf7203ad0e32cba38c0c2526), [`5fc6725`](https://github.com/keystonejs/keystone/commit/5fc6725f75cd77e9bf7203ad0e32cba38c0c2526), [`229eefc`](https://github.com/keystonejs/keystone/commit/229eefcf5d26de271a7cc80ea0b884476e7fc5d1), [`848e34a`](https://github.com/keystonejs/keystone/commit/848e34a9498f190df7b0c9b2fe44bd6fc922342a), [`96ff43e`](https://github.com/keystonejs/keystone/commit/96ff43ee49bf55f6baf7f7fa5397ac118eda9019)]:
+  - @keystone-6/core@0.0.0-rc-20261124040852
+
 ## 10.0.6
 
 ### Patch Changes

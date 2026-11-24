@@ -1,9 +1,0 @@
-{
-  "name": "@keystone-6/monorepo-example-document-field-customisation",
-  "version": null,
-  "private": true,
-  "license": "MIT",
-  "scripts": {
-    "dev": "pnpm --parallel --filter ./keystone-server --filter ./nextjs-frontend dev"
-  }
-}

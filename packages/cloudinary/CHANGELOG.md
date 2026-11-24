@@ -1,5 +1,21 @@
 # @keystone-6/cloudinary
 
+## 0.0.0-rc-20261124040852
+
+### Major Changes
+
+- [#10069](https://github.com/keystonejs/keystone/pull/10069) [`5fc6725`](https://github.com/keystonejs/keystone/commit/5fc6725f75cd77e9bf7203ad0e32cba38c0c2526) Thanks [@emmatown](https://github.com/emmatown)! - Updates the `graphql-upload` peer dependency to `^17.1.0`.
+
+### Patch Changes
+
+- [#10069](https://github.com/keystonejs/keystone/pull/10069) [`5fc6725`](https://github.com/keystonejs/keystone/commit/5fc6725f75cd77e9bf7203ad0e32cba38c0c2526) Thanks [@emmatown](https://github.com/emmatown)! - Moves `image` and `file` fields to new `@keystone-6/fields-media-multipart` package
+
+- [#10069](https://github.com/keystonejs/keystone/pull/10069) [`5fc6725`](https://github.com/keystonejs/keystone/commit/5fc6725f75cd77e9bf7203ad0e32cba38c0c2526) Thanks [@emmatown](https://github.com/emmatown)! - Removes `g.Upload`. Custom fields using `g.Upload` must now import the scalar from `graphql-upload/GraphQLUpload.mjs`
+
+- Updated dependencies [[`bf94693`](https://github.com/keystonejs/keystone/commit/bf94693a926f3417c7ee06733f330892d9c1c893), [`16384df`](https://github.com/keystonejs/keystone/commit/16384dfe699e2b32c86b09e2f83c22f2a8dfd2ce), [`cfea2f6`](https://github.com/keystonejs/keystone/commit/cfea2f6ae567e533cc3f20601ff3a30d4b842808), [`bf94693`](https://github.com/keystonejs/keystone/commit/bf94693a926f3417c7ee06733f330892d9c1c893), [`e0764ef`](https://github.com/keystonejs/keystone/commit/e0764efd38b540fc766bfbe3c8e0148d7362f885), [`c588c70`](https://github.com/keystonejs/keystone/commit/c588c704d764ea1290f538e8204168206a0e665c), [`5fc6725`](https://github.com/keystonejs/keystone/commit/5fc6725f75cd77e9bf7203ad0e32cba38c0c2526), [`25c9f7f`](https://github.com/keystonejs/keystone/commit/25c9f7f37580db026fae4f72a25dc7b6ab52069b), [`761b28b`](https://github.com/keystonejs/keystone/commit/761b28bd70bcf5286cfaef0813321b4200785e47), [`6bd9674`](https://github.com/keystonejs/keystone/commit/6bd9674028014b7f4100d04010a998da892240a2), [`ae31195`](https://github.com/keystonejs/keystone/commit/ae3119537920aeaa460ff63e63e8df929a2bc173), [`5b83c17`](https://github.com/keystonejs/keystone/commit/5b83c17940b9a493389abe0a3b03256236c72673), [`583acfa`](https://github.com/keystonejs/keystone/commit/583acfa419f41a89af93403bea7f15fadef19480), [`5fc6725`](https://github.com/keystonejs/keystone/commit/5fc6725f75cd77e9bf7203ad0e32cba38c0c2526), [`5fc6725`](https://github.com/keystonejs/keystone/commit/5fc6725f75cd77e9bf7203ad0e32cba38c0c2526), [`229eefc`](https://github.com/keystonejs/keystone/commit/229eefcf5d26de271a7cc80ea0b884476e7fc5d1), [`848e34a`](https://github.com/keystonejs/keystone/commit/848e34a9498f190df7b0c9b2fe44bd6fc922342a), [`96ff43e`](https://github.com/keystonejs/keystone/commit/96ff43ee49bf55f6baf7f7fa5397ac118eda9019), [`5fc6725`](https://github.com/keystonejs/keystone/commit/5fc6725f75cd77e9bf7203ad0e32cba38c0c2526)]:
+  - @keystone-6/core@0.0.0-rc-20261124040852
+  - @keystone-6/fields-media-multipart@0.0.0-rc-20261124040852
+
 ## 10.0.6
 
 ### Patch Changes
