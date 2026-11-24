@@ -23,11 +23,16 @@ navGroups:
           discriminant: url
           value: /docs/guides/overview
         status: default
+      - label: Migrate to 9.0.0
+        link:
+          discriminant: page
+          value: guides/migrate-to-9
+        status: new
       - label: Migrate to 8.0.0
         link:
           discriminant: page
           value: guides/migrate-to-8
-        status: new
+        status: default
       - label: Command Line
         link:
           discriminant: page
