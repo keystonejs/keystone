@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       tag:
-        description: 'The npm tag to publish to'
+        description: 'The npm dist-tag to apply on approval'
         required: true
         type: choice
         options:
@@ -46,13 +46,17 @@ jobs:
       - name: Resolve starter catalog dependencies
         run: pnpm resolve:create-starter-catalog
 
-      - name: npm publish, git tag
-        run: pnpm changeset publish --tag ${{ inputs.tag }}
+      - name: Stage packages on npm
+        env:
+          NPM_TAG: ${{ inputs.tag }}
+        run: pnpm stage publish --recursive --filter './packages/*' --access public --tag "$NPM_TAG" --no-git-checks --report-summary
 
-      # reset, then we have a tagged dangling commit
-      - name: git push
-        if: inputs.tag != 'latest'
+      # Preserve the source commit for each staged package, including RC snapshots.
+      - name: Push source tags for staged packages
+        shell: bash
         run: |
-          git reset HEAD~1 --hard
-
-      - run: git push origin --tags
+          jq -r '.publishedPackages[] | "\(.name)@\(.version)"' pnpm-publish-summary.json |
+            while IFS= read -r tag; do
+              git tag "$tag"
+            done
+          git push origin --tags
