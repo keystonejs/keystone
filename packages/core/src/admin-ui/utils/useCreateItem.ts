@@ -1,4 +1,4 @@
-import { type ComponentProps, useEffect, useMemo, useRef, useState } from 'react'
+import { type ComponentProps, useMemo, useState } from 'react'
 
 import { toastQueue } from '@keystar/ui/toast'
 import { useNavigate } from '@keystar/ui/router'
@@ -55,12 +55,7 @@ export function useCreateItem(list: ListMeta): CreateItemHookResult {
     makeDefaultValueState(list.fields)
   )
   const shouldPreventNavigation = !returnedData?.item && hasChangedFields
-  const shouldPreventNavigationRef = useRef(shouldPreventNavigation)
-
-  useEffect(() => {
-    shouldPreventNavigationRef.current = shouldPreventNavigation
-  }, [shouldPreventNavigation])
-  usePreventNavigation(shouldPreventNavigationRef)
+  const allowNavigation = usePreventNavigation(shouldPreventNavigation)
 
   return {
     state: loading ? 'loading' : returnedData?.item ? 'created' : 'editing',
@@ -109,7 +104,7 @@ export function useCreateItem(list: ListMeta): CreateItemHookResult {
         return
       }
 
-      shouldPreventNavigationRef.current = false
+      allowNavigation()
       toastQueue.positive(`${list.singular} created`, {
         timeout: 5000,
         actionLabel: 'Create another',

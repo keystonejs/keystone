@@ -1,7 +1,8 @@
 import UploadLink from 'apollo-upload-client/UploadHttpLink.mjs'
-import { type ReactNode, createContext, useContext, useEffect, useMemo } from 'react'
+import { type ReactNode, createContext, useContext, useEffect, useMemo, useState } from 'react'
 
 import { ClientSideOnlyDocumentElement, KeystarProvider } from '@keystar/ui/core'
+import type { Router } from '@keystar/ui/router'
 import { injectGlobal, tokenSchema } from '@keystar/ui/style'
 import { Toaster } from '@keystar/ui/toast'
 
@@ -23,12 +24,12 @@ import {
   gql,
   useQuery,
 } from './apollo.ts'
-import { useRouter } from './router.tsx'
 import {
   getConditionalFilterCaseFieldKeys,
   getConditionalFilterFieldKeys,
   isActionAvailable,
 } from './utils/filters.ts'
+import { type NavigationBlockers, createNavigationBlockers } from './utils/navigation.ts'
 
 type KeystoneContextType = {
   adminConfig: AdminConfig | null
@@ -36,6 +37,7 @@ type KeystoneContextType = {
   error?: ErrorLike | null
   fieldViews: FieldViews
   lists: { [list: string]: ListMeta }
+  navigationBlockers: NavigationBlockers
 }
 
 const KeystoneContext = createContext<KeystoneContextType>({
@@ -43,13 +45,33 @@ const KeystoneContext = createContext<KeystoneContextType>({
   apiPath: null,
   lists: {},
   fieldViews: {},
+  navigationBlockers: createNavigationBlockers(),
 })
+
+export type KeystoneRouter = Router & {
+  /**
+   * Handle client-side navigation blocking using the router's supported mechanisms.
+   * Coverage of browser Back/Forward depends on the adapter. Keystone handles
+   * beforeunload. Clean up on unmount and keep this hook's identity stable.
+   */
+  useNavigationBlocker: (options: {
+    /** Read the current dirty state without prompting. */
+    hasUnsavedChanges: () => boolean
+    /** Confirm client-side navigation when dirty; true means cancel navigation. */
+    shouldBlockNavigation: () => boolean
+  }) => void
+}
 
 type KeystoneProviderProps = {
   adminConfig: AdminConfig
   apiPath: string
   fieldViews: FieldViews
+  router: KeystoneRouter
   children: ReactNode
+}
+
+type InternalKeystoneProviderProps = Omit<KeystoneProviderProps, 'router'> & {
+  navigationBlockers: NavigationBlockers
 }
 
 const requiredExports = new Set(['Field', 'controller'])
@@ -59,28 +81,9 @@ function InternalKeystoneProvider({
   adminConfig,
   apiPath,
   fieldViews,
+  navigationBlockers,
   children,
-}: KeystoneProviderProps) {
-  const { push, replace, basePath, isReady } = useRouter()
-  const keystarRouter = useMemo(
-    () => ({
-      navigate(href: string, options?: { replace?: boolean }) {
-        if (options?.replace) {
-          replace(href)
-        } else {
-          push(href)
-        }
-      },
-      useHref: (href: string) => {
-        if (!basePath || !href.startsWith('/') || href.startsWith('//')) return href
-        if (href === '/') return basePath
-        return `${basePath}${href}`
-      },
-      usePathname: useNextPathname,
-      useSearch: useNextSearch,
-    }),
-    [basePath, push, replace]
-  )
+}: InternalKeystoneProviderProps) {
   const { data, loading, error } = useQuery<AdminMetaQuery>(adminMetaQuery, {
     errorPolicy: 'all',
   })
@@ -201,10 +204,10 @@ function InternalKeystoneProvider({
   }, [])
 
   // TODO
-  if (loading || !isReady) return null
+  if (loading) return null
   //   if (!meta) return null
   return (
-    <KeystarProvider router={keystarRouter}>
+    <>
       <ClientSideOnlyDocumentElement bodyBackground="surface" />
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <link
@@ -219,26 +222,23 @@ function InternalKeystoneProvider({
           fieldViews,
           lists: lists ?? {},
           error: error ?? null,
+          navigationBlockers,
         }}
       >
         {children}
       </KeystoneContext.Provider>
       <Toaster />
-    </KeystarProvider>
+    </>
   )
 }
 
-function useNextPathname() {
-  const { asPath } = useRouter()
-  return useMemo(() => new URL(asPath, 'http://keystone.local').pathname, [asPath])
-}
+export function KeystoneProvider({ router, ...props }: KeystoneProviderProps) {
+  const [navigationBlockers] = useState(createNavigationBlockers)
+  router.useNavigationBlocker({
+    hasUnsavedChanges: navigationBlockers.hasUnsavedChanges,
+    shouldBlockNavigation: navigationBlockers.shouldBlockNavigation,
+  })
 
-function useNextSearch() {
-  const { asPath } = useRouter()
-  return useMemo(() => new URL(asPath, 'http://keystone.local').search, [asPath])
-}
-
-export function KeystoneProvider(props: KeystoneProviderProps) {
   const apolloClient = useMemo(
     () =>
       new ApolloClient({
@@ -252,9 +252,11 @@ export function KeystoneProvider(props: KeystoneProviderProps) {
   )
 
   return (
-    <ApolloProvider client={apolloClient}>
-      <InternalKeystoneProvider {...props} />
-    </ApolloProvider>
+    <KeystarProvider router={router}>
+      <ApolloProvider client={apolloClient}>
+        <InternalKeystoneProvider {...props} navigationBlockers={navigationBlockers} />
+      </ApolloProvider>
+    </KeystarProvider>
   )
 }
 
