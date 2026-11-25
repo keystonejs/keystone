@@ -1,5 +1,11 @@
 # create-keystone-app
 
+## 12.0.0
+
+### Major Changes
+
+- [#10029](https://github.com/keystonejs/keystone/pull/10029) [`994feda`](https://github.com/keystonejs/keystone/commit/994feda6f10b37bcb5dc07c5f0cfae835fdc9f61) Thanks [@emmatown](https://github.com/emmatown)! - Updates the starter to use `getSession` with the `jwtSessions` strategy from `@keystone-6/auth`
+
 ## 11.0.2
 
 ### Patch Changes
