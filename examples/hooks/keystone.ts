@@ -13,4 +13,12 @@ export default config<TypeInfo>({
     }),
   },
   lists,
+  server: {
+    extendExpressApp(app) {
+      app.use((req, _res, next) => {
+        req.headers['x-remote-address'] = req.socket.remoteAddress
+        next()
+      })
+    },
+  },
 })
