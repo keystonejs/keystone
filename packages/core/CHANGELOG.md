@@ -1,5 +1,64 @@
 # @keystone-6/core
 
+## 9.0.0
+
+### Major Changes
+
+- [#10029](https://github.com/keystonejs/keystone/pull/10029) [`994feda`](https://github.com/keystonejs/keystone/commit/994feda6f10b37bcb5dc07c5f0cfae835fdc9f61) Thanks [@emmatown](https://github.com/emmatown)! - Replaces the `session` Keystone config option with `getSession`. `context.sessionStrategy` has been removed, and the `SessionStrategy` type is no longer exported from `@keystone-6/core/types`.
+
+- [#10029](https://github.com/keystonejs/keystone/pull/10029) [`994feda`](https://github.com/keystonejs/keystone/commit/994feda6f10b37bcb5dc07c5f0cfae835fdc9f61) Thanks [@emmatown](https://github.com/emmatown)! - Moves the `@keystone-6/core/session` exports to `@keystone-6/auth`. The `statelessSessions` strategy has been replaced with `jwtSessions` which uses HS256 JWTs and the `sub` claim for the authenticated item ID. The `SessionStore` and `SessionStoreFunction` types are now exported from `@keystone-6/auth`.
+
+  Unlike `statelessSessions`, which encrypted the session, `jwtSessions` only signs it: the session payload can be read by anyone holding the cookie, so only store data that is safe for the client to see, or use `storedSessions`. If you need encrypted sessions, you can use a different session implementation.
+
+- [#10028](https://github.com/keystonejs/keystone/pull/10028) [`d69db9c`](https://github.com/keystonejs/keystone/commit/d69db9c017e51c53c95acbc22980a8f48fc60f2b) Thanks [@emmatown](https://github.com/emmatown)! - Replaces Node.js HTTP `context.req` and `context.res` on `KeystoneContext` with WHATWG `Headers`, and replaces `context.withRequest(req, res)` with `context.withHeaders(req, res?)`. `context.req` now only carries request headers: the client IP address, method, URL and body of the request are no longer available on the context. If hooks or access control need any of these, add them as request headers in your own middleware in `server.extendExpressApp` before Keystone's GraphQL handler.
+
+  Headers set on `context.res` are copied to the response by Keystone's built-in server when the GraphQL response is sent. Custom integrations using `context.withHeaders` must copy the `res` headers to their own response, using `res.getSetCookie()` to preserve separate `Set-Cookie` values.
+
+- [#10070](https://github.com/keystonejs/keystone/pull/10070) [`c049657`](https://github.com/keystonejs/keystone/commit/c0496576d30278565143192e7d289a5712fd7a1d) Thanks [@emmatown](https://github.com/emmatown)! - Moves `password` field from `@keystone-6/core/fields` to `@keystone-6/auth`. Removes `validation.rejectCommon`, use a validate hook instead.
+
+- [#10069](https://github.com/keystonejs/keystone/pull/10069) [`e899729`](https://github.com/keystonejs/keystone/commit/e8997291a3302e2dd813994c899feae4462d6e94) Thanks [@emmatown](https://github.com/emmatown)! - Moves `image` and `file` fields to new `@keystone-6/fields-media-multipart` package
+
+- [#10100](https://github.com/keystonejs/keystone/pull/10100) [`b0180ce`](https://github.com/keystonejs/keystone/commit/b0180cedec4e03308f5bcd0af1c7a7caa54bc915) Thanks [@emmatown](https://github.com/emmatown)! - Fixes default imports of external ES modules returning the module namespace rather than the default export when bundling configurations that use `"type": "module"`
+
+- [#10062](https://github.com/keystonejs/keystone/pull/10062) [`06d62bf`](https://github.com/keystonejs/keystone/commit/06d62bffca1f0a2febda38d142f1ff571d69c5ee) Thanks [@emmatown](https://github.com/emmatown)! - Adds a required `router` prop to `KeystoneProvider` in `@keystone-6/core/admin-ui/context` to support custom router integrations. Note `KeystoneProvider` should generally not be used externally, this does not affect normal Keystone usages.
+
+- [#10058](https://github.com/keystonejs/keystone/pull/10058) [`7756021`](https://github.com/keystonejs/keystone/commit/7756021bfe71a3b838b3c4629fc20c7be1a40b13) Thanks [@emmatown](https://github.com/emmatown)! - Applies `access.{operation,filter}.query` to relationships in user-supplied filters. Relationship checks use `one` for `findOne` and mutation lookups, `many` for `findMany`, and `count` for counts.
+
+- [#10116](https://github.com/keystonejs/keystone/pull/10116) [`3d514cf`](https://github.com/keystonejs/keystone/commit/3d514cf2e267741924a2a8d4959311ff99365717) Thanks [@emmatown](https://github.com/emmatown)! - Removes `context.query` from `KeystoneContext`. Use `context.graphql.run` with a complete GraphQL operation to select GraphQL fields, or `context.db` to work with database items.
+
+- [#10069](https://github.com/keystonejs/keystone/pull/10069) [`e899729`](https://github.com/keystonejs/keystone/commit/e8997291a3302e2dd813994c899feae4462d6e94) Thanks [@emmatown](https://github.com/emmatown)! - Removes automatic multipart upload middleware and the `server.maxFileSize` option.
+
+  Applications using image, file, or Cloudinary fields must install `graphql-upload@17.1` and register its middleware on the GraphQL endpoint in `server.extendExpressApp`. If you set `graphql.path`, use that same path for the middleware.
+
+  ```ts
+  import graphqlUploadExpress from 'graphql-upload/graphqlUploadExpress.mjs'
+
+  // In your Keystone config:
+  server: {
+    extendExpressApp(app) {
+      app.use('/api/graphql', graphqlUploadExpress({ maxFileSize: 10 * 1024 * 1024, maxFiles: 10 }))
+    },
+  }
+  ```
+
+- [#10069](https://github.com/keystonejs/keystone/pull/10069) [`e899729`](https://github.com/keystonejs/keystone/commit/e8997291a3302e2dd813994c899feae4462d6e94) Thanks [@emmatown](https://github.com/emmatown)! - Removes `g.Upload`. Custom fields using `g.Upload` must now import the scalar from `graphql-upload/GraphQLUpload.mjs`
+
+- [#10065](https://github.com/keystonejs/keystone/pull/10065) [`e758258`](https://github.com/keystonejs/keystone/commit/e7582584721c3434750a0e84428c131be24842ca) Thanks [@emmatown](https://github.com/emmatown)! - Replaces numeric Admin UI field view indexes with stable SHA-256 hashes of view import paths
+
+- [#10103](https://github.com/keystonejs/keystone/pull/10103) [`2945611`](https://github.com/keystonejs/keystone/commit/2945611883527ae9b7454e6ecb58377fc9e2bf74) Thanks [@emmatown](https://github.com/emmatown)! - Unique `where` inputs must now have at least one key and their values cannot be `null`, including in relationships. These previously selected an arbitrary item, or returned `null` from `findOne` for `{}`. Relationships in unique `where` inputs now also resolve the related list's unique `where`, so its id parsing and field resolvers apply.
+
+### Patch Changes
+
+- [#10118](https://github.com/keystonejs/keystone/pull/10118) [`3b02d18`](https://github.com/keystonejs/keystone/commit/3b02d18919cf678a73f11eb39d4514cf01130d5f) Thanks [@emmatown](https://github.com/emmatown)! - Fixes `connect`, `disconnect` and `set` in relationship inputs failing with a Prisma error when the unique `where` used a 1-to-1 relationship
+
+- [#10119](https://github.com/keystonejs/keystone/pull/10119) [`85039b8`](https://github.com/keystonejs/keystone/commit/85039b8fb14f814908e855d2a92b1e7c13078263) Thanks [@emmatown](https://github.com/emmatown)! - Validates and parses `cursor` arguments like unique `where` inputs so e.g. cursors with an autoincrement ID work properly. Relationship fields in cursors are now rejected with a Keystone input error instead of a Prisma error.
+
+- [#10122](https://github.com/keystonejs/keystone/pull/10122) [`761b28b`](https://github.com/keystonejs/keystone/commit/761b28bd70bcf5286cfaef0813321b4200785e47) Thanks [@emmatown](https://github.com/emmatown)! - Fixes negated equality filters on nullable `bytes` fields so they include items with null values.
+
+- [#10090](https://github.com/keystonejs/keystone/pull/10090) [`6bd9674`](https://github.com/keystonejs/keystone/commit/6bd9674028014b7f4100d04010a998da892240a2) Thanks [@emmatown](https://github.com/emmatown)! - Fixes repeated form submissions in create view creating multiple items
+
+- [#10099](https://github.com/keystonejs/keystone/pull/10099) [`848e34a`](https://github.com/keystonejs/keystone/commit/848e34a9498f190df7b0c9b2fe44bd6fc922342a) Thanks [@AnkitJhadev](https://github.com/AnkitJhadev)! - Fixes `DateTime` and `CalendarDay` GraphQL scalars accepting impossible dates like `2021-02-30`, which were silently saved as a different date (e.g. `2021-03-02`)
+
 ## 8.3.0
 
 ### Minor Changes

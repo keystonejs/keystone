@@ -1,6 +1,6 @@
 {
   "name": "@keystone-6/fields-media-multipart",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "Keystone image and file fields with GraphQL multipart uploads",
   "license": "MIT",
   "type": "module",
@@ -22,7 +22,7 @@
     "react-aria": "catalog:"
   },
   "peerDependencies": {
-    "@keystone-6/core": "^8.2.0",
+    "@keystone-6/core": "^9.0.0",
     "@keystar/ui": "catalog:",
     "graphql": "catalog:",
     "react": "^19.0.0",
