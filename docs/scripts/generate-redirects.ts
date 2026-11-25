@@ -126,7 +126,12 @@ const CURRENT = [
   },
   {
     source: '/docs/apis/query',
-    destination: '/docs/context/query',
+    destination: '/docs/context/overview#graphql-helpers',
+    permanent: false,
+  },
+  {
+    source: '/docs/context/query',
+    destination: '/docs/context/overview#graphql-helpers',
     permanent: false,
   },
   {
