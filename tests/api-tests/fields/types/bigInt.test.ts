@@ -18,11 +18,7 @@ for (const isNullable of [true, false]) {
     filterTests(bigInt({ db: { isNullable } }), match => {
       orderableFilterTests(match, values, isNullable)
     })
-    uniqueEqualityFilterTest(
-      bigInt({ db: { isNullable }, isIndexed: 'unique' }),
-      values,
-      isNullable
-    )
+    uniqueEqualityFilterTest(bigInt({ db: { isNullable }, isIndexed: 'unique' }), values)
   })
 }
 

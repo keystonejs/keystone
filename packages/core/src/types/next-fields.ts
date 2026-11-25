@@ -364,12 +364,7 @@ type ResolveFunc<Func extends (firstArg: any, ...args: any[]) => any> =
 
 export type UniqueWhereFieldInputArg<Val, TArg extends GArg<GInputType>> = {
   arg: TArg
-} & ResolveFunc<
-  (
-    value: Exclude<InferValueFromArg<TArg>, undefined | null>,
-    context: KeystoneContext
-  ) => MaybePromise<Val>
->
+} & ResolveFunc<FieldInputResolver<Exclude<InferValueFromArg<TArg>, undefined | null>, Val, any>>
 
 type FieldTypeOutputField<TDBField extends DBField> = GField<
   { value: DBFieldToOutputValue<TDBField>; item: BaseItem },

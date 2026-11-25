@@ -1,6 +1,5 @@
 import { describe } from 'vitest'
 import { calendarDay } from '@keystone-6/core/fields'
-import { dbProvider } from '../../utils.ts'
 import { filterTests, orderableFilterTests, uniqueEqualityFilterTest } from './utils.ts'
 
 for (const isNullable of [true, false]) {
@@ -10,12 +9,6 @@ for (const isNullable of [true, false]) {
       orderableFilterTests(match, values, isNullable)
     })
 
-    uniqueEqualityFilterTest(
-      calendarDay({ db: { isNullable }, isIndexed: 'unique' }),
-      values,
-
-      // TODO: isNullable, failing for POSTGRES and MySQL
-      dbProvider === 'sqlite' ? isNullable : false
-    )
+    uniqueEqualityFilterTest(calendarDay({ db: { isNullable }, isIndexed: 'unique' }), values)
   })
 }
