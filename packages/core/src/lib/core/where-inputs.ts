@@ -16,7 +16,8 @@ export type UniqueInputFilter = Record<string, any> & { _____?: 'unique input fi
 export async function resolveUniqueWhereInput(
   inputFilter: UniqueInputFilter,
   list: InitialisedList,
-  context: KeystoneContext
+  context: KeystoneContext,
+  getRelationshipAccess: GetRelationshipFilterAccess
 ): Promise<UniquePrismaFilter> {
   // an empty unique where, or a null value in one, would select an arbitrary item
   if (Object.keys(inputFilter).length === 0) {
@@ -39,8 +40,20 @@ export async function resolveUniqueWhereInput(
           value,
           context,
           dbField.kind === 'relation'
-            ? (foreignInput: UniqueInputFilter) =>
-                resolveUniqueWhereInput(foreignInput, list.lists[dbField.list], context)
+            ? async (foreignInput: UniqueInputFilter) => {
+                const foreignList = list.lists[dbField.list]
+                const access = await getRelationshipAccess(foreignList)
+                const foreignUniqueWhere = await resolveUniqueWhereInput(
+                  foreignInput,
+                  foreignList,
+                  context,
+                  getRelationshipAccess
+                )
+                return accessControlledFilter(
+                  mapUniqueWhereToWhere(foreignUniqueWhere, foreignList),
+                  access
+                )
+              }
             : undefined
         )
       : value
@@ -55,16 +68,17 @@ export async function resolveUniqueWhereInput(
   return where
 }
 
-// Wrap scalar values in equals so a unique resolver's result is used as a value.
-export function mapUniqueWhereToWhere(uniqueWhere: UniquePrismaFilter, list: InitialisedList) {
+export function mapUniqueWhereToWhere(
+  uniqueWhere: UniquePrismaFilter,
+  list: InitialisedList
+): PrismaFilter {
   const where: PrismaFilter = {}
   for (const key in uniqueWhere) {
-    if (list.fields[key].dbField.kind === 'relation') {
-      const foreignList = list.lists[list.fields[key].dbField.list]
-      where[key] = mapUniqueWhereToWhere(uniqueWhere[key], foreignList)
-      continue
-    }
-    where[key] = { equals: uniqueWhere[key] }
+    // Relationship resolvers return predicates, while scalar resolvers return values.
+    where[key] =
+      list.fields[key].dbField.kind === 'relation'
+        ? { is: uniqueWhere[key] }
+        : { equals: uniqueWhere[key] }
   }
   return where
 }
@@ -76,10 +90,32 @@ export function accessControlledFilter(
   return accessFilters === true ? resolvedWhere : { AND: [resolvedWhere, accessFilters] }
 }
 
-export async function resolveWhereInput(
+export type RelationshipFilterAccess = true | PrismaFilter
+
+// returns the access filter to apply to related items of a list in a relationship filter,
+// see relationshipFilterAccess in access-control.ts
+export type GetRelationshipFilterAccess = (
+  list: InitialisedList
+) => Promise<RelationshipFilterAccess>
+
+export const noRelationshipFilterAccess: GetRelationshipFilterAccess = async () => true
+
+// Access filters are trusted configuration: relationships in them do not apply relationship
+// filter access control, which would otherwise recurse into the related list's access filters
+export function resolveAccessFilterWhereInput(
   inputFilter: InputFilter,
   list: InitialisedList,
   context: KeystoneContext
+): Promise<PrismaFilter> {
+  return resolveWhereInput(inputFilter, list, context, noRelationshipFilterAccess)
+}
+
+// resolves a user-supplied filter, applying relationship filter access control
+export async function resolveWhereInput(
+  inputFilter: InputFilter,
+  list: InitialisedList,
+  context: KeystoneContext,
+  getRelationshipAccess: GetRelationshipFilterAccess
 ): Promise<PrismaFilter> {
   return {
     AND: await Promise.all(
@@ -87,7 +123,9 @@ export async function resolveWhereInput(
         if (key === 'OR' || key === 'AND' || key === 'NOT') {
           return {
             [key]: await Promise.all(
-              value.map((value: any) => resolveWhereInput(value, list, context))
+              value.map((value: any) =>
+                resolveWhereInput(value, list, context, getRelationshipAccess)
+              )
             ),
           }
         }
@@ -106,33 +144,51 @@ export async function resolveWhereInput(
                 if (dbField.kind !== 'relation') {
                   return undefined as any
                 }
-                const foreignList = dbField.list
+                const foreignList = list.lists[dbField.list]
                 const whereResolver = (filter: InputFilter) =>
-                  resolveWhereInput(filter, list.lists[foreignList], context)
+                  resolveWhereInput(filter, foreignList, context, getRelationshipAccess)
+                const getAccess = () => getRelationshipAccess(foreignList)
 
                 if (dbField.mode === 'many') {
-                  return async () => {
+                  return async (value: any) => {
                     if (value === null) {
                       throw userInputError('A many relation filter cannot be set to null')
                     }
-                    return Object.fromEntries(
-                      await Promise.all(
-                        Object.entries(value).map(async ([key, val]) => {
-                          if (val === null) {
-                            throw userInputError(
-                              `The key "${key}" in a many relation filter cannot be set to null`
-                            )
+                    const access = await getAccess()
+                    const entries = Object.entries(value)
+                    for (const [key, val] of entries) {
+                      if (val === null) {
+                        throw userInputError(
+                          `The key "${key}" in a many relation filter cannot be set to null`
+                        )
+                      }
+                    }
+                    return {
+                      AND: await Promise.all(
+                        entries.map(async ([key, val]) => {
+                          const where = await whereResolver(val as any)
+                          if (key === 'every' && access !== true) {
+                            // Every visible item matches iff no visible item fails.
+                            // Keep an explicit tautology: Prisma drops empty objects
+                            // inside NOT, which would make every: {} reject items.
+                            return {
+                              none: accessControlledFilter(
+                                { NOT: { AND: [{ id: { notIn: [] } }, where] } },
+                                access
+                              ),
+                            }
                           }
-                          return [key, await whereResolver(val as any)]
+                          return { [key]: accessControlledFilter(where, access) }
                         })
-                      )
-                    )
+                      ),
+                    }
                   }
                 }
 
-                return (value: any) => {
-                  if (value === null) return null
-                  return whereResolver(value)
+                return async (value: any) => {
+                  const access = await getAccess()
+                  if (value === null) return access === true ? null : { isNot: access }
+                  return { is: accessControlledFilter(await whereResolver(value), access) }
                 }
               })()
             )

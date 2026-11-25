@@ -8,7 +8,11 @@ import type {
 } from '../../../types/index.ts'
 import type { PrismaFilter, UniquePrismaFilter } from '../../../types/prisma.ts'
 
-import { checkFilterOrderAccess, getQueryOperationAndFilterAccess } from '../access-control.ts'
+import {
+  checkFilterOrderAccess,
+  getQueryOperationAndFilterAccess,
+  relationshipFilterAccess,
+} from '../access-control.ts'
 import {
   type UniqueInputFilter,
   type InputFilter,
@@ -16,6 +20,7 @@ import {
   resolveWhereInput,
   accessControlledFilter,
   mapUniqueWhereToWhere,
+  noRelationshipFilterAccess,
 } from '../where-inputs.ts'
 
 import { limitsExceededError, userInputError } from '../graphql-errors.ts'
@@ -41,7 +46,12 @@ export async function resolveUniqueWhereWithAccess(
   context: KeystoneContext
 ): Promise<PrismaFilter> {
   await checkFilterOrderAccess([...traverseUniqueWhere(list, inputWhere)], context, 'filter')
-  const uniqueWhere = await resolveUniqueWhereInput(inputWhere, list, context)
+  const uniqueWhere = await resolveUniqueWhereInput(
+    inputWhere,
+    list,
+    context,
+    relationshipFilterAccess(context, 'one')
+  )
   return mapUniqueWhereToWhere(uniqueWhere, list)
 }
 
@@ -153,10 +163,20 @@ export async function findMany(
       }
     }
     await checkFilterOrderAccess(fields, context, 'filter')
-    resolvedCursor = await resolveUniqueWhereInput(cursor, list, context)
+    resolvedCursor = await resolveUniqueWhereInput(
+      cursor,
+      list,
+      context,
+      noRelationshipFilterAccess
+    )
   }
 
-  const resolvedWhere = await resolveWhereInput(where, list, context)
+  const resolvedWhere = await resolveWhereInput(
+    where,
+    list,
+    context,
+    relationshipFilterAccess(context, 'many')
+  )
 
   // WARNING: this checks .isOrderable
   const orderBy = await resolveOrderBy(rawOrderBy, list, context)
@@ -268,7 +288,12 @@ export async function count(
   if (accessFilters === false) return 0
 
   await checkFilterOrderAccess([...traverse(list, where)], context, 'filter')
-  const resolvedWhere = await resolveWhereInput(where, list, context)
+  const resolvedWhere = await resolveWhereInput(
+    where,
+    list,
+    context,
+    relationshipFilterAccess(context, 'count')
+  )
 
   const filter = accessControlledFilter(resolvedWhere, accessFilters)
 
