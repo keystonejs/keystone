@@ -122,6 +122,7 @@ async function collectPackageVersions(cwd: string) {
     '@keystone-6/auth',
     '@keystone-6/fields-document',
     '@keystone-6/cloudinary',
+    '@keystone-6/fields-media-multipart',
     '@keystone-6/session-store-redis', // we hope usage to drops to zero
     '@opensaas/keystone-nextjs-auth',
   ]) {

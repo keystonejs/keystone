@@ -9,10 +9,16 @@ See [the Images and Files guide](../guides/images-and-files) for details on how 
 
 ```typescript
 import { config, list } from '@keystone-6/core';
-import { image } from '@keystone-6/core/fields';
+import graphqlUploadExpress from 'graphql-upload/graphqlUploadExpress.mjs';
+import { image } from '@keystone-6/fields-media-multipart';
 import fs from 'node:fs/promises';
 
 export default config({
+  server: {
+    extendExpressApp(app) {
+      app.use('/api/graphql', graphqlUploadExpress({ maxFileSize: 10 * 1024 * 1024, maxFiles: 10 }));
+    },
+  },
   lists: {
     SomeListName: list({
       fields: {
