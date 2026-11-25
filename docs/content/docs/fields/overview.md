@@ -24,7 +24,6 @@ import {
   json,
   float,
   decimal,
-  password,
   select,
   multiselect,
   text,
@@ -37,6 +36,7 @@ import {
   // Virtual type
   virtual,
 } from '@keystone-6/core/fields'
+import { password } from '@keystone-6/auth'
 
 // File types
 import { file, image } from '@keystone-6/fields-media-multipart'
