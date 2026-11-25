@@ -8,8 +8,8 @@ on:
 
 permissions:
   contents: read
-  pages: write
-  id-token: write
+  # pages: write
+  # id-token: write
 
 concurrency:
   group: pages
@@ -33,8 +33,8 @@ jobs:
           node-version: 26
           cache: pnpm
 
-      - name: Set up GitHub Pages
-        uses: actions/configure-pages@v5
+      # - name: Set up GitHub Pages
+      #   uses: actions/configure-pages@v5
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -53,18 +53,18 @@ jobs:
       - name: Generate redirect pages
         run: pnpm --dir docs generate-redirects
 
-      - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: docs/out
+      # - name: Upload Pages artifact
+      #   uses: actions/upload-pages-artifact@v3
+      #   with:
+      #     path: docs/out
 
-  deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+  # deploy:
+  #   environment:
+  #     name: github-pages
+  #     url: ${{ steps.deployment.outputs.page_url }}
+  #   runs-on: ubuntu-latest
+  #   needs: build
+  #   steps:
+  #     - name: Deploy to GitHub Pages
+  #       id: deployment
+  #       uses: actions/deploy-pages@v4
