@@ -110,6 +110,9 @@ describe(`selector field access (${dbProvider})`, () => {
                     ...uniqueWhere,
                     resolve(value, context) {
                       context.session?.resolvedSelectors?.push(value)
+                      if (context.session?.failAuthorSelector) {
+                        throw new Error('Cannot resolve author selector')
+                      }
                       if (context.session?.authorNumber !== undefined) {
                         return { some: context.session.authorNumber }
                       }
@@ -148,6 +151,10 @@ describe(`selector field access (${dbProvider})`, () => {
               }
             },
           },
+        }),
+        Tag: list({
+          access: allowAll,
+          fields: { post: relationship({ ref: 'Post' }) },
         }),
       },
     },
@@ -255,5 +262,36 @@ describe(`selector field access (${dbProvider})`, () => {
       )
       for (const error of errors) assert.match(error.message, /Access denied/)
     }
+  })
+
+  test('reports unexpected errors from nested connect selectors', async () => {
+    const { context } = await seeded
+    const failing = context.withSession({ failAuthorSelector: true })
+
+    await assert.rejects(
+      failing.db.Tag.createOne({
+        data: { post: { connect: { author: { name: 'Alice' } } } },
+      }),
+      /Cannot resolve author selector/
+    )
+  })
+
+  test('checks connect selectors before resolving relationship fields', async () => {
+    const { context } = await seeded
+    const resolvedSelectors: unknown[] = []
+    const restricted = context.withSession({ denyNameFilter: true, resolvedSelectors })
+
+    await assert.rejects(
+      restricted.db.Tag.createOne({
+        data: { post: { connect: { author: { name: 'Alice' } } } },
+      }),
+      /Tag\.post: Access denied: You cannot filter that Author - you cannot filter the fields name/
+    )
+    assert.deepEqual(resolvedSelectors, [])
+
+    await assert.rejects(
+      context.db.Tag.createOne({ data: { post: { connect: { id: '' } } } }),
+      /Input error: Only a string can be passed to id filters/
+    )
   })
 })

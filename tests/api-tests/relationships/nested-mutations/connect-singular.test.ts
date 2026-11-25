@@ -323,6 +323,11 @@ describe('with access control', () => {
           })
         )
       } else {
+        // the query for a list with omitted queries can't be run to find the item
+        const message =
+          group.name === 'GroupNoReadHard'
+            ? 'This query is not supported by the GraphQL schema: groupNoReadHard()'
+            : `Access denied: You cannot connect that ${group.name} - it may not exist`
         test(
           'throws error when linking nested within update mutation',
           runner(async ({ context }) => {
@@ -358,7 +363,6 @@ describe('with access control', () => {
                     }`,
             })
             expect(data).toEqual({ [`updateEventTo${group.name}`]: null })
-            const message = `Access denied: You cannot connect that ${group.name} - it may not exist`
             expectSingleRelationshipError(
               errors,
               `updateEventTo${group.name}`,
@@ -394,7 +398,6 @@ describe('with access control', () => {
             })
 
             expect(data).toEqual({ [`createEventTo${group.name}`]: null })
-            const message = `Access denied: You cannot connect that ${group.name} - it may not exist`
             expectSingleRelationshipError(
               errors,
               `createEventTo${group.name}`,
