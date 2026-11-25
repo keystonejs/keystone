@@ -26,7 +26,6 @@ const context = {
 
   // Session API
   session,
-  sessionStrategy,
 
   // GraphQL helpers
   graphql: {
@@ -103,11 +102,9 @@ GraphQL strings and plain [`DocumentNode`](https://graphql.org/graphql-js/langua
 ### Session API
 
 If you configure your Keystone system with session management then you will have access to the following properties.
-See the [session API](../config/session#session-context) for more details.
+See the [`getSession` API](../config/session) for more details.
 
 `session`: The current session data object.
-
-`sessionStrategy`: an object containing functions (`get`, `start` and `end`) that manipulate a session. See the [session API](../config/session#session-context) for more details.
 
 ### New context creators
 
@@ -117,7 +114,7 @@ Keystone applies access control using the current context and its session. The f
 
 `internal()`: A function which returns a new `Context` object that bypasses `graphql.omit` on lists and fields, allowing you to query and mutate data that is otherwise omitted from the GraphQL API.
 
-`withHeaders(req, res?)`: Creates a context from WHATWG `Headers` and loads its session using `sessionStrategy.get`. Request headers are cloned; response headers are shared with the returned context and its derived contexts. Omitting `res` creates a read-only context for response headers, so session cookies cannot be set.
+`withHeaders(req, res?)`: Creates a context from WHATWG `Headers` and loads its session using `getSession`. Request headers are cloned; response headers are shared with the returned context and its derived contexts. Omitting `res` creates a read-only context for response headers, so session cookies cannot be set.
 
 Keystone's built-in server copies outgoing headers to the HTTP response automatically. In custom integrations, supply a mutable `Headers` object as `res` and copy its contents to response headers before sending the response. Preserve separate `Set-Cookie` values with `res.getSetCookie()` rather than combining them into one header.
 

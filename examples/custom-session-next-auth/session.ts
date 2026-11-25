@@ -46,28 +46,22 @@ declare module './generated/keystone/types' {
   }
 }
 
-export const nextAuthSessionStrategy = {
-  async get({ context }: { context: Context }) {
-    if (!context.req) return
-    const token = await getToken({
-      req: {
-        headers: Object.fromEntries(context.req),
-        cookies: parse(context.req.get('cookie') ?? ''),
-      } as Parameters<typeof getToken>[0]['req'],
-      secret: sessionSecret,
-    })
-    const authId = token?.sub
-    if (!authId) return
+export async function getNextAuthSession({ context }: { context: Context }) {
+  if (!context.req) return
+  const token = await getToken({
+    req: {
+      headers: Object.fromEntries(context.req),
+      cookies: parse(context.req.get('cookie') ?? ''),
+    } as Parameters<typeof getToken>[0]['req'],
+    secret: sessionSecret,
+  })
+  const authId = token?.sub
+  if (!authId) return
 
-    const author = await context.sudo().db.Author.findOne({
-      where: { authId },
-    })
-    if (!author) return
+  const author = await context.sudo().db.Author.findOne({
+    where: { authId },
+  })
+  if (!author) return
 
-    return { id: author.id }
-  },
-
-  // we don't need these as next-auth handle start and end for us
-  async start() {},
-  async end() {},
+  return { id: author.id }
 }
