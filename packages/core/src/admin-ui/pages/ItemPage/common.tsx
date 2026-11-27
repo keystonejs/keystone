@@ -14,7 +14,6 @@ import { breakpointQueries, css, tokenSchema } from '@keystar/ui/style'
 import { toastQueue } from '@keystar/ui/toast'
 import { Heading, Text } from '@keystar/ui/typography'
 import { gql, type TypedDocumentNode, useApolloClient } from '../../apollo.ts'
-import { Container, CONTAINER_MAX } from '../../components/Container.tsx'
 import { ErrorDetailsDialog } from '../../components/Errors.tsx'
 import { ActionDialog } from '../../components/ActionDialog.tsx'
 import {
@@ -57,9 +56,7 @@ export function ItemPageHeader({
       // grid areas required because the `ActionGroup` implements focus
       // sentinels (span) before and after the root element
       areas={['primary secondary']}
-      // treat this area like a container
       minWidth={0}
-      maxWidth={CONTAINER_MAX}
     >
       {list.isSingleton ? (
         <Heading elementType="h1" size="small" gridArea="primary" truncate>
@@ -299,7 +296,7 @@ export function ColumnLayout(props: HTMLAttributes<HTMLDivElement>) {
   return (
     // this container must be relative to catch absolute children
     // particularly the "expanded" document-field, which needs a height of 100%
-    <Container position="relative" height="100%">
+    <Box position="relative" height="100%" minWidth={0}>
       <div
         className={css({
           display: 'grid',
@@ -313,7 +310,7 @@ export function ColumnLayout(props: HTMLAttributes<HTMLDivElement>) {
         })}
         {...props}
       />
-    </Container>
+    </Box>
   )
 }
 
