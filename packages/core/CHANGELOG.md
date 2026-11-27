@@ -1,5 +1,11 @@
 # @keystone-6/core
 
+## 9.0.1
+
+### Patch Changes
+
+- [#10131](https://github.com/keystonejs/keystone/pull/10131) [`4d5a467`](https://github.com/keystonejs/keystone/commit/4d5a467f2f0e2291249f6904b0332d8b34b5a088) Thanks [@emmatown](https://github.com/emmatown)! - Deduplicates `access.read.filter` calls when the same field is used multiple times in a query
+
 ## 9.0.0
 
 ### Major Changes
