@@ -6,7 +6,7 @@ import type {
   KeystoneContext,
   OrderDirection,
 } from '../../../types/index.ts'
-import type { PrismaFilter, UniquePrismaFilter } from '../../../types/prisma.ts'
+import type { PrismaFilter } from '../../../types/prisma.ts'
 
 import {
   checkFilterOrderAccess,
@@ -45,7 +45,9 @@ export async function resolveUniqueWhereWithAccess(
   list: InitialisedList,
   context: KeystoneContext
 ): Promise<PrismaFilter> {
-  await checkFilterOrderAccess([...traverseUniqueWhere(list, inputWhere)], context, 'filter')
+  const fields = new Map<InitialisedList, Set<string>>()
+  traverseUniqueWhere(list, inputWhere, fields)
+  await checkFilterOrderAccess(fields, context, 'filter')
   const uniqueWhere = await resolveUniqueWhereInput(
     inputWhere,
     list,
@@ -55,36 +57,51 @@ export async function resolveUniqueWhereWithAccess(
   return mapUniqueWhereToWhere(uniqueWhere, list)
 }
 
-function* traverseUniqueWhere(
+function addFilterField(
+  fields: Map<InitialisedList, Set<string>>,
   list: InitialisedList,
-  uniqueWhere: UniqueInputFilter | null
-): Generator<{ fieldKey: string; list: InitialisedList }, void, unknown> {
+  fieldKey: string
+) {
+  let fieldKeys = fields.get(list)
+  if (!fieldKeys) {
+    fieldKeys = new Set()
+    fields.set(list, fieldKeys)
+  }
+  fieldKeys.add(fieldKey)
+}
+
+function traverseUniqueWhere(
+  list: InitialisedList,
+  uniqueWhere: UniqueInputFilter | null,
+  fields: Map<InitialisedList, Set<string>>
+) {
   for (const [fieldKey, value] of Object.entries(uniqueWhere ?? {})) {
-    yield { fieldKey, list }
+    addFilterField(fields, list, fieldKey)
     const { dbField, input } = list.fields[fieldKey]
     if (dbField.kind !== 'relation') continue
 
     const relatedList = list.lists[dbField.list]
     if (input?.uniqueWhere?.arg.type === relatedList.graphql.types.uniqueWhere) {
-      yield* traverseUniqueWhere(relatedList, value)
+      traverseUniqueWhere(relatedList, value, fields)
     }
   }
 }
 
-function* traverse(
+function traverseWhere(
   list: InitialisedList,
-  inputFilter: InputFilter
-): Generator<{ fieldKey: string; list: InitialisedList }, void, unknown> {
+  inputFilter: InputFilter,
+  fields: Map<InitialisedList, Set<string>>
+) {
   for (const fieldKey in inputFilter) {
     const value = inputFilter[fieldKey]
     if (fieldKey === 'OR' || fieldKey === 'AND' || fieldKey === 'NOT') {
       for (const condition of value) {
-        yield* traverse(list, condition)
+        traverseWhere(list, condition, fields)
       }
       continue
     }
 
-    yield { fieldKey, list }
+    addFilterField(fields, list, fieldKey)
 
     const { dbField } = list.fields[fieldKey]
     if (dbField.kind !== 'relation' || value == null) continue
@@ -92,10 +109,10 @@ function* traverse(
     const foreignList = list.lists[dbField.list]
     if (dbField.mode === 'many') {
       for (const condition of Object.values<InputFilter | null>(value)) {
-        if (condition !== null) yield* traverse(foreignList, condition)
+        if (condition !== null) traverseWhere(foreignList, condition, fields)
       }
     } else {
-      yield* traverse(foreignList, value)
+      traverseWhere(foreignList, value, fields)
     }
   }
 }
@@ -149,27 +166,23 @@ export async function findMany(
   if (accessFilters === false) return []
 
   // Check access to the user-supplied filters before invoking their resolvers.
-  await checkFilterOrderAccess([...traverse(list, where)], context, 'filter')
-
-  // validate and resolve the cursor, checking filter access before running field resolvers
-  let resolvedCursor: UniquePrismaFilter | undefined
+  const filterFields = new Map<InitialisedList, Set<string>>()
+  traverseWhere(list, where, filterFields)
   if (cursor) {
-    const fields = Object.keys(cursor).map(fieldKey => ({ fieldKey, list }))
-    for (const { fieldKey } of fields) {
+    for (const fieldKey of Object.keys(cursor)) {
       if (list.fields[fieldKey].dbField.kind === 'relation') {
         throw userInputError(
           `The relationship field "${list.listKey}.${fieldKey}" cannot be used in a cursor`
         )
       }
+      addFilterField(filterFields, list, fieldKey)
     }
-    await checkFilterOrderAccess(fields, context, 'filter')
-    resolvedCursor = await resolveUniqueWhereInput(
-      cursor,
-      list,
-      context,
-      noRelationshipFilterAccess
-    )
   }
+  await checkFilterOrderAccess(filterFields, context, 'filter')
+
+  const resolvedCursor = cursor
+    ? await resolveUniqueWhereInput(cursor, list, context, noRelationshipFilterAccess)
+    : undefined
 
   const resolvedWhere = await resolveWhereInput(
     where,
@@ -229,7 +242,7 @@ async function resolveOrderBy(
   context: KeystoneContext
 ): Promise<readonly Record<string, OrderDirection>[]> {
   // Check input format. FIXME: Group all errors
-  orderBy.forEach(orderBySelection => {
+  const orderByKeys = orderBy.map(orderBySelection => {
     const keys = Object.keys(orderBySelection)
     if (keys.length !== 1) {
       throw userInputError(`Only a single key must be passed to ${list.graphql.types.orderBy.name}`)
@@ -240,14 +253,12 @@ async function resolveOrderBy(
     if (value === null) {
       throw userInputError('null cannot be passed as an order direction')
     }
+
+    return fieldKey
   })
 
   // Check orderBy access
-  const orderByKeys = orderBy.map(orderBySelection => ({
-    fieldKey: Object.keys(orderBySelection)[0],
-    list,
-  }))
-  await checkFilterOrderAccess(orderByKeys, context, 'order')
+  await checkFilterOrderAccess(new Map([[list, orderByKeys]]), context, 'order')
 
   return await Promise.all(
     orderBy.map(async orderBySelection => {
@@ -287,7 +298,9 @@ export async function count(
   const accessFilters = await getQueryOperationAndFilterAccess(list, context, 'count')
   if (accessFilters === false) return 0
 
-  await checkFilterOrderAccess([...traverse(list, where)], context, 'filter')
+  const fields = new Map<InitialisedList, Set<string>>()
+  traverseWhere(list, where, fields)
+  await checkFilterOrderAccess(fields, context, 'filter')
   const resolvedWhere = await resolveWhereInput(
     where,
     list,
