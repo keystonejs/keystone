@@ -51,7 +51,10 @@ describe(`selector field access (${dbProvider})`, () => {
               access: {
                 read: {
                   item: allowAll,
-                  filter: ({ session }) => !session?.denyNameFilter,
+                  filter: ({ session, listKey, fieldKey }) => {
+                    session?.fieldFilterCalls?.push(`${listKey}.${fieldKey}`)
+                    return !session?.denyNameFilter
+                  },
                   order: allowAll,
                 },
               },
@@ -77,6 +80,19 @@ describe(`selector field access (${dbProvider})`, () => {
             }),
           },
           fields: {
+            name: text({
+              isIndexed: 'unique',
+              access: {
+                read: {
+                  item: allowAll,
+                  filter: ({ session, listKey, fieldKey }) => {
+                    session?.fieldFilterCalls?.push(`${listKey}.${fieldKey}`)
+                    return true
+                  },
+                  order: allowAll,
+                },
+              },
+            }),
             title: meta => {
               const field = text({
                 access: {
@@ -169,6 +185,7 @@ describe(`selector field access (${dbProvider})`, () => {
     const post = await sudo.db.Post.createOne({
       data: {
         title: 'Post',
+        name: 'First post',
         author: { connect: { id: author.id } },
         authorByAlias: { connect: { id: author.id } },
         authors: { connect: [{ id: author.id }] },
@@ -233,6 +250,45 @@ describe(`selector field access (${dbProvider})`, () => {
     await assert.rejects(post.findMany({ where }), deniedTitle)
     await assert.rejects(post.count({ where }), deniedTitle)
     assert.deepEqual(accessCalls, ['operation', 'operation'])
+  })
+
+  test('rejects relationship cursors before checking field filter access', async () => {
+    const { context } = await seeded
+    const post = context.withSession({ denyTitleFilter: true }).db.Post
+    await assert.rejects(
+      post.findMany({
+        where: { title: { equals: 'Post' } },
+        cursor: { author: { name: 'Alice' } },
+      }),
+      {
+        message: 'Input error: The relationship field "Post.author" cannot be used in a cursor',
+        extensions: { code: 'KS_USER_INPUT_ERROR' },
+      }
+    )
+  })
+
+  test('checks filter access once per list and field in a query', async () => {
+    const { context, post } = await seeded
+    const fieldFilterCalls: string[] = []
+    const posts = context.withSession({ fieldFilterCalls }).db.Post
+    const where = {
+      name: { equals: 'First post' },
+      OR: [
+        { name: { equals: 'First post' }, author: { name: { equals: 'Alice' } } },
+        { authors: { some: { name: { equals: 'Alice' } }, every: { name: { equals: 'Alice' } } } },
+      ],
+    }
+    const expected = ['Author.name', 'Post.name']
+
+    assert.equal(await posts.count({ where }), 1)
+    assert.deepEqual(fieldFilterCalls.splice(0).sort(), expected)
+
+    const results = await posts.findMany({ where, cursor: { name: 'First post' } })
+    assert.deepEqual(
+      results.map(item => item.id),
+      [post.id]
+    )
+    assert.deepEqual(fieldFilterCalls.sort(), expected)
   })
 
   test('checks bulk access once and reports denials per item', async () => {

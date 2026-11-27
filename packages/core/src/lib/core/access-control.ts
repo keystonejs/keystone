@@ -409,52 +409,51 @@ export async function enforceFieldLevelAccessControl(
   }
 }
 
-export async function checkFilterOrderAccess(
-  things: { fieldKey: string; list: InitialisedList }[],
+export async function checkFilterOrderAccess<Kind extends 'filter' | 'order'>(
+  fields: ReadonlyMap<InitialisedList, Iterable<string>>,
   context: KeystoneContext,
-  kind: 'filter' | 'order'
+  kind: Kind
 ) {
   if (context.__internal.sudo) return
 
   const accessErrors: { error: Error; tag: string }[] = []
 
-  for (const { fieldKey, list } of things) {
-    const field = list.fields[fieldKey]
-    let accepted: unknown
+  for (const [list, fieldKeys] of fields) {
+    for (const fieldKey of fieldKeys) {
+      const field = list.fields[fieldKey]
+      let accepted: unknown
 
-    try {
-      const args = {
-        context,
-        session: context.session,
-        listKey: list.listKey,
-        operation: 'read' as const,
-        fieldKey,
+      try {
+        const args = {
+          context,
+          session: context.session,
+          listKey: list.listKey,
+          operation: 'read' as const,
+          fieldKey,
+        }
+        const read: FieldFilterOrderAccess = field.access.read
+        accepted = await read[kind]({ ...args, kind })
+      } catch (error: any) {
+        accessErrors.push({ error, tag: `${list.listKey}.${fieldKey}.access.read.${kind}` })
+        continue
       }
-      if (kind === 'filter') {
-        accepted = await field.access.read.filter({ ...args, kind })
-      } else if (kind === 'order') {
-        accepted = await field.access.read.order({ ...args, kind })
+
+      // short circuit the safe path
+      if (accepted === true) continue
+
+      // wrong type?
+      if (typeof accepted !== 'boolean') {
+        throw accessReturnError([
+          {
+            tag: `${list.listKey}.${fieldKey}.access.read.${kind}`,
+            returned: typeof accepted,
+          },
+        ])
       }
-    } catch (error: any) {
-      accessErrors.push({ error, tag: `${list.listKey}.${fieldKey}.access.read.${kind}` })
-      continue
+
+      // only the first
+      throw accessDeniedError(cannotForItemFields(kind, list, [fieldKey]))
     }
-
-    // short circuit the safe path
-    if (accepted === true) continue
-
-    // wrong type?
-    if (typeof accepted !== 'boolean') {
-      throw accessReturnError([
-        {
-          tag: `${list.listKey}.${fieldKey}.access.read.${kind}`,
-          returned: typeof accepted,
-        },
-      ])
-    }
-
-    // only the first
-    throw accessDeniedError(cannotForItemFields(kind, list, [fieldKey]))
   }
 
   if (accessErrors.length) {
@@ -462,11 +461,18 @@ export async function checkFilterOrderAccess(
   }
 }
 
+type FieldFilterOrderAccess = {
+  [Kind in 'filter' | 'order']: FieldAccessControlFunction<
+    Omit<
+      FieldFilterItemAccessArgs<BaseListTypeInfo> | FieldOrderItemAccessArgs<BaseListTypeInfo>,
+      'kind'
+    > & { kind: Kind }
+  >
+}
+
 export type ResolvedFieldAccessControl = {
-  read: {
+  read: FieldFilterOrderAccess & {
     item: FieldAccessControlFunction<FieldReadItemAccessArgs<BaseListTypeInfo>>
-    filter: FieldAccessControlFunction<FieldFilterItemAccessArgs<BaseListTypeInfo>>
-    order: FieldAccessControlFunction<FieldOrderItemAccessArgs<BaseListTypeInfo>>
   }
   create: FieldAccessControlFunction<FieldCreateItemAccessArgs<BaseListTypeInfo>>
   update: FieldAccessControlFunction<FieldUpdateItemAccessArgs<BaseListTypeInfo>>
