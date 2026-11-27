@@ -622,32 +622,28 @@ function transformForPrismaClient(
   context: KeystoneContext,
   data: Record<string, any>
 ) {
-  return Object.fromEntries([
-    ...(function* () {
-      for (const fieldKey in data) {
-        if (!(fieldKey in list.fields)) {
-          // either the types are wrong, or someone didnt use them, either way, bail out
-          throw new Error(`Attempted to use unknown field "${fieldKey}"`)
-        }
-        const value = data[fieldKey]
-        const { dbField } = list.fields[fieldKey]
+  const prismaData: Record<string, unknown> = {}
+  for (const fieldKey in data) {
+    if (!(fieldKey in list.fields)) {
+      // either the types are wrong, or someone didnt use them, either way, bail out
+      throw new Error(`Attempted to use unknown field "${fieldKey}"`)
+    }
+    const value = data[fieldKey]
+    const { dbField } = list.fields[fieldKey]
 
-        if (dbField.kind === 'multi') {
-          for (const innerFieldKey in value) {
-            const innerFieldValue = value[innerFieldKey]
-            yield [
-              getDBFieldKeyForFieldOnMultiField(fieldKey, innerFieldKey),
-              transformInnerDBField(dbField.fields[innerFieldKey], context, innerFieldValue),
-            ]
-          }
-
-          continue
-        }
-
-        yield [fieldKey, transformInnerDBField(dbField, context, value)]
+    if (dbField.kind === 'multi') {
+      for (const innerFieldKey in value) {
+        const innerFieldValue = value[innerFieldKey]
+        prismaData[getDBFieldKeyForFieldOnMultiField(fieldKey, innerFieldKey)] =
+          transformInnerDBField(dbField.fields[innerFieldKey], context, innerFieldValue)
       }
-    })(),
-  ])
+
+      continue
+    }
+
+    prismaData[fieldKey] = transformInnerDBField(dbField, context, value)
+  }
+  return prismaData
 }
 
 // This is not a thing that I really agree with but it's to make the behaviour consistent with old keystone.
