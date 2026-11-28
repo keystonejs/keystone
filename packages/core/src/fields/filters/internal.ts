@@ -20,12 +20,18 @@ type CommonFilter<T> = {
   contains?: T | null
   startsWith?: T | null
   endsWith?: T | null
-  not?: CommonFilter<T> | null
+  not?: FilterObject<T> | null
 }
+
+// `mode` is a postgresql only modifier of the string operators, not a filter operator itself.
+//   Every filter object in the prisma schema carries one, including a nested `not`, so read it off each.
+type FilterObject<T> = CommonFilter<T> & { mode?: 'default' | 'insensitive' | null }
+
+type FilterMode = 'default' | 'insensitive' | undefined
 
 function internalResolveFilter(
   entries: EntriesAssumingNoExtraProps<CommonFilter<any>>,
-  mode: 'default' | 'insensitive' | undefined
+  mode: FilterMode
 ): object {
   const entry = entries.shift()
   if (entry === undefined) return {}
@@ -66,7 +72,7 @@ function internalResolveFilter(
       return {
         AND: [
           {
-            NOT: [internalResolveFilter(objectEntriesButAssumeNoExtraProperties(val), mode)],
+            NOT: [resolveFilterObject(val, mode)],
           },
           internalResolveFilter(entries, mode),
         ],
@@ -75,15 +81,21 @@ function internalResolveFilter(
   }
 }
 
-export function resolveCommon(val: CommonFilter<any> | null) {
-  if (val === null) return null
-  return internalResolveFilter(objectEntriesButAssumeNoExtraProperties(val), undefined)
+function resolveFilterObject(filter: FilterObject<any>, inheritedMode: FilterMode): object {
+  const { mode, ...operators } = filter
+  // a filter object which does not set `mode` inherits the mode of its parent
+  return internalResolveFilter(
+    objectEntriesButAssumeNoExtraProperties(operators),
+    mode ?? inheritedMode
+  )
 }
 
-export function resolveString(
-  val: (CommonFilter<string> & { mode?: 'default' | 'insensitive' | null }) | null
-) {
+export function resolveCommon(val: FilterObject<any> | null) {
   if (val === null) return null
-  const { mode, ...value } = val
-  return internalResolveFilter(objectEntriesButAssumeNoExtraProperties(value), mode ?? undefined)
+  return resolveFilterObject(val, undefined)
+}
+
+export function resolveString(val: FilterObject<string> | null) {
+  if (val === null) return null
+  return resolveFilterObject(val, undefined)
 }
