@@ -88,6 +88,50 @@ input: {
 },
 ```
 
+#### Omitted inputs and partial updates
+
+A field's create or update input resolver is called even when the mutation omits that field.
+On update, an omitted field is passed to its input resolver as `undefined`.
+For scalar fields, return `undefined` to leave the stored value unchanged.
+Check for omission before applying normalization or fallback values, otherwise an unrelated update can overwrite existing data.
+
+For example, a custom nullable string field can trim supplied values while preserving omission and explicit clearing:
+
+```ts
+input: {
+  update: {
+    arg: g.arg({ type: g.String }),
+    resolve(value) {
+      if (value === undefined) return undefined
+      if (value === null) return null
+      return value.trim()
+    },
+  },
+},
+```
+
+`null` is an explicit input; whether it clears a field or is rejected depends on the field's resolver and validation.
+Likewise, `false`, `0`, `''`, and `[]` are supplied values, not omission.
+Avoid truthiness checks such as `if (!value)` when deciding whether to leave a field unchanged.
+Create defaults should be handled separately from update omission.
+
+For a multi-column field, return each unchanged column as `undefined`.
+Keystone's resolver types require every column key, including keys for columns that are not being changed.
+For example, a field with two nullable string columns can handle omission, clearing, and partial input as follows:
+
+```ts
+function resolveInput(
+  value: { left?: string | null; right?: string | null } | null | undefined
+) {
+  if (value === undefined) return { left: undefined, right: undefined }
+  if (value === null) return { left: null, right: null }
+  return { left: value.left, right: value.right }
+}
+```
+
+Returning a no-op value from an input resolver does not prevent a later hook from deliberately changing that field.
+See [detecting supplied inputs in hooks](../config/hooks#detecting-supplied-inputs) for the distinction between original input and resolved values.
+
 ### Output
 
 The output field defines what can be fetched from the field:
